@@ -5,7 +5,7 @@
    endpoint : a form-backend URL (Formspree, Getform, your own API). It receives JSON via POST.
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { endpoint: '', contact: 'hello@circles.example', turnstileSiteKey: '' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
+const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', contact: 'hello@circles.example', turnstileSiteKey: '' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
 
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* ===== lite:decide ===== phones, very weak devices (2 cores or 2 GB) and data-saver get fewer moving things. ?lite or ?full in the address forces it. */
