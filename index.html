@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<script>try{if(sessionStorage.getItem('circles-pgc'))document.documentElement.classList.add('pgc-in')}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>circles — เมืองของศิลปิน ซื้อตรงจากคนทำ</title>
+<meta name="description" content="circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วซื้อตรงจากคนทำ">
+<meta name="theme-color" content="#0E0D0C">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="circles">
+<meta property="og:title" content="circles — เมืองของศิลปิน ซื้อตรงจากคนทำ">
+<meta property="og:description" content="circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วซื้อตรงจากคนทำ">
+<meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="circles — เมืองของศิลปิน ซื้อตรงจากคนทำ">
+<meta name="twitter:description" content="circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วซื้อตรงจากคนทำ">
+<meta name="twitter:image" content="og.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"circles","description":"A city of artists: one concrete building, one artist. No gallery, no middleman.","inLanguage":["th","en"]}</script>
+<link rel="stylesheet" href="circles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='96' fill='%230E0D0C'/%3E%3CclipPath id='fvc'%3E%3Ccircle cx='100' cy='100' r='86'/%3E%3C/clipPath%3E%3Cg clip-path='url%28%23fvc%29'%3E%3Cg transform='rotate%2830 100 100%29'%3E%3Crect x='-20' y='-20' width='240' height='240' fill='%236B6B3A'/%3E%3Cpath d='M108.64,140.87 C106.54,143.53 99.29,148.42 94.88,149.24 C90.48,150.07 84.80,147.83 82.22,145.80 C79.64,143.78 79.89,139.44 79.42,137.09 C78.95,134.74 77.62,133.43 79.38,131.70 C81.14,129.97 86.67,127.57 89.96,126.72 C93.25,125.87 95.80,126.34 99.11,126.60 C102.42,126.87 108.43,127.22 109.82,128.33 C111.22,129.44 107.69,131.15 107.49,133.24 C107.29,135.33 110.74,138.20 108.64,140.87 Z M84.86,178.26 C82.27,180.07 79.52,183.78 77.97,184.27 C76.43,184.77 76.80,182.26 75.60,181.25 C74.39,180.24 71.44,179.52 70.75,178.21 C70.05,176.90 70.54,174.51 71.41,173.37 C72.29,172.23 74.71,172.44 76.00,171.38 C77.29,170.33 77.37,167.09 79.16,167.04 C80.94,166.99 84.34,170.03 86.73,171.09 C89.12,172.15 93.82,172.22 93.51,173.41 C93.20,174.61 87.45,176.45 84.86,178.26 Z M135.01,105.98 C132.01,107.92 126.26,103.92 122.51,103.80 C118.77,103.69 114.68,106.46 112.53,105.28 C110.38,104.10 110.66,98.77 109.62,96.72 C108.58,94.66 106.09,95.07 106.27,92.95 C106.44,90.84 107.88,84.74 110.66,84.02 C113.45,83.29 118.94,87.61 122.98,88.61 C127.03,89.60 132.01,89.43 134.94,90.01 C137.87,90.60 140.56,89.47 140.57,92.13 C140.58,94.79 138.02,104.03 135.01,105.98 Z M120.31,44.09 C117.86,46.11 114.28,49.77 110.89,50.28 C107.50,50.79 104.06,48.27 99.97,47.17 C95.89,46.07 88.50,45.27 86.37,43.68 C84.24,42.09 85.74,39.55 87.19,37.61 C88.64,35.67 91.59,34.18 95.07,32.05 C98.55,29.92 103.51,25.25 108.06,24.85 C112.62,24.45 119.46,27.43 122.38,29.65 C125.30,31.87 125.92,35.76 125.57,38.17 C125.22,40.57 122.75,42.07 120.31,44.09 Z M33.22,198.12 C30.91,200.34 34.66,204.41 32.65,204.80 C30.63,205.20 23.57,201.79 21.13,200.47 C18.69,199.15 20.54,198.98 17.99,196.89 C15.43,194.80 5.06,190.11 5.79,187.93 C6.51,185.74 18.97,184.31 22.33,183.79 C25.69,183.27 22.22,184.33 25.95,184.83 C29.68,185.33 41.28,185.67 44.71,186.78 C48.15,187.90 48.45,189.62 46.54,191.51 C44.62,193.40 35.54,195.91 33.22,198.12 Z M152.39,48.92 C148.81,50.34 135.66,48.07 130.35,48.91 C125.04,49.74 124.37,54.21 120.55,53.95 C116.74,53.68 109.23,50.32 107.45,47.31 C105.67,44.30 107.02,38.39 109.87,35.90 C112.72,33.41 120.90,33.16 124.55,32.39 C128.19,31.62 127.66,31.17 131.71,31.27 C135.77,31.38 145.53,31.49 148.89,33.00 C152.24,34.52 151.25,37.70 151.83,40.35 C152.42,43.00 155.97,47.49 152.39,48.92 Z M29.86,193.80 C27.54,196.31 25.82,198.69 21.59,198.74 C17.36,198.80 7.83,195.72 4.50,194.14 C1.17,192.56 2.26,191.88 1.61,189.25 C0.96,186.62 -1.07,180.41 0.62,178.35 C2.32,176.29 8.34,177.82 11.78,176.89 C15.22,175.96 18.60,172.08 21.24,172.76 C23.88,173.45 25.22,179.17 27.61,181.00 C29.99,182.83 35.16,181.61 35.53,183.74 C35.91,185.87 32.18,191.30 29.86,193.80 Z M167.99,200.04 C163.54,200.99 155.08,198.24 149.99,198.16 C144.91,198.08 142.57,200.76 137.48,199.56 C132.40,198.36 122.01,193.65 119.47,190.94 C116.92,188.24 120.37,185.48 122.20,183.32 C124.03,181.16 125.47,179.12 130.46,177.99 C135.44,176.86 146.99,176.30 152.09,176.52 C157.19,176.74 156.94,176.67 161.04,179.33 C165.13,181.99 175.51,189.02 176.67,192.47 C177.83,195.92 172.43,199.10 167.99,200.04 Z M72.27,147.47 C70.71,149.43 65.32,151.54 62.86,151.16 C60.40,150.79 59.75,146.51 57.51,145.21 C55.26,143.91 51.20,144.37 49.38,143.36 C47.56,142.34 45.59,140.39 46.56,139.11 C47.54,137.82 52.54,137.11 55.24,135.64 C57.94,134.17 60.61,130.39 62.75,130.30 C64.89,130.21 66.50,133.61 68.08,135.12 C69.65,136.64 71.51,137.35 72.21,139.41 C72.91,141.46 73.83,145.51 72.27,147.47 Z M67.23,42.11 C64.31,44.04 62.01,43.37 57.35,43.93 C52.69,44.49 42.78,46.30 39.26,45.47 C35.74,44.64 37.40,41.92 36.22,38.95 C35.05,35.98 31.53,29.84 32.21,27.64 C32.89,25.44 36.28,26.16 40.32,25.73 C44.36,25.30 51.83,24.78 56.44,25.07 C61.04,25.36 64.86,26.27 67.93,27.48 C71.00,28.70 74.97,29.91 74.86,32.35 C74.74,34.79 70.15,40.18 67.23,42.11 Z M221.72,119.21 C218.21,121.16 212.31,122.09 208.39,122.45 C204.48,122.82 201.73,122.59 198.22,121.38 C194.72,120.17 190.84,117.09 187.36,115.18 C183.88,113.27 177.42,112.79 177.33,109.92 C177.23,107.05 181.64,99.54 186.81,97.95 C191.97,96.37 201.36,99.46 208.34,100.40 C215.32,101.35 225.17,101.90 228.69,103.62 C232.21,105.34 230.63,108.12 229.47,110.72 C228.31,113.32 225.23,117.25 221.72,119.21 Z M73.71,26.35 C70.29,27.65 66.24,27.57 62.59,27.80 C58.95,28.03 55.15,28.66 51.85,27.73 C48.55,26.81 43.61,24.66 42.78,22.24 C41.96,19.82 45.69,15.29 46.90,13.22 C48.10,11.14 46.31,10.97 50.02,9.78 C53.73,8.58 64.72,6.81 69.16,6.04 C73.60,5.27 74.34,2.82 76.66,5.15 C78.99,7.48 83.61,16.46 83.11,19.99 C82.62,23.52 77.13,25.05 73.71,26.35 Z M200.71,176.89 C198.40,178.00 186.51,178.54 182.28,178.28 C178.05,178.02 176.90,176.17 175.33,175.34 C173.76,174.51 173.73,174.29 172.87,173.28 C172.00,172.28 169.52,171.02 170.13,169.32 C170.74,167.62 174.49,164.09 176.53,163.08 C178.58,162.06 178.99,163.47 182.42,163.23 C185.85,163.00 194.83,160.28 197.12,161.68 C199.41,163.08 195.57,169.09 196.17,171.63 C196.77,174.17 203.03,175.79 200.71,176.89 Z M141.92,21.93 C138.53,24.05 129.08,25.28 124.04,25.45 C119.00,25.62 114.96,24.55 111.69,22.94 C108.42,21.33 105.96,18.18 104.43,15.79 C102.90,13.39 100.53,10.75 102.50,8.57 C104.47,6.40 111.37,4.07 116.23,2.75 C121.09,1.43 126.84,0.25 131.67,0.65 C136.49,1.05 143.06,3.14 145.18,5.15 C147.30,7.17 144.93,9.94 144.39,12.74 C143.85,15.53 145.31,19.81 141.92,21.93 Z M215.55,149.86 C213.04,151.03 207.67,147.11 204.50,146.61 C201.33,146.10 198.76,147.35 196.54,146.85 C194.33,146.35 192.57,145.02 191.21,143.64 C189.84,142.25 188.15,140.83 188.34,138.51 C188.53,136.20 188.75,131.67 192.34,129.76 C195.94,127.86 205.22,126.63 209.90,127.08 C214.58,127.52 218.81,130.36 220.42,132.45 C222.02,134.54 220.34,136.70 219.53,139.61 C218.72,142.51 218.05,148.70 215.55,149.86 Z M12.46,50.63 C9.73,52.79 3.34,53.14 -0.49,52.97 C-4.31,52.81 -4.43,50.78 -10.50,49.64 C-16.56,48.50 -33.74,49.40 -36.89,46.11 C-40.04,42.83 -33.77,33.09 -29.41,29.94 C-25.05,26.80 -15.40,28.90 -10.72,27.25 C-6.04,25.61 -6.32,19.64 -1.33,20.06 C3.67,20.49 16.36,26.48 19.24,29.80 C22.11,33.12 17.03,36.53 15.90,40.00 C14.77,43.47 15.19,48.47 12.46,50.63 Z' fill='%230E0D0C'/%3E%3Cpath d='M2.32,46.43 C-0.23,48.19 0.98,52.09 -2.45,52.19 C-5.89,52.30 -14.93,48.21 -18.32,47.07 C-21.70,45.92 -22.35,46.96 -22.75,45.32 C-23.14,43.68 -21.76,39.20 -20.67,37.22 C-19.59,35.23 -18.90,33.98 -16.23,33.39 C-13.55,32.80 -8.95,33.88 -4.62,33.67 C-0.30,33.47 6.83,30.85 9.74,32.18 C12.65,33.51 14.07,39.28 12.84,41.66 C11.60,44.03 4.87,44.67 2.32,46.43 Z M162.02,50.09 C159.50,52.02 158.89,54.61 156.32,54.98 C153.75,55.36 149.02,53.35 146.59,52.33 C144.17,51.31 142.37,50.76 141.78,48.88 C141.19,47.01 142.24,42.91 143.04,41.09 C143.84,39.27 144.75,38.60 146.58,37.95 C148.41,37.30 151.38,36.92 154.04,37.21 C156.70,37.50 159.63,38.66 162.53,39.69 C165.43,40.72 171.52,41.64 171.44,43.37 C171.35,45.11 164.54,48.15 162.02,50.09 Z M86.07,75.89 C83.43,78.63 78.98,81.17 75.08,82.17 C71.19,83.17 66.09,83.46 62.70,81.89 C59.30,80.33 58.09,76.80 54.74,72.78 C51.38,68.76 41.13,60.28 42.57,57.76 C44.02,55.24 58.26,58.01 63.43,57.65 C68.59,57.30 69.66,54.98 73.54,55.61 C77.43,56.25 83.84,59.77 86.74,61.46 C89.64,63.15 91.06,63.35 90.94,65.76 C90.83,68.16 88.71,73.16 86.07,75.89 Z M43.95,138.90 C40.79,140.50 35.56,140.44 32.43,140.45 C29.29,140.45 28.62,140.10 25.15,138.95 C21.69,137.80 13.36,135.36 11.62,133.52 C9.87,131.69 12.32,130.15 14.68,127.94 C17.04,125.73 21.82,121.80 25.76,120.28 C29.69,118.75 34.78,117.99 38.30,118.77 C41.81,119.55 44.67,122.92 46.86,124.94 C49.05,126.95 51.90,128.54 51.42,130.86 C50.94,133.19 47.12,137.30 43.95,138.90 Z M75.12,9.52 C73.34,11.87 71.62,11.95 67.18,11.28 C62.73,10.62 53.21,7.25 48.46,5.55 C43.71,3.85 39.60,2.94 38.67,1.07 C37.74,-0.80 41.85,-3.29 42.88,-5.66 C43.92,-8.03 42.43,-11.77 44.86,-13.16 C47.30,-14.55 52.47,-14.42 57.51,-14.02 C62.54,-13.61 71.68,-12.59 75.07,-10.73 C78.47,-8.86 77.86,-6.18 77.87,-2.81 C77.88,0.57 76.90,7.17 75.12,9.52 Z M117.43,136.25 C114.26,138.92 101.44,137.11 96.88,136.34 C92.32,135.57 94.55,133.59 90.09,131.64 C85.63,129.69 73.24,127.25 70.11,124.66 C66.99,122.06 69.09,118.37 71.33,116.09 C73.57,113.81 78.14,111.42 83.56,110.97 C88.97,110.51 99.09,112.52 103.82,113.37 C108.56,114.22 109.93,114.90 111.95,116.07 C113.96,117.23 114.99,117.00 115.90,120.36 C116.81,123.73 120.60,133.59 117.43,136.25 Z M187.08,180.95 C185.59,182.19 181.35,181.54 177.10,181.88 C172.85,182.22 165.80,183.47 161.59,183.00 C157.38,182.52 152.49,181.41 151.85,179.02 C151.20,176.63 155.90,171.44 157.74,168.66 C159.59,165.87 159.69,163.72 162.90,162.31 C166.12,160.90 172.85,159.98 177.02,160.21 C181.19,160.44 186.44,161.30 187.94,163.67 C189.44,166.04 186.17,171.53 186.03,174.41 C185.89,177.29 188.57,179.71 187.08,180.95 Z M125.15,139.72 C122.24,142.89 117.00,143.71 110.85,144.09 C104.70,144.47 92.50,144.28 88.24,142.00 C83.99,139.72 84.99,133.29 85.33,130.39 C85.67,127.49 88.51,126.35 90.28,124.61 C92.05,122.87 92.14,121.14 95.94,119.95 C99.74,118.76 109.09,117.34 113.08,117.48 C117.07,117.62 117.36,119.49 119.89,120.76 C122.43,122.02 127.42,121.91 128.29,125.07 C129.17,128.23 128.05,136.55 125.15,139.72 Z M207.81,111.44 C205.90,112.43 207.05,114.18 205.38,114.55 C203.70,114.92 200.41,114.56 197.76,113.67 C195.11,112.77 190.63,110.90 189.46,109.18 C188.30,107.45 189.93,104.70 190.78,103.29 C191.63,101.88 192.41,100.89 194.57,100.72 C196.73,100.55 201.19,102.18 203.75,102.28 C206.30,102.37 207.70,100.24 209.88,101.29 C212.07,102.35 217.18,106.91 216.84,108.60 C216.49,110.29 209.72,110.45 207.81,111.44 Z M81.21,17.31 C79.46,19.55 75.90,23.88 72.31,23.79 C68.72,23.70 62.53,18.72 59.65,16.75 C56.77,14.79 55.01,13.60 55.02,12.02 C55.04,10.44 59.56,9.26 59.76,7.29 C59.97,5.31 53.94,1.41 56.24,0.18 C58.53,-1.06 70.16,-1.03 73.51,-0.13 C76.86,0.78 74.81,3.85 76.35,5.60 C77.90,7.34 81.97,8.38 82.77,10.33 C83.58,12.28 82.95,15.06 81.21,17.31 Z M212.17,11.08 C209.89,12.18 204.42,11.24 201.50,10.86 C198.59,10.47 196.89,9.01 194.69,8.78 C192.48,8.54 189.01,10.78 188.27,9.42 C187.53,8.07 188.84,2.20 190.25,0.64 C191.66,-0.92 194.86,0.17 196.72,0.08 C198.57,-0.02 199.50,0.19 201.39,0.07 C203.27,-0.05 205.71,-1.34 208.02,-0.65 C210.32,0.04 214.50,2.26 215.20,4.22 C215.89,6.17 214.45,9.97 212.17,11.08 Z M200.11,203.58 C197.18,205.52 189.61,207.55 185.75,207.57 C181.89,207.59 179.07,205.01 176.95,203.72 C174.83,202.44 173.24,201.66 173.02,199.84 C172.81,198.02 174.90,194.80 175.65,192.81 C176.40,190.82 175.57,189.34 177.53,187.92 C179.49,186.50 183.09,184.69 187.41,184.29 C191.72,183.89 200.77,183.56 203.42,185.50 C206.07,187.43 203.88,192.91 203.33,195.93 C202.78,198.94 203.04,201.64 200.11,203.58 Z M152.65,113.30 C150.97,115.05 145.13,113.90 142.21,113.77 C139.29,113.64 137.34,113.54 135.13,112.50 C132.92,111.46 129.83,109.44 128.97,107.53 C128.10,105.63 129.87,103.13 129.95,101.07 C130.03,99.01 127.13,96.68 129.44,95.16 C131.75,93.64 140.86,91.33 143.83,91.96 C146.80,92.59 145.84,97.05 147.25,98.93 C148.65,100.82 151.37,100.89 152.26,103.28 C153.16,105.67 154.32,111.55 152.65,113.30 Z M207.93,133.19 C205.50,134.54 199.28,132.00 196.02,132.29 C192.76,132.57 191.99,135.17 188.37,134.91 C184.75,134.64 175.08,132.81 174.30,130.68 C173.53,128.56 181.71,124.51 183.70,122.17 C185.69,119.83 182.48,118.63 186.23,116.63 C189.98,114.63 202.01,110.00 206.22,110.18 C210.42,110.35 210.72,115.34 211.45,117.67 C212.18,120.01 211.17,121.58 210.58,124.17 C209.99,126.75 210.35,131.84 207.93,133.19 Z' fill='%23FF2E88'/%3E%3Cpath d='M2.99,175.71 C2.41,176.79 4.27,178.31 3.19,178.75 C2.11,179.19 -1.84,179.00 -3.50,178.37 C-5.15,177.74 -5.94,176.03 -6.76,174.97 C-7.58,173.91 -8.86,173.32 -8.41,172.02 C-7.95,170.72 -5.45,167.57 -4.02,167.19 C-2.59,166.81 -1.10,169.30 0.16,169.75 C1.43,170.20 2.45,169.47 3.54,169.89 C4.63,170.31 6.78,171.29 6.69,172.26 C6.60,173.23 3.57,174.63 2.99,175.71 Z M168.45,192.80 C167.40,193.67 168.23,195.82 167.10,196.29 C165.97,196.77 163.13,196.07 161.68,195.64 C160.24,195.21 159.08,194.53 158.44,193.72 C157.79,192.90 157.34,191.88 157.84,190.75 C158.33,189.62 160.04,187.68 161.39,186.93 C162.74,186.19 164.32,186.10 165.94,186.27 C167.56,186.45 169.85,187.19 171.10,187.99 C172.35,188.79 173.88,190.27 173.44,191.07 C173.00,191.87 169.51,191.93 168.45,192.80 Z M195.02,212.59 C193.59,213.44 192.27,214.18 191.38,214.20 C190.48,214.21 190.54,213.10 189.64,212.68 C188.75,212.27 187.01,212.69 186.01,211.72 C185.00,210.76 183.34,208.18 183.61,206.89 C183.88,205.60 186.21,204.37 187.63,203.97 C189.05,203.56 190.37,204.00 192.15,204.44 C193.93,204.88 197.01,205.85 198.31,206.62 C199.61,207.40 200.49,208.10 199.94,209.09 C199.39,210.09 196.45,211.74 195.02,212.59 Z M17.69,190.11 C16.37,190.83 14.06,189.92 12.29,189.59 C10.52,189.25 8.60,188.67 7.08,188.10 C5.55,187.53 3.76,186.82 3.14,186.17 C2.53,185.52 2.61,184.90 3.38,184.20 C4.16,183.51 6.63,182.35 7.79,182.01 C8.95,181.66 8.91,182.24 10.33,182.11 C11.75,181.97 14.69,180.64 16.33,181.17 C17.97,181.71 19.95,183.82 20.17,185.31 C20.40,186.80 19.00,189.40 17.69,190.11 Z M215.15,-5.50 C213.64,-4.36 211.63,-2.73 209.89,-2.36 C208.15,-2.00 207.69,-2.44 204.72,-3.29 C201.75,-4.14 193.90,-5.64 192.08,-7.46 C190.25,-9.27 191.86,-13.03 193.76,-14.20 C195.65,-15.36 201.20,-13.54 203.44,-14.44 C205.67,-15.35 204.35,-19.69 207.19,-19.61 C210.03,-19.54 218.52,-15.74 220.48,-14.00 C222.44,-12.26 219.84,-10.61 218.95,-9.19 C218.06,-7.78 216.66,-6.64 215.15,-5.50 Z M31.07,171.76 C29.84,172.88 28.08,169.83 25.21,169.58 C22.33,169.33 16.04,170.79 13.81,170.26 C11.58,169.72 12.90,167.64 11.82,166.36 C10.74,165.08 6.68,163.86 7.34,162.58 C7.99,161.29 13.37,159.77 15.75,158.67 C18.12,157.56 19.60,155.76 21.58,155.94 C23.55,156.12 25.76,158.62 27.60,159.77 C29.44,160.91 32.02,160.82 32.60,162.82 C33.18,164.82 32.30,170.63 31.07,171.76 Z M102.06,7.45 C99.26,8.77 100.14,9.72 97.68,10.82 C95.22,11.92 91.26,14.31 87.29,14.03 C83.31,13.75 76.35,12.29 73.83,9.14 C71.30,6.00 71.34,-1.85 72.13,-4.84 C72.92,-7.83 73.47,-7.87 78.56,-8.80 C83.65,-9.74 97.48,-10.92 102.68,-10.44 C107.88,-9.95 107.81,-8.10 109.77,-5.88 C111.74,-3.66 115.78,0.66 114.49,2.89 C113.21,5.11 104.87,6.13 102.06,7.45 Z M107.74,184.35 C105.25,186.13 98.37,188.13 95.16,188.62 C91.94,189.10 90.51,188.39 88.43,187.26 C86.36,186.13 84.24,184.04 82.71,181.82 C81.18,179.60 78.28,175.44 79.26,173.95 C80.24,172.45 85.75,173.88 88.58,172.86 C91.41,171.85 93.30,168.24 96.26,167.85 C99.22,167.46 104.04,168.86 106.34,170.54 C108.65,172.21 109.85,175.60 110.08,177.90 C110.31,180.20 110.22,182.56 107.74,184.35 Z M189.63,86.69 C188.26,87.48 186.72,88.79 184.67,89.04 C182.62,89.28 179.50,88.65 177.33,88.14 C175.15,87.63 171.34,86.99 171.62,85.98 C171.89,84.97 177.24,83.00 178.96,82.06 C180.68,81.11 180.35,81.04 181.94,80.30 C183.54,79.56 186.93,77.81 188.54,77.63 C190.15,77.44 190.89,78.08 191.62,79.19 C192.35,80.30 193.23,83.06 192.90,84.31 C192.57,85.56 191.00,85.90 189.63,86.69 Z M120.73,93.67 C118.07,95.53 118.72,99.88 115.79,100.42 C112.87,100.96 105.33,98.36 103.19,96.91 C101.04,95.46 104.54,93.35 102.91,91.72 C101.27,90.08 93.90,88.98 93.37,87.08 C92.83,85.19 96.30,81.39 99.68,80.36 C103.06,79.32 109.93,79.96 113.65,80.89 C117.37,81.82 118.98,84.54 122.00,85.93 C125.02,87.33 131.99,87.99 131.78,89.27 C131.57,90.56 123.40,91.81 120.73,93.67 Z M93.42,169.61 C92.31,171.06 91.24,173.09 89.55,173.58 C87.85,174.06 84.95,173.62 83.24,172.53 C81.53,171.44 81.04,168.55 79.26,167.05 C77.48,165.55 72.32,164.71 72.58,163.54 C72.85,162.37 77.87,161.14 80.87,160.05 C83.87,158.96 87.21,156.78 90.57,156.99 C93.94,157.21 100.10,160.02 101.04,161.34 C101.98,162.65 97.49,163.50 96.22,164.88 C94.95,166.26 94.53,168.16 93.42,169.61 Z M132.40,111.91 C131.62,112.51 131.79,112.66 130.23,112.73 C128.66,112.81 124.22,112.88 123.02,112.38 C121.83,111.87 123.25,110.41 123.04,109.71 C122.83,109.01 121.43,108.76 121.78,108.19 C122.12,107.61 123.69,106.71 125.11,106.24 C126.54,105.77 129.29,105.41 130.32,105.37 C131.35,105.34 130.53,105.44 131.30,106.06 C132.06,106.68 134.74,108.13 134.92,109.10 C135.11,110.08 133.18,111.30 132.40,111.91 Z' fill='%239C8456'/%3E%3C/g%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='78' fill='none' stroke='%23F4F1E8' stroke-width='4' stroke-dasharray='9 7'/%3E%3Cdefs%3E%3Cpattern id='fvlck' width='10' height='10' patternUnits='userSpaceOnUse' patternTransform='rotate%2845%29'%3E%3Crect width='10' height='10' fill='%23F4F1E8'/%3E%3Crect width='5' height='5' fill='%230E0D0C'/%3E%3Crect x='5' y='5' width='5' height='5' fill='%230E0D0C'/%3E%3C/pattern%3E%3Cpattern id='fvlckp' width='10' height='10' patternUnits='userSpaceOnUse'%3E%3Crect width='10' height='10' fill='%23FF5FA8'/%3E%3Crect width='5' height='5' fill='%230E0D0C'/%3E%3Crect x='5' y='5' width='5' height='5' fill='%230E0D0C'/%3E%3C/pattern%3E%3Cpattern id='fvlgr' width='6' height='6' patternUnits='userSpaceOnUse'%3E%3Crect width='6' height='6' fill='%23E8B730'/%3E%3Cpath d='M6,0 L0,0 L0,6' fill='none' stroke='%230E0D0C' stroke-width='.7' opacity='.7'/%3E%3C/pattern%3E%3Cpattern id='fvlgrp' width='6' height='6' patternUnits='userSpaceOnUse'%3E%3Crect width='6' height='6' fill='%23FF5FA8'/%3E%3Cpath d='M6,0 L0,0 L0,6' fill='none' stroke='%23fff' stroke-width='.7' opacity='.75'/%3E%3C/pattern%3E%3Cpattern id='fvlt' width='14' height='14' patternUnits='userSpaceOnUse' patternTransform='rotate%2845%29'%3E%3Crect width='14' height='14' fill='%23A3182C'/%3E%3Crect width='14' height='5' fill='%230E0D0C' opacity='.55'/%3E%3Crect width='5' height='14' fill='%230E0D0C' opacity='.55'/%3E%3Crect y='9' width='14' height='1' fill='%23E8B730'/%3E%3Crect x='9' width='1' height='14' fill='%23E8B730'/%3E%3C/pattern%3E%3C/defs%3E%3Cpath d='M92.68,121.92 C93.60,84.94 72.10,75.31 45.22,72.77 C46.82,99.72 55.69,121.55 92.68,121.92 Z' fill='url%28%23fvlt%29'/%3E%3Cpath d='M92.68,121.92 C93.60,84.94 72.10,75.31 45.22,72.77 C46.82,99.72 55.69,121.55 92.68,121.92 Z' fill='none' stroke='%230E0D0C' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M107.32,121.92 C144.31,121.55 153.18,99.72 154.78,72.77 C127.90,75.31 106.40,84.94 107.32,121.92 Z' fill='url%28%23fvlgr%29'/%3E%3Cpath d='M115.24,101.07 Q124.72,86.48 140.13,79.52' fill='none' stroke='%23fff' stroke-width='2.73' stroke-linecap='round' opacity='0.8'/%3E%3Cpath d='M107.32,121.92 C144.31,121.55 153.18,99.72 154.78,72.77 C127.90,75.31 106.40,84.94 107.32,121.92 Z' fill='none' stroke='%230E0D0C' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M100.00,124.36 C131.29,90.05 120.86,61.16 100.00,34.08 C79.14,61.16 68.71,90.05 100.00,124.36 Z' fill='url%28%23fvlckp%29'/%3E%3Cpath d='M100.00,124.36 C131.29,90.05 120.86,61.16 100.00,34.08 C79.14,61.16 68.71,90.05 100.00,124.36 Z' fill='none' stroke='%230E0D0C' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/anton-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/chonburi-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-sans-thai-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --black:#0E0D0C;--bone:#E8E4D8;--paper:#F4F1E8;--concrete:#8F8C85;
+  --pink:#FF2E88;--gold:#E8B730;--tartan-red:#A3182C;
+  --anton:"Anton","Chonburi",Impact,sans-serif;--thai:"IBM Plex Sans Thai",system-ui,sans-serif;--type:"Special Elite","IBM Plex Sans Thai",monospace;
+  --ease:cubic-bezier(.22,.8,.24,1);--ease-io:cubic-bezier(.65,0,.35,1);
+  --line:3px;
+  /* patterns: a 2-tone checker, and the tartan in four colourways (red = the original; pink / gold / black use the same palette) */
+  --checker:repeating-conic-gradient(var(--black) 0 25%,var(--paper) 0 50%);
+  --tt-red:repeating-linear-gradient(0deg,rgba(14,13,12,.58) 0 9px,transparent 9px 30px),repeating-linear-gradient(90deg,rgba(14,13,12,.58) 0 9px,transparent 9px 30px),repeating-linear-gradient(0deg,transparent 0 14px,#E8B730 14px 15px,transparent 15px 30px),repeating-linear-gradient(90deg,transparent 0 14px,#E8B730 14px 15px,transparent 15px 30px),repeating-linear-gradient(0deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),repeating-linear-gradient(90deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),#A3182C;
+  --tt-pink:repeating-linear-gradient(0deg,rgba(14,13,12,.5) 0 9px,transparent 9px 30px),repeating-linear-gradient(90deg,rgba(14,13,12,.5) 0 9px,transparent 9px 30px),repeating-linear-gradient(0deg,transparent 0 14px,#E8B730 14px 15px,transparent 15px 30px),repeating-linear-gradient(90deg,transparent 0 14px,#E8B730 14px 15px,transparent 15px 30px),repeating-linear-gradient(0deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),repeating-linear-gradient(90deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),#FF2E88;
+  --tt-gold:repeating-linear-gradient(0deg,rgba(14,13,12,.5) 0 9px,transparent 9px 30px),repeating-linear-gradient(90deg,rgba(14,13,12,.5) 0 9px,transparent 9px 30px),repeating-linear-gradient(0deg,transparent 0 14px,#FF2E88 14px 15px,transparent 15px 30px),repeating-linear-gradient(90deg,transparent 0 14px,#FF2E88 14px 15px,transparent 15px 30px),repeating-linear-gradient(0deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),repeating-linear-gradient(90deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),#E8B730;
+  --tt-black:repeating-linear-gradient(0deg,rgba(255,46,136,.6) 0 9px,transparent 9px 30px),repeating-linear-gradient(90deg,rgba(255,46,136,.6) 0 9px,transparent 9px 30px),repeating-linear-gradient(0deg,transparent 0 14px,#E8B730 14px 15px,transparent 15px 30px),repeating-linear-gradient(90deg,transparent 0 14px,#E8B730 14px 15px,transparent 15px 30px),repeating-linear-gradient(0deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),repeating-linear-gradient(90deg,transparent 0 20px,rgba(244,241,232,.8) 20px 21px,transparent 21px 30px),#0E0D0C;
+  --bk:1.71;   /* height of the tallest building as a multiple of --bw (site.js sets the exact value from the data) */
+  --bw:clamp(240px,calc((100vh - 300px) / var(--bk)),680px);   /* sized so the tallest building + its name tag + the street fit on ONE screen: 300px = nav 62 + top gap 40 + street 175 + bottom gap 19 + slack */
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --tartan:
+    repeating-linear-gradient(0deg,rgba(0,0,0,.58) 0 18px,transparent 18px 60px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.58) 0 18px,transparent 18px 60px),
+    repeating-linear-gradient(0deg,transparent 0 28px,#EBC23A 28px 30px,transparent 30px 60px),
+    repeating-linear-gradient(90deg,transparent 0 28px,#EBC23A 28px 30px,transparent 30px 60px),
+    repeating-linear-gradient(0deg,transparent 0 40px,rgba(255,255,255,.7) 40px 41px,transparent 41px 60px),
+    repeating-linear-gradient(90deg,transparent 0 40px,rgba(255,255,255,.7) 40px 41px,transparent 41px 60px),
+    #A3182C;
+}
+@supports (height:100svh){:root{--bw:clamp(240px,calc((100svh - 300px) / var(--bk)),680px);}}      /* phones: the visible height, not the one with the URL bar tucked away */
+html{scroll-behavior:smooth;scroll-padding-top:72px;}
+html.lenis{scroll-behavior:auto;}   /* Lenis does the easing; native smooth-scroll on top of it makes anchor jumps fight each other. Stays smooth if Lenis fails to load. */
+body{font-family:var(--thai);background:var(--bone);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+:focus-visible{outline:3px solid var(--pink);outline-offset:4px;}
+.tartan{background:var(--tartan);}
+.concrete{background:var(--grain),repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 44px),var(--concrete);}
+
+/* ---------- entrance motion ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:none;}}
+@keyframes drop{from{opacity:0;transform:rotate(var(--r)) translateY(-46px) scale(.88);}to{opacity:1;transform:rotate(var(--r)) translateY(var(--y));}}
+@keyframes archUp{from{clip-path:inset(100% -24px 0 -24px);}to{clip-path:inset(-24px -24px 0 -24px);}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-11px) rotate(3deg);}}
+@keyframes mq{to{transform:translateX(-50%);}}
+.rise{opacity:0;animation:rise .95s var(--ease) forwards;animation-delay:calc(var(--i,0) * 90ms + 120ms);}
+
+/* marquee */
+.marquee{background:var(--black);color:var(--pink);overflow:hidden;white-space:nowrap;height:2.03rem;}   /* fixed: it is filled by JS after first paint, so reserve its height or the whole hero jumps down */
+.marquee div{display:inline-block;padding:.45rem 0;font:400 .74rem var(--anton);letter-spacing:.22em;text-transform:uppercase;animation:mq 36s linear infinite;}
+.marquee:hover div{animation-play-state:paused;}
+.marquee span{margin:0 1.2rem;}.marquee i{font-style:normal;color:var(--gold);}
+
+/* nav */
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(244,241,232,.92);backdrop-filter:blur(10px);
+  border-bottom:var(--line) solid var(--black);position:sticky;top:0;z-index:50;transition:padding .35s var(--ease),box-shadow .35s var(--ease);}
+nav.scrolled{padding:.55rem 2rem;box-shadow:0 8px 24px rgba(14,13,12,.14);}
+.brand{display:flex;align-items:center;gap:.7rem;font:400 1.6rem var(--anton);letter-spacing:.1em;}
+.brand svg{width:36px;height:36px;transition:transform .6s var(--ease);}
+.brand:hover svg{transform:rotate(-14deg) scale(1.08);}
+.links{display:flex;gap:1.8rem;align-items:center;font:500 .92rem var(--thai);letter-spacing:.06em;}
+.links a{color:var(--black);text-decoration:none;cursor:pointer;position:relative;padding:.2rem 0;}
+.links a:not(.join)::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:3px;background:var(--pink);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease);}
+.links a:not(.join):hover::after{transform:scaleX(1);}
+.links .join{background:var(--pink);border:var(--line) solid var(--black);padding:.4rem 1.1rem;box-shadow:4px 4px 0 var(--black);font:400 .95rem var(--anton);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;color:var(--black);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);}
+.links .join:hover{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--black);}
+
+/* ransom-note type (limited palette, calmer rotation) */
+.rn{display:inline-block;line-height:1.05;}
+.rn span{display:inline-block;padding:.05em .13em .02em;margin:0 .02em;line-height:1;border:2px solid var(--black);
+  transform:rotate(var(--r)) translateY(var(--y));box-shadow:2px 3px 0 rgba(14,13,12,.22);}
+.rn.drop span{animation:drop 1.05s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--k) * 70ms + 200ms);}
+
+/* hero */
+.hero{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;align-items:end;padding:4rem 3rem 0;min-height:min(94vh,1000px);overflow:hidden;
+  background:var(--grain),var(--paper);}
+.hero::before{content:"";position:absolute;right:-9vw;top:-14vw;width:min(62vw,820px);height:min(62vw,820px);border:16px solid var(--black);border-radius:50%;opacity:.9;pointer-events:none;}
+.hero::after{content:"";position:absolute;right:calc(min(62vw,820px) - 9vw - 190px);top:3rem;width:150px;height:150px;border-radius:50%;background:var(--pink);border:var(--line) solid var(--black);pointer-events:none;}
+.hero-copy{padding-bottom:5.5rem;position:relative;z-index:2;}
+.kicker{display:inline-block;background:var(--black);color:var(--gold);font:400 .82rem var(--type);letter-spacing:.16em;padding:.3rem .8rem;margin-bottom:1.6rem;}
+.hero h1.rn{font-size:clamp(3rem,7.6vw,7rem);display:block;white-space:nowrap;margin-bottom:2rem;}
+.hl{display:block;width:max-content;max-width:100%;font:900 clamp(1.6rem,3.5vw,2.8rem)/1.3 var(--thai);background:var(--black);color:var(--paper);padding:.1rem .85rem;margin-bottom:.45rem;}
+.hl.pink{background:var(--pink);color:var(--black);}
+.hl.gold{background:var(--gold);color:var(--black);margin-left:1.4rem;}
+.hero p.lead{font:400 1rem/1.85 var(--type);max-width:440px;margin:1.8rem 0 2.2rem;border-left:5px solid var(--pink);padding-left:1rem;}
+.btn{display:inline-block;font:400 1.15rem var(--anton);letter-spacing:.16em;text-transform:uppercase;padding:.85rem 1.9rem;border:var(--line) solid var(--black);
+  background:var(--black);color:var(--paper);cursor:pointer;text-decoration:none;box-shadow:6px 6px 0 var(--pink);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s;}
+.btn:hover{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--pink);}
+.btn:active{transform:translate(6px,6px);box-shadow:0 0 0 var(--pink);}
+
+/* the grand arch */
+.arch{position:relative;justify-self:center;z-index:2;width:min(580px,88vw);height:min(790px,120vw);padding:38px 38px 0;border-radius:290px 290px 0 0;align-self:end;
+  box-shadow:12px 0 0 var(--black);animation:archUp 1.3s var(--ease-io) .15s both;}
+.arch::after{content:"";position:absolute;left:-12px;right:12px;top:-8px;bottom:0;border-radius:298px 298px 0 0;border:var(--line) solid var(--black);pointer-events:none;}
+.arch-in{width:100%;height:100%;border-radius:252px 252px 0 0;display:grid;place-items:center;position:relative;overflow:hidden;
+  box-shadow:inset 0 30px 60px rgba(0,0,0,.5),inset 20px 0 40px rgba(0,0,0,.35);}
+.arch-in svg{width:60%;filter:drop-shadow(7px 7px 0 var(--black));animation:floaty 6s ease-in-out infinite;will-change:transform;}
+.arch-par{position:absolute;inset:0;display:grid;place-items:center;transition:transform .12s linear;will-change:transform;}
+.sticker{position:absolute;font:400 .95rem var(--anton);letter-spacing:.12em;background:var(--pink);color:var(--black);border:var(--line) solid var(--black);padding:.25rem .7rem;transform:rotate(7deg);z-index:3;right:-8px;top:22%;box-shadow:4px 4px 0 var(--black);
+  opacity:0;animation:rise .8s var(--ease) 1.2s forwards;}
+.hero-tape{position:absolute;left:-2rem;right:-2rem;bottom:2.6rem;height:30px;background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);transform:rotate(-1deg);z-index:1;}
+
+/* city */
+.city{position:relative;background:linear-gradient(180deg,var(--bone) 0%,#DAD4C4 78%);padding-top:4.5rem;padding-bottom:2.6rem;margin-top:-1px;}      /* the bottom gap keeps the tape below the progress bar */
+.city-head{padding:0 3rem 2rem;display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;}
+.city-head h2{font:400 clamp(3.6rem,9.5vw,8rem)/.95 var(--anton);text-transform:uppercase;letter-spacing:.02em;-webkit-text-stroke:3px var(--black);color:transparent;}
+.city-head h2 b{color:var(--black);-webkit-text-stroke:0;font-family:var(--thai);font-weight:900;letter-spacing:0;}
+.city-head p{font:400 .92rem/1.8 var(--type);max-width:330px;}
+.pager{display:flex;gap:.7rem;}
+.pager button{font:400 1.5rem var(--anton);width:54px;height:54px;border:var(--line) solid var(--black);background:var(--paper);cursor:pointer;box-shadow:4px 4px 0 var(--black);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s;}
+.pager button:hover{background:var(--pink);transform:translate(3px,3px);box-shadow:1px 1px 0 var(--black);}
+
+.strip{overflow-x:auto;position:relative;padding-bottom:1.2rem;/* room for the hover drawer under the tag; taken out of .progress margin below */cursor:grab;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;user-select:none;}
+.strip::-webkit-scrollbar{display:none;}
+.strip.drag{cursor:grabbing;}
+.strip-in{position:relative;display:flex;align-items:flex-end;width:max-content;padding:2.5rem 4rem 175px;min-width:100%;}
+/* clips the back planes to the city's own width. Without it the far layer (wider than the city) was counted as scrollable area, so the strip could be scrolled ~3,400px past the last building into empty sky */
+.depth{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+/* HD-2D depth, three planes: FAR city (--d .55) / MID city (--d .28) / the artists' buildings (they scroll 1:1).
+   --sx is the strip's scrollLeft; a layer is pushed back by sx*--d, so it travels at (1 - d) of the buildings' speed. Bigger d = further away. */
+.far,.mid{position:absolute;left:0;bottom:175px;pointer-events:none;transform:translate3d(calc(var(--sx,0) * var(--d) * 1px),0,0);will-change:transform;}
+.far{height:calc(var(--bw) * 1.6);opacity:.17;--d:.55;filter:blur(4px);}      /* depth of field, tilt-shift style: the further, the softer */
+.mid{height:calc(var(--bw) * 1.3);opacity:.3;--d:.28;filter:blur(1.5px);}
+.far svg,.mid svg{height:100%;width:auto;display:block;}
+/* pixel-art people and birds (hd2d.js): 16x16 canvases scaled with image-rendering: pixelated. Motion = transform, frame swap = opacity (steps) */
+.fg,.sky{position:absolute;pointer-events:none;--px:3;}
+.fg{inset:0;z-index:4;overflow:hidden;}
+.sky{left:0;top:0;width:var(--W,100%);height:70%;--d:.4;transform:translate3d(calc(var(--sx,0) * var(--d) * 1px),0,0);will-change:transform;}
+.spr{position:relative;width:calc(16px * var(--px));height:calc(16px * var(--px));}
+.spr canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;animation:fr4 var(--dur) steps(1,end) infinite;animation-delay:calc(var(--i) * var(--dur) / var(--n));}
+@keyframes fr4{0%{opacity:1;}25%{opacity:0;}}
+@keyframes fr2{0%{opacity:1;}50%{opacity:0;}}
+.spr.n2 canvas{animation-name:fr2;}
+/* the person at each building's door sits on the ground line of the drawing: 20 of its 560 units above the svg's bottom, which overhangs the box by 16px */
+.stand{position:absolute;left:calc(var(--x) / 4 * 1%);bottom:calc(3.571% - 15.4px);--px:3;pointer-events:none;}
+.stand .lift{translate:-50% 0;transition:transform .5s var(--ease);}
+.bd:hover .stand .lift,.bd:focus-visible .stand .lift{transform:translate(-4px,-6px);}      /* lifts with the building */
+.walker,.bird{position:absolute;left:0;will-change:transform;}
+.walker{bottom:calc(175px - 22px);animation:walkR var(--T) linear infinite;animation-delay:var(--o);}
+.bird{top:var(--y);animation:walkR var(--T) linear infinite;animation-delay:var(--o);}
+.walker.rev,.bird.rev{animation-name:walkL;}
+.bob{animation:bob var(--bd) ease-in-out infinite;}
+@keyframes walkR{from{transform:translate3d(-80px,0,0);}to{transform:translate3d(calc(var(--W) + 80px),0,0);}}
+@keyframes walkL{from{transform:translate3d(calc(var(--W) + 80px),0,0);}to{transform:translate3d(-80px,0,0);}}
+@keyframes bob{50%{transform:translate3d(0,-7px,0);}}
+@media(max-width:860px){.fg,.sky,.stand{--px:2;}}
+/* light and air (hd2d.js): a screen-fixed overlay above the city */
+.stage{position:relative;}
+.fx{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3;}
+.ray{position:absolute;top:-12%;height:126%;left:var(--x);width:var(--w);transform:skewX(22deg);transform-origin:0 0;
+  background:linear-gradient(90deg,transparent,rgba(232,183,48,.2) 28%,rgba(244,241,232,.15) 50%,rgba(232,183,48,.2) 72%,transparent);
+  -webkit-mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);
+  opacity:.35;animation:ray var(--T) ease-in-out infinite;animation-delay:var(--o);will-change:transform,opacity;}
+@keyframes ray{50%{opacity:1;transform:skewX(22deg) translate3d(18px,0,0);}}
+.dust{position:absolute;left:-480px;right:-480px;top:-360px;bottom:-360px;background-size:480px 360px;background-repeat:repeat;will-change:transform;}
+.dust.a{animation:dustA 90s linear infinite;}
+.dust.b{animation:dustB 140s linear infinite;opacity:.8;}
+@keyframes dustA{to{transform:translate3d(-480px,360px,0);}}
+@keyframes dustB{to{transform:translate3d(480px,360px,0);}}
+@media(prefers-reduced-motion:reduce){.walker,.bird{animation:none!important;transform:translate3d(var(--rx),0,0);}.bob{animation:none!important;}.spr canvas{animation:none!important;}.spr canvas:first-child{opacity:1;}.ray{animation:none!important;opacity:.7;}.dust{display:none;}}
+.sun{position:absolute;border-radius:50%;pointer-events:none;will-change:transform;}
+.sun.ring{width:calc(var(--bw) * 1.15);height:calc(var(--bw) * 1.15);border:18px solid var(--black);left:4%;top:1rem;transform:translateX(calc(var(--sx,0) * .62px));}
+.sun.dot{width:calc(var(--bw) * .4);height:calc(var(--bw) * .4);background:var(--pink);border:var(--line) solid var(--black);left:calc(4% + var(--bw) * .95);top:calc(var(--bw) * .3);transform:translateX(calc(var(--sx,0) * .46px));}
+.sun.ring2{width:calc(var(--bw) * .7);height:calc(var(--bw) * .7);border:11px solid var(--black);left:58%;top:2rem;transform:translateX(calc(var(--sx,0) * .3px));}
+.ground{position:absolute;left:0;right:0;bottom:0;height:175px;border-top:10px solid var(--black);box-shadow:inset 0 16px 24px rgba(0,0,0,.28);}
+.bd{display:block;color:inherit;text-decoration:none;-webkit-user-drag:none;position:relative;flex:none;width:calc(var(--bw) * var(--s,1));margin-right:calc(var(--bw) * -.07);cursor:pointer;}
+.js .bd{opacity:0;transform:translateY(140px);}
+.js .bd.in{opacity:1;transform:none;transition:opacity 1s var(--ease),transform 1.4s var(--ease);transition-delay:calc(var(--i) * 90ms);}
+.bd .mon{display:block;position:relative;width:100%;height:auto;overflow:visible;margin-bottom:-16px;
+  transform:perspective(1500px) rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg)) translate(var(--tx,0px),var(--ty,0px));
+  transition:transform .5s var(--ease);will-change:transform;pointer-events:none;}
+/* hover shadow = its own flat layer, moved with transform/opacity only (no filter on the noisy SVG) */
+.bd .sh{position:absolute;left:0;top:0;width:100%;height:auto;overflow:visible;pointer-events:none;opacity:0;transform:translate(0,0);
+  transition:opacity .45s var(--ease),transform .5s var(--ease);will-change:transform,opacity;}
+.bd .sh path{fill:var(--pink);}
+.bd:hover .mon,.bd:focus-visible .mon{--tx:-4px;--ty:-6px;}
+.bd:hover .sh,.bd:focus-visible .sh,.bd.lit .sh{opacity:1;transform:translate(7px,5px);}
+.tile .t-out{fill:#0E0D0C;}
+.tile .t-hi{fill:#fff;opacity:0;pointer-events:none;transition:opacity .35s var(--ease);}
+.bd:hover .t-hi,.bd:focus-visible .t-hi{opacity:.16;}
+.tag{position:absolute;left:34px;top:calc(100% + 22px);z-index:5;border:var(--line) solid var(--black);padding:.65rem 1rem .75rem 1.1rem;
+  transform:rotate(-1.8deg);transition:transform .5s var(--ease);min-width:208px;pointer-events:none;}
+.bd:nth-child(even) .tag{transform:rotate(1.5deg);left:56px;}
+.tag::after{content:"";position:absolute;inset:0;background:var(--paper);z-index:-1;}
+.tag::before{content:"";position:absolute;inset:-3px;background:var(--pink);z-index:-2;transform:translate(5px,5px);transition:transform .5s var(--ease);}
+.bd:hover .tag,.bd:focus-visible .tag{transform:rotate(0) translateY(-8px);}
+.bd:hover .tag::before,.bd:focus-visible .tag::before{transform:translate(8px,8px);}
+.tag .pin{position:absolute;top:-13px;left:-20px;width:62px;transform:rotate(-24deg);}
+.tag .no{font:400 .76rem var(--type);color:var(--tartan-red);letter-spacing:.14em;}
+.tag .nm{font-size:1.8rem;margin:.15rem 0 .25rem;display:block;}
+.tag .ds{font:400 .82rem var(--type);letter-spacing:.1em;text-transform:uppercase;}
+.tag .wl{position:absolute;left:-3px;right:-3px;top:calc(100% + 3px);padding:.5rem 1rem .6rem 1.1rem;background:var(--paper);border:var(--line) solid var(--black);border-top:0;
+  font:400 .74rem/1.6 var(--type);color:#6E685C;opacity:0;transform:translateY(-6px);transition:opacity .4s var(--ease),transform .5s var(--ease);}
+.bd:hover .wl,.bd:focus-visible .wl{opacity:1;transform:none;}
+
+.progress{position:relative;margin:0 3rem;height:6px;background:rgba(14,13,12,.14);cursor:pointer;}
+.progress i{position:absolute;left:0;top:0;bottom:0;background:var(--black);width:100%;transform-origin:0 0;transition:background .3s;will-change:transform;}
+.progress:hover i{background:var(--pink);}
+
+.foot{background:var(--black);color:var(--paper);padding:3.5rem 3rem;display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap;align-items:center;position:relative;margin-top:3.5rem;}
+.foot::before{content:"";position:absolute;left:0;right:0;top:-16px;height:16px;background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);}
+.foot h3{font:900 clamp(2rem,5vw,3.4rem)/1 var(--thai);letter-spacing:0;}
+.foot h3 em{font-style:normal;color:var(--pink);}
+.foot p{font:400 .9rem/1.8 var(--type);max-width:360px;color:rgba(244,241,232,.72);}
+.reveal{transition:opacity .9s var(--ease),transform 1s var(--ease);}
+.js .reveal:not(.in){opacity:0;transform:translateY(32px);}   /* hidden only when JS is there to reveal it, so the page reads fine without JS */
+.reveal.in{opacity:1;transform:none;}
+html:not(.js) .loader{display:none;}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(30px);background:var(--pink);color:var(--black);border:var(--line) solid var(--black);
+  font:400 .95rem var(--anton);letter-spacing:.1em;padding:.7rem 1.3rem;opacity:0;pointer-events:none;transition:opacity .45s var(--ease),transform .45s var(--ease);z-index:100;box-shadow:5px 5px 0 var(--black);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* page curtain */
+.curtain{position:fixed;inset:0;z-index:300;background:var(--black);transform:translateY(100%);pointer-events:none;transition:transform .7s var(--ease-io);}
+.curtain::before{content:"";position:absolute;left:0;right:0;top:-18px;height:18px;background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);}
+.curtain svg{position:absolute;left:50%;top:50%;width:84px;transform:translate(-50%,-50%);}
+.curtain.cover{transform:translateY(0);pointer-events:all;}
+.curtain:not(.cover){visibility:hidden;transition:transform .7s var(--ease-io),visibility 0s .7s;}  /* its tape edge used to peek in at the bottom of every screen */
+
+
+/* ===== v4: type + motion ===== */
+.hl{font:400 clamp(1.5rem,3.1vw,2.5rem)/1.4 "Chonburi",var(--thai);}
+.city-head h2{font:400 clamp(3.6rem,9.5vw,8rem)/1 "Chonburi",var(--thai);-webkit-text-stroke:0;color:var(--black);text-transform:none;letter-spacing:0;}
+.city-head h2 i{font:italic 500 .56em "Playfair Display",serif;color:var(--tartan-red);letter-spacing:.01em;}
+.city-head h2 b{font-family:"Chonburi",var(--thai);font-weight:400;}
+.foot h3{font:400 clamp(2rem,5vw,3.6rem)/1.25 "Chonburi",var(--thai);}
+.hero p.lead,.city-head p,.foot p{font-family:var(--thai);font-weight:300;}
+.hero p.lead{font-size:1.08rem;line-height:1.9;}.city-head p{font-size:.98rem;line-height:1.85;}.foot p{font-size:.96rem;line-height:1.85;}
+.kicker{font:italic 500 1.1rem "Playfair Display",serif;letter-spacing:.04em;padding:.35rem .95rem;}
+.brand{font-family:var(--anton);}
+
+@keyframes wipe{from{clip-path:inset(0 100% 0 0);}to{clip-path:inset(0 0 0 0);}}
+@keyframes wob{from{transform:rotate(-14deg) translateY(0);}to{transform:rotate(14deg) translateY(-10px);}}
+@keyframes tartanDrift{from{background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0;}to{background-position:60px 60px,60px 60px,60px 60px,60px 60px,60px 60px,60px 60px,0 0;}}
+.hl.rise{opacity:1;animation-name:wipe;animation-duration:1s;}
+/* the drifting tartan: same look and speed, but a transform on an oversized layer (the pattern repeats every 60px) instead of animating background-position, which repainted the whole arch every frame (~16fps on a 4x-slower CPU) */
+@keyframes tartanSlide{to{transform:translate(60px,60px);}}
+.arch-in.tartan{background:none;box-shadow:none;}
+.arch-in.tartan::before{content:"";position:absolute;inset:-60px;background:var(--tartan);animation:tartanSlide 16s linear infinite;will-change:transform;}
+.arch-in.tartan::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;box-shadow:inset 0 30px 60px rgba(0,0,0,.5),inset 20px 0 40px rgba(0,0,0,.35);}
+.arch-in.tartan .arch-par{z-index:2;}
+.pre .rise,.pre .arch,.pre .rn.drop span,.pre .sticker,.pre .arch-in.tartan::before{animation-play-state:paused;}
+
+/* scroll-linked hero */
+.hero::before{transform:rotate(calc(var(--hp,0) * 50deg));}
+.hero-copy{transform:translateY(calc(var(--hp,0) * -34px));opacity:calc(1 - var(--hp,0) * .75);}
+.arch{transform:translateY(calc(var(--hp,0) * 64px)) scale(calc(1 + var(--hp,0) * .05));transform-origin:50% 100%;}
+
+/* tiles pop into the concrete */
+.bd .tile{transform-box:fill-box;transform-origin:center;}
+.js .bd .tile{opacity:0;transform:scale(.84);}
+.js .bd.in .tile{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .9s cubic-bezier(.34,1.56,.64,1);
+  transition-delay:calc(var(--i) * 90ms + 900ms + var(--t,0) * 140ms);}
+
+/* loader */
+.loader{position:fixed;inset:0;z-index:700;background:var(--black);color:var(--paper);display:grid;place-items:center;overflow:hidden;
+  border-radius:0 0 50% 50% / 0 0 150px 150px;transition:transform 1.15s var(--ease-io);}
+.loader.done{transform:translateY(-112%);}
+.loader::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18px;background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);}
+.loader-orb{width:clamp(90px,12vw,140px);animation:wob 1.3s ease-in-out infinite alternate;filter:drop-shadow(6px 6px 0 var(--pink));}
+.loader-count{position:absolute;left:2rem;bottom:2.4rem;font:400 clamp(5rem,17vw,15rem)/.8 var(--anton);color:var(--pink);letter-spacing:-.01em;font-variant-numeric:tabular-nums;}
+.loader-text{position:absolute;right:2rem;bottom:2.8rem;font:italic 500 clamp(1rem,2vw,1.5rem) "Playfair Display",serif;letter-spacing:.04em;color:rgba(244,241,232,.8);}
+.loader-top{position:absolute;left:2rem;top:1.6rem;font:400 .8rem var(--type);letter-spacing:.2em;color:rgba(244,241,232,.55);text-transform:uppercase;}
+
+/* cursor */
+.cursor{position:fixed;left:0;top:0;z-index:650;width:0;height:0;--sc:.148;pointer-events:none;opacity:0;transition:opacity .3s;font:400 .82rem var(--anton);letter-spacing:.14em;color:var(--black);}
+.cursor.show{opacity:1;}
+/* rest = a fixed 16px dot; hover/drag/press = a 108px disc that scales in while the dot fades (opacity + scale only) */
+.cursor::before{content:"";position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:var(--pink);border:2px solid var(--black);transition:opacity .25s;}
+.cursor .cd{position:absolute;left:-54px;top:-54px;width:108px;height:108px;border-radius:50%;background:var(--pink);border:2px solid var(--black);opacity:0;scale:var(--sc);transition:scale .45s var(--ease),opacity .25s,background .3s;will-change:transform;}
+.cursor.big{--sc:1;}
+.cursor.drag{--sc:.815;}
+.cursor.down{--sc:.593;}
+.cursor.big::before,.cursor.drag::before,.cursor.down::before{opacity:0;}
+.cursor.big .cd,.cursor.drag .cd,.cursor.down .cd{opacity:1;}
+.cursor.drag .cd{background:var(--gold);}
+.cursor span{position:absolute;left:0;top:0;transform:translate(-50%,-50%);opacity:0;transition:opacity .25s;white-space:nowrap;}
+.cursor.big span,.cursor.drag span{opacity:1;}
+html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cursor [data-cur],html.has-cursor [data-cur] *{cursor:none;}
+
+/* ===== v5: new sections (animate transform/opacity only) ===== */
+.reveal{transition-delay:calc(var(--i,0) * 90ms);}
+.sec{position:relative;padding:6rem 3rem;}
+.sec-k{display:inline-block;background:var(--black);color:var(--gold);font:italic 500 1.05rem "Playfair Display",serif;letter-spacing:.04em;padding:.3rem .9rem;margin-bottom:1.2rem;}
+.sec-t{font:400 clamp(2.4rem,6.4vw,5rem)/1.2 "Chonburi",var(--thai);margin-bottom:1rem;}
+.sec-t i{font:italic 500 .56em "Playfair Display",serif;color:var(--tartan-red);}
+.sec-p{font:300 1.02rem/1.9 var(--thai);max-width:520px;}
+
+/* 1 manifesto */
+.mani{background:var(--tartan);border-top:var(--line) solid var(--black);border-bottom:var(--line) solid var(--black);overflow:hidden;}
+.mani-lines{display:flex;flex-direction:column;align-items:flex-start;gap:1.2rem;}
+.mani-lines .rn{font-size:clamp(2.1rem,6.2vw,5.4rem);max-width:100%;}
+.mani-lines .rn:nth-child(2){margin-left:clamp(0rem,6vw,5rem);}
+.mani-lines .rn:nth-child(3){margin-left:clamp(0rem,2vw,2rem);}
+.mani-lines .rn:nth-child(4){margin-left:clamp(0rem,9vw,8rem);}
+.mani-note{margin-top:3rem;max-width:500px;background:var(--paper);border:var(--line) solid var(--black);padding:1.3rem 1.5rem;font:400 .98rem/1.9 var(--type);transform:rotate(-1deg);box-shadow:8px 8px 0 var(--black);}
+.mani-note.reveal.in{transform:rotate(-1deg);}
+
+/* 2 blueprint how-to */
+.bp{background-color:var(--black);color:var(--paper);
+  background-image:linear-gradient(rgba(244,241,232,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(244,241,232,.08) 1px,transparent 1px),linear-gradient(rgba(244,241,232,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(244,241,232,.2) 1px,transparent 1px);
+  background-size:24px 24px,24px 24px,120px 120px,120px 120px;}
+.bp .sec-k,.spot .sec-k{background:var(--gold);color:var(--black);}
+.bp .sec-t i,.spot .sec-t i{color:var(--gold);}
+.bp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3.6rem 2.4rem;margin:3.2rem 0 1rem;}
+.room{position:relative;border:2px solid var(--paper);background:rgba(14,13,12,.82);padding:3.2rem 1.6rem 1.8rem;}
+.room-no{position:absolute;top:-2px;left:-2px;background:var(--paper);color:var(--black);font:400 .78rem var(--type);letter-spacing:.14em;padding:.3rem .7rem;}
+.room svg{display:block;width:100%;height:96px;margin-bottom:1rem;fill:none;stroke:var(--paper);stroke-width:1.6;}
+.room-n{font:400 4.6rem/1 var(--anton);color:var(--pink);}
+.room h3{font:400 1.7rem/1.35 "Chonburi",var(--thai);margin:.3rem 0 .6rem;}
+.room p{font:300 .98rem/1.85 var(--thai);color:rgba(244,241,232,.84);}
+.room-dim{position:absolute;left:-2px;right:-2px;bottom:-2.1rem;display:flex;align-items:center;height:14px;border-left:1px solid var(--gold);border-right:1px solid var(--gold);font:400 .7rem var(--type);letter-spacing:.14em;color:var(--gold);}
+.room-dim::before,.room-dim::after{content:"";flex:1;border-top:1px solid var(--gold);margin:0 .5rem;}
+
+/* 3 featured masonry */
+.feat{background:var(--grain),var(--paper);}
+.masonry{columns:3 260px;column-gap:2.6rem;margin-top:calc(3rem - 14px);}
+.mi{break-inside:avoid;margin-bottom:2.8rem;padding:14px 8px 8px 0;}      /* the 14px top room keeps the tape inside this box: a tape sticking out above a column's top got split across the column break and showed only its lower half */
+.card{position:relative;isolation:isolate;display:block;width:100%;font:inherit;color:inherit;text-align:left;text-decoration:none;background:none;border:0;padding:0;cursor:pointer;transition:transform .5s var(--ease);}
+.card::before{content:"";position:absolute;inset:0;background:var(--black);transform:translate(7px,7px);z-index:-1;transition:transform .5s var(--ease);}
+.card:hover,.card:focus-visible{transform:translate(-3px,-9px);}
+.card:hover::before,.card:focus-visible::before{transform:translate(16px,17px);}
+.card .art{display:block;aspect-ratio:var(--ar);border:var(--line) solid var(--black);background:var(--art);}
+.card .tape{position:absolute;top:-13px;left:50%;width:84px;height:26px;margin-left:-42px;background:var(--pink);border:2px solid var(--black);transform:rotate(var(--tr,-4deg));opacity:.95;z-index:2;}
+.card .plate{position:relative;z-index:2;display:block;background:var(--paper);border:var(--line) solid var(--black);padding:.7rem .9rem .8rem;margin:-1.5rem .9rem 0;}
+.card .pn{display:block;font:400 1.2rem/1.3 "Chonburi",var(--thai);}
+.card .pa{display:block;font:400 .78rem var(--type);letter-spacing:.1em;color:var(--tartan-red);text-transform:uppercase;margin-top:.1rem;}
+.card .pp{display:inline-block;margin-top:.5rem;background:var(--pink);border:2px solid var(--black);font:400 1.05rem var(--anton);letter-spacing:.06em;padding:0 .55rem;}
+
+/* 4 city map */
+.map-sec{background:var(--bone);}
+.filters{display:flex;flex-wrap:wrap;gap:.9rem;margin:2rem 0 2.4rem;}
+.fbtn{position:relative;font:400 .95rem var(--anton);letter-spacing:.12em;text-transform:uppercase;padding:.55rem 1.1rem;border:var(--line) solid var(--black);background:var(--paper);color:var(--black);cursor:pointer;box-shadow:4px 4px 0 var(--black);transition:transform .3s var(--ease);}
+.fbtn:hover{transform:translate(-2px,-3px);}
+.fbtn.on{background:var(--pink);}
+.map{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:18px;padding:18px;background:var(--black);border:var(--line) solid var(--black);}
+.dist,.plaza{position:relative;isolation:isolate;overflow:hidden;min-height:190px;}
+.dist{display:block;padding:.9rem 1rem;border:0;cursor:pointer;text-align:left;font:inherit;color:var(--black);transition:opacity .35s var(--ease),transform .4s var(--ease);}
+.dist:hover{transform:translateY(-3px);}
+.dist::after{content:"";position:absolute;inset:0;background:var(--pink);z-index:-1;opacity:0;transition:opacity .35s var(--ease);}
+.dist.on::after{opacity:1;}
+.map.f .dist:not(.on){opacity:.35;}
+.d0,.d4{background:var(--paper);}.d1{background:var(--concrete);}.d2,.d5{background:var(--bone);}.d3{background:var(--gold);}
+.dist span{display:block;position:relative;}
+.dn{font:400 .74rem var(--type);letter-spacing:.14em;color:var(--tartan-red);}
+.dist .dn,.dist .dd,.dist .da{max-width:calc(100% - min(46%,150px) - 1.6rem);}      /* long names ("Generative art") wrap instead of running under the icon */
+.dd{font:400 1.5rem/1.3 "Chonburi",var(--thai);margin:.15rem 0 .2rem;}
+.da{font:400 .8rem var(--type);letter-spacing:.06em;}
+.dist svg,.plaza svg{position:absolute;right:.8rem;bottom:.7rem;width:min(46%,150px);fill:none;stroke:var(--black);stroke-width:2.5;pointer-events:none;}
+.plaza{background:var(--paper);display:grid;place-items:center;}
+.plaza svg{position:static;width:min(60%,200px);}
+.plaza span{position:absolute;left:1rem;top:.9rem;font:400 .74rem var(--type);letter-spacing:.14em;color:var(--tartan-red);}
+.compass{position:absolute;right:26px;top:26px;font:400 .8rem var(--anton);letter-spacing:.1em;color:var(--black);background:var(--gold);border:2px solid var(--black);padding:.1rem .5rem;z-index:3;}
+.bd.dim{pointer-events:auto;}
+.js .bd.in.dim{opacity:.28;}
+
+.fnote{position:sticky;top:76px;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin:-1rem 0 1.4rem;padding:.6rem .9rem;background:var(--pink);color:var(--black);border:var(--line) solid var(--black);box-shadow:4px 4px 0 var(--black);font:400 .85rem/1.5 var(--type);letter-spacing:.06em;transition:opacity .3s var(--ease);}
+.fnote.off{opacity:0;pointer-events:none;position:absolute;left:0;right:0;}      /* out of the flow while hidden: it used to leave a ~170px hole under the filter buttons on phones */
+.fnote span{flex:1 1 220px;}
+.fnote a,.fnote button{display:inline-flex;align-items:center;min-height:40px;font:400 .85rem var(--anton);letter-spacing:.12em;text-transform:uppercase;color:var(--black);background:var(--paper);border:2px solid var(--black);padding:.25rem .8rem;cursor:pointer;text-decoration:none;}
+
+/* touch screens have no hover: keep the works list on the building tag open */
+@media(hover:none){.tag .wl{opacity:1;transform:none;}}
+
+/* 5 spotlight */
+.spot{background:var(--black);color:var(--paper);}
+.spot-g{display:grid;grid-template-columns:.8fr 1.2fr;gap:4.5rem;align-items:center;margin-top:3rem;}
+.afr{position:relative;width:min(100%,420px);aspect-ratio:5/7;padding:24px 24px 0;border-radius:999px 999px 0 0;margin:0 auto;box-shadow:12px 12px 0 var(--pink);}
+.afr-in{position:relative;width:100%;height:100%;border-radius:999px 999px 0 0;overflow:hidden;background:var(--art);box-shadow:inset 0 30px 60px rgba(0,0,0,.45),inset 16px 0 36px rgba(0,0,0,.3);}
+.afr figcaption{position:absolute;left:1rem;right:1rem;bottom:1rem;display:grid;gap:.1rem;background:var(--paper);color:var(--black);border:var(--line) solid var(--black);padding:.6rem .9rem;}
+.afr figcaption b{font:400 1.15rem "Chonburi",var(--thai);}
+.afr figcaption span{font:400 .76rem var(--type);letter-spacing:.08em;color:var(--tartan-red);}
+.spot-meta{font:400 .85rem var(--type);letter-spacing:.14em;color:var(--gold);margin:.4rem 0 2rem;}
+.qa{margin-bottom:2rem;}
+.q{display:inline-block;background:var(--pink);color:var(--black);font:400 1.15rem/1.55 "Chonburi",var(--thai);padding:.2rem .8rem;}
+.a{font:300 1.02rem/1.9 var(--thai);margin-top:.8rem;border-left:5px solid var(--gold);padding-left:1rem;max-width:560px;}
+.btn.pk{background:var(--pink);color:var(--black);box-shadow:6px 6px 0 var(--gold);}
+
+/* 6 stats */
+.stats{background:var(--gold);border-top:var(--line) solid var(--black);border-bottom:var(--line) solid var(--black);padding:4.5rem 3rem;}
+.stats-g{display:grid;grid-template-columns:repeat(4,1fr);}
+.st{padding:.6rem 1.6rem;border-left:var(--line) solid var(--black);}
+.st:first-child{border-left:0;padding-left:0;}
+.st b{display:block;font:400 clamp(3.2rem,7.4vw,6.6rem)/1.05 var(--anton);font-variant-numeric:tabular-nums;}
+.st span{display:block;font:400 .92rem var(--type);letter-spacing:.1em;margin-top:.4rem;}
+
+/* 7 join */
+.join-sec{background:var(--bone);}
+.perks{display:grid;grid-template-columns:repeat(3,1fr);gap:2.6rem;margin:3rem 0 3.4rem;}
+.perk{position:relative;background:var(--paper);border:var(--line) solid var(--black);padding:2.2rem 1.6rem 1.7rem;box-shadow:8px 8px 0 var(--black);}
+.perk::before{content:"";position:absolute;top:-13px;left:1.4rem;width:76px;height:26px;background:var(--pink);border:2px solid var(--black);transform:rotate(-4deg);}
+.perk b{display:block;font:400 3rem/1 var(--anton);color:var(--tartan-red);}
+.perk h3{font:400 1.45rem/1.4 "Chonburi",var(--thai);margin:.4rem 0 .6rem;}
+.perk p{font:300 .98rem/1.85 var(--thai);}
+
+/* footer extras */
+.foot-more{flex:1 0 100%;display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:2.5rem;padding-top:2.4rem;border-top:2px dashed rgba(244,241,232,.3);}
+.foot-more h4{font:400 1rem var(--anton);letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:.9rem;}
+.foot-more ul{list-style:none;display:grid;gap:.5rem;}
+.foot-more a{color:var(--paper);text-decoration:none;font:300 1rem var(--thai);}
+.foot-more a:hover{color:var(--pink);}
+.news label{display:block;font:300 .98rem/1.7 var(--thai);margin-bottom:.9rem;}
+.news-r{display:flex;flex-wrap:wrap;gap:.9rem;}
+.news input{flex:1 1 180px;min-width:0;font:400 .95rem var(--type);padding:.8rem 1rem;border:var(--line) solid var(--paper);background:var(--black);color:var(--paper);}
+.news .btn{padding:.7rem 1.3rem;font-size:1rem;}
+.news .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+.news-c{display:block;margin-top:.7rem;font:300 .82rem/1.6 var(--thai);color:rgba(244,241,232,.65);}
+.news-c a,.foot-c a{color:var(--paper);font:inherit;text-decoration:underline;}
+.foot-c{grid-column:1/-1;font:400 .8rem var(--type);letter-spacing:.08em;color:rgba(244,241,232,.55);}
+
+/* page transition: cross-document View Transitions (curtain stays as fallback) */
+@view-transition{navigation:auto;}
+::view-transition-old(root){animation:vtOut .45s var(--ease-io) both;}
+::view-transition-new(root){animation:vtIn .7s var(--ease) both;}
+::view-transition-group(studio-bd){animation-duration:.85s;animation-timing-function:var(--ease-io);}
+@keyframes vtOut{to{opacity:0;transform:scale(.97);}}
+@keyframes vtIn{from{opacity:0;transform:translateY(24px);}}
+@media(prefers-reduced-motion:reduce){@view-transition{navigation:none;}}
+
+@media(max-width:860px){
+  .sec,.mani{padding:4rem 1.2rem;}
+  .bp-grid,.perks{grid-template-columns:1fr;}
+  .masonry{columns:2 140px;column-gap:1.3rem;}
+  .mi{margin-bottom:2.2rem;}
+  .card .plate{margin:-1.2rem .5rem 0;padding:.55rem .6rem .65rem;}
+  .card .pn{font-size:1rem;}.card .pa{font-size:.68rem;}.card .pp{font-size:.95rem;}
+  .map{grid-template-columns:repeat(2,1fr);gap:12px;padding:12px;}
+  .dist,.plaza{grid-column:span 1!important;min-height:178px;}
+  .dist.wide,.plaza{grid-column:span 2!important;}
+  .dist .dn,.dist .dd,.dist .da{max-width:none;}
+  .dd{font-size:1.15rem;}.dist{padding-bottom:calc(15px + .9rem);}.dist svg{position:static;display:block;width:34%;margin:.55rem 0 0 auto;}      /* phones: the icon follows the text in the flow, it can never sit on it */
+  .compass{right:18px;top:18px;}
+  .spot-g{grid-template-columns:1fr;gap:3rem;}
+  .stats{padding:3rem 1.2rem;}
+  .stats-g{grid-template-columns:repeat(2,1fr);row-gap:1.6rem;}
+  .st{padding:.4rem 1rem;}.st:nth-child(odd){border-left:0;padding-left:0;}
+  .foot-more{grid-template-columns:1fr 1fr;}.news{grid-column:1/-1;}
+}
+
+/* touch screens have no real hover: a tap must not leave the lifted/pressed look behind */
+@media(hover:none){
+  .card:hover:not(:focus-visible){transform:none;}
+  .card:hover:not(:focus-visible)::before{transform:translate(7px,7px);}
+  .dist:hover{transform:none;}
+  .fbtn:hover:not(:focus-visible){transform:none;}
+  .btn:hover:not(:focus-visible){transform:none;box-shadow:6px 6px 0 var(--pink);}
+  .btn.pk:hover:not(:focus-visible){box-shadow:6px 6px 0 var(--black);}
+  .pager button:hover{transform:none;background:var(--paper);box-shadow:4px 4px 0 var(--black);}
+  .links .join:hover{transform:none;box-shadow:4px 4px 0 var(--black);}
+}
+
+/* ===== v6: sort bar, tape dividers, stickers, artwork images ===== */
+.rw{display:inline-block;white-space:nowrap;}      /* one word of the ransom note: never broken across lines */
+.rn span.rw,.mani-lines .rn span.rw:hover{padding:0;margin:0;border:0;background:none;box-shadow:none;transform:none;animation:none;}   /* an invisible wrapper: only the letter tiles inside it have a look */
+.mani-lines .rn span{transition:transform .35s var(--ease);}
+.mani-lines .rn span:hover{transform:rotate(calc(var(--r) * -1)) translateY(-8px) scale(1.12);}
+.tape-wrap{position:relative;z-index:6;height:50px;margin:-25px 0;overflow:hidden;pointer-events:none;}
+.tape-bar{position:absolute;left:-3%;right:-3%;top:10px;height:30px;background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);transform:rotate(-1deg);}
+.tape-wrap.r .tape-bar{transform:rotate(1deg);}
+.stk{position:absolute;right:3rem;top:1.6rem;z-index:3;font:400 .95rem var(--anton);letter-spacing:.12em;background:var(--pink);color:var(--black);border:var(--line) solid var(--black);padding:.25rem .7rem;transform:rotate(7deg);box-shadow:4px 4px 0 var(--black);}
+.stk.gold{background:var(--gold);transform:rotate(-6deg);}
+.feat-bar{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.4rem;margin:2rem 0 0;}
+.sortl{display:flex;align-items:center;gap:.7rem;font:400 .8rem var(--type);letter-spacing:.12em;text-transform:uppercase;}
+.sortl select{font:400 .9rem var(--type);color:var(--black);background-color:var(--paper);border:var(--line) solid var(--black);padding:.5rem 2rem .5rem .8rem;border-radius:0;-webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--black) 50%),linear-gradient(-45deg,transparent 50%,var(--black) 50%);background-position:calc(100% - 16px) 55%,calc(100% - 10px) 55%;background-size:6px 6px;background-repeat:no-repeat;cursor:pointer;box-shadow:4px 4px 0 var(--black);}
+.feat-count{font:400 .8rem var(--type);letter-spacing:.1em;color:var(--tartan-red);}
+.mi.pop{animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0) * 45ms);}
+.card .art{position:relative;overflow:hidden;}
+.tag .wv{position:absolute;top:-15px;right:-12px;z-index:3;font:400 .68rem var(--anton);font-style:normal;letter-spacing:.14em;background:var(--gold);color:var(--black);border:2px solid var(--black);padding:.1rem .5rem;transform:rotate(5deg);box-shadow:2px 2px 0 var(--black);white-space:nowrap;}
+.card .art img,.afr-in>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.afr figcaption{z-index:2;}
+.fnote a[hidden]{display:none;}
+/* ===== more colour: checker + tartan in the small places ===== */
+/* masking tape on the artwork cards and the "join" cards is tartan washi tape, a different colourway each */
+.card .tape{background:var(--tp,var(--tt-pink));}
+.mi:nth-child(4n+2) .card .tape{--tp:var(--tt-red);}.mi:nth-child(4n+3) .card .tape{--tp:var(--tt-gold);}.mi:nth-child(4n+4) .card .tape{--tp:var(--tt-black);}
+.perk:nth-child(1)::before{background:var(--tt-pink);}.perk:nth-child(2)::before{background:var(--tt-gold);}.perk:nth-child(3)::before{background:var(--tt-red);}
+/* the map: every district has a patterned kerb along its foot, and the city square is a tiled floor */
+.dist::before{content:"";position:absolute;left:0;right:0;bottom:0;height:15px;border-top:2px solid var(--black);background:var(--dp);}
+.d0::before,.d5::before{--dp:var(--checker) 0 0/15px 15px;}.d1::before{--dp:var(--tt-pink);}.d2::before{--dp:var(--tt-red);}.d3::before{--dp:var(--tt-black);}.d4::before{--dp:var(--tt-gold);}
+.dist svg{bottom:1.6rem;}
+.plaza{background:repeating-conic-gradient(var(--paper) 0 25%,var(--bone) 0 50%) 0 0/36px 36px;}
+/* the numbers band and the footer get a checker edge */
+.stats{position:relative;}
+.stats::before,.stats::after{content:"";position:absolute;left:0;right:0;height:16px;background:var(--checker) 0 0/16px 16px;}
+.stats::before{top:0;}.stats::after{bottom:0;}
+.foot::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;background:var(--checker) 0 0/16px 16px;}
+.foot{padding-bottom:5rem;}
+/* spotlight: a noir tiled floor, gold and black */
+.spot .chk{position:absolute;left:0;right:0;bottom:14px;height:28px;z-index:0;background:repeating-conic-gradient(var(--gold) 0 25%,var(--black) 0 50%) 0 0/28px 28px;opacity:.9;pointer-events:none;}
+
+/* spotlight: art deco sunburst + stepped arch + blinds of light (noir) */
+.spot{overflow:hidden;}
+.spot::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:repeating-conic-gradient(from -90deg at 24% 78%,rgba(232,183,48,.12) 0 2.5deg,transparent 2.5deg 7.5deg);-webkit-mask-image:radial-gradient(circle at 24% 78%,#000 0,transparent 62%);mask-image:radial-gradient(circle at 24% 78%,#000 0,transparent 62%);}
+.spot::after{content:"";position:absolute;left:4%;top:0;width:42%;height:70%;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(244,241,232,.16),transparent 85%);clip-path:polygon(36% 0,64% 0,100% 100%,0 100%);}
+.spot .sec-k,.spot .sec-t,.spot-g{position:relative;z-index:1;}
+.afr::before,.afr::after{content:"";position:absolute;border:2px solid var(--gold);border-bottom:0;border-radius:999px 999px 0 0;pointer-events:none;}
+.afr::before{inset:-14px -14px 0 -14px;}
+.afr::after{inset:-28px -28px 0 -28px;opacity:.5;border-width:1px;}
+
+/* spotlight, tailored: pinstripe, thick-thin gold rules top and bottom, cut-corner question labels */
+.spot{background-image:repeating-linear-gradient(90deg,rgba(244,241,232,.045) 0 1px,transparent 1px 22px),linear-gradient(var(--gold),var(--gold)),linear-gradient(var(--gold),var(--gold)),linear-gradient(var(--gold),var(--gold)),linear-gradient(var(--gold),var(--gold));background-position:0 0,0 0,0 6px,0 100%,0 calc(100% - 6px);background-size:auto,100% 3px,100% 1px,100% 3px,100% 1px;background-repeat:repeat,no-repeat,no-repeat,no-repeat,no-repeat;}
+.q{clip-path:polygon(9px 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%,0 9px);padding:.25rem 1rem;}
+.spot-meta{display:flex;align-items:center;gap:.8rem;}
+.spot-meta::after{content:"";flex:1;max-width:160px;height:5px;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);}
+.afr-in::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(14,13,12,.22) 0 14px,transparent 14px 30px);-webkit-mask-image:linear-gradient(115deg,#000 0,#000 30%,transparent 62%);mask-image:linear-gradient(115deg,#000 0,#000 30%,transparent 62%);}
+
+.ns{position:relative;z-index:3;max-width:640px;margin:2rem 0;padding:1rem 1.2rem;background:var(--paper);border:var(--line) solid var(--black);font:300 1rem/1.9 var(--thai);}
+.ns a{color:var(--black);}
+@media(max-width:860px){.stk{right:1.2rem;top:1rem;font-size:.8rem;}}
+
+@media(max-width:860px){
+  nav{padding:.8rem 1rem}nav.scrolled{padding:.5rem 1rem}.links a:not(.join){display:none}
+  .hero{grid-template-columns:1fr;padding:2.5rem 1.2rem 0;}
+  .hero-copy{padding-bottom:1rem}
+  .city-head{padding:0 1.2rem 1.5rem}
+  .strip-in{padding-left:1.2rem}
+  :root{--bw:min(84vw,420px,calc((100vh - 300px) / var(--bk)))}
+  @supports (height:100svh){:root{--bw:min(84vw,420px,calc((100svh - 300px) / var(--bk)))}}
+  .hero::before,.hero::after{display:none}
+  .loader-count{left:1rem}.loader-text{right:1rem}
+  .strip{padding-bottom:1rem}
+  .progress{margin:0 1.2rem}
+  .foot{padding:2.5rem 1.2rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
+  .js .bd,.reveal,.js .reveal:not(.in){opacity:1;transform:none;}
+}
+
+/* review fix 4: phones, keep the logo clear of the language button */
+@media(max-width:480px){nav .brand{font-size:1.45rem;gap:.45rem;letter-spacing:.07em;}nav .brand svg{width:30px;height:30px;}nav .links{gap:.5rem;}}
+
+
+/* review fix 2: the join band */
+.join-band{background:var(--bone);display:flex;flex-wrap:wrap;gap:1.6rem 3rem;align-items:flex-end;justify-content:space-between;border-top:var(--line) solid var(--black);}
+.join-band .sec-t{margin-bottom:.4rem;}
+.jb-p{font:300 1.05rem/1.8 var(--thai);}
+/* ===== city: view switch + filters above the street, map in the same place ===== */
+.city-tools{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.6rem;padding:0 3rem 1.8rem;}
+.city-tools .filters{margin:0;gap:.6rem;}
+.vtog{display:inline-flex;flex:none;border:var(--line) solid var(--black);box-shadow:4px 4px 0 var(--black);background:var(--paper);}
+.vt{font:400 .95rem var(--anton);letter-spacing:.1em;text-transform:uppercase;padding:.55rem 1.05rem;border:0;background:none;cursor:pointer;color:var(--black);min-height:44px;}
+.vt + .vt{border-left:var(--line) solid var(--black);}
+.vt.on{background:var(--black);color:var(--paper);}
+html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
+.map-view{padding:0 3rem 1rem;}
+.city [hidden]{display:none!important;}
+.city .fnote{display:none!important;}
+@media(max-width:860px){
+  .city-tools{padding:0 1.2rem 1.3rem;gap:.9rem;}
+  .city-tools .filters{flex-wrap:nowrap;overflow-x:auto;width:100%;padding:2px 8px 10px 2px;scrollbar-width:none;}
+  .city-tools .filters::-webkit-scrollbar{display:none;}
+  .city-tools .fbtn{flex:none;}
+  .map-view{padding:0 1.2rem 1rem;}
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js','pre');</script>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="conc" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="4" result="t"/>
+    <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.3 0 0 0 -.4" result="g"/>
+    <feComposite in="g" in2="SourceAlpha" operator="in" result="gc"/>
+    <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gc"/></feMerge>
+  </filter>
+  <pattern id="form" width="60" height="22" patternUnits="userSpaceOnUse"><line x1="0" y1="21" x2="60" y2="21" stroke="#000" stroke-width="1.1" opacity=".5"/><line x1="30" y1="0" x2="30" y2="21" stroke="#000" stroke-width=".6" opacity=".25"/></pattern>
+  <pattern id="ties" width="44" height="44" patternUnits="userSpaceOnUse"><circle cx="22" cy="11" r="3.6" fill="none" stroke="#000" stroke-width="1" opacity=".4"/><circle cx="22" cy="11" r="1.6" fill="#000" opacity=".65"/></pattern>
+  <pattern id="noise" width="160" height="160" patternUnits="userSpaceOnUse"><image id="noiseImg" width="160" height="160" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="/></pattern>
+  <linearGradient id="shade" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></linearGradient>
+  <linearGradient id="cyl" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".65"/><stop offset=".3" stop-color="#fff" stop-opacity=".35"/><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></linearGradient>
+  <linearGradient id="ao" x1="0" x2="0" y1="0" y2="1"><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></linearGradient>
+  <linearGradient id="shaft" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".55"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/></linearGradient>
+  <radialGradient id="gshadow"><stop offset="0" stop-color="#000" stop-opacity=".42"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  <pattern id="tg" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M7 0H0V7" fill="none" stroke="#fff" stroke-width=".6" opacity=".34"/></pattern>
+  <pattern id="tartanS" width="30" height="30" patternUnits="userSpaceOnUse">
+    <rect width="30" height="8" fill="#000" opacity=".5"/><rect width="8" height="30" fill="#000" opacity=".5"/>
+    <rect y="14" width="30" height="1.6" fill="#EBC23A" opacity=".9"/><rect x="14" width="1.6" height="30" fill="#EBC23A" opacity=".9"/>
+    <rect y="22" width="30" height="1" fill="#fff" opacity=".8"/><rect x="22" width="1" height="30" fill="#fff" opacity=".8"/>
+  </pattern>
+  <g id="orb"><circle cx="100" cy="100" r="96" fill="#0E0D0C"/><clipPath id="lgfc"><circle cx="100" cy="100" r="88"/></clipPath><g clip-path="url(#lgfc)"><g transform="rotate(30 100 100)"><rect x="-20" y="-20" width="240" height="240" fill="#6B6B3A"/><path d="M108.64,140.87 C106.54,143.53 99.29,148.42 94.88,149.24 C90.48,150.07 84.80,147.83 82.22,145.80 C79.64,143.78 79.89,139.44 79.42,137.09 C78.95,134.74 77.62,133.43 79.38,131.70 C81.14,129.97 86.67,127.57 89.96,126.72 C93.25,125.87 95.80,126.34 99.11,126.60 C102.42,126.87 108.43,127.22 109.82,128.33 C111.22,129.44 107.69,131.15 107.49,133.24 C107.29,135.33 110.74,138.20 108.64,140.87 Z M84.86,178.26 C82.27,180.07 79.52,183.78 77.97,184.27 C76.43,184.77 76.80,182.26 75.60,181.25 C74.39,180.24 71.44,179.52 70.75,178.21 C70.05,176.90 70.54,174.51 71.41,173.37 C72.29,172.23 74.71,172.44 76.00,171.38 C77.29,170.33 77.37,167.09 79.16,167.04 C80.94,166.99 84.34,170.03 86.73,171.09 C89.12,172.15 93.82,172.22 93.51,173.41 C93.20,174.61 87.45,176.45 84.86,178.26 Z M135.01,105.98 C132.01,107.92 126.26,103.92 122.51,103.80 C118.77,103.69 114.68,106.46 112.53,105.28 C110.38,104.10 110.66,98.77 109.62,96.72 C108.58,94.66 106.09,95.07 106.27,92.95 C106.44,90.84 107.88,84.74 110.66,84.02 C113.45,83.29 118.94,87.61 122.98,88.61 C127.03,89.60 132.01,89.43 134.94,90.01 C137.87,90.60 140.56,89.47 140.57,92.13 C140.58,94.79 138.02,104.03 135.01,105.98 Z M120.31,44.09 C117.86,46.11 114.28,49.77 110.89,50.28 C107.50,50.79 104.06,48.27 99.97,47.17 C95.89,46.07 88.50,45.27 86.37,43.68 C84.24,42.09 85.74,39.55 87.19,37.61 C88.64,35.67 91.59,34.18 95.07,32.05 C98.55,29.92 103.51,25.25 108.06,24.85 C112.62,24.45 119.46,27.43 122.38,29.65 C125.30,31.87 125.92,35.76 125.57,38.17 C125.22,40.57 122.75,42.07 120.31,44.09 Z M33.22,198.12 C30.91,200.34 34.66,204.41 32.65,204.80 C30.63,205.20 23.57,201.79 21.13,200.47 C18.69,199.15 20.54,198.98 17.99,196.89 C15.43,194.80 5.06,190.11 5.79,187.93 C6.51,185.74 18.97,184.31 22.33,183.79 C25.69,183.27 22.22,184.33 25.95,184.83 C29.68,185.33 41.28,185.67 44.71,186.78 C48.15,187.90 48.45,189.62 46.54,191.51 C44.62,193.40 35.54,195.91 33.22,198.12 Z M152.39,48.92 C148.81,50.34 135.66,48.07 130.35,48.91 C125.04,49.74 124.37,54.21 120.55,53.95 C116.74,53.68 109.23,50.32 107.45,47.31 C105.67,44.30 107.02,38.39 109.87,35.90 C112.72,33.41 120.90,33.16 124.55,32.39 C128.19,31.62 127.66,31.17 131.71,31.27 C135.77,31.38 145.53,31.49 148.89,33.00 C152.24,34.52 151.25,37.70 151.83,40.35 C152.42,43.00 155.97,47.49 152.39,48.92 Z M29.86,193.80 C27.54,196.31 25.82,198.69 21.59,198.74 C17.36,198.80 7.83,195.72 4.50,194.14 C1.17,192.56 2.26,191.88 1.61,189.25 C0.96,186.62 -1.07,180.41 0.62,178.35 C2.32,176.29 8.34,177.82 11.78,176.89 C15.22,175.96 18.60,172.08 21.24,172.76 C23.88,173.45 25.22,179.17 27.61,181.00 C29.99,182.83 35.16,181.61 35.53,183.74 C35.91,185.87 32.18,191.30 29.86,193.80 Z M167.99,200.04 C163.54,200.99 155.08,198.24 149.99,198.16 C144.91,198.08 142.57,200.76 137.48,199.56 C132.40,198.36 122.01,193.65 119.47,190.94 C116.92,188.24 120.37,185.48 122.20,183.32 C124.03,181.16 125.47,179.12 130.46,177.99 C135.44,176.86 146.99,176.30 152.09,176.52 C157.19,176.74 156.94,176.67 161.04,179.33 C165.13,181.99 175.51,189.02 176.67,192.47 C177.83,195.92 172.43,199.10 167.99,200.04 Z M72.27,147.47 C70.71,149.43 65.32,151.54 62.86,151.16 C60.40,150.79 59.75,146.51 57.51,145.21 C55.26,143.91 51.20,144.37 49.38,143.36 C47.56,142.34 45.59,140.39 46.56,139.11 C47.54,137.82 52.54,137.11 55.24,135.64 C57.94,134.17 60.61,130.39 62.75,130.30 C64.89,130.21 66.50,133.61 68.08,135.12 C69.65,136.64 71.51,137.35 72.21,139.41 C72.91,141.46 73.83,145.51 72.27,147.47 Z M67.23,42.11 C64.31,44.04 62.01,43.37 57.35,43.93 C52.69,44.49 42.78,46.30 39.26,45.47 C35.74,44.64 37.40,41.92 36.22,38.95 C35.05,35.98 31.53,29.84 32.21,27.64 C32.89,25.44 36.28,26.16 40.32,25.73 C44.36,25.30 51.83,24.78 56.44,25.07 C61.04,25.36 64.86,26.27 67.93,27.48 C71.00,28.70 74.97,29.91 74.86,32.35 C74.74,34.79 70.15,40.18 67.23,42.11 Z M221.72,119.21 C218.21,121.16 212.31,122.09 208.39,122.45 C204.48,122.82 201.73,122.59 198.22,121.38 C194.72,120.17 190.84,117.09 187.36,115.18 C183.88,113.27 177.42,112.79 177.33,109.92 C177.23,107.05 181.64,99.54 186.81,97.95 C191.97,96.37 201.36,99.46 208.34,100.40 C215.32,101.35 225.17,101.90 228.69,103.62 C232.21,105.34 230.63,108.12 229.47,110.72 C228.31,113.32 225.23,117.25 221.72,119.21 Z M73.71,26.35 C70.29,27.65 66.24,27.57 62.59,27.80 C58.95,28.03 55.15,28.66 51.85,27.73 C48.55,26.81 43.61,24.66 42.78,22.24 C41.96,19.82 45.69,15.29 46.90,13.22 C48.10,11.14 46.31,10.97 50.02,9.78 C53.73,8.58 64.72,6.81 69.16,6.04 C73.60,5.27 74.34,2.82 76.66,5.15 C78.99,7.48 83.61,16.46 83.11,19.99 C82.62,23.52 77.13,25.05 73.71,26.35 Z M200.71,176.89 C198.40,178.00 186.51,178.54 182.28,178.28 C178.05,178.02 176.90,176.17 175.33,175.34 C173.76,174.51 173.73,174.29 172.87,173.28 C172.00,172.28 169.52,171.02 170.13,169.32 C170.74,167.62 174.49,164.09 176.53,163.08 C178.58,162.06 178.99,163.47 182.42,163.23 C185.85,163.00 194.83,160.28 197.12,161.68 C199.41,163.08 195.57,169.09 196.17,171.63 C196.77,174.17 203.03,175.79 200.71,176.89 Z M141.92,21.93 C138.53,24.05 129.08,25.28 124.04,25.45 C119.00,25.62 114.96,24.55 111.69,22.94 C108.42,21.33 105.96,18.18 104.43,15.79 C102.90,13.39 100.53,10.75 102.50,8.57 C104.47,6.40 111.37,4.07 116.23,2.75 C121.09,1.43 126.84,0.25 131.67,0.65 C136.49,1.05 143.06,3.14 145.18,5.15 C147.30,7.17 144.93,9.94 144.39,12.74 C143.85,15.53 145.31,19.81 141.92,21.93 Z M215.55,149.86 C213.04,151.03 207.67,147.11 204.50,146.61 C201.33,146.10 198.76,147.35 196.54,146.85 C194.33,146.35 192.57,145.02 191.21,143.64 C189.84,142.25 188.15,140.83 188.34,138.51 C188.53,136.20 188.75,131.67 192.34,129.76 C195.94,127.86 205.22,126.63 209.90,127.08 C214.58,127.52 218.81,130.36 220.42,132.45 C222.02,134.54 220.34,136.70 219.53,139.61 C218.72,142.51 218.05,148.70 215.55,149.86 Z M12.46,50.63 C9.73,52.79 3.34,53.14 -0.49,52.97 C-4.31,52.81 -4.43,50.78 -10.50,49.64 C-16.56,48.50 -33.74,49.40 -36.89,46.11 C-40.04,42.83 -33.77,33.09 -29.41,29.94 C-25.05,26.80 -15.40,28.90 -10.72,27.25 C-6.04,25.61 -6.32,19.64 -1.33,20.06 C3.67,20.49 16.36,26.48 19.24,29.80 C22.11,33.12 17.03,36.53 15.90,40.00 C14.77,43.47 15.19,48.47 12.46,50.63 Z" fill="#0E0D0C"/><path d="M2.32,46.43 C-0.23,48.19 0.98,52.09 -2.45,52.19 C-5.89,52.30 -14.93,48.21 -18.32,47.07 C-21.70,45.92 -22.35,46.96 -22.75,45.32 C-23.14,43.68 -21.76,39.20 -20.67,37.22 C-19.59,35.23 -18.90,33.98 -16.23,33.39 C-13.55,32.80 -8.95,33.88 -4.62,33.67 C-0.30,33.47 6.83,30.85 9.74,32.18 C12.65,33.51 14.07,39.28 12.84,41.66 C11.60,44.03 4.87,44.67 2.32,46.43 Z M162.02,50.09 C159.50,52.02 158.89,54.61 156.32,54.98 C153.75,55.36 149.02,53.35 146.59,52.33 C144.17,51.31 142.37,50.76 141.78,48.88 C141.19,47.01 142.24,42.91 143.04,41.09 C143.84,39.27 144.75,38.60 146.58,37.95 C148.41,37.30 151.38,36.92 154.04,37.21 C156.70,37.50 159.63,38.66 162.53,39.69 C165.43,40.72 171.52,41.64 171.44,43.37 C171.35,45.11 164.54,48.15 162.02,50.09 Z M86.07,75.89 C83.43,78.63 78.98,81.17 75.08,82.17 C71.19,83.17 66.09,83.46 62.70,81.89 C59.30,80.33 58.09,76.80 54.74,72.78 C51.38,68.76 41.13,60.28 42.57,57.76 C44.02,55.24 58.26,58.01 63.43,57.65 C68.59,57.30 69.66,54.98 73.54,55.61 C77.43,56.25 83.84,59.77 86.74,61.46 C89.64,63.15 91.06,63.35 90.94,65.76 C90.83,68.16 88.71,73.16 86.07,75.89 Z M43.95,138.90 C40.79,140.50 35.56,140.44 32.43,140.45 C29.29,140.45 28.62,140.10 25.15,138.95 C21.69,137.80 13.36,135.36 11.62,133.52 C9.87,131.69 12.32,130.15 14.68,127.94 C17.04,125.73 21.82,121.80 25.76,120.28 C29.69,118.75 34.78,117.99 38.30,118.77 C41.81,119.55 44.67,122.92 46.86,124.94 C49.05,126.95 51.90,128.54 51.42,130.86 C50.94,133.19 47.12,137.30 43.95,138.90 Z M75.12,9.52 C73.34,11.87 71.62,11.95 67.18,11.28 C62.73,10.62 53.21,7.25 48.46,5.55 C43.71,3.85 39.60,2.94 38.67,1.07 C37.74,-0.80 41.85,-3.29 42.88,-5.66 C43.92,-8.03 42.43,-11.77 44.86,-13.16 C47.30,-14.55 52.47,-14.42 57.51,-14.02 C62.54,-13.61 71.68,-12.59 75.07,-10.73 C78.47,-8.86 77.86,-6.18 77.87,-2.81 C77.88,0.57 76.90,7.17 75.12,9.52 Z M117.43,136.25 C114.26,138.92 101.44,137.11 96.88,136.34 C92.32,135.57 94.55,133.59 90.09,131.64 C85.63,129.69 73.24,127.25 70.11,124.66 C66.99,122.06 69.09,118.37 71.33,116.09 C73.57,113.81 78.14,111.42 83.56,110.97 C88.97,110.51 99.09,112.52 103.82,113.37 C108.56,114.22 109.93,114.90 111.95,116.07 C113.96,117.23 114.99,117.00 115.90,120.36 C116.81,123.73 120.60,133.59 117.43,136.25 Z M187.08,180.95 C185.59,182.19 181.35,181.54 177.10,181.88 C172.85,182.22 165.80,183.47 161.59,183.00 C157.38,182.52 152.49,181.41 151.85,179.02 C151.20,176.63 155.90,171.44 157.74,168.66 C159.59,165.87 159.69,163.72 162.90,162.31 C166.12,160.90 172.85,159.98 177.02,160.21 C181.19,160.44 186.44,161.30 187.94,163.67 C189.44,166.04 186.17,171.53 186.03,174.41 C185.89,177.29 188.57,179.71 187.08,180.95 Z M125.15,139.72 C122.24,142.89 117.00,143.71 110.85,144.09 C104.70,144.47 92.50,144.28 88.24,142.00 C83.99,139.72 84.99,133.29 85.33,130.39 C85.67,127.49 88.51,126.35 90.28,124.61 C92.05,122.87 92.14,121.14 95.94,119.95 C99.74,118.76 109.09,117.34 113.08,117.48 C117.07,117.62 117.36,119.49 119.89,120.76 C122.43,122.02 127.42,121.91 128.29,125.07 C129.17,128.23 128.05,136.55 125.15,139.72 Z M207.81,111.44 C205.90,112.43 207.05,114.18 205.38,114.55 C203.70,114.92 200.41,114.56 197.76,113.67 C195.11,112.77 190.63,110.90 189.46,109.18 C188.30,107.45 189.93,104.70 190.78,103.29 C191.63,101.88 192.41,100.89 194.57,100.72 C196.73,100.55 201.19,102.18 203.75,102.28 C206.30,102.37 207.70,100.24 209.88,101.29 C212.07,102.35 217.18,106.91 216.84,108.60 C216.49,110.29 209.72,110.45 207.81,111.44 Z M81.21,17.31 C79.46,19.55 75.90,23.88 72.31,23.79 C68.72,23.70 62.53,18.72 59.65,16.75 C56.77,14.79 55.01,13.60 55.02,12.02 C55.04,10.44 59.56,9.26 59.76,7.29 C59.97,5.31 53.94,1.41 56.24,0.18 C58.53,-1.06 70.16,-1.03 73.51,-0.13 C76.86,0.78 74.81,3.85 76.35,5.60 C77.90,7.34 81.97,8.38 82.77,10.33 C83.58,12.28 82.95,15.06 81.21,17.31 Z M212.17,11.08 C209.89,12.18 204.42,11.24 201.50,10.86 C198.59,10.47 196.89,9.01 194.69,8.78 C192.48,8.54 189.01,10.78 188.27,9.42 C187.53,8.07 188.84,2.20 190.25,0.64 C191.66,-0.92 194.86,0.17 196.72,0.08 C198.57,-0.02 199.50,0.19 201.39,0.07 C203.27,-0.05 205.71,-1.34 208.02,-0.65 C210.32,0.04 214.50,2.26 215.20,4.22 C215.89,6.17 214.45,9.97 212.17,11.08 Z M200.11,203.58 C197.18,205.52 189.61,207.55 185.75,207.57 C181.89,207.59 179.07,205.01 176.95,203.72 C174.83,202.44 173.24,201.66 173.02,199.84 C172.81,198.02 174.90,194.80 175.65,192.81 C176.40,190.82 175.57,189.34 177.53,187.92 C179.49,186.50 183.09,184.69 187.41,184.29 C191.72,183.89 200.77,183.56 203.42,185.50 C206.07,187.43 203.88,192.91 203.33,195.93 C202.78,198.94 203.04,201.64 200.11,203.58 Z M152.65,113.30 C150.97,115.05 145.13,113.90 142.21,113.77 C139.29,113.64 137.34,113.54 135.13,112.50 C132.92,111.46 129.83,109.44 128.97,107.53 C128.10,105.63 129.87,103.13 129.95,101.07 C130.03,99.01 127.13,96.68 129.44,95.16 C131.75,93.64 140.86,91.33 143.83,91.96 C146.80,92.59 145.84,97.05 147.25,98.93 C148.65,100.82 151.37,100.89 152.26,103.28 C153.16,105.67 154.32,111.55 152.65,113.30 Z M207.93,133.19 C205.50,134.54 199.28,132.00 196.02,132.29 C192.76,132.57 191.99,135.17 188.37,134.91 C184.75,134.64 175.08,132.81 174.30,130.68 C173.53,128.56 181.71,124.51 183.70,122.17 C185.69,119.83 182.48,118.63 186.23,116.63 C189.98,114.63 202.01,110.00 206.22,110.18 C210.42,110.35 210.72,115.34 211.45,117.67 C212.18,120.01 211.17,121.58 210.58,124.17 C209.99,126.75 210.35,131.84 207.93,133.19 Z" fill="#FF2E88"/><path d="M2.99,175.71 C2.41,176.79 4.27,178.31 3.19,178.75 C2.11,179.19 -1.84,179.00 -3.50,178.37 C-5.15,177.74 -5.94,176.03 -6.76,174.97 C-7.58,173.91 -8.86,173.32 -8.41,172.02 C-7.95,170.72 -5.45,167.57 -4.02,167.19 C-2.59,166.81 -1.10,169.30 0.16,169.75 C1.43,170.20 2.45,169.47 3.54,169.89 C4.63,170.31 6.78,171.29 6.69,172.26 C6.60,173.23 3.57,174.63 2.99,175.71 Z M168.45,192.80 C167.40,193.67 168.23,195.82 167.10,196.29 C165.97,196.77 163.13,196.07 161.68,195.64 C160.24,195.21 159.08,194.53 158.44,193.72 C157.79,192.90 157.34,191.88 157.84,190.75 C158.33,189.62 160.04,187.68 161.39,186.93 C162.74,186.19 164.32,186.10 165.94,186.27 C167.56,186.45 169.85,187.19 171.10,187.99 C172.35,188.79 173.88,190.27 173.44,191.07 C173.00,191.87 169.51,191.93 168.45,192.80 Z M195.02,212.59 C193.59,213.44 192.27,214.18 191.38,214.20 C190.48,214.21 190.54,213.10 189.64,212.68 C188.75,212.27 187.01,212.69 186.01,211.72 C185.00,210.76 183.34,208.18 183.61,206.89 C183.88,205.60 186.21,204.37 187.63,203.97 C189.05,203.56 190.37,204.00 192.15,204.44 C193.93,204.88 197.01,205.85 198.31,206.62 C199.61,207.40 200.49,208.10 199.94,209.09 C199.39,210.09 196.45,211.74 195.02,212.59 Z M17.69,190.11 C16.37,190.83 14.06,189.92 12.29,189.59 C10.52,189.25 8.60,188.67 7.08,188.10 C5.55,187.53 3.76,186.82 3.14,186.17 C2.53,185.52 2.61,184.90 3.38,184.20 C4.16,183.51 6.63,182.35 7.79,182.01 C8.95,181.66 8.91,182.24 10.33,182.11 C11.75,181.97 14.69,180.64 16.33,181.17 C17.97,181.71 19.95,183.82 20.17,185.31 C20.40,186.80 19.00,189.40 17.69,190.11 Z M215.15,-5.50 C213.64,-4.36 211.63,-2.73 209.89,-2.36 C208.15,-2.00 207.69,-2.44 204.72,-3.29 C201.75,-4.14 193.90,-5.64 192.08,-7.46 C190.25,-9.27 191.86,-13.03 193.76,-14.20 C195.65,-15.36 201.20,-13.54 203.44,-14.44 C205.67,-15.35 204.35,-19.69 207.19,-19.61 C210.03,-19.54 218.52,-15.74 220.48,-14.00 C222.44,-12.26 219.84,-10.61 218.95,-9.19 C218.06,-7.78 216.66,-6.64 215.15,-5.50 Z M31.07,171.76 C29.84,172.88 28.08,169.83 25.21,169.58 C22.33,169.33 16.04,170.79 13.81,170.26 C11.58,169.72 12.90,167.64 11.82,166.36 C10.74,165.08 6.68,163.86 7.34,162.58 C7.99,161.29 13.37,159.77 15.75,158.67 C18.12,157.56 19.60,155.76 21.58,155.94 C23.55,156.12 25.76,158.62 27.60,159.77 C29.44,160.91 32.02,160.82 32.60,162.82 C33.18,164.82 32.30,170.63 31.07,171.76 Z M102.06,7.45 C99.26,8.77 100.14,9.72 97.68,10.82 C95.22,11.92 91.26,14.31 87.29,14.03 C83.31,13.75 76.35,12.29 73.83,9.14 C71.30,6.00 71.34,-1.85 72.13,-4.84 C72.92,-7.83 73.47,-7.87 78.56,-8.80 C83.65,-9.74 97.48,-10.92 102.68,-10.44 C107.88,-9.95 107.81,-8.10 109.77,-5.88 C111.74,-3.66 115.78,0.66 114.49,2.89 C113.21,5.11 104.87,6.13 102.06,7.45 Z M107.74,184.35 C105.25,186.13 98.37,188.13 95.16,188.62 C91.94,189.10 90.51,188.39 88.43,187.26 C86.36,186.13 84.24,184.04 82.71,181.82 C81.18,179.60 78.28,175.44 79.26,173.95 C80.24,172.45 85.75,173.88 88.58,172.86 C91.41,171.85 93.30,168.24 96.26,167.85 C99.22,167.46 104.04,168.86 106.34,170.54 C108.65,172.21 109.85,175.60 110.08,177.90 C110.31,180.20 110.22,182.56 107.74,184.35 Z M189.63,86.69 C188.26,87.48 186.72,88.79 184.67,89.04 C182.62,89.28 179.50,88.65 177.33,88.14 C175.15,87.63 171.34,86.99 171.62,85.98 C171.89,84.97 177.24,83.00 178.96,82.06 C180.68,81.11 180.35,81.04 181.94,80.30 C183.54,79.56 186.93,77.81 188.54,77.63 C190.15,77.44 190.89,78.08 191.62,79.19 C192.35,80.30 193.23,83.06 192.90,84.31 C192.57,85.56 191.00,85.90 189.63,86.69 Z M120.73,93.67 C118.07,95.53 118.72,99.88 115.79,100.42 C112.87,100.96 105.33,98.36 103.19,96.91 C101.04,95.46 104.54,93.35 102.91,91.72 C101.27,90.08 93.90,88.98 93.37,87.08 C92.83,85.19 96.30,81.39 99.68,80.36 C103.06,79.32 109.93,79.96 113.65,80.89 C117.37,81.82 118.98,84.54 122.00,85.93 C125.02,87.33 131.99,87.99 131.78,89.27 C131.57,90.56 123.40,91.81 120.73,93.67 Z M93.42,169.61 C92.31,171.06 91.24,173.09 89.55,173.58 C87.85,174.06 84.95,173.62 83.24,172.53 C81.53,171.44 81.04,168.55 79.26,167.05 C77.48,165.55 72.32,164.71 72.58,163.54 C72.85,162.37 77.87,161.14 80.87,160.05 C83.87,158.96 87.21,156.78 90.57,156.99 C93.94,157.21 100.10,160.02 101.04,161.34 C101.98,162.65 97.49,163.50 96.22,164.88 C94.95,166.26 94.53,168.16 93.42,169.61 Z M132.40,111.91 C131.62,112.51 131.79,112.66 130.23,112.73 C128.66,112.81 124.22,112.88 123.02,112.38 C121.83,111.87 123.25,110.41 123.04,109.71 C122.83,109.01 121.43,108.76 121.78,108.19 C122.12,107.61 123.69,106.71 125.11,106.24 C126.54,105.77 129.29,105.41 130.32,105.37 C131.35,105.34 130.53,105.44 131.30,106.06 C132.06,106.68 134.74,108.13 134.92,109.10 C135.11,110.08 133.18,111.30 132.40,111.91 Z" fill="#9C8456"/></g></g><circle cx="100" cy="100" r="88" fill="none" stroke="#0E0D0C" stroke-width="2"/><circle cx="100" cy="100" r="83" fill="none" stroke="#F4F1E8" stroke-width="2.2" stroke-dasharray="5 4"/><path id="lgfarc" d="M27,100 A73,73 0 0 1 173,100" fill="none"/><text font-family="Anton, Impact, sans-serif" font-size="10.5" letter-spacing="2.6" fill="#F4F1E8" stroke="#0E0D0C" stroke-width="3" paint-order="stroke"><textPath href="#lgfarc" startOffset="50%" text-anchor="middle">★ CITY OF ARTISTS ★</textPath></text><g transform="rotate(-6 100 136)"><rect x="8" y="120" width="184" height="34" fill="#0E0D0C"/><rect x="8" y="120" width="184" height="34" fill="none" stroke="#FF5FA8" stroke-width="2.5"/><text x="100" y="146" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="27" letter-spacing="6" fill="#F4F1E8">CIRCLES</text></g><defs><pattern id="lgflck" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#F4F1E8"/><rect width="5" height="5" fill="#0E0D0C"/><rect x="5" y="5" width="5" height="5" fill="#0E0D0C"/></pattern><pattern id="lgflckp" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#FF5FA8"/><rect width="5" height="5" fill="#0E0D0C"/><rect x="5" y="5" width="5" height="5" fill="#0E0D0C"/></pattern><pattern id="lgflgr" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#E8B730"/><path d="M6,0 L0,0 L0,6" fill="none" stroke="#0E0D0C" stroke-width=".7" opacity=".7"/></pattern><pattern id="lgflgrp" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#FF5FA8"/><path d="M6,0 L0,0 L0,6" fill="none" stroke="#fff" stroke-width=".7" opacity=".75"/></pattern><pattern id="lgflt" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#A3182C"/><rect width="14" height="5" fill="#0E0D0C" opacity=".55"/><rect width="5" height="14" fill="#0E0D0C" opacity=".55"/><rect y="9" width="14" height="1" fill="#E8B730"/><rect x="9" width="1" height="14" fill="#E8B730"/></pattern></defs><path d="M94.48,109.12 C95.17,81.23 78.96,73.97 58.69,72.06 C59.90,92.38 66.59,108.84 94.48,109.12 Z" fill="url(#lgflt)"/><path d="M94.48,109.12 C95.17,81.23 78.96,73.97 58.69,72.06 C59.90,92.38 66.59,108.84 94.48,109.12 Z" fill="none" stroke="#0E0D0C" stroke-width="3.8" stroke-linejoin="round"/><path d="M105.52,109.12 C133.41,108.84 140.10,92.38 141.31,72.06 C121.04,73.97 104.83,81.23 105.52,109.12 Z" fill="url(#lgflgr)"/><path d="M111.49,93.40 Q118.64,82.40 130.26,77.15" fill="none" stroke="#fff" stroke-width="2.06" stroke-linecap="round" opacity="0.8"/><path d="M105.52,109.12 C133.41,108.84 140.10,92.38 141.31,72.06 C121.04,73.97 104.83,81.23 105.52,109.12 Z" fill="none" stroke="#0E0D0C" stroke-width="3.8" stroke-linejoin="round"/><path d="M100.00,110.96 C123.60,85.09 115.73,63.30 100.00,42.88 C84.27,63.30 76.40,85.09 100.00,110.96 Z" fill="url(#lgflckp)"/><path d="M100.00,110.96 C123.60,85.09 115.73,63.30 100.00,42.88 C84.27,63.30 76.40,85.09 100.00,110.96 Z" fill="none" stroke="#0E0D0C" stroke-width="3.8" stroke-linejoin="round"/></g><g id="orb-s"><circle cx="100" cy="100" r="96" fill="#0E0D0C"/><clipPath id="lgsc"><circle cx="100" cy="100" r="86"/></clipPath><g clip-path="url(#lgsc)"><g transform="rotate(30 100 100)"><rect x="-20" y="-20" width="240" height="240" fill="#6B6B3A"/><path d="M108.64,140.87 C106.54,143.53 99.29,148.42 94.88,149.24 C90.48,150.07 84.80,147.83 82.22,145.80 C79.64,143.78 79.89,139.44 79.42,137.09 C78.95,134.74 77.62,133.43 79.38,131.70 C81.14,129.97 86.67,127.57 89.96,126.72 C93.25,125.87 95.80,126.34 99.11,126.60 C102.42,126.87 108.43,127.22 109.82,128.33 C111.22,129.44 107.69,131.15 107.49,133.24 C107.29,135.33 110.74,138.20 108.64,140.87 Z M84.86,178.26 C82.27,180.07 79.52,183.78 77.97,184.27 C76.43,184.77 76.80,182.26 75.60,181.25 C74.39,180.24 71.44,179.52 70.75,178.21 C70.05,176.90 70.54,174.51 71.41,173.37 C72.29,172.23 74.71,172.44 76.00,171.38 C77.29,170.33 77.37,167.09 79.16,167.04 C80.94,166.99 84.34,170.03 86.73,171.09 C89.12,172.15 93.82,172.22 93.51,173.41 C93.20,174.61 87.45,176.45 84.86,178.26 Z M135.01,105.98 C132.01,107.92 126.26,103.92 122.51,103.80 C118.77,103.69 114.68,106.46 112.53,105.28 C110.38,104.10 110.66,98.77 109.62,96.72 C108.58,94.66 106.09,95.07 106.27,92.95 C106.44,90.84 107.88,84.74 110.66,84.02 C113.45,83.29 118.94,87.61 122.98,88.61 C127.03,89.60 132.01,89.43 134.94,90.01 C137.87,90.60 140.56,89.47 140.57,92.13 C140.58,94.79 138.02,104.03 135.01,105.98 Z M120.31,44.09 C117.86,46.11 114.28,49.77 110.89,50.28 C107.50,50.79 104.06,48.27 99.97,47.17 C95.89,46.07 88.50,45.27 86.37,43.68 C84.24,42.09 85.74,39.55 87.19,37.61 C88.64,35.67 91.59,34.18 95.07,32.05 C98.55,29.92 103.51,25.25 108.06,24.85 C112.62,24.45 119.46,27.43 122.38,29.65 C125.30,31.87 125.92,35.76 125.57,38.17 C125.22,40.57 122.75,42.07 120.31,44.09 Z M33.22,198.12 C30.91,200.34 34.66,204.41 32.65,204.80 C30.63,205.20 23.57,201.79 21.13,200.47 C18.69,199.15 20.54,198.98 17.99,196.89 C15.43,194.80 5.06,190.11 5.79,187.93 C6.51,185.74 18.97,184.31 22.33,183.79 C25.69,183.27 22.22,184.33 25.95,184.83 C29.68,185.33 41.28,185.67 44.71,186.78 C48.15,187.90 48.45,189.62 46.54,191.51 C44.62,193.40 35.54,195.91 33.22,198.12 Z M152.39,48.92 C148.81,50.34 135.66,48.07 130.35,48.91 C125.04,49.74 124.37,54.21 120.55,53.95 C116.74,53.68 109.23,50.32 107.45,47.31 C105.67,44.30 107.02,38.39 109.87,35.90 C112.72,33.41 120.90,33.16 124.55,32.39 C128.19,31.62 127.66,31.17 131.71,31.27 C135.77,31.38 145.53,31.49 148.89,33.00 C152.24,34.52 151.25,37.70 151.83,40.35 C152.42,43.00 155.97,47.49 152.39,48.92 Z M29.86,193.80 C27.54,196.31 25.82,198.69 21.59,198.74 C17.36,198.80 7.83,195.72 4.50,194.14 C1.17,192.56 2.26,191.88 1.61,189.25 C0.96,186.62 -1.07,180.41 0.62,178.35 C2.32,176.29 8.34,177.82 11.78,176.89 C15.22,175.96 18.60,172.08 21.24,172.76 C23.88,173.45 25.22,179.17 27.61,181.00 C29.99,182.83 35.16,181.61 35.53,183.74 C35.91,185.87 32.18,191.30 29.86,193.80 Z M167.99,200.04 C163.54,200.99 155.08,198.24 149.99,198.16 C144.91,198.08 142.57,200.76 137.48,199.56 C132.40,198.36 122.01,193.65 119.47,190.94 C116.92,188.24 120.37,185.48 122.20,183.32 C124.03,181.16 125.47,179.12 130.46,177.99 C135.44,176.86 146.99,176.30 152.09,176.52 C157.19,176.74 156.94,176.67 161.04,179.33 C165.13,181.99 175.51,189.02 176.67,192.47 C177.83,195.92 172.43,199.10 167.99,200.04 Z M72.27,147.47 C70.71,149.43 65.32,151.54 62.86,151.16 C60.40,150.79 59.75,146.51 57.51,145.21 C55.26,143.91 51.20,144.37 49.38,143.36 C47.56,142.34 45.59,140.39 46.56,139.11 C47.54,137.82 52.54,137.11 55.24,135.64 C57.94,134.17 60.61,130.39 62.75,130.30 C64.89,130.21 66.50,133.61 68.08,135.12 C69.65,136.64 71.51,137.35 72.21,139.41 C72.91,141.46 73.83,145.51 72.27,147.47 Z M67.23,42.11 C64.31,44.04 62.01,43.37 57.35,43.93 C52.69,44.49 42.78,46.30 39.26,45.47 C35.74,44.64 37.40,41.92 36.22,38.95 C35.05,35.98 31.53,29.84 32.21,27.64 C32.89,25.44 36.28,26.16 40.32,25.73 C44.36,25.30 51.83,24.78 56.44,25.07 C61.04,25.36 64.86,26.27 67.93,27.48 C71.00,28.70 74.97,29.91 74.86,32.35 C74.74,34.79 70.15,40.18 67.23,42.11 Z M221.72,119.21 C218.21,121.16 212.31,122.09 208.39,122.45 C204.48,122.82 201.73,122.59 198.22,121.38 C194.72,120.17 190.84,117.09 187.36,115.18 C183.88,113.27 177.42,112.79 177.33,109.92 C177.23,107.05 181.64,99.54 186.81,97.95 C191.97,96.37 201.36,99.46 208.34,100.40 C215.32,101.35 225.17,101.90 228.69,103.62 C232.21,105.34 230.63,108.12 229.47,110.72 C228.31,113.32 225.23,117.25 221.72,119.21 Z M73.71,26.35 C70.29,27.65 66.24,27.57 62.59,27.80 C58.95,28.03 55.15,28.66 51.85,27.73 C48.55,26.81 43.61,24.66 42.78,22.24 C41.96,19.82 45.69,15.29 46.90,13.22 C48.10,11.14 46.31,10.97 50.02,9.78 C53.73,8.58 64.72,6.81 69.16,6.04 C73.60,5.27 74.34,2.82 76.66,5.15 C78.99,7.48 83.61,16.46 83.11,19.99 C82.62,23.52 77.13,25.05 73.71,26.35 Z M200.71,176.89 C198.40,178.00 186.51,178.54 182.28,178.28 C178.05,178.02 176.90,176.17 175.33,175.34 C173.76,174.51 173.73,174.29 172.87,173.28 C172.00,172.28 169.52,171.02 170.13,169.32 C170.74,167.62 174.49,164.09 176.53,163.08 C178.58,162.06 178.99,163.47 182.42,163.23 C185.85,163.00 194.83,160.28 197.12,161.68 C199.41,163.08 195.57,169.09 196.17,171.63 C196.77,174.17 203.03,175.79 200.71,176.89 Z M141.92,21.93 C138.53,24.05 129.08,25.28 124.04,25.45 C119.00,25.62 114.96,24.55 111.69,22.94 C108.42,21.33 105.96,18.18 104.43,15.79 C102.90,13.39 100.53,10.75 102.50,8.57 C104.47,6.40 111.37,4.07 116.23,2.75 C121.09,1.43 126.84,0.25 131.67,0.65 C136.49,1.05 143.06,3.14 145.18,5.15 C147.30,7.17 144.93,9.94 144.39,12.74 C143.85,15.53 145.31,19.81 141.92,21.93 Z M215.55,149.86 C213.04,151.03 207.67,147.11 204.50,146.61 C201.33,146.10 198.76,147.35 196.54,146.85 C194.33,146.35 192.57,145.02 191.21,143.64 C189.84,142.25 188.15,140.83 188.34,138.51 C188.53,136.20 188.75,131.67 192.34,129.76 C195.94,127.86 205.22,126.63 209.90,127.08 C214.58,127.52 218.81,130.36 220.42,132.45 C222.02,134.54 220.34,136.70 219.53,139.61 C218.72,142.51 218.05,148.70 215.55,149.86 Z M12.46,50.63 C9.73,52.79 3.34,53.14 -0.49,52.97 C-4.31,52.81 -4.43,50.78 -10.50,49.64 C-16.56,48.50 -33.74,49.40 -36.89,46.11 C-40.04,42.83 -33.77,33.09 -29.41,29.94 C-25.05,26.80 -15.40,28.90 -10.72,27.25 C-6.04,25.61 -6.32,19.64 -1.33,20.06 C3.67,20.49 16.36,26.48 19.24,29.80 C22.11,33.12 17.03,36.53 15.90,40.00 C14.77,43.47 15.19,48.47 12.46,50.63 Z" fill="#0E0D0C"/><path d="M2.32,46.43 C-0.23,48.19 0.98,52.09 -2.45,52.19 C-5.89,52.30 -14.93,48.21 -18.32,47.07 C-21.70,45.92 -22.35,46.96 -22.75,45.32 C-23.14,43.68 -21.76,39.20 -20.67,37.22 C-19.59,35.23 -18.90,33.98 -16.23,33.39 C-13.55,32.80 -8.95,33.88 -4.62,33.67 C-0.30,33.47 6.83,30.85 9.74,32.18 C12.65,33.51 14.07,39.28 12.84,41.66 C11.60,44.03 4.87,44.67 2.32,46.43 Z M162.02,50.09 C159.50,52.02 158.89,54.61 156.32,54.98 C153.75,55.36 149.02,53.35 146.59,52.33 C144.17,51.31 142.37,50.76 141.78,48.88 C141.19,47.01 142.24,42.91 143.04,41.09 C143.84,39.27 144.75,38.60 146.58,37.95 C148.41,37.30 151.38,36.92 154.04,37.21 C156.70,37.50 159.63,38.66 162.53,39.69 C165.43,40.72 171.52,41.64 171.44,43.37 C171.35,45.11 164.54,48.15 162.02,50.09 Z M86.07,75.89 C83.43,78.63 78.98,81.17 75.08,82.17 C71.19,83.17 66.09,83.46 62.70,81.89 C59.30,80.33 58.09,76.80 54.74,72.78 C51.38,68.76 41.13,60.28 42.57,57.76 C44.02,55.24 58.26,58.01 63.43,57.65 C68.59,57.30 69.66,54.98 73.54,55.61 C77.43,56.25 83.84,59.77 86.74,61.46 C89.64,63.15 91.06,63.35 90.94,65.76 C90.83,68.16 88.71,73.16 86.07,75.89 Z M43.95,138.90 C40.79,140.50 35.56,140.44 32.43,140.45 C29.29,140.45 28.62,140.10 25.15,138.95 C21.69,137.80 13.36,135.36 11.62,133.52 C9.87,131.69 12.32,130.15 14.68,127.94 C17.04,125.73 21.82,121.80 25.76,120.28 C29.69,118.75 34.78,117.99 38.30,118.77 C41.81,119.55 44.67,122.92 46.86,124.94 C49.05,126.95 51.90,128.54 51.42,130.86 C50.94,133.19 47.12,137.30 43.95,138.90 Z M75.12,9.52 C73.34,11.87 71.62,11.95 67.18,11.28 C62.73,10.62 53.21,7.25 48.46,5.55 C43.71,3.85 39.60,2.94 38.67,1.07 C37.74,-0.80 41.85,-3.29 42.88,-5.66 C43.92,-8.03 42.43,-11.77 44.86,-13.16 C47.30,-14.55 52.47,-14.42 57.51,-14.02 C62.54,-13.61 71.68,-12.59 75.07,-10.73 C78.47,-8.86 77.86,-6.18 77.87,-2.81 C77.88,0.57 76.90,7.17 75.12,9.52 Z M117.43,136.25 C114.26,138.92 101.44,137.11 96.88,136.34 C92.32,135.57 94.55,133.59 90.09,131.64 C85.63,129.69 73.24,127.25 70.11,124.66 C66.99,122.06 69.09,118.37 71.33,116.09 C73.57,113.81 78.14,111.42 83.56,110.97 C88.97,110.51 99.09,112.52 103.82,113.37 C108.56,114.22 109.93,114.90 111.95,116.07 C113.96,117.23 114.99,117.00 115.90,120.36 C116.81,123.73 120.60,133.59 117.43,136.25 Z M187.08,180.95 C185.59,182.19 181.35,181.54 177.10,181.88 C172.85,182.22 165.80,183.47 161.59,183.00 C157.38,182.52 152.49,181.41 151.85,179.02 C151.20,176.63 155.90,171.44 157.74,168.66 C159.59,165.87 159.69,163.72 162.90,162.31 C166.12,160.90 172.85,159.98 177.02,160.21 C181.19,160.44 186.44,161.30 187.94,163.67 C189.44,166.04 186.17,171.53 186.03,174.41 C185.89,177.29 188.57,179.71 187.08,180.95 Z M125.15,139.72 C122.24,142.89 117.00,143.71 110.85,144.09 C104.70,144.47 92.50,144.28 88.24,142.00 C83.99,139.72 84.99,133.29 85.33,130.39 C85.67,127.49 88.51,126.35 90.28,124.61 C92.05,122.87 92.14,121.14 95.94,119.95 C99.74,118.76 109.09,117.34 113.08,117.48 C117.07,117.62 117.36,119.49 119.89,120.76 C122.43,122.02 127.42,121.91 128.29,125.07 C129.17,128.23 128.05,136.55 125.15,139.72 Z M207.81,111.44 C205.90,112.43 207.05,114.18 205.38,114.55 C203.70,114.92 200.41,114.56 197.76,113.67 C195.11,112.77 190.63,110.90 189.46,109.18 C188.30,107.45 189.93,104.70 190.78,103.29 C191.63,101.88 192.41,100.89 194.57,100.72 C196.73,100.55 201.19,102.18 203.75,102.28 C206.30,102.37 207.70,100.24 209.88,101.29 C212.07,102.35 217.18,106.91 216.84,108.60 C216.49,110.29 209.72,110.45 207.81,111.44 Z M81.21,17.31 C79.46,19.55 75.90,23.88 72.31,23.79 C68.72,23.70 62.53,18.72 59.65,16.75 C56.77,14.79 55.01,13.60 55.02,12.02 C55.04,10.44 59.56,9.26 59.76,7.29 C59.97,5.31 53.94,1.41 56.24,0.18 C58.53,-1.06 70.16,-1.03 73.51,-0.13 C76.86,0.78 74.81,3.85 76.35,5.60 C77.90,7.34 81.97,8.38 82.77,10.33 C83.58,12.28 82.95,15.06 81.21,17.31 Z M212.17,11.08 C209.89,12.18 204.42,11.24 201.50,10.86 C198.59,10.47 196.89,9.01 194.69,8.78 C192.48,8.54 189.01,10.78 188.27,9.42 C187.53,8.07 188.84,2.20 190.25,0.64 C191.66,-0.92 194.86,0.17 196.72,0.08 C198.57,-0.02 199.50,0.19 201.39,0.07 C203.27,-0.05 205.71,-1.34 208.02,-0.65 C210.32,0.04 214.50,2.26 215.20,4.22 C215.89,6.17 214.45,9.97 212.17,11.08 Z M200.11,203.58 C197.18,205.52 189.61,207.55 185.75,207.57 C181.89,207.59 179.07,205.01 176.95,203.72 C174.83,202.44 173.24,201.66 173.02,199.84 C172.81,198.02 174.90,194.80 175.65,192.81 C176.40,190.82 175.57,189.34 177.53,187.92 C179.49,186.50 183.09,184.69 187.41,184.29 C191.72,183.89 200.77,183.56 203.42,185.50 C206.07,187.43 203.88,192.91 203.33,195.93 C202.78,198.94 203.04,201.64 200.11,203.58 Z M152.65,113.30 C150.97,115.05 145.13,113.90 142.21,113.77 C139.29,113.64 137.34,113.54 135.13,112.50 C132.92,111.46 129.83,109.44 128.97,107.53 C128.10,105.63 129.87,103.13 129.95,101.07 C130.03,99.01 127.13,96.68 129.44,95.16 C131.75,93.64 140.86,91.33 143.83,91.96 C146.80,92.59 145.84,97.05 147.25,98.93 C148.65,100.82 151.37,100.89 152.26,103.28 C153.16,105.67 154.32,111.55 152.65,113.30 Z M207.93,133.19 C205.50,134.54 199.28,132.00 196.02,132.29 C192.76,132.57 191.99,135.17 188.37,134.91 C184.75,134.64 175.08,132.81 174.30,130.68 C173.53,128.56 181.71,124.51 183.70,122.17 C185.69,119.83 182.48,118.63 186.23,116.63 C189.98,114.63 202.01,110.00 206.22,110.18 C210.42,110.35 210.72,115.34 211.45,117.67 C212.18,120.01 211.17,121.58 210.58,124.17 C209.99,126.75 210.35,131.84 207.93,133.19 Z" fill="#FF2E88"/><path d="M2.99,175.71 C2.41,176.79 4.27,178.31 3.19,178.75 C2.11,179.19 -1.84,179.00 -3.50,178.37 C-5.15,177.74 -5.94,176.03 -6.76,174.97 C-7.58,173.91 -8.86,173.32 -8.41,172.02 C-7.95,170.72 -5.45,167.57 -4.02,167.19 C-2.59,166.81 -1.10,169.30 0.16,169.75 C1.43,170.20 2.45,169.47 3.54,169.89 C4.63,170.31 6.78,171.29 6.69,172.26 C6.60,173.23 3.57,174.63 2.99,175.71 Z M168.45,192.80 C167.40,193.67 168.23,195.82 167.10,196.29 C165.97,196.77 163.13,196.07 161.68,195.64 C160.24,195.21 159.08,194.53 158.44,193.72 C157.79,192.90 157.34,191.88 157.84,190.75 C158.33,189.62 160.04,187.68 161.39,186.93 C162.74,186.19 164.32,186.10 165.94,186.27 C167.56,186.45 169.85,187.19 171.10,187.99 C172.35,188.79 173.88,190.27 173.44,191.07 C173.00,191.87 169.51,191.93 168.45,192.80 Z M195.02,212.59 C193.59,213.44 192.27,214.18 191.38,214.20 C190.48,214.21 190.54,213.10 189.64,212.68 C188.75,212.27 187.01,212.69 186.01,211.72 C185.00,210.76 183.34,208.18 183.61,206.89 C183.88,205.60 186.21,204.37 187.63,203.97 C189.05,203.56 190.37,204.00 192.15,204.44 C193.93,204.88 197.01,205.85 198.31,206.62 C199.61,207.40 200.49,208.10 199.94,209.09 C199.39,210.09 196.45,211.74 195.02,212.59 Z M17.69,190.11 C16.37,190.83 14.06,189.92 12.29,189.59 C10.52,189.25 8.60,188.67 7.08,188.10 C5.55,187.53 3.76,186.82 3.14,186.17 C2.53,185.52 2.61,184.90 3.38,184.20 C4.16,183.51 6.63,182.35 7.79,182.01 C8.95,181.66 8.91,182.24 10.33,182.11 C11.75,181.97 14.69,180.64 16.33,181.17 C17.97,181.71 19.95,183.82 20.17,185.31 C20.40,186.80 19.00,189.40 17.69,190.11 Z M215.15,-5.50 C213.64,-4.36 211.63,-2.73 209.89,-2.36 C208.15,-2.00 207.69,-2.44 204.72,-3.29 C201.75,-4.14 193.90,-5.64 192.08,-7.46 C190.25,-9.27 191.86,-13.03 193.76,-14.20 C195.65,-15.36 201.20,-13.54 203.44,-14.44 C205.67,-15.35 204.35,-19.69 207.19,-19.61 C210.03,-19.54 218.52,-15.74 220.48,-14.00 C222.44,-12.26 219.84,-10.61 218.95,-9.19 C218.06,-7.78 216.66,-6.64 215.15,-5.50 Z M31.07,171.76 C29.84,172.88 28.08,169.83 25.21,169.58 C22.33,169.33 16.04,170.79 13.81,170.26 C11.58,169.72 12.90,167.64 11.82,166.36 C10.74,165.08 6.68,163.86 7.34,162.58 C7.99,161.29 13.37,159.77 15.75,158.67 C18.12,157.56 19.60,155.76 21.58,155.94 C23.55,156.12 25.76,158.62 27.60,159.77 C29.44,160.91 32.02,160.82 32.60,162.82 C33.18,164.82 32.30,170.63 31.07,171.76 Z M102.06,7.45 C99.26,8.77 100.14,9.72 97.68,10.82 C95.22,11.92 91.26,14.31 87.29,14.03 C83.31,13.75 76.35,12.29 73.83,9.14 C71.30,6.00 71.34,-1.85 72.13,-4.84 C72.92,-7.83 73.47,-7.87 78.56,-8.80 C83.65,-9.74 97.48,-10.92 102.68,-10.44 C107.88,-9.95 107.81,-8.10 109.77,-5.88 C111.74,-3.66 115.78,0.66 114.49,2.89 C113.21,5.11 104.87,6.13 102.06,7.45 Z M107.74,184.35 C105.25,186.13 98.37,188.13 95.16,188.62 C91.94,189.10 90.51,188.39 88.43,187.26 C86.36,186.13 84.24,184.04 82.71,181.82 C81.18,179.60 78.28,175.44 79.26,173.95 C80.24,172.45 85.75,173.88 88.58,172.86 C91.41,171.85 93.30,168.24 96.26,167.85 C99.22,167.46 104.04,168.86 106.34,170.54 C108.65,172.21 109.85,175.60 110.08,177.90 C110.31,180.20 110.22,182.56 107.74,184.35 Z M189.63,86.69 C188.26,87.48 186.72,88.79 184.67,89.04 C182.62,89.28 179.50,88.65 177.33,88.14 C175.15,87.63 171.34,86.99 171.62,85.98 C171.89,84.97 177.24,83.00 178.96,82.06 C180.68,81.11 180.35,81.04 181.94,80.30 C183.54,79.56 186.93,77.81 188.54,77.63 C190.15,77.44 190.89,78.08 191.62,79.19 C192.35,80.30 193.23,83.06 192.90,84.31 C192.57,85.56 191.00,85.90 189.63,86.69 Z M120.73,93.67 C118.07,95.53 118.72,99.88 115.79,100.42 C112.87,100.96 105.33,98.36 103.19,96.91 C101.04,95.46 104.54,93.35 102.91,91.72 C101.27,90.08 93.90,88.98 93.37,87.08 C92.83,85.19 96.30,81.39 99.68,80.36 C103.06,79.32 109.93,79.96 113.65,80.89 C117.37,81.82 118.98,84.54 122.00,85.93 C125.02,87.33 131.99,87.99 131.78,89.27 C131.57,90.56 123.40,91.81 120.73,93.67 Z M93.42,169.61 C92.31,171.06 91.24,173.09 89.55,173.58 C87.85,174.06 84.95,173.62 83.24,172.53 C81.53,171.44 81.04,168.55 79.26,167.05 C77.48,165.55 72.32,164.71 72.58,163.54 C72.85,162.37 77.87,161.14 80.87,160.05 C83.87,158.96 87.21,156.78 90.57,156.99 C93.94,157.21 100.10,160.02 101.04,161.34 C101.98,162.65 97.49,163.50 96.22,164.88 C94.95,166.26 94.53,168.16 93.42,169.61 Z M132.40,111.91 C131.62,112.51 131.79,112.66 130.23,112.73 C128.66,112.81 124.22,112.88 123.02,112.38 C121.83,111.87 123.25,110.41 123.04,109.71 C122.83,109.01 121.43,108.76 121.78,108.19 C122.12,107.61 123.69,106.71 125.11,106.24 C126.54,105.77 129.29,105.41 130.32,105.37 C131.35,105.34 130.53,105.44 131.30,106.06 C132.06,106.68 134.74,108.13 134.92,109.10 C135.11,110.08 133.18,111.30 132.40,111.91 Z" fill="#9C8456"/></g></g><circle cx="100" cy="100" r="78" fill="none" stroke="#F4F1E8" stroke-width="4" stroke-dasharray="9 7"/><defs><pattern id="lgslck" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#F4F1E8"/><rect width="5" height="5" fill="#0E0D0C"/><rect x="5" y="5" width="5" height="5" fill="#0E0D0C"/></pattern><pattern id="lgslckp" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#FF5FA8"/><rect width="5" height="5" fill="#0E0D0C"/><rect x="5" y="5" width="5" height="5" fill="#0E0D0C"/></pattern><pattern id="lgslgr" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#E8B730"/><path d="M6,0 L0,0 L0,6" fill="none" stroke="#0E0D0C" stroke-width=".7" opacity=".7"/></pattern><pattern id="lgslgrp" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#FF5FA8"/><path d="M6,0 L0,0 L0,6" fill="none" stroke="#fff" stroke-width=".7" opacity=".75"/></pattern><pattern id="lgslt" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#A3182C"/><rect width="14" height="5" fill="#0E0D0C" opacity=".55"/><rect width="5" height="14" fill="#0E0D0C" opacity=".55"/><rect y="9" width="14" height="1" fill="#E8B730"/><rect x="9" width="1" height="14" fill="#E8B730"/></pattern></defs><path d="M92.68,121.92 C93.60,84.94 72.10,75.31 45.22,72.77 C46.82,99.72 55.69,121.55 92.68,121.92 Z" fill="url(#lgslt)"/><path d="M92.68,121.92 C93.60,84.94 72.10,75.31 45.22,72.77 C46.82,99.72 55.69,121.55 92.68,121.92 Z" fill="none" stroke="#0E0D0C" stroke-width="6" stroke-linejoin="round"/><path d="M107.32,121.92 C144.31,121.55 153.18,99.72 154.78,72.77 C127.90,75.31 106.40,84.94 107.32,121.92 Z" fill="url(#lgslgr)"/><path d="M115.24,101.07 Q124.72,86.48 140.13,79.52" fill="none" stroke="#fff" stroke-width="2.73" stroke-linecap="round" opacity="0.8"/><path d="M107.32,121.92 C144.31,121.55 153.18,99.72 154.78,72.77 C127.90,75.31 106.40,84.94 107.32,121.92 Z" fill="none" stroke="#0E0D0C" stroke-width="6" stroke-linejoin="round"/><path d="M100.00,124.36 C131.29,90.05 120.86,61.16 100.00,34.08 C79.14,61.16 68.71,90.05 100.00,124.36 Z" fill="url(#lgslckp)"/><path d="M100.00,124.36 C131.29,90.05 120.86,61.16 100.00,34.08 C79.14,61.16 68.71,90.05 100.00,124.36 Z" fill="none" stroke="#0E0D0C" stroke-width="6" stroke-linejoin="round"/></g><!--/orb-s-->
+</defs></svg>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-top" data-t="ld_top">circles · เมืองของศิลปิน</div>
+  <svg class="loader-orb" viewBox="0 0 200 200"><use href="#orb"/></svg>
+  <div class="loader-count" id="loader-count">000</div>
+  <div class="loader-text" data-t="ld_text">กำลังสร้างเมือง…</div>
+</div>
+<div class="cursor" id="cursor" aria-hidden="true"><i class="cd"></i><span id="cursor-label"></span></div>
+<div class="curtain" id="curtain"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb"/></svg></div>
+
+<div class="marquee" aria-hidden="true"><div id="mq"></div></div>
+
+<nav id="nav">
+  <div class="brand"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb-s"/></svg>CIRCLES</div>
+  <div class="links"><a href="#city" data-t="nav_city">เมือง</a><a href="#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
+  <div class="mnav" id="mnav" inert><a href="#city" data-t="nav_city">เมือง</a><a href="#manifesto" data-t="foot_manifesto">Manifesto</a><a href="#how" data-t="foot_how">วิธีใช้งาน</a><a href="#featured" data-t="foot_feat">ผลงานเด่น</a><a href="#map" data-t="foot_map">แผนที่เมือง</a><a href="join.html" data-t="foot_join">ขอมีตึก</a></div>
+</nav>
+
+<header class="hero" id="hero">
+  <div class="hero-copy">
+    <div class="kicker rise" style="--i:0">No gallery. No middleman.</div>
+    <h1 class="rn drop" id="rn-title" aria-label="CIRCLES"></h1>
+    <span class="hl rise" style="--i:4" data-t="hero_hl1">เมืองของศิลปิน</span>
+    <span class="hl pink rise" style="--i:5" data-t="hero_hl2">พื้นที่สำหรับงานศิลปะ</span>
+    <span class="hl gold rise" style="--i:6" data-t="hero_hl3">ที่ไม่ยอมเงียบ</span>
+    <p class="lead rise" style="--i:7" data-t="hero_lead">ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจากคนทำ</p>
+    <a class="btn rise" style="--i:8" href="#city" data-t="hero_cta">เข้าชมเมือง →</a>
+  </div>
+  <div class="arch concrete" id="arch">
+    <div class="arch-in tartan"><div class="arch-par" id="arch-par"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb"/></svg></div></div>
+    <div class="sticker">ART NOT SORRY</div>
+  </div>
+  <div class="hero-tape"></div>
+</header>
+
+<section class="city" id="city">
+  <div class="city-head reveal">
+    <h2><i>The</i><br><b data-t="city_h">เมือง</b></h2>
+    <p data-t="city_p">ลากหรือเลื่อนไปทางขวาเพื่อเดินผ่านเมือง ตึกแต่ละหลังคือสตูดิโอของศิลปินหนึ่งคน ภาพที่ฝังอยู่ในคอนกรีตคือผลงานจริง</p>
+    <div class="pager"><button onclick="scrollCity(-1)" data-t-aria="pager_l" aria-label="เลื่อนซ้าย">←</button><button onclick="scrollCity(1)" data-t-aria="pager_r" aria-label="เลื่อนขวา">→</button></div>
+  </div>
+  <div class="city-tools reveal">
+    <div class="vtog" id="vtog" role="group" data-t-aria="v_aria" aria-label="เลือกมุมมองเมือง"><button type="button" class="vt on" data-v="city" aria-pressed="true" data-t="v_city">ดูแบบตึก</button><button type="button" class="vt" data-v="map" aria-pressed="false" data-t="v_map">ดูแบบแผนที่</button></div>
+    <div class="filters" id="filters" role="group" data-t-aria="filters_aria" aria-label="กรองตามสาขา"><!--pre:filters--><button type="button" class="fbtn on" data-d="" aria-pressed="true">ทั้งหมด</button><button type="button" class="fbtn" data-d="*wave" aria-pressed="false">★ คลื่นลูกใหม่</button><button type="button" class="fbtn" data-d="จิตรกรรม" aria-pressed="false">จิตรกรรม</button><button type="button" class="fbtn" data-d="ภาพถ่าย" aria-pressed="false">ภาพถ่าย</button><button type="button" class="fbtn" data-d="ภาพประกอบ" aria-pressed="false">ภาพประกอบ</button><button type="button" class="fbtn" data-d="เซรามิก" aria-pressed="false">เซรามิก</button><button type="button" class="fbtn" data-d="สิ่งทอ" aria-pressed="false">สิ่งทอ</button><button type="button" class="fbtn" data-d="คอลลาจ" aria-pressed="false">คอลลาจ</button><button type="button" class="fbtn" data-d="ริโซกราฟ" aria-pressed="false">ริโซกราฟ</button><button type="button" class="fbtn" data-d="ศิลปะเจเนอเรทีฟ" aria-pressed="false">ศิลปะเจเนอเรทีฟ</button><button type="button" class="fbtn" data-d="กลิตช์อาร์ต" aria-pressed="false">กลิตช์อาร์ต</button><button type="button" class="fbtn" data-d="ไบโออาร์ต" aria-pressed="false">ไบโออาร์ต</button><!--/pre:filters--></div>
+    <div class="fnote off" id="fnote" role="status" inert><span id="fnote-t"></span><a href="#strip" data-t="fnote_go">ดูตึกในแถบเมือง ↑</a><a id="fnote-in" href="#" hidden data-t="fnote_in">เข้าไปในตึก →</a><button type="button" id="fnote-x" data-t="fnote_x">ล้างตัวกรอง ✕</button></div>
+  </div>
+  <div class="strip" id="strip" tabindex="0" data-t-aria="strip_aria" aria-label="เมืองของศิลปิน เลื่อนซ้ายขวา">
+    <div class="strip-in" id="strip-in"><!--pre:strip--><noscript><div class="ns"><p>circles — เมืองของศิลปิน · A city of artists. Pick a building:</p><ul><li><a href="studio-napha.html">นภา / Napha — จิตรกรรม · Painting · เชียงใหม่</a></li><li><a href="studio-thara.html">ธารา / Thara — ภาพถ่าย · Photography · กรุงเทพฯ</a></li><li><a href="studio-kwan.html">ขวัญ / Kwan — ภาพประกอบ · Illustration · ขอนแก่น</a></li><li><a href="studio-phum.html">ภูมิ / Phum — เซรามิก · Ceramics · ราชบุรี</a></li><li><a href="studio-irene.html">ไอรีน / Irene — สิ่งทอ · Textiles · น่าน</a></li><li><a href="studio-dao.html">ดาว / Dao — คอลลาจ · Collage · ภูเก็ต</a></li><li><a href="studio-mali.html">มะลิ / Mali — ริโซกราฟ · Risograph · เชียงราย</a></li><li><a href="studio-phop.html">ภพ / Phop — ศิลปะเจเนอเรทีฟ · Generative art · กรุงเทพฯ</a></li><li><a href="studio-phrae.html">แพร / Phrae — กลิตช์อาร์ต · Glitch art · โคราช</a></li><li><a href="studio-pan.html">ป่าน / Pan — ไบโออาร์ต · Bio art · สงขลา</a></li></ul></div></noscript><!--/pre:strip-->
+      <div class="depth" id="depth"><div class="sun ring"></div><div class="sun dot"></div><div class="sun ring2"></div></div>
+      <div class="ground tartan"></div>
+    </div>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"><i id="progress-i"></i></div>
+  <div class="map-view" id="map" hidden><div class="map" id="map-grid"><!--pre:map--><button class="dist d0 wide" style="grid-column:span 4" data-id="napha" data-d="จิตรกรรม" data-w="0" data-cur="ENTER"><span class="dn">NO.01 · ย่าน</span><span class="dd">จิตรกรรม</span><span class="da">นภา · เชียงใหม่</span><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="10" width="92" height="60"></rect><path d="M40,70 V42 A20,20 0 0 1 80,42 V70"></path></svg></button><button class="dist d1" style="grid-column:span 2" data-id="thara" data-d="ภาพถ่าย" data-w="0" data-cur="ENTER"><span class="dn">NO.02 · ย่าน</span><span class="dd">ภาพถ่าย</span><span class="da">ธารา · กรุงเทพฯ</span><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="10" y="18" width="42" height="50"></rect><circle cx="84" cy="44" r="28"></circle><circle cx="84" cy="44" r="16"></circle></svg></button><button class="dist d2" style="grid-column:span 2" data-id="kwan" data-d="ภาพประกอบ" data-w="0" data-cur="ENTER"><span class="dn">NO.03 · ย่าน</span><span class="dd">ภาพประกอบ</span><span class="da">ขวัญ · ขอนแก่น</span><svg viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="40" r="32"></circle><circle cx="60" cy="40" r="20" stroke-dasharray="3 4"></circle></svg></button><button class="dist d3" style="grid-column:span 2" data-id="phum" data-d="เซรามิก" data-w="0" data-cur="ENTER"><span class="dn">NO.04 · ย่าน</span><span class="dd">เซรามิก</span><span class="da">ภูมิ · ราชบุรี</span><svg viewBox="0 0 120 80" aria-hidden="true"><ellipse cx="60" cy="40" rx="42" ry="28"></ellipse><circle cx="60" cy="40" r="12"></circle></svg></button><button class="dist d4" style="grid-column:span 2" data-id="irene" data-d="สิ่งทอ" data-w="0" data-cur="ENTER"><span class="dn">NO.05 · ย่าน</span><span class="dd">สิ่งทอ</span><span class="da">ไอรีน · น่าน</span><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="16" width="104" height="50"></rect><path d="M8,16 q13,-12 26,0 t26,0 t26,0 t26,0"></path><path d="M8,41 H112" stroke-dasharray="4 4"></path></svg></button><button class="dist d5" style="grid-column:span 2" data-id="dao" data-d="คอลลาจ" data-w="0" data-cur="ENTER"><span class="dn">NO.06 · ย่าน</span><span class="dd">คอลลาจ</span><span class="da">ดาว · ภูเก็ต</span><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="10" y="38" width="50" height="32"></rect><rect x="38" y="22" width="48" height="32" transform="rotate(-4 62 38)"></rect><rect x="66" y="8" width="46" height="32"></rect></svg></button><button class="dist d0" style="grid-column:span 2" data-id="mali" data-d="ริโซกราฟ" data-w="1" data-cur="ENTER"><span class="dn">NO.07 · ย่าน</span><span class="dd">ริโซกราฟ</span><span class="da">มะลิ · เชียงราย</span><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="8" y="48" width="64" height="22"></rect><rect x="26" y="28" width="64" height="22"></rect><rect x="14" y="8" width="60" height="22"></rect></svg></button><button class="dist d1" style="grid-column:span 2" data-id="phop" data-d="ศิลปะเจเนอเรทีฟ" data-w="1" data-cur="ENTER"><span class="dn">NO.08 · ย่าน</span><span class="dd">ศิลปะเจเนอเรทีฟ</span><span class="da">ภพ · กรุงเทพฯ</span><svg viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="40" r="34"></circle><circle cx="60" cy="40" r="22"></circle><circle cx="60" cy="40" r="10"></circle><path d="M26,40 H94 M60,6 V74" stroke-dasharray="3 4"></path></svg></button><button class="dist d2" style="grid-column:span 2" data-id="phrae" data-d="กลิตช์อาร์ต" data-w="1" data-cur="ENTER"><span class="dn">NO.09 · ย่าน</span><span class="dd">กลิตช์อาร์ต</span><span class="da">แพร · โคราช</span><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="14" y="50" width="44" height="12"></rect><rect x="34" y="36" width="44" height="12"></rect><rect x="8" y="22" width="40" height="12"></rect><rect x="48" y="8" width="44" height="12"></rect><rect x="92" y="46" width="8" height="8"></rect></svg></button><button class="dist d3 wide" style="grid-column:span 2" data-id="pan" data-d="ไบโออาร์ต" data-w="1" data-cur="ENTER"><span class="dn">NO.10 · ย่าน</span><span class="dd">ไบโออาร์ต</span><span class="da">ป่าน · สงขลา</span><svg viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="34" r="30"></circle><circle cx="60" cy="34" r="10"></circle><circle cx="20" cy="62" r="12"></circle><circle cx="96" cy="60" r="9"></circle></svg></button><div class="plaza" style="grid-column:span 2" aria-hidden="true"><span>PLAZA · จัตุรัสกลางเมือง</span><svg viewBox="0 0 120 80"><circle cx="60" cy="40" r="34"></circle><circle cx="60" cy="40" r="22"></circle><circle cx="60" cy="40" r="8"></circle><path d="M60,4 V76 M24,40 H96"></path></svg></div><div class="compass" aria-hidden="true">N ↑</div><!--/pre:map--></div></div>
+</section>
+
+<div class="tape-wrap" aria-hidden="true"><div class="tape-bar"></div></div>
+
+<section class="sec mani" id="manifesto">
+  <div class="sec-k reveal">Manifesto</div>
+  <div class="mani-lines" role="heading" aria-level="2" data-t-aria="mani_aria" aria-label="ไม่มีหอศิลป์ ไม่มีคนกลาง ไม่มีค่าหัวคิว มีแค่คนทำกับคนซื้อ">
+    <div class="rn reveal" aria-hidden="true" data-k="mani1" data-s="0" style="--i:0"></div>
+    <div class="rn reveal" aria-hidden="true" data-k="mani2" data-s="3" style="--i:1"></div>
+    <div class="rn reveal" aria-hidden="true" data-k="mani3" data-s="5" style="--i:2"></div>
+    <div class="rn reveal" aria-hidden="true" data-k="mani4" data-s="2" style="--i:3"></div>
+  </div>
+  <p class="mani-note reveal" style="--i:4" data-t="mani_note">ที่นี่ศิลปินตั้งราคาเอง รับเงินเอง และคุยกับคนซื้อเอง ไม่มีใครมานั่งขวางระหว่างเรากับงาน เพราะงานศิลปะควรเดินจากมือคนทำไปถึงมือคนรัก ไม่ใช่แวะจ่ายค่าผ่านทางก่อน</p>
+</section>
+
+<section class="sec bp" id="how">
+  <div class="sec-k reveal">How it works</div>
+  <h2 class="sec-t reveal"><span data-t="how_h">วิธีใช้งาน</span></h2>
+  <div class="bp-grid">
+    <article class="room reveal" style="--i:0">
+      <span class="room-no">FL.01 — ROOM A</span>
+      <svg viewBox="0 0 200 92" aria-hidden="true"><path d="M8,86 H192"/><rect x="18" y="44" width="40" height="42"/><rect x="70" y="22" width="44" height="64"/><path d="M130,86 V50 a20,20 0 0 1 40,0 V86"/><circle cx="92" cy="54" r="38" stroke-dasharray="4 4" style="stroke:var(--gold)"/></svg>
+      <div class="room-n">01</div><h3 data-t="s1_h">เลือกตึก</h3>
+      <p data-t="s1_p">ลากเดินผ่านเมือง ตึกหนึ่งหลังคือศิลปินหนึ่งคน เห็นรูปทรงแล้วถูกใจหลังไหน ก็ชี้หลังนั้น ไม่ต้องมีใครแนะนำ</p>
+      <span class="room-dim">4.00 M</span>
+    </article>
+    <article class="room reveal" style="--i:1">
+      <span class="room-no">FL.02 — ROOM B</span>
+      <svg viewBox="0 0 200 92" aria-hidden="true"><rect x="20" y="8" width="160" height="76"/><path d="M80,84 V54 a20,20 0 0 1 40,0 V84"/><path d="M100,92 V30" stroke-dasharray="4 4" style="stroke:var(--gold)"/><circle cx="100" cy="30" r="4" style="stroke:var(--gold)"/><path d="M44,24 H64 M136,24 H156 M44,40 H64 M136,40 H156"/></svg>
+      <div class="room-n">02</div><h3 data-t="s2_h">เดินเข้าไปดูงาน</h3>
+      <p data-t="s2_p">เปิดประตูตึก ไล่ดูทีละชั้น ทีละห้อง ผลงานแขวนอยู่บนผนังคอนกรีตจริง ๆ จับไม่ได้ แต่ดูได้นานเท่าที่อยากดู</p>
+      <span class="room-dim">6.00 M</span>
+    </article>
+    <article class="room reveal" style="--i:2">
+      <span class="room-no">FL.03 — ROOM C</span>
+      <svg viewBox="0 0 200 92" aria-hidden="true"><rect x="14" y="28" width="48" height="38"/><rect x="138" y="28" width="48" height="38"/><path d="M62,47 H138"/><path d="M126,38 l12,9 l-12,9"/><circle cx="100" cy="47" r="15" style="stroke:var(--gold)"/><text x="100" y="53" text-anchor="middle" style="fill:var(--gold);stroke:none;font:400 17px Anton,sans-serif">$</text></svg>
+      <div class="room-n">03</div><h3 data-t="s3_h">ซื้อตรงจากศิลปิน</h3>
+      <p data-t="s3_p">เจอชิ้นที่ตามไปถึงในฝัน ก็คุยกับคนทำโดยตรง จ่ายตามราคาที่เขาตั้ง เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน</p>
+      <span class="room-dim">5.00 M</span>
+    </article>
+  </div>
+</section>
+
+<div class="tape-wrap" aria-hidden="true"><div class="tape-bar"></div></div>
+
+<section class="sec feat" id="featured">
+  <span class="stk" aria-hidden="true">NEW EVERY WEEK ★</span>
+  <div class="sec-k reveal">This week</div>
+  <h2 class="sec-t reveal"><span id="feat-h">ผลงานเด่นสัปดาห์นี้</span></h2>
+  <div class="feat-bar reveal">
+    <label class="sortl"><span data-t="sort_label">เรียงตาม</span>
+      <select id="sort"><option value="cur" data-t="sort_cur">คัดมาให้</option><option value="low" data-t="sort_low">ราคาต่ำ → สูง</option><option value="high" data-t="sort_high">ราคาสูง → ต่ำ</option><option value="new" data-t="sort_new">ใหม่ล่าสุด</option></select></label>
+    <button type="button" class="fbtn" id="all-btn" aria-pressed="false"></button>
+    <span class="feat-count" id="feat-count" role="status"></span>
+  </div>
+  <div class="masonry" id="masonry"><!--pre:masonry--><div class="mi reveal in" style="--i:0"><a class="card" href="studio-mali.html?work=0" draggable="false" data-id="mali" data-k="0" data-cur="VIEW" aria-label="ซ้อนทับ โดยมะลิ $85"><i class="tape" style="--tr:-5deg"></i><span class="art" style="--ar:4/5;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#E8584F 0 40%,#3F6FA8 40% 66%,#F0C14B 66%)"><img src="art/mali-1.svg" alt="ซ้อนทับ" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ซ้อนทับ</span><span class="pa">มะลิ · ริโซกราฟ</span><span class="pp">$85</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-phop.html?work=2" draggable="false" data-id="phop" data-k="2" data-cur="VIEW" aria-label="คลื่นตาราง โดยภพ $340"><i class="tape" style="--tr:4deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#E8E4D8 0 18%,transparent 18.5%),linear-gradient(135deg,#2E2A3A 0 50%,#C9A24B 50%)"><img src="art/phop-3.svg" alt="คลื่นตาราง" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">คลื่นตาราง</span><span class="pa">ภพ · ศิลปะเจเนอเรทีฟ</span><span class="pp">$340</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-phrae.html?work=2" draggable="false" data-id="phrae" data-k="2" data-cur="VIEW" aria-label="ไฟล์เสีย โดยแพร $650"><i class="tape" style="--tr:-3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#3FB8AF 0 18%,transparent 18.5%),linear-gradient(135deg,#1B1B26 0 50%,#D6457A 50%)"><img src="art/phrae-3.svg" alt="ไฟล์เสีย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ไฟล์เสีย</span><span class="pa">แพร · กลิตช์อาร์ต</span><span class="pp">$650</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-thara.html?work=0" draggable="false" data-id="thara" data-k="0" data-cur="VIEW" aria-label="ถนนเปียก โดยธารา $420"><i class="tape" style="--tr:6deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#4A6080 0 40%,#2D4A6A 40% 66%,#6B8099 66%)"><img src="art/thara-1.svg" alt="ถนนเปียก" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ถนนเปียก</span><span class="pa">ธารา · ภาพถ่าย</span><span class="pp">$420</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-pan.html?work=0" draggable="false" data-id="pan" data-k="0" data-cur="VIEW" aria-label="เส้นใยในดิน โดยป่าน $380"><i class="tape" style="--tr:-6deg"></i><span class="art" style="--ar:1/1;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#2A241C 0 40%,#8F9A6C 40% 66%,#D8CFA6 66%)"><img src="art/pan-1.svg" alt="เส้นใยในดิน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นใยในดิน</span><span class="pa">ป่าน · ไบโออาร์ต</span><span class="pp">$380</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-kwan.html?work=2" draggable="false" data-id="kwan" data-k="2" data-cur="VIEW" aria-label="รถไฟในฝัน โดยขวัญ $390"><i class="tape" style="--tr:3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#B888B8 0 18%,transparent 18.5%),linear-gradient(135deg,#9B6B9B 0 50%,#7A4A7A 50%)"><img src="art/kwan-3.svg" alt="รถไฟในฝัน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">รถไฟในฝัน</span><span class="pa">ขวัญ · ภาพประกอบ</span><span class="pp">$390</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-irene.html?work=1" draggable="false" data-id="irene" data-k="1" data-cur="VIEW" aria-label="เส้นด้าย โดยไอรีน $520"><i class="tape" style="--tr:-4deg"></i><span class="art" style="--ar:5/9;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 34% 40%,#4A7040 0 22%,transparent 22.5%),radial-gradient(circle at 68% 64%,#3A6030 0 30%,transparent 30.5%),#5A8050"><img src="art/irene-2.svg" alt="เส้นด้าย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นด้าย</span><span class="pa">ไอรีน · สิ่งทอ</span><span class="pp">$520</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-napha.html?work=0" draggable="false" data-id="napha" data-k="0" data-cur="VIEW" aria-label="เช้าหมอก โดยนภา $1,800"><i class="tape" style="--tr:5deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#C4958A 0 40%,#7A4A40 40% 66%,#D4CFCA 66%)"><img src="art/napha-1.svg" alt="เช้าหมอก" loading="lazy" decoding="async" draggable="false"><i class="stamp sold">ขายแล้ว</i></span><span class="plate"><span class="pn">เช้าหมอก</span><span class="pa">นภา · จิตรกรรม</span><span class="pp strike">$1,800</span><span class="chip sold">ขายแล้ว</span></span></a></div><!--/pre:masonry--></div>
+</section>
+
+<div class="tape-wrap r" aria-hidden="true"><div class="tape-bar"></div></div>
+
+<section class="sec spot" id="spotlight">
+  <div class="chk" aria-hidden="true"></div>
+  <div class="sec-k reveal">Spotlight</div>
+  <h2 class="sec-t reveal"><i data-t="spot_i">Artist of the week</i><br><span data-t="spot_h">นภา</span></h2>
+  <div class="spot-g">
+    <figure class="afr concrete reveal"><div class="afr-in" id="afr-in"><img id="afr-img" alt="" decoding="async"><figcaption id="afr-cap"></figcaption></div></figure>
+    <div class="spot-qa">
+      <div class="spot-meta reveal" id="spot-meta"></div>
+      <div class="qa reveal" style="--i:1"><div class="q" data-t="q1">ทำไมถึงเลิกส่งงานเข้าหอศิลป์?</div><p class="a" data-t="a1">ส่งไปสิบสองรอบ ได้คำตอบว่า "น่าสนใจ แต่ยังไม่ใช่ตอนนี้" ครบสิบสองรอบ สุดท้ายก็เข้าใจว่า "ตอนนี้" ของพวกเขาไม่เคยมาถึง เลยเลิกรอ</p></div>
+      <div class="qa reveal" style="--i:2"><div class="q" data-t="q2">ทำไมต้องห้องว่างกับหมอก?</div><p class="a" data-t="a2">เพราะที่ว่างคือที่เดียวที่ไม่มีใครมาบอกว่าต้องรู้สึกยังไง ห้องว่างหนึ่งห้อง คนดูร้อยคน ได้ร้อยเรื่อง ไม่ต้องมีคิวเรเตอร์แปลให้</p></div>
+      <div class="qa reveal" style="--i:3"><div class="q" data-t="q3">ถ้าคนเดินเข้ามาแล้วไม่ซื้อล่ะ?</div><p class="a" data-t="a3">ก็ไม่เป็นไร เดินดูฟรี นั่งเถียงกับภาพได้ ถ้าวันไหนงานตามไปหลอนถึงบ้าน ค่อยกลับมาคุยราคากับคนวาดตรง ๆ ไม่มีใครเก็บค่าแนะนำ</p></div>
+      <button type="button" class="btn pk reveal" style="--i:4" onclick="openStudio('napha')" data-t="spot_cta">เข้าไปในตึกนภา →</button>
+    </div>
+  </div>
+</section>
+
+<section class="stats" id="stats" data-t-aria="stats_aria" aria-label="ตัวเลขของเมือง">
+  <div class="stats-g">
+    <div class="st reveal" style="--i:0"><b id="c-art" data-count="0">0</b><span data-t="st1">ศิลปินในเมือง</span></div>
+    <div class="st reveal" style="--i:1"><b id="c-work" data-count="0">0</b><span data-t="st2">ผลงานในตึก</span></div>
+    <div class="st reveal" style="--i:2"><b id="c-disc" data-count="0">0</b><span data-t="st3">สาขาศิลปะ</span></div>
+    <div class="st reveal" style="--i:3"><b data-count="100" data-suf="%">0</b><span data-t="st4">เงินที่ถึงมือศิลปิน</span></div>
+  </div>
+</section>
+
+<section class="sec join-band" id="join">
+  <div><div class="sec-k reveal" data-t="jn_kick">สำหรับศิลปิน</div>
+  <h2 class="sec-t reveal"><span data-t="join_h">อยากมีตึกของตัวเอง?</span></h2>
+  <p class="jb-p" data-t="jb_p">ตั้งราคาเอง รับเงินเอง ไม่มีใครคัดงาน</p></div>
+  <a class="btn" href="join.html" data-t="jb_btn">ดูรายละเอียด →</a>
+</section>
+
+<footer class="foot reveal">
+  <h3 data-t-html="foot_h">ศิลปะ<em>ไม่รอ</em>ใคร</h3>
+  <p data-t="foot_p">อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง</p>
+  <button type="button" class="btn" onclick="openJoin()" data-t="foot_btn">ขอเข้าร่วม →</button>
+  <div class="foot-more">
+    <div><h4 data-t="foot_menu">เมนู</h4><ul><li><a href="#city" data-t="nav_city">เมือง</a></li><li><a href="#manifesto" data-t="foot_manifesto">Manifesto</a></li><li><a href="#how" data-t="foot_how">วิธีใช้งาน</a></li><li><a href="#featured" data-t="foot_feat">ผลงานเด่น</a></li><li><a href="#map" data-t="foot_map">แผนที่เมือง</a></li><li><a href="join.html" data-t="foot_join">ขอมีตึก</a></li></ul></div>
+    <div><h4 data-t="foot_social">โซเชียล</h4><ul>
+      <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">Instagram · @circles.city</a></li>
+      <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">X · @circles_city</a></li>
+      <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">YouTube · circles city</a></li>
+    </ul></div>
+    <form class="news" onsubmit="event.preventDefault();subscribeNews(this)">
+      <label for="news-em" data-t="news_label">ข่าวจากเมือง ตึกใหม่ งานใหม่ ส่งตรงถึงกล่องอีเมล ไม่สแปม ไม่ขายต่อ</label>
+      <label class="hp" aria-hidden="true">Website<input class="hp-n" name="website" tabindex="-1" autocomplete="off"></label>
+      <div class="news-r"><input id="news-em" type="email" required placeholder="you@example.com" autocomplete="email"><button class="btn" type="submit" data-t="news_btn">สมัคร →</button></div>
+      <small class="news-c" data-t-html="news_consent">สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ</small>
+    </form>
+    <div class="foot-c"><span data-t="foot_copy">© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.</span> · <a href="privacy.html" data-t="legal_privacy">นโยบายความเป็นส่วนตัว</a> · <a href="terms.html" data-t="legal_terms">เงื่อนไขการใช้งาน</a></div>
+  </div>
+</footer>
+
+<script src="artists.js" defer></script>
+<script src="circles.js" defer></script>
+<script src="site.js" defer></script>
+<script src="hd2d.js" defer></script>
+<script src="vendor/lenis.min.js" defer></script>
+</body>
+</html>

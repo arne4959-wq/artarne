@@ -1,0 +1,107 @@
+/* circles.css — pieces shared by index.html and cutaway.html (language switch, mobile menu, dialogs, forms).
+   Uses the same tokens as the pages (--black --bone --paper --pink --gold --tartan-red). Only transform/opacity animate. */
+::selection{background:var(--pink);color:var(--black);}
+
+/* language switch + mobile menu button live inside the nav */
+.lang{font:400 .8rem var(--anton);letter-spacing:.14em;text-transform:uppercase;color:var(--black);background:var(--paper);border:2px solid var(--black);padding:.3rem .65rem;min-height:40px;min-width:44px;cursor:pointer;
+  transition:transform .3s var(--ease);}
+.lang:hover{transform:translateY(-2px) rotate(-3deg);}
+.menu-btn{display:none;width:44px;height:44px;border:var(--line) solid var(--black);background:var(--gold);cursor:pointer;position:relative;}
+.menu-btn i{position:absolute;left:10px;right:10px;height:3px;background:var(--black);transition:transform .35s var(--ease);}
+.menu-btn i:nth-child(1){top:14px;}.menu-btn i:nth-child(2){top:24px;}
+.menu-btn[aria-expanded="true"] i:nth-child(1){transform:translateY(5px) rotate(45deg);}
+.menu-btn[aria-expanded="true"] i:nth-child(2){transform:translateY(-5px) rotate(-45deg);}
+.mnav{position:absolute;left:0;right:0;top:100%;display:grid;background:var(--paper);border-bottom:var(--line) solid var(--black);padding:.4rem 1rem 1rem;
+  opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .3s var(--ease),transform .4s var(--ease);}
+.mnav.open{opacity:1;transform:none;pointer-events:auto;}
+.mnav a{font:400 1.5rem/1.2 "Chonburi",var(--thai);color:var(--black);text-decoration:none;padding:.7rem 0;border-bottom:2px dashed rgba(14,13,12,.25);}
+.mnav a:last-child{border-bottom:0;}
+@media(max-width:860px){.menu-btn{display:block;}.links{gap:.6rem;}}
+
+/* dialogs (join / inquiry) */
+.cdlg{margin:auto;border:var(--line) solid var(--black);padding:0;background:var(--paper);color:var(--black);width:min(620px,94vw);max-height:92vh;overflow:auto;box-shadow:12px 12px 0 var(--pink);}
+.cdlg::backdrop{background:rgba(14,13,12,.78);}
+.cdlg[open]{animation:cdlgIn .5s var(--ease);}
+@keyframes cdlgIn{from{opacity:0;transform:translateY(24px);}}
+.cdlg-h{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1.4rem 1.6rem 1.1rem;background:var(--black);color:var(--paper);border-bottom:var(--line) solid var(--black);}
+.cdlg-h h2{font:400 clamp(1.6rem,4vw,2.2rem)/1.3 "Chonburi",var(--thai);}
+.cdlg-h h2 em{font-style:normal;color:var(--pink);}
+.cdlg-x{flex:none;width:44px;height:44px;border:var(--line) solid var(--paper);background:var(--gold);color:var(--black);font:400 1.1rem var(--anton);cursor:pointer;}
+.cdlg form,.cdlg .cdlg-done{padding:1.4rem 1.6rem 1.7rem;display:grid;gap:1rem;}
+.cdlg p.intro{font:300 1rem/1.8 var(--thai);}
+.cdlg label{display:grid;gap:.35rem;font:400 .78rem var(--type);letter-spacing:.12em;color:var(--tartan-red);text-transform:uppercase;}
+.cdlg input,.cdlg select,.cdlg textarea{font:400 1rem/1.5 var(--thai);color:var(--black);background:var(--bone);border:var(--line) solid var(--black);padding:.65rem .8rem;width:100%;border-radius:0;}
+.cdlg textarea{min-height:120px;resize:vertical;}
+.cdlg input:focus-visible,.cdlg select:focus-visible,.cdlg textarea:focus-visible{outline:3px solid var(--pink);outline-offset:2px;background:var(--paper);}
+.cdlg .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.cdlg .act{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;}
+.cdlg .btn.ghost{background:var(--paper);color:var(--black);box-shadow:6px 6px 0 var(--black);}
+.cdlg .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+.cdlg .note{font:400 .8rem/1.7 var(--type);color:#6E685C;}
+.cdlg .note a{color:var(--black);text-decoration:none;border-bottom:2px solid var(--pink);}
+.cdlg-done h3{font:400 1.6rem/1.4 "Chonburi",var(--thai);}
+.cdlg-done pre{font:400 .85rem/1.7 var(--type);background:var(--bone);border:2px dashed var(--black);padding:.8rem 1rem;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow:auto;}
+@media(max-width:560px){.cdlg .row{grid-template-columns:1fr;}.cdlg-h,.cdlg form,.cdlg .cdlg-done{padding-left:1.1rem;padding-right:1.1rem;}}
+@media(prefers-reduced-motion:reduce){.cdlg[open]{animation:none;}}
+
+/* review fix 6: a space inside a ransom note is a gap, not a tile */
+.rn span.sp{background:none!important;border-color:transparent!important;box-shadow:none!important;}
+
+/* ===== spin:begin ===== */
+/* ---------- 3D spinning logo (see coin3d in circles.js) ---------- */
+.c3{display:inline-block;perspective:600px;flex:none;}
+.c3-lift,.c3-coin{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;}
+.c3-edge{position:absolute;inset:3%;border-radius:50%;background:#2a2622;}
+.c3-edge.hi{background:var(--pink,#FF2E88);}
+.c3-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.c3-face svg{display:block;width:100%!important;height:100%!important;position:static!important;transform:none!important;animation:none!important;transition:none!important;}
+.c3-mspin .c3-coin{animation:c3spin 2.2s linear infinite;}
+.c3-mhop .c3-lift{animation:c3hop 1.6s cubic-bezier(.3,0,.3,1) infinite;}
+.c3-mhop .c3-coin{animation:c3hopspin 1.6s cubic-bezier(.45,0,.2,1) infinite;}
+.c3-mfloat .c3-lift{animation:c3float 6s ease-in-out infinite;}
+.c3-coin.c3-once{animation:c3spin .9s cubic-bezier(.3,1.4,.5,1);}
+.c3-coin.c3-settle{animation:c3settle 2.2s cubic-bezier(.15,.8,.25,1);}
+@keyframes c3spin{to{transform:rotateY(360deg);}}
+@keyframes c3hop{0%,100%{transform:translateY(0) scale(1.06,.92);}12%{transform:translateY(0) scale(1);}50%{transform:translateY(-38%) scale(1);}88%{transform:translateY(0) scale(1);}94%{transform:translateY(0) scale(1.08,.9);}}
+@keyframes c3hopspin{0%,12%{transform:rotateY(0);}88%,100%{transform:rotateY(360deg);}}
+@keyframes c3float{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-11px) rotate(3deg);}}
+@keyframes c3settle{0%{transform:rotateY(0) rotateX(0);}60%{transform:rotateY(1080deg) rotateX(0);}70%{transform:rotateY(1080deg) rotateX(16deg);}80%{transform:rotateY(1080deg) rotateX(-9deg);}90%{transform:rotateY(1080deg) rotateX(3deg);}100%{transform:rotateY(1080deg) rotateX(0);}}
+/* where the coins sit */
+.brand > .c3{width:36px;height:36px;}
+.arch-par > .c3{width:60%;aspect-ratio:1;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.arch-par > .c3:focus-visible{outline:3px solid var(--pink,#FF2E88);outline-offset:6px;border-radius:50%;}
+.arch-par > .c3 .c3-face svg{filter:drop-shadow(7px 7px 0 #0E0D0C);}
+.loader-orb.c3{animation:none;aspect-ratio:1;filter:drop-shadow(6px 10px 0 var(--pink,#FF2E88));}
+#curtain > .c3{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;}
+@media(max-width:860px){.brand > .c3{width:30px;height:30px;}}
+/* page change curtain */
+html.pgc-in::after{content:"";position:fixed;inset:0;background:#0E0D0C;z-index:2000;animation:pgcSafe 0s 1.5s forwards;}  /* never stays black if the script fails */
+@keyframes pgcSafe{to{visibility:hidden;}}
+.pgc{position:fixed;inset:0;z-index:2001;background:#0E0D0C;display:grid;place-items:center;transform:translateY(100%);transition:transform .4s cubic-bezier(.65,0,.35,1);pointer-events:none;}
+.pgc::before{content:"";position:absolute;left:0;right:0;top:-18px;height:18px;background:repeating-linear-gradient(135deg,#0E0D0C 0 16px,#E8B730 16px 32px);}
+.pgc.on{transform:none;pointer-events:all;}
+.pgc.still{transition:none;}
+.pgc.up{transform:translateY(-100%);}
+.pgc > .c3{width:110px;height:110px;}
+@media(prefers-reduced-motion:reduce){.c3-coin,.c3-lift{animation:none!important;}.pgc{display:none;}}
+/* ===== spin:end ===== */
+
+/* ===== sale status (stamp on the picture, chip next to the price) ===== */
+.stamp{position:absolute;left:50%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-12deg);font:400 clamp(.85rem,2.2vw,1.4rem)/1 "Anton","Chonburi",Impact,sans-serif;font-style:normal;letter-spacing:.14em;text-transform:uppercase;padding:.35em .75em .3em;border:4px double currentColor;background:rgba(244,241,232,.9);pointer-events:none;white-space:nowrap;box-shadow:3px 3px 0 rgba(14,13,12,.35);}
+.stamp.sold{color:#A3182C;}
+.stamp.reserved{color:#0E0D0C;background:rgba(232,183,48,.94);}
+.chip{display:inline-block;font:400 .72rem/1.2 "Anton","Chonburi",Impact,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .45rem;border:2px solid #0E0D0C;vertical-align:middle;margin-left:.45rem;}
+.chip.sold{background:#A3182C;color:#F4F1E8;}
+.chip.reserved{background:#E8B730;color:#0E0D0C;}
+.strike{text-decoration:line-through;text-decoration-thickness:3px;opacity:.55;}
+html[lang=th] .stamp,html[lang=th] .chip{letter-spacing:.03em;font-family:"Chonburi","IBM Plex Sans Thai",sans-serif;}
+/* ===== lite:start ===== */
+/* the curtain's coin only spins while the curtain is covering the page */
+.curtain:not(.cover) .c3-coin,.curtain:not(.cover) .c3-lift{animation-play-state:paused!important;}
+/* a section that is off screen stops animating (circles.js adds .zz-off) */
+.zz-off,.zz-off *{animation-play-state:paused!important;}
+/* lite mode: no light shafts or dust, people at the doors stand still */
+html.lite .fx{display:none!important;}
+html.lite .stand .spr canvas{animation:none!important;}
+html.lite .stand .spr canvas:first-child{opacity:1;}
+/* ===== lite:end ===== */

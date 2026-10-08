@@ -1,0 +1,10 @@
+dist/
+.DS_Store
+.carbon/
+.claude-snapshot.tgz
+*.tgz
+.DS_Store
+.carbon/
+screenshots/
+tests/
+_preview/
