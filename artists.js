@@ -7,10 +7,16 @@
      pay:'https://...'   the artist's OWN payment page (PayPal.me, Stripe Payment Link, ...). Adds a "Pay now" button.
                          Must start with https:// or it is ignored. Remove it once the work is sold.
    Concept, per work (optional): concept:{origin,originEn, material,materialEn, quote,quoteEn, steps:[{h,hEn,d,dEn} x3]}
-                         Shows the "Concept of the work" block under the picture in the work dialog. No concept = no block. */
+                         Shows the "Concept of the work" block under the picture in the work dialog. No concept = no block. 
+   Profile section (profile.js), per artist, all optional - an empty field hides its whole slot:
+     tagline,taglineEn   one line above the bio          sold:N   works sold outside the site (added to the sold count)
+     concept,conceptEn   the CONCEPT strip               commission:{open:true,until:'ต.ค.',untilEn:'Oct'}   the "taking commissions" badge
+     timeline:[{y,t,tEn}]  the dashed ticket             instagram:'https://instagram.com/...'  (https only)
+*/
 const ARTISTS = [
   { id:'napha', name:'นภา', nameEn:'Napha', disc:'จิตรกรรม', scale:1.12, kind:'arch', works:['#C4958A','#7A4A40','#D4CFCA'], titles:['เช้าหมอก','เงาใต้ต้นไม้','ห้องว่าง'],
     since:2014, city:'เชียงใหม่', email:'napha@circles.example',
+    concept:'ไม่ได้วาดต้นไม้ วาดที่ที่มันเคยยืนอยู่',conceptEn:'I didn\'t paint the tree. I painted the place where it stood.',
     bio:'นภาวาดห้องว่างกับหมอกยามเช้ามาสิบปี จนหอศิลป์บอกว่างานดิบเกินไป นภาเลยเลิกขอพื้นที่ แล้วสร้างตึกของตัวเองซะเลย',
     bioEn:'Napha spent ten years painting empty rooms and morning fog, until the galleries called the work too raw. So Napha stopped asking for space and built a building instead.',
     pieces:[
@@ -19,6 +25,7 @@ const ARTISTS = [
       {t:'ห้องว่าง',tEn:'Empty Room',y:2024,m:'สีน้ำมันบนไม้',mEn:'Oil on wood',s:'80 × 60 ซม.',p:950,ar:'4/3',img:'art/napha-3.svg',q:"ห้องที่เคยเต็มไปด้วยเสียงคน",qEn:"A room that used to be full of voices.",st:"ห้องเช่าห้องแรกของนภา วาดในวันที่ขนของออกหมด เหลือแค่รอยสีจาง ๆ บนผนังตรงที่เคยแขวนรูป และวาดลงบนแผ่นไม้ที่เคยเป็นบานประตูห้องนั้น",stEn:"Napha's first rented room, painted on moving-out day, when only the pale outlines of old picture frames were left on the walls. It is painted on that room's own door."}] },
   { id:'thara', name:'ธารา', nameEn:'Thara', disc:'ภาพถ่าย', scale:1.0, kind:'lens', works:['#4A6080','#2D4A6A','#6B8099','#8A9BB0'], titles:['ถนนเปียก','คนที่รอ','มุมสูง','แสงเย็น'],
     since:2011, city:'กรุงเทพฯ', email:'thara@circles.example',
+    concept:'ฝนไล่คนเข้าบ้าน แต่เปิดถนนให้เรามอง',conceptEn:'The rain sends everyone indoors and leaves the street wide open.',
     bio:'ธาราเดินถ่ายถนนตอนฝนตกเพราะคนอื่นหลบฝนกันหมด ไม่มีใครมาแย่งมุม ทุกภาพอัดเองในห้องมืด และไม่เคยยอมกดปุ่ม "ทำให้สวยขึ้น"',
     bioEn:'Thara photographs streets in the rain because everyone else is hiding from it, so nobody fights for the angle. Every print is made by hand in the darkroom, and the "make it prettier" button has never been pressed.',
     pieces:[
@@ -36,6 +43,7 @@ const ARTISTS = [
       {t:'รถไฟในฝัน',tEn:'Dream Train',y:2024,m:'หมึกจีนและสีไม้บนกระดาษสา',mEn:'Chinese ink and coloured pencil on mulberry paper',s:'60 × 90 ซม.',p:390,ar:'2/3',img:'art/kwan-3.svg',q:"รถไฟที่ไม่มีสถานีปลายทาง",qEn:"A train with no last stop.",st:"รถไฟสายอีสานที่ขวัญนั่งกลับบ้านทุกสงกรานต์ วาดให้ลอยข้ามทุ่งนาขึ้นไปบนฟ้า ผู้โดยสารทุกคนคือคนที่ขวัญเคยเจอบนรถไฟจริง ๆ ใช้เวลาวาดสี่เดือน จนข้อมือขอลาพัก",stEn:"The northeastern line Kwan rides home every Songkran, drawn floating over the rice fields into the sky. Every passenger is someone Kwan really met on that train. Four months of drawing, until the wrist asked for leave."}] },
   { id:'phum', name:'ภูมิ', nameEn:'Phum', disc:'เซรามิก', scale:1.06, kind:'vase', works:['#D99A4E','#B87830'], titles:['แจกันรอย','ถ้วยชา'],
     since:2013, city:'ราชบุรี', email:'phum@circles.example',
+    concept:'ไฟเซ็นชื่อไว้แล้ว เหลือแค่เอาทองไปตามรอย',conceptEn:'The fire already signed it. I only followed the signature with gold.',
     bio:'ภูมิปั้นแจกันให้ร้าวตั้งแต่ในเตา แล้วบอกว่ารอยร้าวคือลายเซ็น เตาฟืนหลังบ้านพังไปสองรอบ แต่งานยังไม่เคยซ้ำกันสักใบ',
     bioEn:'Phum throws vases that crack inside the kiln, then calls the crack a signature. The wood-fired kiln out back has collapsed twice, and no two pieces have come out alike.',
     pieces:[

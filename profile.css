@@ -1,0 +1,163 @@
+/* profile.css — the artist profile section (profile.js) above the picture hall. Every rule starts with .pf- (or sits under it); nothing existing is overridden.
+   Look follows design/profile-reference.html. Moves only transform/opacity (plus the dot field's background-position, switched off in lite and reduced motion). */
+.pf-marq{background:var(--gold);border-bottom:4px solid var(--black);overflow:hidden;white-space:nowrap;height:34px;}
+.pf-marq-t{display:inline-block;font:400 1rem/34px var(--anton);letter-spacing:.14em;color:var(--black);animation:pf-marq 40s linear infinite;}
+@keyframes pf-marq{to{transform:translateX(-50%);}}
+
+.pf{position:relative;isolation:isolate;overflow:hidden;color:var(--black);background-color:#B9B7B1;background-image:radial-gradient(rgba(14,13,12,.18) 1.2px,transparent 1.4px);background-size:9px 9px;border-top:4px solid var(--black);border-bottom:4px solid var(--black);animation:pf-dots 6s linear infinite;}
+@keyframes pf-dots{to{background-position:90px 90px;}}
+.pf-in-wrap{position:relative;z-index:1;width:min(100%,1000px);margin:0 auto;padding:3.2rem 1.5rem 3.4rem;display:flex;flex-direction:column;align-items:center;gap:1.7rem;}
+
+/* background: rings, a star, a dot, and the Circles logo turning behind everything (aria-hidden, no pointer events) */
+.pf-bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.pf-bg>i{position:absolute;display:block;}
+.pf-ring{width:260px;height:260px;border-radius:50%;border:4px solid var(--black);animation:pf-ring 6s ease-out infinite;animation-delay:var(--pf-d,0s);}
+.pf-ring-a{left:4%;top:18%;}.pf-ring-b{left:4%;top:18%;border-color:var(--pink);animation-delay:2s;}
+.pf-ring-c{right:3%;top:44%;width:300px;height:300px;border-color:var(--gold);}.pf-ring-d{right:3%;top:44%;width:300px;height:300px;animation-delay:3.5s;}
+@keyframes pf-ring{0%{transform:scale(.2);opacity:.9;}100%{transform:scale(1.6);opacity:0;}}
+.pf-star{left:3%;bottom:6%;width:90px;height:90px;background:var(--pink);border:4px solid var(--black);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:pf-spin 14s linear infinite;}
+.pf-dotb{right:4%;top:22%;width:70px;height:70px;border-radius:50%;background:var(--black);animation:pf-bob 3.6s ease-in-out infinite;}
+@keyframes pf-spin{to{transform:rotate(360deg);}}
+@keyframes pf-bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.pf-lg{background:url(art/circles-logo-bg.svg) center/contain no-repeat;opacity:var(--o,.25);transform:rotate(var(--a,0deg));animation:var(--sp,pf-turn) var(--t,16s) linear infinite,pf-drift 9s ease-in-out infinite;}
+@keyframes pf-turn{to{rotate:360deg;}}
+@keyframes pf-turnr{to{rotate:-360deg;}}
+@keyframes pf-drift{0%,100%{translate:0 0;}50%{translate:var(--dx,20px) -26px;}}
+
+/* entrance: each piece lands once, in order (--pf-d). Settled look is the normal style, so hover transforms still work afterwards. */
+.pf-in{animation-duration:.7s;animation-timing-function:cubic-bezier(.2,.9,.3,1.2);animation-fill-mode:backwards;animation-delay:var(--pf-d,0s);transform:rotate(var(--r,0deg));}
+.pf-pop{animation-name:pf-pop;}.pf-drop{animation-name:pf-drop;}.pf-rise{animation-name:pf-rise;}
+@keyframes pf-pop{0%{opacity:0;transform:scale(.2) rotate(var(--r,0deg));}70%{transform:scale(1.12) rotate(var(--r,0deg));}100%{opacity:1;transform:scale(1) rotate(var(--r,0deg));}}
+@keyframes pf-drop{0%{opacity:0;transform:translateY(-140px) rotate(calc(var(--r,0deg) * 4));}65%{opacity:1;transform:translateY(10px) rotate(var(--r,0deg));}100%{opacity:1;transform:translateY(0) rotate(var(--r,0deg));}}
+@keyframes pf-rise{0%{opacity:0;transform:translateY(40px) rotate(var(--r,0deg));}100%{opacity:1;transform:translateY(0) rotate(var(--r,0deg));}}
+
+.pf-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.pf-tp{position:absolute;display:block;width:80px;height:26px;background:var(--gold);border:3px solid var(--black);}
+.pf-tp-pink{background:var(--pink);}.pf-tp-gold{background:var(--gold);}
+
+.pf-port{position:relative;width:min(250px,60vw);height:min(250px,60vw);flex:none;margin-top:.4rem;}
+.pf-pic{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;background:var(--pink);border:6px solid var(--black);box-shadow:10px 10px 0 var(--black);font:400 clamp(4rem,12vw,7rem)/1 "Chonburi",var(--thai);}
+.pf-tp-top{left:50%;top:-16px;width:110px;height:32px;margin-left:-55px;transform:rotate(-4deg);}
+
+.pf-name{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;align-items:flex-end;margin:0;font:400 clamp(3rem,13vw,5.25rem)/1.1 "Chonburi",var(--thai);}
+.pf-ltr{display:inline-block;padding:0 .17em;}
+.pf-l0{background:var(--black);color:var(--paper);}
+.pf-l1{background:var(--paper);border:4px solid var(--black);}
+.pf-l2{background:var(--pink);}
+.pf-tags{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:0;padding:0;list-style:none;}
+.pf-tag{font:400 1rem var(--anton);letter-spacing:.1em;text-transform:uppercase;border:3px solid var(--black);padding:6px 14px;transition:transform .2s,box-shadow .2s;}
+.pf-t-paper{background:var(--paper);}.pf-t-gold{background:var(--gold);}
+
+.pf-open{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.4rem .75rem;margin:0;background:var(--black);color:var(--paper);box-shadow:6px 6px 0 var(--gold);padding:.65rem 1.25rem;font:400 1.05rem var(--anton);letter-spacing:.1em;text-transform:uppercase;}
+.pf-open b{font-weight:400;}
+.pf-open span{font:400 .95rem var(--thai);letter-spacing:0;text-transform:none;color:var(--gold);}
+.pf-dot{width:14px;height:14px;border-radius:50%;background:var(--pink);animation:pf-blink 1.2s steps(2,end) infinite;}
+@keyframes pf-blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+.pf-note{position:relative;width:min(100%,760px);background:var(--paper);border:5px solid var(--black);box-shadow:10px 10px 0 var(--black);padding:1.6rem 2.2rem;text-align:center;}
+.pf-tp-l{left:-26px;top:-14px;width:90px;transform:rotate(-20deg);}.pf-tp-r{right:-26px;bottom:-14px;width:90px;transform:rotate(-20deg);}
+.pf-note p{margin:0;}
+.pf-tag1{font:400 clamp(1.3rem,3.4vw,1.7rem)/1.55 "Chonburi",var(--thai);}
+.pf-tag1+.pf-bio{margin-top:.9rem;}
+.pf-bio{font:400 1.12rem/1.8 var(--thai);}
+
+.pf-cc{position:relative;width:min(100%,760px);display:flex;align-items:stretch;border:5px solid var(--black);box-shadow:8px 8px 0 var(--black);background:var(--pink);}
+.pf-cv{flex:none;width:58px;background:var(--black);color:var(--paper);display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);font:400 1.1rem var(--anton);letter-spacing:.2em;}
+.pf-cc>div{padding:1.1rem 1.6rem;display:flex;flex-direction:column;gap:.35rem;text-align:left;}
+.pf-cc small{font:400 .82rem var(--type);letter-spacing:.1em;}
+.pf-cc p{margin:0;font:400 clamp(1.15rem,3vw,1.5rem)/1.5 "Chonburi",var(--thai);}
+.pf-tp-c{right:-16px;top:-14px;width:70px;height:24px;transform:rotate(18deg);}
+
+.pf-stats{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;margin:.2rem 0 0;padding:0;list-style:none;}
+.pf-st{width:150px;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;padding:.4rem;text-align:center;border:4px solid var(--black);transition:transform .2s,box-shadow .2s;}
+.pf-st b{font:400 2.9rem/1 var(--anton);}
+.pf-st span{font:400 .9rem/1.3 var(--thai);}
+.pf-st-ink{background:var(--black);color:var(--paper);box-shadow:6px 6px 0 var(--pink);}
+.pf-st-pink{background:var(--pink);box-shadow:6px 6px 0 var(--black);}
+.pf-st-gold{background:var(--gold);box-shadow:6px 6px 0 var(--black);}
+
+.pf-tl{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;width:min(100%,760px);margin:0;padding:1rem 1.6rem;list-style:none;background:#fff;border:4px dashed var(--black);font:400 .95rem/1.55 var(--thai);}
+.pf-tl li{flex:1 1 150px;}
+.pf-tl b{display:block;font:400 .95rem var(--type);color:var(--tartan-red);}
+
+.pf-works{width:100%;display:flex;flex-direction:column;align-items:center;gap:1.4rem;margin-top:.4rem;}
+.pf-wh{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.9rem 1.1rem;}
+.pf-wh h3{margin:0;background:var(--black);color:var(--paper);font:400 clamp(1.2rem,3.4vw,1.65rem) "Chonburi",var(--thai);padding:.3rem 1.2rem;transform:rotate(-1.5deg);}
+.pf-hv{font:400 .95rem var(--anton);letter-spacing:.1em;background:var(--gold);border:3px solid var(--black);padding:4px 12px;transform:rotate(2deg);}
+.pf-strip{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-end;justify-content:center;margin:0;padding:.8rem 0 .2rem;list-style:none;width:100%;}
+.pf-pk{position:relative;display:block;text-decoration:none;height:220px;aspect-ratio:var(--ar,1/1);padding:0;border:0;background:var(--bone);cursor:pointer;color:var(--paper);box-shadow:7px 7px 0 var(--black);transition:transform .2s;}
+.pf-pk img{display:block;width:100%;height:100%;object-fit:cover;}
+.pf-pk .pf-tp{left:50%;top:-14px;margin-left:-40px;z-index:2;transform:rotate(-5deg);}
+.pf-pk:hover,.pf-pk:focus-visible{transform:translateY(-8px) scale(1.04);z-index:3;}
+.pf-cap{position:absolute;left:0;right:0;bottom:0;padding:34px 12px 10px;background:linear-gradient(to top,rgba(14,13,12,.92),rgba(14,13,12,0));text-align:left;opacity:0;transition:opacity .2s;display:grid;gap:.1rem;}
+.pf-cap b{font:400 1.1rem/1.3 "Chonburi",var(--thai);}
+.pf-cp{font:400 .95rem var(--anton);letter-spacing:.08em;color:var(--gold);}
+.pf-strike{text-decoration:line-through;}
+.pf-pk:hover .pf-cap,.pf-pk:focus-visible .pf-cap{opacity:1;}
+@media(hover:none){.pf-cap{opacity:1;}}
+.pf-all,.pf-lk{display:inline-flex;align-items:center;min-height:44px;color:var(--black);text-decoration:none;font:400 1.05rem var(--anton);letter-spacing:.12em;text-transform:uppercase;border:0;border-bottom:4px solid var(--pink);background:none;padding:.5rem 0;cursor:pointer;}
+.pf-lk{border-bottom-color:var(--black);}
+.pf-all:hover,.pf-lk:hover{background:var(--gold);}
+
+.pf-sup{position:relative;width:min(100%,820px);margin-top:.6rem;}
+.pf-sbox{background:var(--black);color:var(--paper);border:5px solid var(--black);box-shadow:10px 10px 0 var(--pink);padding:1.7rem 2.2rem 1.8rem;display:flex;align-items:center;gap:1.8rem;transition:transform .2s,box-shadow .2s;}
+.pf-sbox:hover{transform:translate(-4px,-4px);box-shadow:14px 14px 0 var(--pink);}
+.pf-heart{flex:none;width:84px;height:84px;border-radius:50%;background:var(--pink);border:5px solid var(--paper);display:flex;align-items:center;justify-content:center;font:400 2.6rem var(--anton);color:var(--black);animation:pf-beat 1.4s ease-in-out infinite;}
+@keyframes pf-beat{0%,100%{scale:1;}50%{scale:1.12;}}
+.pf-stx{flex:1;display:grid;gap:.5rem;text-align:left;}
+.pf-stx h3{margin:0;font:400 clamp(1.3rem,3vw,1.9rem)/1.3 "Chonburi",var(--thai);}
+.pf-stx h3 span{background:var(--gold);color:var(--black);padding:0 .6rem;}
+.pf-stx p{margin:0;font:400 1rem/1.7 var(--thai);color:#D9D6CC;}
+.pf-sb{flex:none;position:relative;}
+.pf-sbtn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;font:400 1.15rem var(--anton);letter-spacing:.12em;text-transform:uppercase;padding:1rem 1.6rem;background:var(--paper);color:var(--black);border:4px solid var(--paper);text-decoration:none;cursor:pointer;}
+a.pf-sbtn:hover{background:var(--gold);}
+.pf-sbtn[disabled]{cursor:not-allowed;opacity:.92;}
+.pf-soon{position:absolute;right:-14px;top:-22px;background:var(--gold);color:var(--black);border:3px solid var(--black);padding:3px 10px;font:400 .8rem var(--anton);letter-spacing:.1em;transform:rotate(8deg);}
+.pf-tp-s{left:-14px;top:-16px;transform:rotate(-22deg);}
+
+.pf-cta{display:flex;gap:1.1rem 1.6rem;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:.4rem;}
+.pf-go{display:inline-flex;align-items:center;min-height:52px;background:var(--black);color:var(--paper);text-decoration:none;font:400 1.3rem var(--anton);letter-spacing:.12em;text-transform:uppercase;padding:1rem 2rem;box-shadow:8px 8px 0 var(--pink);}
+.pf-go:hover{background:var(--tartan-red);}
+.pf-bt{min-height:48px;font:400 1.05rem var(--anton);letter-spacing:.12em;text-transform:uppercase;background:var(--paper);color:var(--black);border:4px solid var(--black);box-shadow:5px 5px 0 var(--black);padding:.6rem 1.2rem;cursor:pointer;}
+.pf-bt-gold{background:var(--gold);}
+.pf-bt:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--black);}
+.pf-live{flex-basis:100%;text-align:center;min-height:1.4em;font:400 .95rem var(--thai);}
+.pf-live:not(:empty){background:var(--black);color:var(--paper);padding:.2rem .8rem;flex-basis:auto;}
+
+.pf a:focus-visible,.pf button:focus-visible{outline:4px solid var(--pink);outline-offset:4px;}
+.pf-sbox a:focus-visible,.pf-sbox button:focus-visible{outline-color:var(--gold);}
+.pf-tag:hover,.pf-st:hover{transform:translateY(-6px) rotate(0deg) scale(1.06);box-shadow:10px 10px 0 var(--black);}
+
+/* phones: one column, the works two-up, every tap target at least 44px, nothing wider than the screen */
+@media(max-width:640px){
+  .pf-in-wrap{padding:2.6rem 1rem 2.6rem;gap:1.4rem;}
+  .pf-note{padding:1.3rem 1.2rem;}
+  .pf-cv{width:44px;font-size:.95rem;}
+  .pf-cc>div{padding:.9rem 1rem;}
+  .pf-stats{gap:14px;}
+  .pf-st{width:calc(50% - 7px);max-width:150px;}
+  .pf-strip{display:grid;grid-template-columns:1fr 1fr;gap:26px 18px;align-items:end;}
+  .pf-strip>li{display:block;min-width:0;}
+  .pf-pk{width:100%;height:auto;max-height:260px;}
+  .pf-sup{width:calc(100% - 10px);}
+  .pf-sbox{box-shadow:6px 6px 0 var(--pink);flex-direction:column;text-align:center;padding:1.6rem 1.2rem;gap:1.1rem;}
+  .pf-stx{text-align:center;}
+  .pf-sb{align-self:stretch;display:grid;}
+  .pf-sbtn{width:100%;}
+  .pf-soon{right:6px;}
+  .pf-cta{flex-direction:column;align-items:stretch;}
+  .pf-go,.pf-bt,.pf-lk{justify-content:center;width:100%;box-sizing:border-box;}
+  .pf-lk{border-bottom-width:4px;}
+  .pf-ring{display:none;}
+}
+/* still, not slow: reduced motion shows everything at once and stops every loop */
+@media(prefers-reduced-motion:reduce){
+  .pf,.pf-marq-t,.pf-ring,.pf-star,.pf-dotb,.pf-lg,.pf-dot,.pf-heart,.pf-in{animation:none;}
+  .pf-in{opacity:1;}
+  .pf-lg{rotate:none;translate:none;}
+  .pf-pk,.pf-cap,.pf-sbox,.pf-st,.pf-tag{transition:none;}
+}
+/* lite mode: two floating logos, no loops; the entrance still plays once */
+html.lite .pf,html.lite .pf-marq-t,html.lite .pf-ring,html.lite .pf-star,html.lite .pf-dotb,html.lite .pf-lg,html.lite .pf-dot,html.lite .pf-heart{animation:none;}
+html.lite .pf-lg:nth-of-type(n+9){display:none;}   /* 6 shapes come first, so this keeps the first 2 logos */
+html.lite .pf-ring,html.lite .pf-star,html.lite .pf-dotb{display:none;}

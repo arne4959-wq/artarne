@@ -6,9 +6,10 @@
 //
 // It opens the REAL pages in headless Chrome (so there is no second copy of the rendering logic), then writes:
 //   studio-<id>.html   one static page per artist (full content, meta tags, JSON-LD). Built from cutaway.html.
+//   profile-<id>.html  the artist's profile page (own title / description / og, JSON-LD Person). Built from profile.html (tools/apply-profile-page.py).
 //   og/<id>.png        1200x630 share image per artist
 //   index.html         the block between <!--pre:…--> markers (artwork cards, filters, map, studio links)
-//   sitemap.xml        only with --site
+//   sitemap.xml        only with --site (studio and profile pages)
 // Run it again after you change artists.js or any text. Needs Node 22+ and Chrome/Chromium.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -80,6 +81,32 @@ try {
     console.log('  wrote', url);
   }
 
+  /* ---- 1b. one static profile page per artist (profile-<id>.html, from profile.html) ---- */
+  const ptemplate = read('profile.html');
+  for (const a of ARTISTS) {
+    await b.go(`${server.url}/profile.html?id=${a.id}`, 2500);
+    const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
+    if (!got.main || !/class="pf[ "]/.test(got.main) || !got.main.includes('class="pf-name"')) throw new Error(`render of profile ${a.id} produced no profile`);
+    if (got.title === read('cutaway.html').match(/<title>([\s\S]*?)<\/title>/)[1]) throw new Error(`profile ${a.id} kept the generic title`);
+    const url = `profile-${a.id}.html`, ogImg = abs(`og/${a.id}.png`);
+    const person = {'@context': 'https://schema.org', '@type': 'Person', name: a.name, alternateName: a.nameEn, jobTitle: `${DISC_EN[a.disc] || a.disc} artist`, description: a.bioEn || a.bio,
+      homeLocation: {'@type': 'Place', name: CITY_EN[a.city] || a.city}, image: ogImg, url: abs(url), ...(a.instagram && /^https:\/\//.test(a.instagram) ? {sameAs: [a.instagram]} : {}),
+      subjectOf: {'@type': 'WebPage', url: abs(`studio-${a.id}.html`)}};
+    let html = ptemplate
+      .replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main" data-pre="1" data-profile="${a.id}">${got.main}</main>`)
+      .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(got.title)}</title>`)
+      .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
+      .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
+      .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
+      .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
+      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
+      .replace('</head>', `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(person)}</script>\n</head>`);
+    write(url, html);
+    console.log('  wrote', url);
+  }
+
   /* ---- 2. share image per artist ---- */
   await b.view(1200, 630);
   fs.mkdirSync(path.join(ROOT, 'og'), {recursive: true});
@@ -105,7 +132,7 @@ try {
 
   /* ---- 4. sitemap ---- */
   if (SITE) {
-    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), 'join.html', 'privacy.html', 'terms.html'];
+    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`), 'join.html', 'privacy.html', 'terms.html'];
     write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${abs(u === 'index.html' ? '' : u)}</loc></url>`).join('\n')}\n</urlset>\n`);
     const robots = read('robots.txt').replace(/^#? ?Sitemap:.*$/m, '').trimEnd();
     write('robots.txt', `${robots}\nSitemap: ${abs('sitemap.xml')}\n`);
