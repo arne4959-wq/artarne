@@ -320,6 +320,32 @@ html[lang=th] .dlg-story small{font:600 .8rem var(--thai);letter-spacing:.01em;}
 .dlg-story blockquote{font:400 1.08rem/1.5 "Chonburi",var(--thai);text-wrap:balance;}
 html[lang=en] .dlg-story blockquote{font:italic 500 1.2rem/1.35 "Playfair Display",Georgia,serif;}
 .dlg-story p{font:400 .9rem/1.7 var(--thai);color:#3a3733;}
+.dlg-concept{padding:1.8rem 1.8rem 2rem;border-top:var(--line) solid var(--black);background:var(--bone);display:grid;gap:1.3rem;}
+.dlg-concept[hidden]{display:none;}
+.dlg-concept h3{font:400 clamp(1.5rem,3.4vw,2rem)/1.3 "Chonburi",var(--thai);}
+.dlg-concept h3 small{display:block;width:max-content;margin-bottom:.4rem;background:var(--black);color:var(--gold);font:italic 500 .95rem "Playfair Display",serif;padding:.15rem .7rem;}
+.cc-top{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;align-items:start;}
+.cc-dl{display:grid;gap:.8rem;}
+.cc-dl dt{font:400 .78rem var(--type);letter-spacing:.14em;color:var(--tartan-red);text-transform:uppercase;}
+html[lang=th] .cc-dl dt{font:600 .8rem var(--thai);letter-spacing:.01em;}
+.cc-dl dd{font:400 .95rem/1.7 var(--thai);}
+.cc-q{align-self:stretch;display:grid;align-content:center;gap:.5rem;padding:.2rem 0 .2rem 1rem;border-left:4px solid var(--pink);font:400 1.2rem/1.5 "Chonburi",var(--thai);text-wrap:balance;}
+html[lang=en] .cc-q{font:italic 500 1.35rem/1.35 "Playfair Display",Georgia,serif;}
+.cc-q cite{font:400 .78rem var(--type);letter-spacing:.1em;font-style:normal;color:var(--tartan-red);}
+.cc-steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;padding-top:.6rem;}
+.cc-card{position:relative;display:grid;gap:.35rem;align-content:start;padding:1.5rem 1.1rem 1.1rem;background:var(--paper);border:var(--line) solid var(--black);box-shadow:5px 5px 0 var(--black);}
+.cc-card:nth-child(odd){transform:rotate(-1deg);}.cc-card:nth-child(even){transform:rotate(1deg);}
+.cc-tape{position:absolute;top:-13px;left:50%;width:74px;height:24px;margin-left:-37px;background:var(--pink);border:2px solid var(--black);transform:rotate(-4deg);}
+.cc-card:nth-child(2) .cc-tape{background:var(--gold);transform:rotate(3deg);}
+.cc-card small{font:400 .75rem var(--type);letter-spacing:.14em;color:var(--tartan-red);}
+html[lang=th] .cc-card small{font:600 .8rem var(--thai);letter-spacing:.01em;}
+.cc-card b{font:400 1.2rem/1.35 "Chonburi",var(--thai);}
+.cc-card p{font:400 .88rem/1.65 var(--thai);color:#3a3733;}
+@media(max-width:860px){
+  .dlg-concept{padding:1.4rem 1.1rem 1.6rem;}
+  .cc-top,.cc-steps{grid-template-columns:1fr;}
+  .cc-card:nth-child(n){transform:none;}
+}
 .dlg-body dl{grid-template-columns:max-content max-content 1fr;column-gap:1.6rem;gap:0 1.6rem;border-top:2px solid var(--black);}
 .dlg-body dl > div{padding:.55rem .2rem;border-bottom:1px dashed rgba(14,13,12,.3);}
 .dlg-body dl > div{padding:.5rem 0;}
@@ -408,6 +434,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
       <div class="dlg-nav"><button type="button" id="dlg-prev">←</button><div class="dlg-th" id="dlg-th"></div><button type="button" id="dlg-next">→</button><span class="dlg-cnt" id="dlg-cnt"></span></div>
     </div>
   </div>
+  <section class="dlg-concept" id="dlg-concept" aria-labelledby="dlg-cc-h" hidden></section>
 </dialog>
 
 <script src="artists.js"></script>
@@ -522,6 +549,14 @@ function fillDlg(k) {
   $('#dlg-by').innerHTML = t('d_by', {a: esc(nameL(A)), d: esc(discL(A)), c: esc(cityL(A))});
   const story = $('#dlg-story'); story.hidden = !p.st;
   if (p.st) { $('#dlg-sk').textContent = t('d_story'); $('#dlg-q').textContent = pk(p, 'q') || ''; $('#dlg-st').textContent = pk(p, 'st'); }
+  const cc = $('#dlg-concept'), c = p.concept, steps = c && Array.isArray(c.steps) ? c.steps.filter(x => x && (x.h || x.d)) : [];
+  const hasCc = !!(c && (c.origin || c.material || c.quote || steps.length));   // no concept = no block, never an empty one
+  cc.hidden = !hasCc;
+  cc.innerHTML = !hasCc ? '' : `<h3 id="dlg-cc-h"><small>CONCEPT</small>${esc(t('cc_h'))}</h3>`
+    + (c.origin || c.material || c.quote ? `<div class="cc-top">`
+      + (c.origin || c.material ? `<dl class="cc-dl">${c.origin ? `<div><dt>${esc(t('cc_origin'))}</dt><dd>${esc(pk(c, 'origin'))}</dd></div>` : ''}${c.material ? `<div><dt>${esc(t('cc_mat'))}</dt><dd>${esc(pk(c, 'material'))}</dd></div>` : ''}</dl>` : '')
+      + (c.quote ? `<blockquote class="cc-q">“${esc(pk(c, 'quote'))}”<cite>— ${esc(nameL(A))}</cite></blockquote>` : '') + `</div>` : '')
+    + (steps.length ? `<ol class="cc-steps" aria-label="${esc(t('cc_steps'))}">${steps.slice(0, 3).map((x, i) => `<li class="cc-card"><i class="cc-tape" aria-hidden="true"></i><small>${esc(t('cc_step', {n: i + 1}))}</small><b>${esc(pk(x, 'h'))}</b><p>${esc(pk(x, 'd'))}</p></li>`).join('')}</ol>` : '');
   $('#dlg-dl').innerHTML = `<div><dt>${esc(t('lb_year'))}</dt><dd>${p.y}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div class="w"><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div>`;
   const sta = workStatus(p), pay = sta ? '' : payLink(p);       // sold / reserved works never show a pay button
   $('#dlg-price').textContent = usd(p.p); $('#dlg-price').classList.toggle('strike', !!sta);

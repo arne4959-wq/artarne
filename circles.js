@@ -1,11 +1,12 @@
 /* circles.js — shared by index.html and cutaway.html: language (TH/EN), toast, ransom type, forms, mobile menu.
    Needs artists.js first. */
 
-/* ---------- CONFIG: change these two lines to go live ----------
+/* ---------- CONFIG: change these lines to go live ----------
    endpoint : a form-backend URL (Formspree, Getform, your own API). It receives JSON via POST.
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
+   donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', contact: 'hello@circles.example', turnstileSiteKey: '' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
+const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
 
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* ===== lite:decide ===== phones, very weak devices (2 cores or 2 GB) and data-saver get fewer moving things. ?lite or ?full in the address forces it. */
@@ -77,7 +78,9 @@ th: {
   /* cutaway */
   cw_est:'ก่อตั้ง {y}', cw_back:'← กลับไปเดินเมือง', cw_hint:'▼ ภาพตัดตึกทีละชั้น กดที่ผลงานเพื่อดูรายละเอียดเต็ม', cw_section:'SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น',
   cw_meta:'{d} · ตั้งแต่ {y} · {c}', cw_view:'ดูรายละเอียด {t}', cw_prev:'← ตึกก่อนหน้า', cw_next:'ตึกถัดไป →', cw_roof:'{n} · STUDIO',
-  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด', buy:'ซื้อตรงจาก{a} →', w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →', st_sold:"ขายแล้ว", st_res:"จองแล้ว", cw_look_sold:"ดูรายละเอียด →", d_sold:"ชิ้นนี้มีเจ้าของแล้ว", d_res:"มีคนจองไว้แล้ว ถ้าหลุดจอง ศิลปินจะแจ้งคนที่ต่อคิว", b_sold:"ถาม{a}เรื่องงานแบบนี้ →", b_res:"ขอต่อคิวชิ้นนี้ →", b_pay:"จ่ายเลย →", b_ask:"มีคำถาม? ทัก{a}ก่อน", p_how1:"กดจ่ายผ่านลิงก์ของศิลปิน", p_how2:"ศิลปินทักกลับเรื่องการจัดส่ง", p_how3:"เงินเข้าบัญชีศิลปินโดยตรง", d_paynote:"ลิงก์จ่ายเงินเป็นของศิลปินเอง circles ไม่ได้รับเงินแทน", id_pre_sold:"สวัสดี เห็นผลงาน “{t}” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ", id_pre_res:"สวัสดี สนใจผลงาน “{t}” ({p}) ถ้าคนที่จองไว้ไม่ซื้อ ขอต่อคิวด้วย ขอบคุณ", v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด · ซื้อ →', d_by:'โดย <b>{a}</b> · {d} · {c}', d_note:'ราคาที่ศิลปินตั้งเอง ไม่มีค่าคอมมิชชัน', d_story:'ที่มาของงานชิ้นนี้', d_how1:'ส่งข้อความถึงศิลปิน', d_how2:'คุยเรื่องราคาและการจัดส่ง', d_how3:'จ่ายเงินให้ศิลปินโดยตรง',
+  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด', buy:'ซื้อตรงจาก{a} →', w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →', st_sold:"ขายแล้ว", st_res:"จองแล้ว", cw_look_sold:"ดูรายละเอียด →", d_sold:"ชิ้นนี้มีเจ้าของแล้ว", d_res:"มีคนจองไว้แล้ว ถ้าหลุดจอง ศิลปินจะแจ้งคนที่ต่อคิว", b_sold:"ถาม{a}เรื่องงานแบบนี้ →", b_res:"ขอต่อคิวชิ้นนี้ →", b_pay:"จ่ายเลย →", b_ask:"มีคำถาม? ทัก{a}ก่อน", p_how1:"กดจ่ายผ่านลิงก์ของศิลปิน", p_how2:"ศิลปินทักกลับเรื่องการจัดส่ง", p_how3:"เงินเข้าบัญชีศิลปินโดยตรง", d_paynote:"ลิงก์จ่ายเงินเป็นของศิลปินเอง circles ไม่ได้รับเงินแทน", id_pre_sold:"สวัสดี เห็นผลงาน “{t}” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ", id_pre_res:"สวัสดี สนใจผลงาน “{t}” ({p}) ถ้าคนที่จองไว้ไม่ซื้อ ขอต่อคิวด้วย ขอบคุณ", v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด · ซื้อ →', d_by:'โดย <b>{a}</b> · {d} · {c}', d_note:'ราคาที่ศิลปินตั้งเอง ไม่มีค่าคอมมิชชัน', d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
+  cy_h:'วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน', cy_p:'ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ งานที่ถูกซื้อไปไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ', cy_1:'วาด', cy_2:'โชว์ในตึก', cy_3:'มีคนซื้อ', cy_4:'วาดต่อ', cy_aria:'วงจร 4 ขั้น: วาด โชว์ในตึก มีคนซื้อ แล้ววนกลับไปวาดต่อ',
+  sup_h:'สนับสนุน Circles', sup_p:'ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า', sup_where:'เงินสนับสนุนไปไหน', sup_r1:'ค่าเซิร์ฟเวอร์และโดเมน', sup_r2:'การดูแลและพัฒนาเว็บ', sup_r3:'กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน', sup_note:'ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง', don_btn:'สนับสนุน →', don_soon:'เร็วๆ นี้', d_how1:'ส่งข้อความถึงศิลปิน', d_how2:'คุยเรื่องราคาและการจัดส่ง', d_how3:'จ่ายเงินให้ศิลปินโดยตรง',
   title_idx:'circles — เมืองของศิลปิน ซื้อตรงจากคนทำ', title_cw:'ตึกของ{a} — circles',
   desc_idx:'circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วซื้อตรงจาก\u2060คน\u2060ทำ',
   desc_cw:'เดินเข้าไปในตึกของ{a} ศิลปินสาขา{d} ดูผลงานทีละชั้น แล้วซื้อตรงจากศิลปิน',
@@ -133,7 +136,9 @@ en: {
   captcha_wait:'Please wait for the verification to finish', note_mailto:'For now this form works through your email app', demo_note:'Artist details and emails on this site are sample data',
   cw_est:'Est. {y}', cw_back:'← Back to the city', cw_hint:'▼ The building cut open, floor by floor. Click a work for full details', cw_section:'SECTION A–A · NO LIFT, STAIRS ONLY',
   cw_meta:'{d} · since {y} · {c}', cw_view:'View details of {t}', cw_prev:'← Previous building', cw_next:'Next building →', cw_roof:'{n} · STUDIO',
-  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size', buy:'Buy direct from {a} →', w_prev:'← Previous work', w_next:'Next work →', st_sold:"SOLD", st_res:"ON HOLD", cw_look_sold:"View details →", d_sold:"This one has found a home.", d_res:"Someone has reserved it. If that falls through, the artist will tell whoever is next in line.", b_sold:"Ask {a} about similar work →", b_res:"Join the queue →", b_pay:"Pay now →", b_ask:"Questions? Message {a} first", p_how1:"Pay through the artist's own link", p_how2:"The artist gets in touch about delivery", p_how3:"The money goes straight to the artist", d_paynote:"The payment link belongs to the artist. circles never holds the money.", id_pre_sold:"Hi, I saw “{t}” has sold and I love it. Do you have similar work, or take commissions? Thanks.", id_pre_res:"Hi, I'm interested in “{t}” ({p}). If the reservation falls through, could I be next in line? Thanks.", v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View & buy →', d_by:'by <b>{a}</b> · {d} · {c}', d_note:'Price set by the artist. No commission.', d_story:'The story behind it', d_how1:'Message the artist', d_how2:'Agree on price and shipping', d_how3:'Pay the artist directly',
+  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size', buy:'Buy direct from {a} →', w_prev:'← Previous work', w_next:'Next work →', st_sold:"SOLD", st_res:"ON HOLD", cw_look_sold:"View details →", d_sold:"This one has found a home.", d_res:"Someone has reserved it. If that falls through, the artist will tell whoever is next in line.", b_sold:"Ask {a} about similar work →", b_res:"Join the queue →", b_pay:"Pay now →", b_ask:"Questions? Message {a} first", p_how1:"Pay through the artist's own link", p_how2:"The artist gets in touch about delivery", p_how3:"The money goes straight to the artist", d_paynote:"The payment link belongs to the artist. circles never holds the money.", id_pre_sold:"Hi, I saw “{t}” has sold and I love it. Do you have similar work, or take commissions? Thanks.", id_pre_res:"Hi, I'm interested in “{t}” ({p}). If the reservation falls through, could I be next in line? Thanks.", v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View & buy →', d_by:'by <b>{a}</b> · {d} · {c}', d_note:'Price set by the artist. No commission.', d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
+  cy_h:'A circle has no end. Neither does art.', cy_p:'The name Circles comes from the belief that art is never finished. When an artist completes one piece, the next is already waiting. A sale is not an ending. It is what lets the artist keep going, and the city keeps turning that way.', cy_1:'Draw', cy_2:'Show in the building', cy_3:'Someone buys', cy_4:'Draw again', cy_aria:'A loop of 4 steps: draw, show in the building, someone buys, then back to drawing again',
+  sup_h:'Support Circles', sup_p:'Right now artists keep the full amount, with no fees. The site runs on support. If we ever add a fee, we will tell you in advance.', sup_where:'Where the support goes', sup_r1:'Servers and domain', sup_r2:'Running and improving the site', sup_r3:'Events and new space for artists', sup_note:'Sample: the categories and shares are not final. [__]% marks a number we do not know yet and will fill in once we have real data.', don_btn:'Support →', don_soon:'Coming soon', d_how1:'Message the artist', d_how2:'Agree on price and shipping', d_how3:'Pay the artist directly',
   title_idx:'circles — a city of artists. Buy straight from the maker', title_cw:"{a}'s building — circles",
   desc_idx:'circles is a city of artists. One concrete building is one artist. No gallery, no middleman. Walk in, look at the work, buy straight from the maker.',
   desc_cw:"Walk into {a}'s building. {d} artist. See the work floor by floor, then buy direct from the artist.",
@@ -343,7 +348,19 @@ async function subscribeNews(form) {
 }
 
 /* ---------- nav wiring: language + mobile menu ---------- */
+/* Support button: a real link only when CONFIG.donate is an https:// URL, otherwise a disabled "Coming soon" button (never a dead link) */
+function wireDonate() {
+  const el = $('#donate-btn'); if (!el) return;
+  let ok = false; try { ok = new URL(CONFIG.donate).protocol === 'https:'; } catch (e) {}
+  if (!ok) return;
+  const a = document.createElement('a');
+  a.id = el.id; a.className = 'btn pk';
+  a.href = CONFIG.donate; a.target = '_blank'; a.rel = 'noopener'; a.dataset.t = 'don_btn';
+  el.replaceWith(a);
+}
+
 function wireNav() {
+  wireDonate();
   const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(LANG === 'th' ? 'en' : 'th'));
   const mb = $('#menu-btn'), mn = $('#mnav'); if (!mb || !mn) return;
   const set = open => { mb.setAttribute('aria-expanded', open); mn.classList.toggle('open', open); mn.toggleAttribute('inert', !open); };

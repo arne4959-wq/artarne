@@ -561,6 +561,39 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .join-band{background:var(--bone);display:flex;flex-wrap:wrap;gap:1.6rem 3rem;align-items:flex-end;justify-content:space-between;border-top:var(--line) solid var(--black);}
 .join-band .sec-t{margin-bottom:.4rem;}
 .jb-p{font:300 1.05rem/1.8 var(--thai);}
+.sup{background:var(--paper);border-top:var(--line) solid var(--black);display:grid;grid-template-columns:1.1fr 1fr;gap:2.4rem 4rem;align-items:start;}
+.sup .sec-p{margin:.4rem 0 1.8rem;max-width:560px;}
+.sup .btn.soon,.sup .btn.soon:hover{background:var(--bone);color:var(--black);box-shadow:none;transform:none;cursor:not-allowed;}
+.sup-w{position:relative;background:var(--bone);border:var(--line) solid var(--black);box-shadow:8px 8px 0 var(--black);padding:1.6rem 1.5rem 1.3rem;}
+.sup-w h3{font:400 1.5rem/1.35 "Chonburi",var(--thai);margin-bottom:1rem;}
+.sup-w ul{list-style:none;display:grid;gap:1.1rem;}
+.sup-w li{display:grid;grid-template-columns:1fr auto;gap:.35rem 1rem;align-items:end;font:400 .98rem/1.5 var(--thai);}
+.sup-bar{grid-column:1 / -1;height:16px;border:2px solid var(--black);background:repeating-linear-gradient(135deg,var(--black) 0 10px,var(--gold) 10px 20px);}
+.sup-v{font:400 1.6rem/1 var(--anton);letter-spacing:.04em;}
+.sup-note{margin-top:1.1rem;font:400 .8rem/1.7 var(--type);color:#6E685C;}
+@media(max-width:860px){.sup{grid-template-columns:1fr;padding:3rem 1.2rem;}}
+
+/* ---- loop section ("วงกลมไม่มีปลายทาง"): new rules only ---- */
+.cy{background:var(--paper);border-bottom:var(--line) solid var(--black);display:grid;grid-template-columns:1fr 1fr;gap:3rem 4rem;align-items:center;}
+.cy .sec-p{margin-top:.6rem;max-width:520px;}
+.cy .sec-t{text-wrap:balance;}
+.cy-fig{position:relative;width:min(100%,420px);aspect-ratio:1;margin:0 auto;}
+.cy-ring{position:absolute;inset:17%;width:66%;height:66%;overflow:visible;}
+.cy-ring circle{fill:none;stroke:var(--black);stroke-width:2.5;stroke-dasharray:5 4;}
+.cy-ring path{fill:var(--pink);stroke:var(--black);stroke-width:1.5;stroke-linejoin:round;}
+.cy-orbit{position:absolute;inset:17%;animation:cySpin 16s linear infinite;pointer-events:none;}
+.cy-orbit::before{content:"";position:absolute;top:0;left:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--gold);border:2px solid var(--black);}
+@keyframes cySpin{to{transform:rotate(360deg);}}
+.cy-steps{list-style:none;position:absolute;inset:0;}
+.cy-steps li{position:absolute;display:flex;align-items:center;gap:.5rem;width:max-content;max-width:42%;background:var(--bone);border:var(--line) solid var(--black);box-shadow:4px 4px 0 var(--black);padding:.4rem .7rem .4rem .45rem;font:400 .98rem/1.35 "Chonburi",var(--thai);transform:translate(-50%,-50%);}
+.cy-steps li:nth-child(1){left:50%;top:17%;}
+.cy-steps li:nth-child(2){left:83%;top:50%;}
+.cy-steps li:nth-child(3){left:50%;top:83%;}
+.cy-steps li:nth-child(4){left:17%;top:50%;}
+.cy-steps li:nth-child(2n){background:var(--gold);}
+.cy-steps b{flex:none;display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--black);color:var(--paper);font:400 .95rem var(--anton);}
+@media(max-width:860px){.cy{grid-template-columns:1fr;padding:3rem 1.2rem;}.cy-steps li{font-size:.86rem;padding:.3rem .5rem .3rem .35rem;gap:.35rem;}.cy-steps b{width:1.45rem;height:1.45rem;font-size:.8rem;}}
+@media(prefers-reduced-motion:reduce){.cy-orbit{animation:none;}.cy-orbit::before{display:none;}}
 /* ===== city: view switch + filters above the street, map in the same place ===== */
 .city-tools{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.6rem;padding:0 3rem 1.8rem;}
 .city-tools .filters{margin:0;gap:.6rem;}
@@ -579,6 +612,24 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   .city-tools .fbtn{flex:none;}
   .map-view{padding:0 1.2rem 1rem;}
 }
+/* ===== works-img:start ===== image-first wall: no frame, the details show on hover / focus (always on touch) */
+.masonry{column-gap:1.1rem;}
+.mi{margin-bottom:1.1rem;padding:0;}
+.masonry .card::before{display:none;}
+.masonry .card:hover,.masonry .card:focus-visible{transform:none;}
+.masonry .card .tape{display:none;}
+.masonry .card .art{border:0;}
+.masonry .card .art img{transition:transform .7s var(--ease);}
+.masonry .card:hover .art img,.masonry .card:focus-visible .art img{transform:scale(1.04);}
+.masonry .card .plate{position:absolute;left:0;right:0;bottom:0;margin:0;border:0;background:linear-gradient(to top,rgba(14,13,12,.94),rgba(14,13,12,0));padding:3.2rem 1rem .9rem;opacity:0;transition:opacity .3s var(--ease);z-index:3;}
+.masonry .card .pn{color:var(--paper);}
+.masonry .card .pa{color:var(--gold);}
+.masonry .card:hover .plate,.masonry .card:focus-visible .plate{opacity:1;}
+.masonry .card:focus-visible{outline:4px solid var(--pink);outline-offset:3px;}
+@media(hover:none){.masonry .card .plate{opacity:1;padding:2.2rem .7rem .6rem;}}
+@media(max-width:860px){.masonry{column-gap:.7rem;}.mi{margin-bottom:.7rem;}}
+@media(prefers-reduced-motion:reduce){.masonry .card .art img,.masonry .card .plate{transition:none;}}
+/* ===== works-img:end ===== */
 </style>
 </head>
 <body>
@@ -676,6 +727,24 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <p class="mani-note reveal" style="--i:4" data-t="mani_note">ที่นี่ศิลปินตั้งราคาเอง รับเงินเอง และคุยกับคนซื้อเอง ไม่มีใครมานั่งขวางระหว่างเรากับงาน เพราะงานศิลปะควรเดินจากมือคนทำไปถึงมือคนรัก ไม่ใช่แวะจ่ายค่าผ่านทางก่อน</p>
 </section>
 
+<section class="sec cy" id="cycle" aria-labelledby="cy-h">
+  <div>
+    <div class="sec-k reveal">The loop</div>
+    <h2 class="sec-t reveal" id="cy-h"><span data-t="cy_h">วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน</span></h2>
+    <p class="sec-p reveal" style="--i:1" data-t="cy_p">ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ งานที่ถูกซื้อไปไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ</p>
+  </div>
+  <div class="cy-fig reveal" style="--i:2">
+    <svg class="cy-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(85.4,14.6) rotate(45)"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(85.4,85.4) rotate(135)"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(14.6,85.4) rotate(225)"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(14.6,14.6) rotate(315)"/></svg>
+    <span class="cy-orbit" aria-hidden="true"></span>
+    <ol class="cy-steps" data-t-aria="cy_aria" aria-label="วงจร 4 ขั้น: วาด โชว์ในตึก มีคนซื้อ แล้ววนกลับไปวาดต่อ">
+      <li><b>1</b><span data-t="cy_1">วาด</span></li>
+      <li><b>2</b><span data-t="cy_2">โชว์ในตึก</span></li>
+      <li><b>3</b><span data-t="cy_3">มีคนซื้อ</span></li>
+      <li><b>4</b><span data-t="cy_4">วาดต่อ</span></li>
+    </ol>
+  </div>
+</section>
+
 <section class="sec bp" id="how">
   <div class="sec-k reveal">How it works</div>
   <h2 class="sec-t reveal"><span data-t="how_h">วิธีใช้งาน</span></h2>
@@ -751,6 +820,24 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <h2 class="sec-t reveal"><span data-t="join_h">อยากมีตึกของตัวเอง?</span></h2>
   <p class="jb-p" data-t="jb_p">ตั้งราคาเอง รับเงินเอง ไม่มีใครคัดงาน</p></div>
   <a class="btn" href="join.html" data-t="jb_btn">ดูรายละเอียด →</a>
+</section>
+
+<section class="sec sup" id="support">
+  <div>
+    <div class="sec-k reveal">Support</div>
+    <h2 class="sec-t reveal"><span data-t="sup_h">สนับสนุน Circles</span></h2>
+    <p class="sec-p reveal" data-t="sup_p">ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า</p>
+    <button type="button" class="btn pk soon" id="donate-btn" disabled data-t="don_soon">เร็วๆ นี้</button>
+  </div>
+  <div class="sup-w reveal" style="--i:1">
+    <h3 data-t="sup_where">เงินสนับสนุนไปไหน</h3>
+    <ul>
+      <li><span data-t="sup_r1">ค่าเซิร์ฟเวอร์และโดเมน</span><b class="sup-v">[__]%</b><i class="sup-bar" aria-hidden="true"></i></li>
+      <li><span data-t="sup_r2">การดูแลและพัฒนาเว็บ</span><b class="sup-v">[__]%</b><i class="sup-bar" aria-hidden="true"></i></li>
+      <li><span data-t="sup_r3">กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน</span><b class="sup-v">[__]%</b><i class="sup-bar" aria-hidden="true"></i></li>
+    </ul>
+    <p class="sup-note" data-t="sup_note">ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง</p>
+  </div>
 </section>
 
 <footer class="foot reveal">
