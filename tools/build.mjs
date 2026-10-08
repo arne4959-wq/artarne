@@ -62,6 +62,8 @@ try {
     await b.ev("document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));0");
     const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
     if (!got.main || !/class="(floor|mus)[ "]/.test(got.main)) throw new Error(`render of ${a.id} produced no floors`);
+    const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
+    if (noAlt.length) throw new Error(`studio ${a.id} has ${noAlt.length} <img> without alt`);
     const url = `studio-${a.id}.html`, ogImg = abs(`og/${a.id}.png`);
     const ld = {'@context': 'https://schema.org', '@type': 'ItemList', name: got.title, itemListElement: a.pieces.map((p, i) => ({'@type': 'ListItem', position: i + 1, item: {
       '@type': 'VisualArtwork', name: p.t, alternateName: p.tEn, creator: {'@type': 'Person', name: a.name, alternateName: a.nameEn, homeLocation: {'@type': 'Place', name: a.city}},
@@ -88,6 +90,8 @@ try {
     const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
     if (!got.main || !/class="pf[ "]/.test(got.main) || !got.main.includes('class="pf-name"')) throw new Error(`render of profile ${a.id} produced no profile`);
     if (got.title === read('cutaway.html').match(/<title>([\s\S]*?)<\/title>/)[1]) throw new Error(`profile ${a.id} kept the generic title`);
+    const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
+    if (noAlt.length) throw new Error(`profile ${a.id} has ${noAlt.length} <img> without alt`);
     const url = `profile-${a.id}.html`, ogImg = abs(`og/${a.id}.png`);
     const person = {'@context': 'https://schema.org', '@type': 'Person', name: a.name, alternateName: a.nameEn, jobTitle: `${DISC_EN[a.disc] || a.disc} artist`, description: a.bioEn || a.bio,
       homeLocation: {'@type': 'Place', name: CITY_EN[a.city] || a.city}, image: ogImg, url: abs(url), ...(a.instagram && /^https:\/\//.test(a.instagram) ? {sameAs: [a.instagram]} : {}),
