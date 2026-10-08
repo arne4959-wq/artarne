@@ -99,3 +99,10 @@ html.lite .mus-ppl,html.lite .mus-bench,html.lite .mus-world,html.lite .mus-dim,
 html.lite .mus-bob{animation:none;}
 html.lite .mus-sky{box-shadow:0 0 0 8px #0E1B2C;}
 html.lite .mus-art img{box-shadow:none;}
+
+/* tap targets: 44px on phones and touch screens. .mus-more keeps its look: the extra hit area is invisible */
+@media(max-width:640px),(pointer:coarse){
+  .mus-prof{min-height:44px;}
+  .mus-more{position:relative;}
+  .mus-more::after{content:"";position:absolute;left:-6px;right:-6px;top:-12px;bottom:-12px;}
+}

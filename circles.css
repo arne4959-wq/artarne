@@ -105,3 +105,14 @@ html.lite .fx{display:none!important;}
 html.lite .stand .spr canvas{animation:none!important;}
 html.lite .stand .spr canvas:first-child{opacity:1;}
 /* ===== lite:end ===== */
+
+/* ===== tap targets: at least 44px on phones and touch screens (only min-size / padding in a media query, desktop is untouched) ===== */
+@media(max-width:640px),(pointer:coarse){
+  nav .brand,nav .lang,nav .links .join,#sort{min-height:44px;}
+  .cut-head .back{display:inline-flex;align-items:center;min-height:44px;}
+  .foot-more li a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;}
+  .news-c a,.foot-c a{padding-block:1rem;}      /* inline links in a sentence (underlined by text-decoration): more hit area above and below, the line itself does not move */
+  .mini-foot a,.cdlg .note a{position:relative;}  /* these carry a pink border-bottom, so the extra hit area is an invisible ::after instead of padding */
+  .mini-foot a::after,.cdlg .note a::after{content:"";position:absolute;left:-6px;right:-6px;top:-16px;bottom:-16px;}
+  .work-dlg .dlg-nav > button{width:44px;height:44px;}
+}
