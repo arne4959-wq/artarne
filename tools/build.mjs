@@ -60,7 +60,7 @@ try {
     await b.go(`${server.url}/cutaway.html?id=${a.id}`, 3000);
     await b.ev("document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));0");
     const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
-    if (!got.main || !got.main.includes('class="floor')) throw new Error(`render of ${a.id} produced no floors`);
+    if (!got.main || !/class="(floor|mus)[ "]/.test(got.main)) throw new Error(`render of ${a.id} produced no floors`);
     const url = `studio-${a.id}.html`, ogImg = abs(`og/${a.id}.png`);
     const ld = {'@context': 'https://schema.org', '@type': 'ItemList', name: got.title, itemListElement: a.pieces.map((p, i) => ({'@type': 'ListItem', position: i + 1, item: {
       '@type': 'VisualArtwork', name: p.t, alternateName: p.tEn, creator: {'@type': 'Person', name: a.name, alternateName: a.nameEn, homeLocation: {'@type': 'Place', name: a.city}},

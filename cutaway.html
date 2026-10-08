@@ -23,6 +23,7 @@
 <link rel="preload" href="fonts/ibm-plex-sans-thai-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="circles.css">
+<link rel="stylesheet" href="museum.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -436,6 +437,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 
 <script src="artists.js"></script>
 <script src="circles.js"></script>
+<script src="museum.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
 const wantId = params.get('id') || (document.querySelector('#main[data-studio]') || {dataset: {}}).dataset.studio || 'napha';
@@ -529,6 +531,7 @@ function render(initial) {
         <a class="sn next" href="studio-${nextA.id}.html"><small>${esc(t('cw_next'))}</small><b>${esc(nameL(nextA))}</b><span>${esc(discL(nextA))}</span></a>
       </div>
     </div>`;
+  if (window.MUS && MUS.on(A)) MUS.mount(main, A);      // every studio: the picture hall replaces the cut-open tower
   ransom($('#rn-title'), nameL(A), idx);
   if (initial && !PRE) observeReveal();
   setMeta(t('title_cw', {a: nameL(A)}), t('desc_cw', {a: nameL(A), d: discL(A)}));
