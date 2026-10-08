@@ -116,3 +116,16 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
   .mini-foot a::after,.cdlg .note a::after{content:"";position:absolute;left:-6px;right:-6px;top:-16px;bottom:-16px;}
   .work-dlg .dlg-nav > button{width:44px;height:44px;}
 }
+
+/* ===== fold: <details class="fold"> collapsible sections (index: spotlight interview, footer columns). New .fold- rules only ===== */
+.fold>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:44px;padding:.7rem 1rem;cursor:pointer;font:600 1rem var(--thai);letter-spacing:.04em;color:inherit;border:3px solid currentColor;}
+.fold>summary::-webkit-details-marker{display:none;}
+.fold>summary::after{content:"+";font:400 1.5rem/1 var(--anton);}
+.fold[open]>summary::after{content:"\2212";}
+.fold>summary:hover{background:var(--gold);border-color:var(--gold);color:var(--black);}
+.fold>summary:focus-visible{outline:3px solid var(--pink);outline-offset:4px;}
+.fold-body{padding-top:1.4rem;}
+.fold-spot{margin:0 0 1.8rem;}
+.fold-foot{flex:1 0 100%;border-top:2px dashed rgba(244,241,232,.3);padding-top:1.6rem;}
+.fold-foot .foot-more{border-top:0;padding-top:2rem;}
+.fold-foot+.foot-c{flex:1 0 100%;padding-top:1.4rem;}
