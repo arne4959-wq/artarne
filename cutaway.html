@@ -582,7 +582,7 @@ function closeWork() { if (dlg.open) dlg.close(); }
 dlg.addEventListener('close', () => { openK = null; try { const u = new URL(location.href); u.searchParams.delete('work'); history.replaceState(null, '', u); } catch (e) {} });
 dlg.addEventListener('click', e => { if (e.target === dlg) closeWork(); });
 $('#dlg-x').addEventListener('click', closeWork);
-$('#dlg-buy').addEventListener('click', () => { const k = openK, s = workStatus(A.pieces[k]); closeWork(); openInquiry(A.id, k, s === 'sold' ? 'id_pre_sold' : s === 'reserved' ? 'id_pre_res' : ''); });
+$('#dlg-buy').addEventListener('click', () => { location.href = `buy-${A.id}-${openK}.html`; });      // the buy page of this work (it has the message form, the sold / reserved wording and the pay link)
 $('#dlg-prev').addEventListener('click', () => { if (openK > 0) openWork(openK - 1); });
 $('#dlg-next').addEventListener('click', () => { if (openK < A.pieces.length - 1) openWork(openK + 1); });
 $('#dlg-th').addEventListener('click', e => { const b = e.target.closest('[data-th]'); if (b) openWork(+b.dataset.th); });

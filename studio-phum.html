@@ -436,7 +436,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
         <div class="mus-map" aria-hidden="true"><small>ผังตึก</small><svg viewBox="0 0 126 114" aria-hidden="true"><rect x="28" y="8" width="70" height="96" class="mus-hall"></rect><path d="M52 104h22v6h-22z" class="mus-door"></path><rect class="mus-m is-on" data-k="0" x="26" y="59.42857142857143" width="4" height="16"></rect><rect class="mus-m" data-k="1" x="50" y="7" width="26" height="4"></rect><path id="mus-you" class="mus-you" d="M0 -6 L5 4 L-5 4Z" transform="translate(63 84.8)"></path></svg></div>
         <div class="mus-ctl"><button type="button" class="btn mus-prev" id="mus-prev" disabled="">← ภาพก่อน</button><span class="mus-cnt" id="mus-cnt">1 / 2</span><button type="button" class="btn pk mus-next" id="mus-next">เดินต่อ →</button></div>
       </div>
-      <aside class="mus-label" id="mus-label" aria-live="polite"><i class="mus-tape"></i><small>2023 · สูง 48 ซม.</small><b>แจกันรอย</b><i class="mus-q">“รอยร้าวคือลายเซ็นของไฟ”</i><span class="mus-prow"><span class="mus-pr">$540</span></span><span class="mus-acts"><button type="button" class="btn pk" data-mus="buy">ซื้อตรงจากภูมิ →</button><button type="button" class="mus-more" data-mus="more">รายละเอียดและแนวคิด</button></span></aside>
+      <aside class="mus-label" id="mus-label" aria-live="polite"><i class="mus-tape"></i><small>2023 · สูง 48 ซม.</small><b>แจกันรอย</b><i class="mus-q">“รอยร้าวคือลายเซ็นของไฟ”</i><span class="mus-prow"><span class="mus-pr">$540</span></span><span class="mus-acts"><a class="btn pk" href="buy-phum-0.html" data-mus="buy">ซื้อตรงจากภูมิ →</a><button type="button" class="mus-more" data-mus="more">รายละเอียดและแนวคิด</button></span></aside>
     </section>
       <div class="tower-foot"><span>SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น</span><a class="btn pk" href="index.html#city">← กลับไปเดินเมือง</a></div>
       <div class="snav" role="navigation" aria-label="studios">
@@ -618,7 +618,7 @@ function closeWork() { if (dlg.open) dlg.close(); }
 dlg.addEventListener('close', () => { openK = null; try { const u = new URL(location.href); u.searchParams.delete('work'); history.replaceState(null, '', u); } catch (e) {} });
 dlg.addEventListener('click', e => { if (e.target === dlg) closeWork(); });
 $('#dlg-x').addEventListener('click', closeWork);
-$('#dlg-buy').addEventListener('click', () => { const k = openK, s = workStatus(A.pieces[k]); closeWork(); openInquiry(A.id, k, s === 'sold' ? 'id_pre_sold' : s === 'reserved' ? 'id_pre_res' : ''); });
+$('#dlg-buy').addEventListener('click', () => { location.href = `buy-${A.id}-${openK}.html`; });      // the buy page of this work (it has the message form, the sold / reserved wording and the pay link)
 $('#dlg-prev').addEventListener('click', () => { if (openK > 0) openWork(openK - 1); });
 $('#dlg-next').addEventListener('click', () => { if (openK < A.pieces.length - 1) openWork(openK + 1); });
 $('#dlg-th').addEventListener('click', e => { const b = e.target.closest('[data-th]'); if (b) openWork(+b.dataset.th); });

@@ -3,8 +3,8 @@
    round skylights, the artist's real pictures hung frameless on both walls and at the far end. One picture is under the spot,
    the rest are dimmed. "Walk on" / "Previous" (and the arrow keys) slide the camera to the next picture. It is a few CSS 3D planes
    moved with one transform, not a 3D engine. Rules live in museum.css (every class starts with .mus-).
-   The detail dialog, the concept block and the buy / ask flow are the page's own: this file only calls openWork() and openInquiry().
-   Needs (from circles.js and the page): t, esc, pk, usd, nameL, fmtSize, workStatus, payLink, statusChip, openInquiry, openWork. */
+   The detail dialog and the concept block are the page's own (this file only calls openWork()); "buy" is a link to buy-<id>-<k>.html.
+   Needs (from circles.js and the page): t, esc, pk, usd, nameL, fmtSize, workStatus, payLink, statusChip, openWork. */
 (function () {
   'use strict';
   const W = 760, H = 560, PERSP = 800, VW = 1100, VH = 680;   // hall width / height, camera distance, design size of the viewport
@@ -138,7 +138,7 @@
     const buy = sta === 'sold' ? t('b_sold', {a: nameL(A)}) : sta === 'reserved' ? t('b_res') : pay ? t('b_ask', {a: nameL(A)}) : t('buy', {a: nameL(A)});
     return `<i class="mus-tape"></i><small>${p.y} · ${esc(fmtSize(p))}</small><b>${esc(pk(p, 't'))}</b>${p.q ? `<i class="mus-q">“${esc(pk(p, 'q'))}”</i>` : ''}`
       + `<span class="mus-prow"><span class="mus-pr${sta ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span>`
-      + `<span class="mus-acts">${pay ? `<a class="btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<button type="button" class="btn ${pay ? 'ghost' : 'pk'}" data-mus="buy">${esc(buy)}</button><button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
+      + `<span class="mus-acts">${pay ? `<a class="btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="btn ${pay ? 'ghost' : 'pk'}" href="buy-${esc(A.id)}-${k}.html" data-mus="buy">${esc(buy)}</a><button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
   }
   function update() {
     const w = document.getElementById('mus-world'); if (!w) return;
@@ -187,7 +187,7 @@
       const act = e.target.closest('[data-mus]');
       if (act) {
         if (act.dataset.mus === 'more') return openWork(cur);
-        const s = workStatus(A.pieces[cur]); return openInquiry(A.id, cur, s === 'sold' ? 'id_pre_sold' : s === 'reserved' ? 'id_pre_res' : '');
+        return;                                                      // "buy" is a real link to buy-<id>-<k>.html: the browser follows it
       }
       const ar = e.target.closest('.mus-art');
       if (ar) { const k = +ar.dataset.k; if (k === cur) openWork(k); else go(k); }

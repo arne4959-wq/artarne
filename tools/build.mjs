@@ -9,7 +9,8 @@
 //   profile-<id>.html  the artist's profile page (own title / description / og, JSON-LD Person). Built from profile.html (tools/apply-profile-page.py).
 //   og/<id>.png        1200x630 share image per artist
 //   index.html         the block between <!--pre:…--> markers (artwork cards, filters, map, studio links)
-//   sitemap.xml        only with --site (studio and profile pages)
+//   buy-<id>-<k>.html  the buy page of one work (k = its position in artists.js, from 0). Built from buy.html (tools/apply-buy-page.py).
+//   sitemap.xml        only with --site (studio, profile and buy pages)
 // Run it again after you change artists.js or any text. Needs Node 22+ and Chrome/Chromium.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -111,6 +112,39 @@ try {
     console.log('  wrote', url);
   }
 
+  /* ---- 1c. one static buy page per work (buy-<id>-<k>.html, k = position in artists.js from 0, from buy.html) ---- */
+  const btemplate = read('buy.html');
+  const AVAIL = {sold: 'https://schema.org/SoldOut', reserved: 'https://schema.org/LimitedAvailability'};
+  for (const a of ARTISTS) {
+    for (let k = 0; k < a.pieces.length; k++) {
+      const p = a.pieces[k];
+      await b.go(`${server.url}/buy.html?id=${a.id}&k=${k}`, 1800);
+      const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
+      got.main = got.main.replace(/<div class="cf-holder">[\s\S]*?<\/div><\/div>(?=<div class="act">)/, '');   // the CAPTCHA widget is mounted again when the page runs, never bake its leftovers
+      if (!got.main || !got.main.includes('class="by-title"') || !got.main.includes('class="by-form"')) throw new Error(`render of buy page ${a.id}-${k} produced no buy page`);
+      if (/^ซื้อผลงาน — circles$/.test(got.title)) throw new Error(`buy page ${a.id}-${k} kept the generic title`);
+      const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
+      if (noAlt.length) throw new Error(`buy page ${a.id}-${k} has ${noAlt.length} <img> without alt`);
+      const url = `buy-${a.id}-${k}.html`, ogImg = abs(`og/${a.id}.png`);
+      const ld = {'@context': 'https://schema.org', '@type': 'VisualArtwork', name: p.t, alternateName: p.tEn, creator: {'@type': 'Person', name: a.name, alternateName: a.nameEn, url: abs(`profile-${a.id}.html`)},
+        dateCreated: String(p.y), artMedium: p.mEn, image: abs(p.img), url: abs(url),
+        offers: {'@type': 'Offer', price: p.p, priceCurrency: 'USD', availability: AVAIL[p.status] || 'https://schema.org/InStock', url: abs(url)}};
+      let html = btemplate
+        .replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main" data-pre="1" data-buy-id="${a.id}" data-buy-k="${k}">${got.main}</main>`)
+        .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(got.title)}</title>`)
+        .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
+        .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
+        .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
+        .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
+        .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
+        .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
+        .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
+        .replace('</head>', `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
+      write(url, html);
+      console.log('  wrote', url);
+    }
+  }
+
   /* ---- 2. share image per artist ---- */
   await b.view(1200, 630);
   fs.mkdirSync(path.join(ROOT, 'og'), {recursive: true});
@@ -136,13 +170,13 @@ try {
 
   /* ---- 4. sitemap ---- */
   if (SITE) {
-    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`), 'join.html', 'privacy.html', 'terms.html'];
+    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`), ...ARTISTS.flatMap(a => a.pieces.map((_, k) => `buy-${a.id}-${k}.html`)), 'join.html', 'privacy.html', 'terms.html'];
     write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${abs(u === 'index.html' ? '' : u)}</loc></url>`).join('\n')}\n</urlset>\n`);
     const robots = read('robots.txt').replace(/^#? ?Sitemap:.*$/m, '').trimEnd();
     write('robots.txt', `${robots}\nSitemap: ${abs('sitemap.xml')}\n`);
     console.log('  wrote sitemap.xml + robots.txt');
   } else console.log('  (no --site given: sitemap.xml skipped, URLs stay relative)');
-  const bad = b.logs.filter(l => !/favicon/.test(l));
+  const bad = b.logs.filter(l => !/favicon|\[Cloudflare Turnstile\]/.test(l));   // the buy pages mount the form's Turnstile widget; it refuses the build server's host (error 110200), which says nothing about the pages
   if (bad.length) { console.error('Page errors during build:\n' + bad.join('\n')); process.exitCode = 1; }
 } finally { b.close(); server.close(); }
 console.log('build done');
