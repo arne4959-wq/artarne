@@ -154,13 +154,19 @@
     if (you) { const mh = 96, y = 8 + mh - s.cam / G.L * mh; you.setAttribute('transform', `translate(63 ${y.toFixed(1)})`); }
   }
   function go(k) { if (!G || k < 0 || k >= G.n || k === cur) return; cur = k; update(); }
+  let fitKey = '';
   function fit() {
     const st = document.getElementById('mus-stage'), vp = document.getElementById('mus-vp'); if (!st || !vp) return;
-    let sc = Math.max(st.clientWidth / VW, st.clientHeight / VH);         // cover: the hall always fills the stage
-    const narrow = st.clientWidth / sc < 640;                            // a phone: show at least 640 design px across so the end picture fits, and make the stage as tall as the hall is
-    if (narrow) sc = st.clientWidth / 640;
+    const w = st.clientWidth, key = w + 'x' + innerHeight;
+    if (key === fitKey) return;                                          // same width and screen height as last time: nothing to do (also stops the observer re-firing on our own height change)
+    fitKey = key;
+    st.style.height = '';                                                // measure the stylesheet's own height, never the inline one set last time
+    let sc = Math.max(w / VW, st.clientHeight / VH);                     // cover: the hall always fills the stage
+    const narrow = w / sc < 640;                                         // a phone: show at least 640 design px across so the end picture fits, and make the stage as tall as the hall is
+    if (narrow) sc = w / 640;
+    sc = Math.round(sc * 10000) / 10000;
     st.style.height = narrow ? Math.round(VH * sc) + 'px' : '';
-    vp.style.transform = `translate(-50%,-50%) scale(${sc.toFixed(4)})`;
+    vp.style.transform = `translate(-50%,-50%) scale(${sc})`;
   }
 
   function mount(main, a) {
@@ -170,9 +176,9 @@
     tower.outerHTML = build();
     wrap.classList.add('mus-on');
     const hint = main.querySelector('.hint'); if (hint) hint.textContent = t('mus_hint');
-    update(); fit();
+    update(); fitKey = ''; fit();
     if (ro) ro.disconnect();
-    if ('ResizeObserver' in window) { ro = new ResizeObserver(fit); ro.observe(document.getElementById('mus-stage')); }
+    if ('ResizeObserver' in window) { ro = new ResizeObserver(fit); ro.observe(document.getElementById('mus')); }   // the parent box: our own stage height changes do not re-trigger it into a loop
     if (wired) return; wired = true;
     window.addEventListener('resize', fit);
     main.addEventListener('click', e => {
