@@ -149,7 +149,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 <script src="artists.js"></script>
 <script src="circles.js"></script>
 <script>
-function legalTitle() { const th = LANG === 'th'; setMeta((th ? 'นโยบายความเป็นส่วนตัว' : 'Privacy policy') + ' — circles', th ? 'circles เก็บข้อมูลอะไร ใช้ทำอะไร ส่งให้ใคร และสิทธิของคุณ' : 'What circles collects, why, who sees it, and your rights'); }
+function legalTitle() { const th = LANG !== 'en'; setMeta((th ? 'นโยบายความเป็นส่วนตัว' : 'Privacy policy') + ' — circles', th ? 'circles เก็บข้อมูลอะไร ใช้ทำอะไร ส่งให้ใคร และสิทธิของคุณ' : 'What circles collects, why, who sees it, and your rights'); }
 onLang(legalTitle); wireNav(); applyLang();
 </script>
 </body>

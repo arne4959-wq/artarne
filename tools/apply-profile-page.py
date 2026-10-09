@@ -18,7 +18,7 @@ extra = """/* touch screens have no real hover */
 </head>
 """
 head = head.replace('<link rel="stylesheet" href="museum.css">\n', '').replace('<link rel="stylesheet" href="profile.css">\n', '')
-head = head.replace('<link rel="stylesheet" href="circles.css">', '<link rel="stylesheet" href="circles.css">\n<link rel="stylesheet" href="profile.css">')
+head = head.replace('<link rel="stylesheet" href="circles.css">', '<link rel="stylesheet" href="circles.css">\n<link rel="stylesheet" href="blade.css">\n<link rel="stylesheet" href="profile.css">')
 head = re.sub(r'<title>[^<]*</title>', '<title>โปรไฟล์ศิลปิน — circles</title>', head)
 head = re.sub(r'(<meta (?:name="description"|property="og:description"|name="twitter:description") content=")[^"]*(")', r'\1รู้จักศิลปินของ circles ผลงานและแนวคิด\2', head)
 head = re.sub(r'(<meta (?:property="og:title"|name="twitter:title") content=")[^"]*(")', r'\1โปรไฟล์ศิลปิน — circles\2', head)

@@ -121,7 +121,7 @@ try {
       await b.go(`${server.url}/buy.html?id=${a.id}&k=${k}`, 1800);
       const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
       got.main = got.main.replace(/<div class="cf-holder">[\s\S]*?<\/div><\/div>(?=<div class="act">)/, '');   // the CAPTCHA widget is mounted again when the page runs, never bake its leftovers
-      if (!got.main || !got.main.includes('class="by-title"') || !got.main.includes('class="by-form"')) throw new Error(`render of buy page ${a.id}-${k} produced no buy page`);
+      if (!got.main || !/class="[^"]*\bby-title\b/.test(got.main) || !got.main.includes('class="by-form"')) throw new Error(`render of buy page ${a.id}-${k} produced no buy page`);
       if (/^ซื้อผลงาน — circles$/.test(got.title)) throw new Error(`buy page ${a.id}-${k} kept the generic title`);
       const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
       if (noAlt.length) throw new Error(`buy page ${a.id}-${k} has ${noAlt.length} <img> without alt`);
@@ -176,7 +176,7 @@ try {
     write('robots.txt', `${robots}\nSitemap: ${abs('sitemap.xml')}\n`);
     console.log('  wrote sitemap.xml + robots.txt');
   } else console.log('  (no --site given: sitemap.xml skipped, URLs stay relative)');
-  const bad = b.logs.filter(l => !/favicon|\[Cloudflare Turnstile\]/.test(l));   // the buy pages mount the form's Turnstile widget; it refuses the build server's host (error 110200), which says nothing about the pages
+  const bad = b.logs.filter(l => !/favicon|\[Cloudflare Turnstile\]|challenges\.cloudflare\.com/.test(l));   // the buy pages mount the form's Turnstile widget; it refuses the build server's host (error 110200) and its requests get aborted when the next page loads; none of that says anything about the pages
   if (bad.length) { console.error('Page errors during build:\n' + bad.join('\n')); process.exitCode = 1; }
 } finally { b.close(); server.close(); }
 console.log('build done');

@@ -5,15 +5,17 @@
    endpoint : a form-backend URL (Formspree, Getform, your own API). It receives JSON via POST.
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
+   lakPerUsd: how many Lao kip one US dollar is worth (you set it, e.g. 21000). While it is 0 every price stays in US dollars; once set, prices show in kip
+              (rounded to the nearest 1,000) with the dollar price small next to it. Prices in artists.js stay in US dollars.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
+const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji', lakPerUsd: 0 };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
 /* ---------- buy page data (buy.js): fill these in. While one is empty the page shows a yellow [__] there; nothing is invented ----------
    SHIPPING.regions     where pieces ship to            SHIPPING.fee          shipping fee
    SHIPPING.days        days until it arrives           SHIPPING.returnDays   days to send back a piece that broke in transit
    SHIPPING.replyDays   how fast artists reply          SHIPPING.certificate  what comes with a piece (certificate, signature ...)
-   RATES.lak / RATES.thb  how many LAK / THB one US dollar is worth. 0 = not set, and the "≈ LAK / THB" line stays hidden. */
+   RATES.thb            how many THB one US dollar is worth (0 = not set, the "≈ THB" line stays hidden). Kip: see CONFIG.lakPerUsd. */
 const SHIPPING = {regions: '', fee: '', days: '', returnDays: '', replyDays: '', certificate: ''};
-const RATES = {lak: 0, thb: 0};
+const RATES = {thb: 0};
 
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* ===== lite:decide ===== phones, very weak devices (2 cores or 2 GB) and data-saver get fewer moving things. ?lite or ?full in the address forces it. */
@@ -30,6 +32,11 @@ if (LITE) document.documentElement.classList.add('lite');
 const $ = q => document.querySelector(q);
 const NF = new Intl.NumberFormat('en-US');          // built once: constructing Intl objects per call is slow
 const usd = n => '$' + NF.format(n);
+/* prices: money(n) is plain text, moneyHtml(n) is markup for visible price tags. With CONFIG.lakPerUsd set: "4,000,000 ₭" (+ the dollar price small); otherwise just "$540". */
+const lakOn = () => +CONFIG.lakPerUsd > 0;
+const lak = n => NF.format(Math.round(n * CONFIG.lakPerUsd / 1000) * 1000) + ' ₭';
+const money = n => lakOn() ? `${lak(n)} / ${usd(n)}` : usd(n);
+const moneyHtml = n => lakOn() ? `${esc(lak(n))}<small class="mny-s">${esc(usd(n))}</small>` : esc(usd(n));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
 /* ---------- strings ---------- */
@@ -174,15 +181,135 @@ en: {
   nf_h:"This building doesn't exist yet", nf_p:'No artist by that name lives here. Go back and walk the buildings that do.',
   mq:['NO RULES FOR ARTISTS','BUY ART','BUY FROM THE MAKER','NO MIDDLEMAN','CITY OF ARTISTS','ART NOT SORRY'],
 },
+/* lo:begin */
+// DRAFT lo: every line below needs native review (written by Claude, not a native speaker). Keys not listed fall back to Thai.
+lo: {
+  nav_city: "ເມືອງ",   // DRAFT lo: needs native review
+  nav_about: "ກ່ຽວກັບ",   // DRAFT lo: needs native review
+  nav_map: "ແຜນທີ່",   // DRAFT lo: needs native review
+  menu_aria: "ເມນູ",   // DRAFT lo: needs native review
+  lang_aria: "ປ່ຽນພາສາ",   // DRAFT lo: needs native review
+  foot_manifesto: "Manifesto",   // DRAFT lo: needs native review
+  foot_how: "ວິທີໃຊ້ງານ",   // DRAFT lo: needs native review
+  foot_feat: "ຜົນງານເດັ່ນ",   // DRAFT lo: needs native review
+  foot_map: "ແຜນທີ່ເມືອງ",   // DRAFT lo: needs native review
+  foot_join: "ຂໍມີຕຶກ",   // DRAFT lo: needs native review
+  close: "ປິດ",   // DRAFT lo: needs native review
+  copy_msg: "ສຳເນົາຂໍ້ຄວາມ",   // DRAFT lo: needs native review
+  copied: "ສຳເນົາແລ້ວ",   // DRAFT lo: needs native review
+  copy_fail: "ສຳເນົາບໍ່ໄດ້ ລອງເລືອກຂໍ້ຄວາມແລ້ວສຳເນົາເອງ",   // DRAFT lo: needs native review
+  news_fail: "ສົ່ງບໍ່ສຳເລັດ ລອງໃໝ່ອີກຄັ້ງ",   // DRAFT lo: needs native review
+  captcha_wait: "ລໍຖ້າການກວດສອບສຳເລັດກ່ອນສົ່ງ",   // DRAFT lo: needs native review
+  cw_back: "← ກັບໄປຍ່າງເບິ່ງເມືອງ",   // DRAFT lo: needs native review
+  buy: "ຊື້ກົງຈາກ{a} →",   // DRAFT lo: needs native review
+  b_pay: "ຈ່າຍເລີຍ →",   // DRAFT lo: needs native review
+  b_ask: "ມີຄຳຖາມ? ທັກ{a}ກ່ອນ",   // DRAFT lo: needs native review
+  b_sold: "ຖາມ{a}ກ່ຽວກັບຜົນງານແບບນີ້ →",   // DRAFT lo: needs native review
+  b_res: "ຂໍຕໍ່ຄິວຊິ້ນນີ້ →",   // DRAFT lo: needs native review
+  w_prev: "← ຊິ້ນກ່ອນ",   // DRAFT lo: needs native review
+  w_next: "ຊິ້ນຕໍ່ໄປ →",   // DRAFT lo: needs native review
+  st_sold: "ຂາຍແລ້ວ",   // DRAFT lo: needs native review
+  st_res: "ຈອງແລ້ວ",   // DRAFT lo: needs native review
+  cw_view: "ເບິ່ງລາຍລະອຽດ {t}",   // DRAFT lo: needs native review
+  mus_name: "ພິພິທະພັນຂອງ{a}",   // DRAFT lo: needs native review
+  mus_aria: "ຫ້ອງສະແດງພາບຂອງ{a}",   // DRAFT lo: needs native review
+  mus_prev: "← ພາບກ່ອນ",   // DRAFT lo: needs native review
+  mus_next: "ຍ່າງຕໍ່ →",   // DRAFT lo: needs native review
+  mus_more: "ລາຍລະອຽດ ແລະ ແນວຄິດ",   // DRAFT lo: needs native review
+  mus_map: "ແຜນຜັງຕຶກ",   // DRAFT lo: needs native review
+  mus_prof: "ເບິ່ງໂປຣໄຟລ໌ສິລະປິນ",   // DRAFT lo: needs native review
+  pf_walk: "ຍ່າງເຂົ້າພິພິທະພັນ →",   // DRAFT lo: needs native review
+  pf_ask: "ຖາມສິລະປິນ",   // DRAFT lo: needs native review
+  mus_hint: "▼ ຍ່າງເບິ່ງພາບເທື່ອລະຊິ້ນ ໃຊ້ລູກສອນ ← → ເທິງຄີບອດໄດ້ ກົດທີ່ພາບທີ່ສະຫວ່າງເພື່ອເບິ່ງລາຍລະອຽດເຕັມ",   // DRAFT lo: needs native review
+  lb_artist: "ສິລະປິນ",   // DRAFT lo: needs native review
+  lb_year: "ປີ",   // DRAFT lo: needs native review
+  lb_medium: "ວັດສະດຸ",   // DRAFT lo: needs native review
+  lb_size: "ຂະໜາດ",   // DRAFT lo: needs native review
+  d_sold: "ຊິ້ນນີ້ມີເຈົ້າຂອງແລ້ວ",   // DRAFT lo: needs native review
+  d_res: "ມີຄົນຈອງໄວ້ແລ້ວ ຖ້າຫຼຸດຈອງ ສິລະປິນຈະແຈ້ງຄົນທີ່ຕໍ່ຄິວ",   // DRAFT lo: needs native review
+  d_note: "ລາຄາທີ່ສິລະປິນຕັ້ງເອງ ບໍ່ມີຄ່ານາຍໜ້າ",   // DRAFT lo: needs native review
+  d_story: "ທີ່ມາຂອງຜົນງານຊິ້ນນີ້",   // DRAFT lo: needs native review
+  d_by: "ໂດຍ <b>{a}</b> · {d} · {c}",   // DRAFT lo: needs native review
+  cc_h: "ແນວຄິດຂອງຜົນງານ",   // DRAFT lo: needs native review
+  cc_origin: "ທີ່ມາ",   // DRAFT lo: needs native review
+  cc_mat: "ວັດສະດຸ",   // DRAFT lo: needs native review
+  cc_steps: "ຂັ້ນຕອນການເຮັດ",   // DRAFT lo: needs native review
+  cc_step: "ຂັ້ນທີ {n}",   // DRAFT lo: needs native review
+  d_how1: "ສົ່ງຂໍ້ຄວາມຫາສິລະປິນ",   // DRAFT lo: needs native review
+  d_how2: "ລົມກັນເລື່ອງລາຄາ ແລະ ການຈັດສົ່ງ",   // DRAFT lo: needs native review
+  d_how3: "ຈ່າຍເງິນໃຫ້ສິລະປິນໂດຍກົງ",   // DRAFT lo: needs native review
+  p_how1: "ກົດຈ່າຍຜ່ານລິ້ງຂອງສິລະປິນ",   // DRAFT lo: needs native review
+  p_how2: "ສິລະປິນຕິດຕໍ່ກັບເລື່ອງການຈັດສົ່ງ",   // DRAFT lo: needs native review
+  p_how3: "ເງິນເຂົ້າບັນຊີສິລະປິນໂດຍກົງ",   // DRAFT lo: needs native review
+  d_paynote: "ລິ້ງຈ່າຍເງິນເປັນຂອງສິລະປິນເອງ circles ບໍ່ໄດ້ຮັບເງິນແທນ",   // DRAFT lo: needs native review
+  nf_h: "ຕຶກນີ້ຍັງບໍ່ໄດ້ສ້າງ",   // DRAFT lo: needs native review
+  nf_p: "ບໍ່ມີສິລະປິນຄົນນີ້ໃນເມືອງ ກັບໄປຍ່າງເບິ່ງຕຶກທີ່ມີຢູ່",   // DRAFT lo: needs native review
+  id_title: "ລົມກັບ<em>{a}</em>ໂດຍກົງ",   // DRAFT lo: needs native review
+  id_intro: "ຂໍ້ຄວາມນີ້ໄປຫາສິລະປິນໂດຍກົງ ບໍ່ຜ່ານຄົນກາງ",   // DRAFT lo: needs native review
+  id_name: "ຊື່ຂອງທ່ານ",   // DRAFT lo: needs native review
+  id_email: "ອີເມວຂອງທ່ານ",   // DRAFT lo: needs native review
+  id_msg: "ຂໍ້ຄວາມ",   // DRAFT lo: needs native review
+  id_send: "ສົ່ງຫາສິລະປິນ →",   // DRAFT lo: needs native review
+  id_prefill: "ສະບາຍດີ ສົນໃຈຜົນງານ “{t}” ({p}) ຢາກສອບຖາມເລື່ອງລາຄາ ແລະ ການຈັດສົ່ງ ຂອບໃຈ",   // DRAFT lo: needs native review
+  id_pre_sold: "ສະບາຍດີ ເຫັນຜົນງານ “{t}” ທີ່ຂາຍໄປແລ້ວ ມັກຫຼາຍ ມີຜົນງານແບບນີ້ອີກບໍ ຫຼື ຮັບເຮັດວຽກໃໝ່ບໍ ຂອບໃຈ",   // DRAFT lo: needs native review
+  id_pre_res: "ສະບາຍດີ ສົນໃຈຜົນງານ “{t}” ({p}) ຖ້າຄົນທີ່ຈອງໄວ້ບໍ່ຊື້ ຂໍຕໍ່ຄິວດ້ວຍ ຂອບໃຈ",   // DRAFT lo: needs native review
+  id_subject: "ສົນໃຈຜົນງານ “{t}” — circles",   // DRAFT lo: needs native review
+  done_sent: "ສົ່ງສຳເລັດແລ້ວ",   // DRAFT lo: needs native review
+  done_sent_p: "ຂອບໃຈ ຂໍ້ຄວາມເຖິງປາຍທາງແລ້ວ",   // DRAFT lo: needs native review
+  done_mail: "ກຳລັງເປີດແອັບອີເມວຂອງທ່ານ",   // DRAFT lo: needs native review
+  done_mail_p: "ກົດສົ່ງໃນແອັບອີເມວເພື່ອໃຫ້ຂໍ້ຄວາມເຖິງປາຍທາງ ຖ້າບໍ່ມີຫຍັງເປີດຂຶ້ນ ໃຫ້ສຳເນົາຂໍ້ຄວາມດ້ານລຸ່ມແລ້ວສົ່ງເອງ",   // DRAFT lo: needs native review
+  note_mailto: "ຕອນນີ້ຟອມນີ້ເຮັດວຽກຜ່ານແອັບອີເມວຂອງທ່ານ",   // DRAFT lo: needs native review
+  jd_cancel: "ຍົກເລີກ",   // DRAFT lo: needs native review
+  jd_send: "ສົ່ງຄຳຂໍ →",   // DRAFT lo: needs native review
+  by_back: "← ກັບໄປພິພິທະພັນຂອງ{a}",   // DRAFT lo: needs native review
+  by_marq: "ART NOT SORRY ★ ບໍ່ມີຄົນກາງ ★ ຊື້ກົງຈາກສິລະປິນ ★ CIRCLES NEVER END ★ ",   // DRAFT lo: needs native review
+  by_one: "ຊິ້ນດຽວໃນໂລກ",   // DRAFT lo: needs native review
+  by_free: "ຍັງວ່າງ",   // DRAFT lo: needs native review
+  by_reply: "ຕອບໄວສຸດພາຍໃນ {d} ວັນ",   // DRAFT lo: needs native review
+  by_lak: "ກີບ",   // DRAFT lo: needs native review
+  by_thb: "ບາດ",   // DRAFT lo: needs native review
+  by_detail: "ລາຍລະອຽດຂອງຜົນງານ",   // DRAFT lo: needs native review
+  by_cert: "ໃບຢັ້ງຢືນ",   // DRAFT lo: needs native review
+  by_how: "ຊື້ແນວໃດ",   // DRAFT lo: needs native review
+  by_ship: "ການສົ່ງເຄື່ອງ",   // DRAFT lo: needs native review
+  by_to: "ສົ່ງໄດ້ທີ່",   // DRAFT lo: needs native review
+  by_fee: "ຄ່າສົ່ງ",   // DRAFT lo: needs native review
+  by_days: "ຮອດມືພາຍໃນ",   // DRAFT lo: needs native review
+  by_dayu: "{d} ວັນ",   // DRAFT lo: needs native review
+  by_break: "ຖ້າແຕກລະຫວ່າງທາງ",   // DRAFT lo: needs native review
+  by_ret: "ສົ່ງຄືນໄດ້ {d} ວັນ",   // DRAFT lo: needs native review
+  by_safe: "ປອດໄພບໍ?",   // DRAFT lo: needs native review
+  by_safe_p: "ເງິນໄປຫາສິລະປິນໂດຍກົງ circles ບໍ່ໄດ້ຮັບເງິນແທນ ຖ້າມີບັນຫາ ຕິດຕໍ່",   // DRAFT lo: needs native review
+  by_since: "ເຮັດວຽກສິລະປະມາແຕ່ {y}",   // DRAFT lo: needs native review
+  by_soldn: "ຂາຍໄປແລ້ວ {n} ຊິ້ນ",   // DRAFT lo: needs native review
+  by_ask_h: "ທັກ{a} (ບໍ່ຕ້ອງອອກຈາກໜ້ານີ້)",   // DRAFT lo: needs native review
+  by_country: "ສົ່ງໄປບ່ອນໃດ (ປະເທດ / ເມືອງ)",   // DRAFT lo: needs native review
+  by_after: "ເມື່ອສົ່ງແລ້ວຈະເຫັນຂໍ້ຄວາມ:",   // DRAFT lo: needs native review
+  by_after_p: "“ສົ່ງຫາ{a}ແລ້ວ ຈະຕອບໄປທີ່ອີເມວຂອງທ່ານພາຍໃນ {d} ວັນ”",   // DRAFT lo: needs native review
+  by_again: "ສົ່ງຂໍ້ຄວາມອີກ",   // DRAFT lo: needs native review
+  title_by: "{t} ໂດຍ{a} — circles",   // DRAFT lo: needs native review
+  desc_by: "ຊື້ “{t}” ຜົນງານ{d}ຂອງ{a} ລາຄາ {p} ຊື້ກົງຈາກສິລະປິນ ບໍ່ມີຄົນກາງ",   // DRAFT lo: needs native review
+  // TODO lo: consent_form (falls back to Thai) - legal / privacy wording: needs a proper translation, not a guess
+  // TODO lo: jd_title (falls back to Thai) - join form: the word play on "ตึก" (building) needs a native ear
+  // TODO lo: jd_intro (falls back to Thai) - join form intro: tone matters, ask a native speaker
+  // TODO lo: jd_name (falls back to Thai) - join form label
+  // TODO lo: jd_email (falls back to Thai) - join form label
+  // TODO lo: jd_disc (falls back to Thai) - join form label (art discipline)
+  // TODO lo: jd_other (falls back to Thai) - join form option
+  // TODO lo: jd_link (falls back to Thai) - join form label
+  // TODO lo: jd_msg (falls back to Thai) - join form label
+},
+/* lo:end */
 };
 
 /* ---------- language ---------- */
 let LANG = (() => {
   try {
-    const q = new URLSearchParams(location.search).get('lang'); if (q === 'th' || q === 'en') return q;
-    const s = localStorage.getItem('circles-lang'); if (s === 'th' || s === 'en') return s;
+    const q = new URLSearchParams(location.search).get('lang'); if (q === 'th' || q === 'en' || q === 'lo') return q;
+    const s = localStorage.getItem('circles-lang'); if (s === 'th' || s === 'en' || s === 'lo') return s;
   } catch (e) {}
-  return String((navigator.languages && navigator.languages[0]) || navigator.language || 'th').toLowerCase().startsWith('th') ? 'th' : 'en';
+  const nav = String((navigator.languages && navigator.languages[0]) || navigator.language || 'th').toLowerCase();
+  return nav.startsWith('th') ? 'th' : nav.startsWith('lo') ? 'lo' : 'en';
 })();
 const t = (k, v) => {
   let s = STR[LANG][k]; if (s === undefined) s = STR.th[k]; if (s === undefined) return k;
@@ -192,6 +319,8 @@ const t = (k, v) => {
 const pk = (o, k) => (LANG === 'en' && o[k + 'En'] != null) ? o[k + 'En'] : o[k];
 const nameL = a => pk(a, 'name'), discL = a => LANG === 'en' ? (DISC_EN[a.disc] || a.disc) : a.disc, cityL = a => LANG === 'en' ? (CITY_EN[a.city] || a.city) : a.city;
 const fmtSize = p => LANG === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : p.s;
+/* the language button cycles TH -> EN -> ລາວ -> TH; it shows the language it will switch to */
+const LANG_NEXT = {th: 'en', en: 'lo', lo: 'th'}, LANG_BTN = {th: 'TH', en: 'EN', lo: 'ລາວ'}, LANG_NAME = {th: 'ภาษาไทย', en: 'English', lo: 'ພາສາລາວ'};
 const langHooks = [];
 const onLang = fn => { langHooks.push(fn); };
 function applyLang() {
@@ -200,7 +329,7 @@ function applyLang() {
   document.querySelectorAll('[data-t-html]').forEach(el => { el.innerHTML = t(el.dataset.tHtml); });
   document.querySelectorAll('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
   document.querySelectorAll('[data-t-ph]').forEach(el => { el.setAttribute('placeholder', t(el.dataset.tPh)); });
-  const lb = $('#lang'); if (lb) { lb.textContent = LANG === 'th' ? 'EN' : 'TH'; lb.setAttribute('aria-label', lb.textContent + ' — ' + (LANG === 'th' ? 'English' : 'ภาษาไทย')); lb.setAttribute('lang', LANG === 'th' ? 'en' : 'th'); }
+  const lb = $('#lang'); if (lb) { const nx = LANG_NEXT[LANG]; lb.textContent = LANG_BTN[nx]; lb.setAttribute('aria-label', LANG_BTN[nx] + ' — ' + LANG_NAME[nx]); lb.setAttribute('lang', nx); }
   const mb = $('#menu-btn'); if (mb) mb.setAttribute('aria-label', t('menu_aria'));
   langHooks.forEach(fn => fn());
 }
@@ -352,13 +481,13 @@ function openInquiry(id, k, pre) {
   d.innerHTML = dlgShell(t('id_title', {a: esc(nameL(a))}),
     `<form><p class="intro">${esc(t('id_intro'))}</p>
       <div class="row"><label>${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label>${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
-      <label>${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre || 'id_prefill', {t: pk(p, 't'), p: usd(p.p)}))}</textarea></label>
+      <label>${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre || 'id_prefill', {t: pk(p, 't'), p: money(p.p)}))}</textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
       <p class="note">${t('consent_form')}</p>
       <div class="act"><button class="btn pk" type="submit">${esc(t('id_send'))}</button><button class="btn ghost" type="button" data-close>${esc(t('jd_cancel'))}</button></div>
       ${CONFIG.endpoint ? '' : `<p class="note">${esc(t('note_mailto'))}</p>`}</form>`);
   wireForm(d, async f => {
-    const res = await deliver('inquiry', a.email, t('id_subject', {t: pk(p, 't')}), {artist: nameL(a), work: pk(p, 't'), price: usd(p.p), name: f.name, email: f.email, message: f.message, captcha: f['cf-turnstile-response']});
+    const res = await deliver('inquiry', a.email, t('id_subject', {t: pk(p, 't')}), {artist: nameL(a), work: pk(p, 't'), price: money(p.p), name: f.name, email: f.email, message: f.message, captcha: f['cf-turnstile-response']});
     showDone(d, res, a.email);
   });
   if (!d.open) d.showModal();
@@ -390,7 +519,7 @@ function wireDonate() {
 
 function wireNav() {
   wireDonate();
-  const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(LANG === 'th' ? 'en' : 'th'));
+  const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(LANG_NEXT[LANG]));
   const mb = $('#menu-btn'), mn = $('#mnav'); if (!mb || !mn) return;
   const set = open => { mb.setAttribute('aria-expanded', open); mn.classList.toggle('open', open); mn.toggleAttribute('inert', !open); };
   set(false);

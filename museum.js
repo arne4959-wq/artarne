@@ -84,7 +84,7 @@
   function art(s, p, k) {
     const top = (H - s.h) / 2 - 40;
     const left = s.side === 'L' ? s.d - s.w / 2 : s.side === 'R' ? G.L - s.d - s.w / 2 : (W - s.w) / 2;
-    return `<button type="button" class="mus-art" data-k="${k}" style="left:${px(left)};top:${px(top)};width:${px(s.w)};height:${px(s.h)}" aria-label="${esc(pk(p, 't') + ' · ' + usd(p.p))}">`
+    return `<button type="button" class="mus-art" data-k="${k}" style="left:${px(left)};top:${px(top)};width:${px(s.w)};height:${px(s.h)}" aria-label="${esc(pk(p, 't') + ' · ' + money(p.p))}">`
       + `<i class="mus-wash"></i><i class="mus-lamp"></i><img src="${esc(p.img)}" alt="${esc(pk(p, 't'))}" width="${s.w}" height="${s.h}" decoding="async" draggable="false"><i class="mus-dim"></i></button>`;
   }
   const person = (id, legs, x, d, flip, bob) => `<div class="mus-ppl${legs === 'sit' ? ' sit' : ''}" data-d="${d}" style="transform:translate3d(${x - 90}px,${H / 2 - 252}px,${-d}px)"><span style="${flip ? 'transform:scaleX(-1)' : ''}"><img class="${bob ? 'mus-bob' : ''}" style="animation-delay:${(bob * -0.7).toFixed(1)}s" src="${sprite(id, legs)}" alt="" width="180" height="252" draggable="false"></span></div>`;
@@ -137,7 +137,7 @@
     const p = A.pieces[k], sta = workStatus(p), pay = sta ? '' : payLink(p);
     const buy = sta === 'sold' ? t('b_sold', {a: nameL(A)}) : sta === 'reserved' ? t('b_res') : pay ? t('b_ask', {a: nameL(A)}) : t('buy', {a: nameL(A)});
     return `<i class="mus-tape"></i><small>${p.y} · ${esc(fmtSize(p))}</small><b>${esc(pk(p, 't'))}</b>${p.q ? `<i class="mus-q">“${esc(pk(p, 'q'))}”</i>` : ''}`
-      + `<span class="mus-prow"><span class="mus-pr${sta ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span>`
+      + `<span class="mus-prow"><span class="mus-pr${sta ? ' strike' : ''}">${moneyHtml(p.p)}</span>${statusChip(p)}</span>`
       + `<span class="mus-acts">${pay ? `<a class="btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="btn ${pay ? 'ghost' : 'pk'}" href="buy-${esc(A.id)}-${k}.html" data-mus="buy">${esc(buy)}</a><button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
   }
   function update() {

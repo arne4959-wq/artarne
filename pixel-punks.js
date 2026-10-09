@@ -258,7 +258,7 @@
       const w = room.querySelector('.work'), p = w && A.pieces[+w.dataset.k]; if (!p) return;
       const st = (typeof workStatus === 'function' && workStatus(p)) || 'free';
       room.querySelectorAll('.px-say:not(.v)').forEach(b => b.remove());
-      say(room, to + sw / 2, pick(SEE[L()][st]).replace('{t}', pk(p, 't')).replace('{p}', usd(p.p)), 'v', 3000);
+      say(room, to + sw / 2, pick(SEE[L()][st]).replace('{t}', pk(p, 't')).replace('{p}', money(p.p)), 'v', 3000);
     };
     if (reduce) { vis.style.transform = `translateX(${to}px)`; setTimeout(react, 300); return; }
     vis.style.transition = 'none'; vis.style.transform = `translateX(${from}px)`; vis.classList.add('walking', 'flip');

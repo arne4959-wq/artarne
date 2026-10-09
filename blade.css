@@ -1,0 +1,10 @@
+/* blade.css — "Blade Label" headings and main buttons (used by buy.js and profile.js). Every rule starts with .bl- (or is .bl).
+   A parallelogram label: the box is skewed -14deg, the text inside is skewed back +14deg so the letters stand straight. Yellow / pink / paper fill,
+   black text, a hard offset shadow (no blur, no rounded corners). Heading fonts: Anton (English), Kanit 900 (Thai), Noto Sans Lao 900 (Lao). Static: no motion of its own. */
+.bl{display:inline-block;max-width:100%;margin:0;padding:.28em 1em .22em;border-radius:0;transform:skewX(-14deg);background:var(--bl-bg,#E8B730);color:#0E0D0C;box-shadow:var(--bl-s,8px) var(--bl-s,8px) 0 var(--bl-sh,#0E0D0C);}
+.bl-t{display:inline-block;transform:skewX(14deg);color:#0E0D0C;font:400 var(--bl-fs,1.4rem)/1.2 "Anton","Kanit","Noto Sans Lao",Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase;overflow-wrap:anywhere;}
+html[lang=th] .bl-t{font-family:"Kanit","IBM Plex Sans Thai",sans-serif;font-weight:900;letter-spacing:0;text-transform:none;}
+html[lang=lo] .bl-t{font-family:"Noto Sans Lao","Kanit","IBM Plex Sans Thai",sans-serif;font-weight:900;letter-spacing:0;text-transform:none;}
+.bl-y{--bl-bg:#E8B730;}.bl-p{--bl-bg:#FF2E88;}.bl-w{--bl-bg:#F4F1E8;}
+/* on a black background the black shadow disappears: use pink under yellow and white labels, yellow under pink */
+.bl-dk{--bl-sh:#FF2E88;}.bl-dk.bl-p{--bl-sh:#E8B730;}

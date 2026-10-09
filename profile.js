@@ -28,8 +28,8 @@
     const tags = [[discL(A), 'paper', -2], [cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>
       `<li class="pf-tag pf-in pf-pop pf-t-${x[1]}" style="--r:${x[2]}deg;--pf-d:${1 + i * .1}s">${esc(x[0])}</li>`).join('');
     const picks = A.pieces.slice(0, 4).map((p, k) => {
-      const sta = workStatus(p), price = sta ? t('st_sold') : usd(p.p);
-      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(pk(p, 't') + ' · ' + (sta ? t('st_sold') : usd(p.p)))}">
+      const sta = workStatus(p), price = sta ? t('st_sold') : money(p.p);
+      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(pk(p, 't') + ' · ' + (sta ? t('st_sold') : money(p.p)))}">
         <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(pk(p, 't'))}" loading="lazy" decoding="async" draggable="false">` : ''}
         <span class="pf-cap"><b>${esc(pk(p, 't'))}</b><span class="pf-cp${sta ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
     }).join('');
@@ -50,16 +50,16 @@
     <ul class="pf-stats">${stats(A).map((s, i) => `<li class="pf-st pf-st-${s[2]} pf-in pf-pop" style="--r:${s[3]}deg;--pf-d:${(1.6 + i * .08).toFixed(2)}s"><b>${s[0]}</b><span>${esc(t(s[1]))}</span></li>`).join('')}</ul>
     ${tl.length ? `<ol class="pf-tl pf-in pf-rise" style="--r:0deg;--pf-d:1.9s" aria-label="${esc(t('pf_tl'))}">${tl.map(x => `<li><b>${esc(x.y)}</b><span>${esc(pk(x, 't'))}</span></li>`).join('')}</ol>` : ''}
     <div class="pf-works">
-      <div class="pf-wh"><h3>${esc(t('pf_wh'))}</h3><span class="pf-hv">${esc(t('pf_hover'))}</span></div>
+      <div class="pf-wh"><h3 class="bl bl-y"><span class="bl-t">${esc(t('pf_wh'))}</span></h3><span class="pf-hv">${esc(t('pf_hover'))}</span></div>
       <ul class="pf-strip">${picks}</ul>
       <a class="pf-all" href="studio-${esc(A.id)}.html">${esc(t('pf_all'))}</a>
     </div>
     <div class="pf-sup pf-in pf-pop" style="--r:-1deg;--pf-d:2.6s"><div class="pf-sbox">
       <span class="pf-heart" aria-hidden="true">♥</span>
-      <div class="pf-stx"><h3>${esc(t('pf_sup1', {a: name}))} <span>${esc(t('pf_sup2'))}</span></h3><p>${esc(t('pf_supn'))}</p></div>
+      <div class="pf-stx"><h3 class="bl bl-y bl-dk"><span class="bl-t">${esc(t('pf_sup1', {a: name}))} ${esc(t('pf_sup2'))}</span></h3><p>${esc(t('pf_supn'))}</p></div>
       <div class="pf-sb">${supBtn}</div></div><i class="pf-tp pf-tp-gold pf-tp-s"></i></div>
     <div class="pf-cta pf-in pf-rise" style="--r:0deg;--pf-d:2.2s">
-      <a class="pf-go" href="studio-${esc(A.id)}.html">${esc(t('pf_walk'))}</a>
+      <a class="pf-go bl bl-y bl-dk" href="studio-${esc(A.id)}.html"><span class="bl-t">${esc(t('pf_walk'))}</span></a>
       <button type="button" class="pf-lk" data-pf-ask>${esc(t('pf_ask'))}</button>
       ${ig ? `<a class="pf-lk" href="${esc(ig)}" target="_blank" rel="noopener">${esc(t('pf_ig'))}</a>` : ''}
       <button type="button" class="pf-bt pf-bt-gold" data-pf-share>${esc(t('pf_share'))}</button>

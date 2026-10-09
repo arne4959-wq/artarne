@@ -129,3 +129,9 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
 .fold-foot{flex:1 0 100%;border-top:2px dashed rgba(244,241,232,.3);padding-top:1.6rem;}
 .fold-foot .foot-more{border-top:0;padding-top:2rem;}
 .fold-foot+.foot-c{flex:1 0 100%;padding-top:1.4rem;}
+
+/* small dollar price next to the kip price (shown only when CONFIG.lakPerUsd is set) */
+.mny-s{margin-left:.5em;font:400 .5em/1 var(--type);letter-spacing:.04em;white-space:nowrap;text-decoration:none;opacity:.85;}
+
+/* Lao mode: Lao has no capitals and no wide tracking, so translated text and buttons get normal letter-spacing (like the html[lang=th] rules) */
+html[lang=lo] [data-t],html[lang=lo] [data-t-html],html[lang=lo] button,html[lang=lo] .btn{letter-spacing:.01em;text-transform:none;}

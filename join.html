@@ -106,7 +106,7 @@ html[lang="th"] .btn{font-family:"Chonburi",var(--thai);letter-spacing:.02em;tex
 <script src="circles.js"></script>
 <script>
 function joinTitle() {
-  const th = LANG === 'th';
+  const th = LANG !== 'en';
   ransom(document.getElementById('jn-title'), th ? 'ขอมีตึก' : 'GET A BUILDING', 2, true);
   document.getElementById('jn-title').setAttribute('aria-label', th ? 'ขอมีตึก' : 'Get a building');
   setMeta(th ? 'ขอมีตึก — สำหรับศิลปิน — circles' : 'Get a building — for artists — circles',

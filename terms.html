@@ -133,7 +133,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 <script src="artists.js"></script>
 <script src="circles.js"></script>
 <script>
-function legalTitle() { const th = LANG === 'th'; setMeta((th ? 'เงื่อนไขการใช้งาน' : 'Terms of use') + ' — circles', th ? 'กติกาการดูงาน ซื้อ และใช้เว็บไซต์ circles' : 'The rules for viewing work, buying and using circles'); }
+function legalTitle() { const th = LANG !== 'en'; setMeta((th ? 'เงื่อนไขการใช้งาน' : 'Terms of use') + ' — circles', th ? 'กติกาการดูงาน ซื้อ และใช้เว็บไซต์ circles' : 'The rules for viewing work, buying and using circles'); }
 onLang(legalTitle); wireNav(); applyLang();
 </script>
 </body>

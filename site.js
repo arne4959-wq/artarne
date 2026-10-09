@@ -293,7 +293,7 @@ function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
-    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span></a></div>`;
+    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: money(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${moneyHtml(p.p)}</span>${statusChip(p)}</span></a></div>`;
   }).join('');
   $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('feat_count', {n: list.length});
@@ -365,7 +365,7 @@ function renderSpot() {
   $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
   if (p.img && !im.getAttribute('src')) im.src = p.img;
   im.alt = pk(p, 't');
-  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y} · ${usd(p.p)}</span>`;
+  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y} · ${moneyHtml(p.p)}</span>`;
   $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
 }
 
