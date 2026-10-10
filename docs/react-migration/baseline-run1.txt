@@ -1,0 +1,303 @@
+
+== build
+  ✓ studio-napha.html exists
+  ✓ studio-napha.html is up to date with artists.js
+  ✓ og/napha.png exists
+  ✓ index.html links studio-napha.html
+  ✓ image exists: art/napha-1.svg
+  ✓ image exists: art/napha-2.svg
+  ✓ image exists: art/napha-3.svg
+  ✓ studio-thara.html exists
+  ✓ studio-thara.html is up to date with artists.js
+  ✓ og/thara.png exists
+  ✓ index.html links studio-thara.html
+  ✓ image exists: art/thara-1.svg
+  ✓ image exists: art/thara-2.svg
+  ✓ image exists: art/thara-3.svg
+  ✓ image exists: art/thara-4.svg
+  ✓ studio-kwan.html exists
+  ✓ studio-kwan.html is up to date with artists.js
+  ✓ og/kwan.png exists
+  ✓ index.html links studio-kwan.html
+  ✓ image exists: art/kwan-1.svg
+  ✓ image exists: art/kwan-2.svg
+  ✓ image exists: art/kwan-3.svg
+  ✓ studio-phum.html exists
+  ✓ studio-phum.html is up to date with artists.js
+  ✓ og/phum.png exists
+  ✓ index.html links studio-phum.html
+  ✓ image exists: art/phum-1.svg
+  ✓ image exists: art/phum-2.svg
+  ✓ studio-irene.html exists
+  ✓ studio-irene.html is up to date with artists.js
+  ✓ og/irene.png exists
+  ✓ index.html links studio-irene.html
+  ✓ image exists: art/irene-1.svg
+  ✓ image exists: art/irene-2.svg
+  ✓ image exists: art/irene-3.svg
+  ✓ studio-dao.html exists
+  ✓ studio-dao.html is up to date with artists.js
+  ✓ og/dao.png exists
+  ✓ index.html links studio-dao.html
+  ✓ image exists: art/dao-1.svg
+  ✓ image exists: art/dao-2.svg
+  ✓ image exists: art/dao-3.svg
+  ✓ studio-mali.html exists
+  ✓ studio-mali.html is up to date with artists.js
+  ✓ og/mali.png exists
+  ✓ index.html links studio-mali.html
+  ✓ image exists: art/mali-1.svg
+  ✓ image exists: art/mali-2.svg
+  ✓ image exists: art/mali-3.svg
+  ✓ studio-phop.html exists
+  ✓ studio-phop.html is up to date with artists.js
+  ✓ og/phop.png exists
+  ✓ index.html links studio-phop.html
+  ✓ image exists: art/phop-1.svg
+  ✓ image exists: art/phop-2.svg
+  ✓ image exists: art/phop-3.svg
+  ✓ studio-phrae.html exists
+  ✓ studio-phrae.html is up to date with artists.js
+  ✓ og/phrae.png exists
+  ✓ index.html links studio-phrae.html
+  ✓ image exists: art/phrae-1.svg
+  ✓ image exists: art/phrae-2.svg
+  ✓ image exists: art/phrae-3.svg
+  ✓ studio-pan.html exists
+  ✓ studio-pan.html is up to date with artists.js
+  ✓ og/pan.png exists
+  ✓ index.html links studio-pan.html
+  ✓ image exists: art/pan-1.svg
+  ✓ image exists: art/pan-2.svg
+  ✓ image exists: art/pan-3.svg
+  ✓ index.html has pre-rendered block "masonry"
+  ✓ index.html has pre-rendered block "filters"
+  ✓ index.html has pre-rendered block "map"
+  ✓ index.html has pre-rendered block "strip"
+  ✓ privacy.html exists
+  ✓ terms.html exists
+  ✓ 404.html exists
+  ✓ robots.txt exists
+  ✓ og.png exists
+  ✓ fonts/fonts.css exists
+  ✓ vendor/lenis.min.js exists
+
+== smoke
+  ✓ TH desktop · index.html
+  ✓ TH desktop · studio-napha.html
+  ✓ TH desktop · studio-thara.html
+  ✓ TH desktop · studio-kwan.html
+  ✓ TH desktop · studio-phum.html
+  ✓ TH desktop · studio-irene.html
+  ✓ TH desktop · studio-dao.html
+  ✓ TH desktop · cutaway.html?id=thara
+  ✓ TH desktop · cutaway.html?id=zzz
+  ✓ TH desktop · privacy.html
+  ✓ TH desktop · terms.html
+  ✓ TH desktop · join.html
+  ✓ TH desktop · 404.html
+  ✓ TH desktop · no console / network errors
+  ✓ EN desktop · index.html
+  ✓ EN desktop · studio-napha.html
+  ✓ EN desktop · studio-thara.html
+  ✓ EN desktop · studio-kwan.html
+  ✓ EN desktop · studio-phum.html
+  ✓ EN desktop · studio-irene.html
+  ✓ EN desktop · studio-dao.html
+  ✓ EN desktop · cutaway.html?id=thara
+  ✓ EN desktop · cutaway.html?id=zzz
+  ✓ EN desktop · privacy.html
+  ✓ EN desktop · terms.html
+  ✓ EN desktop · join.html
+  ✓ EN desktop · 404.html
+  ✓ EN desktop · no console / network errors
+  ✓ TH 375px · index.html
+  ✓ TH 375px · studio-napha.html
+  ✓ TH 375px · studio-thara.html
+  ✓ TH 375px · studio-kwan.html
+  ✓ TH 375px · studio-phum.html
+  ✓ TH 375px · studio-irene.html
+  ✓ TH 375px · studio-dao.html
+  ✓ TH 375px · cutaway.html?id=thara
+  ✓ TH 375px · cutaway.html?id=zzz
+  ✓ TH 375px · privacy.html
+  ✓ TH 375px · terms.html
+  ✓ TH 375px · join.html
+  ✓ TH 375px · 404.html
+  ✓ TH 375px · no console / network errors
+  ✓ EN 375px · index.html
+  ✓ EN 375px · studio-napha.html
+  ✓ EN 375px · studio-thara.html
+  ✓ EN 375px · studio-kwan.html
+  ✓ EN 375px · studio-phum.html
+  ✓ EN 375px · studio-irene.html
+  ✓ EN 375px · studio-dao.html
+  ✓ EN 375px · cutaway.html?id=thara
+  ✓ EN 375px · cutaway.html?id=zzz
+  ✓ EN 375px · privacy.html
+  ✓ EN 375px · terms.html
+  ✓ EN 375px · join.html
+  ✓ EN 375px · 404.html
+  ✓ EN 375px · no console / network errors
+
+== flow
+  ✓ no request leaves the project (fonts + Lenis are local)
+  ✓ Lenis smooth scroll is active
+  ✓ fonts loaded: Anton, Chonburi, IBM Plex Sans Thai, Playfair, Special Elite
+  ✓ hero text is English
+  ✓ buildings are real links to studio pages
+  ✓ keyboard: no <a> without href
+  ✗ language button switches to Thai and back
+  ✓ "Show all" lists all 30 works
+  ✓ sort low → high is ascending
+  ✓ filter highlights exactly the matching building
+  ✓ follow-me note is shown with "Enter building"
+  ✓ clearing the filter resets every building
+  ✓ new-wave labels sit on exactly the new-wave buildings
+  ✓ "New wave" filter lights those buildings and those districts
+  ✗ Join dialog opens (English)
+  ✓ Join form links the privacy policy
+  ✗ Join submit → email app + copyable message
+  ✗ Join message goes to the contact address
+  ✗ newsletter is kept in this browser (no endpoint yet)
+  ✗ newsletter honeypot: a bot-filled form is dropped
+  ✓ hovering a building shows the ENTER cursor
+  ✓ dragging the city (even from a building) scrolls it and stays on the page
+  ✓ clicking a building opens its studio page
+  ✗ studio page: 4 floors, 4 artworks, links to neighbours
+  ✗ artwork opens a detail dialog with the facts
+  ✗ URL remembers the open work
+  ✗ next / previous work
+  ✗ ArrowLeft goes back
+  ✗ buy → inquiry form, message prefilled
+  ✗ inquiry goes to the artist, not to the site
+  ✓ Esc closes it and clears ?work
+  ✓ deep link ?work=2 opens "The Letter"
+  ✗ dynamic cutaway.html?id= still works (fallback)
+  ✗ old cutaway-napha.html redirects
+  ✓ unknown studio URL → friendly "no such building" page
+  ✓ unknown ?id= shows the same page, no detail dialog
+  ✗ no console / network errors in the whole walk-through
+      ["EXC Uncaught TurnstileError: [Cloudflare Turnstile] Error: 110200.","EXC InvalidStateError: Transition was aborted because of invalid state. ViewTransition opt-in disabled","EXC Uncaught TurnstileError: [Cloudflare Turnstile] Error: 110200."]
+  ✓ touch: building tag shows its works list without hover
+  ✓ mobile menu opens
+  ✓ menu link scrolls to the section and closes
+  ✓ touch: tap targets ≥ 40px
+  ✗ no-JS: studio page has its floors, images, title and JSON-LD
+  ✓ no-JS: home shows cards, map, studio links, and no black loader
+  ✓ reduced motion: no loader, everything visible, nothing loops
+
+== hd2d
+  ✓ far city is pushed back 55% of the scroll, mid city 28% (buildings 0%)
+  ✓ three planes exist: far, mid, buildings
+  ✓ scroll range ends at the last building (back planes are clipped)
+  ✓ layers still cover the screen at the far right end
+  ✓ blur: far 4px, mid 1.5px, artists' buildings sharp
+  ✓ sprites are 16x16 canvases scaled up with image-rendering: pixelated
+  ✓ sprites use only the site's palette
+  ✓ people really walk, both directions
+  ✓ light shafts and dust sit in front of the city and let the mouse through
+  ✓ HD-2D animations touch only transform and opacity
+  ✓ city still draggable through the overlay
+  ✓ no console / network errors
+  ✓ reduced motion: sprites stand still on frame 1, dust hidden, light static, no parallax, nothing running
+  ✓ 375px: no horizontal overflow, sprites 2x (32px), scroll range = the city
+
+== layout
+  ✓ Manifesto (th 1440px): every word stays on one line
+  ✓ Manifesto (th 1440px): the word wrapper adds no box of its own
+  ✓ Manifesto (th 375px): every word stays on one line
+  ✓ Manifesto (th 375px): the word wrapper adds no box of its own
+  ✓ Manifesto (en 1440px): every word stays on one line
+  ✓ Manifesto (en 1440px): the word wrapper adds no box of its own
+  ✓ Manifesto (en 375px): every word stays on one line
+  ✓ Manifesto (en 375px): the word wrapper adds no box of its own
+  ✓ every building has a pixel person at its door and no vector silhouette is left
+  ✓ standing people use only the site palette
+  ✓ 1440x800: tallest building + name tags fit one screen
+  ✓ 1280x800: tallest building + name tags fit one screen
+  ✓ 1440x1080: tallest building + name tags fit one screen
+  ✓ 375x812: tallest building + name tags fit one screen
+  ✓ 390x700: tallest building + name tags fit one screen
+  ✓ the city scales with the screen height (taller screen, bigger buildings)
+  ✓ 1440px: hazard tape between the street and the Manifesto, with a gap
+  ✓ 375px: hazard tape between the street and the Manifesto, with a gap
+  ✗ 1280px: every card's tartan tape is whole (not split across a column)
+      [0,0,0,0,0,0,0,0]
+  ✓ 1280px: map icons do not sit on the district names
+  ✓ 1280px: checker + four tartan colourways exist and are used
+  ✗ 375px: every card's tartan tape is whole (not split across a column)
+      [0,0,0,0,0,0,0,0]
+  ✓ 375px: map icons do not sit on the district names
+  ✓ 375px: checker + four tartan colourways exist and are used
+
+== newwave
+  ✓ there are new-wave artists in the data
+  ✓ mali: complete data (bio TH+EN, 3 pieces with title/year/medium/size/price/image)
+  ✓ mali: the English bio is exactly two sentences, the Thai bio is not empty
+  ✓ phop: complete data (bio TH+EN, 3 pieces with title/year/medium/size/price/image)
+  ✓ phop: the English bio is exactly two sentences, the Thai bio is not empty
+  ✓ phrae: complete data (bio TH+EN, 3 pieces with title/year/medium/size/price/image)
+  ✓ phrae: the English bio is exactly two sentences, the Thai bio is not empty
+  ✓ pan: complete data (bio TH+EN, 3 pieces with title/year/medium/size/price/image)
+  ✓ pan: the English bio is exactly two sentences, the Thai bio is not empty
+  ✓ every building has its own shape (no two artists share a kind)
+  ✓ th 1440px: every artist has a building and a district; counters follow the data
+  ✓ th 1440px: each new-wave building carries the label, nobody else does
+  ✓ th 1440px: no empty hole between the filters and the map
+  ✓ en 375px: every artist has a building and a district; counters follow the data
+  ✓ en 375px: each new-wave building carries the label, nobody else does
+  ✓ en 375px: no empty hole between the filters and the map
+  ✗ mali studio: 3 floors, all images, new-wave label, ?work=1 opens "One-Page Zine"
+      {"floors":0,"imgs":0,"kicker":"NO.07 · Mali's building · ★ NEW WAVE","dlg":true,"title":"One-Page Zine","roof":false,"overflowX":0}
+  ✗ phop studio: 3 floors, all images, new-wave label, ?work=1 opens "Orbit Study"
+      {"floors":0,"imgs":0,"kicker":"NO.08 · Phop's building · ★ NEW WAVE","dlg":true,"title":"Orbit Study","roof":false,"overflowX":0}
+  ✗ phrae studio: 3 floors, all images, new-wave label, ?work=1 opens "Pixel Sort"
+      {"floors":0,"imgs":0,"kicker":"NO.09 · Phrae's building · ★ NEW WAVE","dlg":true,"title":"Pixel Sort","roof":false,"overflowX":0}
+  ✗ pan studio: 3 floors, all images, new-wave label, ?work=1 opens "Spore Print"
+      {"floors":0,"imgs":0,"kicker":"NO.10 · Pan's building · ★ NEW WAVE","dlg":true,"title":"Spore Print","roof":false,"overflowX":0}
+  ✓ no console / network errors on the new studios
+
+== perf
+  ✓ CPU x1: idle at the Hero ≥ 55 fps (tartan drifts on the compositor)
+  ✓ CPU x1: scrolling the whole page ≥ 55 fps, < 3% dropped frames
+  ✓ CPU x1: dragging the city (3 planes, blur, sprites, light, dust) + inertia ≥ 55 fps
+  ✓ CPU x1: the city idle (people walk, birds fly, dust drifts) ≥ 55 fps
+  ✓ CPU x1: hovering buildings ≥ 55 fps
+  ✓ CPU x1: studio page with rain + scrolling ≥ 55 fps
+  ✗ studio page: rain runs on the compositor (transform animation)
+  ✓ CPU x4: idle at the Hero ≥ 50 fps (tartan drifts on the compositor)
+  ✓ CPU x4: scrolling the whole page ≥ 50 fps, < 3% dropped frames
+  ✓ CPU x4: dragging the city (3 planes, blur, sprites, light, dust) + inertia ≥ 50 fps
+  ✓ CPU x4: the city idle (people walk, birds fly, dust drifts) ≥ 50 fps
+  ✓ CPU x4: hovering buildings ≥ 50 fps
+  ✓ CPU x4: studio page with rain + scrolling ≥ 50 fps
+  ✓ studio page: rain runs on the compositor (transform animation)
+
+230 passed, 24 failed
+
+FAILED:
+ - flow: language button switches to Thai and back
+ - flow: Join dialog opens (English)
+ - flow: Join submit → email app + copyable message
+ - flow: Join message goes to the contact address
+ - flow: newsletter is kept in this browser (no endpoint yet)
+ - flow: newsletter honeypot: a bot-filled form is dropped
+ - flow: studio page: 4 floors, 4 artworks, links to neighbours
+ - flow: artwork opens a detail dialog with the facts
+ - flow: URL remembers the open work
+ - flow: next / previous work
+ - flow: ArrowLeft goes back
+ - flow: buy → inquiry form, message prefilled
+ - flow: inquiry goes to the artist, not to the site
+ - flow: dynamic cutaway.html?id= still works (fallback)
+ - flow: old cutaway-napha.html redirects
+ - flow: no console / network errors in the whole walk-through — ["EXC Uncaught TurnstileError: [Cloudflare Turnstile] Error: 110200.","EXC InvalidStateError: Transition was aborted because of invalid state. ViewTransition opt-in disabled","EXC Uncaught TurnstileError: [Cloudflare Turnstile] Error: 110200."]
+ - flow: no-JS: studio page has its floors, images, title and JSON-LD
+ - layout: 1280px: every card's tartan tape is whole (not split across a column) — [0,0,0,0,0,0,0,0]
+ - layout: 375px: every card's tartan tape is whole (not split across a column) — [0,0,0,0,0,0,0,0]
+ - newwave: mali studio: 3 floors, all images, new-wave label, ?work=1 opens "One-Page Zine" — {"floors":0,"imgs":0,"kicker":"NO.07 · Mali's building · ★ NEW WAVE","dlg":true,"title":"One-Page Zine","roof":false,"overflowX":0}
+ - newwave: phop studio: 3 floors, all images, new-wave label, ?work=1 opens "Orbit Study" — {"floors":0,"imgs":0,"kicker":"NO.08 · Phop's building · ★ NEW WAVE","dlg":true,"title":"Orbit Study","roof":false,"overflowX":0}
+ - newwave: phrae studio: 3 floors, all images, new-wave label, ?work=1 opens "Pixel Sort" — {"floors":0,"imgs":0,"kicker":"NO.09 · Phrae's building · ★ NEW WAVE","dlg":true,"title":"Pixel Sort","roof":false,"overflowX":0}
+ - newwave: pan studio: 3 floors, all images, new-wave label, ?work=1 opens "Spore Print" — {"floors":0,"imgs":0,"kicker":"NO.10 · Pan's building · ★ NEW WAVE","dlg":true,"title":"Spore Print","roof":false,"overflowX":0}
+ - perf: studio page: rain runs on the compositor (transform animation)
