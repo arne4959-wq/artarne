@@ -1,7 +1,7 @@
 {
   "name": "circles",
   "private": true,
-  "description": "circles — a Brutalist Punk city of artists. Plain HTML/CSS/JS; this file only exists for the dev scripts below.",
+  "description": "circles — a Brutalist Punk city of artists. Plain HTML/CSS/JS, moving to React in app/ (see docs/react-migration). This file only holds the dev scripts below.",
   "type": "module",
   "engines": {"node": ">=22"},
   "scripts": {
@@ -10,6 +10,9 @@
     "dist": "node tools/dist.mjs",
     "test": "node tests/run.mjs",
     "test:perf": "node tests/run.mjs perf",
-    "test:all": "node tests/run.mjs all"
+    "test:all": "node tests/run.mjs all",
+    "app:dev": "npm --prefix app run dev",
+    "app:build": "npm --prefix app run build",
+    "app:test": "npm --prefix app test"
   }
 }

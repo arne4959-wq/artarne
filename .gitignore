@@ -8,3 +8,5 @@ dist/
 screenshots/
 tests/
 _preview/
+app/node_modules/
+app/dist/
