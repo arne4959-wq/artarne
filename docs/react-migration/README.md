@@ -7,8 +7,8 @@ When every page is done, the root files are removed and `app/` becomes the site.
 |---|---|
 | 1. Commit pending work, `react` branch, test baseline | done: [baseline-tests.md](baseline-tests.md) |
 | 2. Vite project, data, strings, helpers, CSS | done (this note) |
-| 3. Simple pages: 404, privacy, terms, join | next |
-| 4. buy, profile | |
+| 3. Simple pages: 404, privacy, terms, join | done: same DOM and look as the old pages (30/30), same behaviour (7/7) |
+| 4. buy, profile | next |
 | 5. studio / museum | |
 | 6. home (city strip, hd2d, loader) | |
 | 7. pre-render, og images, sitemap, tests | |
@@ -18,8 +18,12 @@ When every page is done, the root files are removed and `app/` becomes the site.
 ```
 npm run app:dev     # http://localhost:5173
 npm run app:test    # parity tests: React helpers vs the old circles.js
-npm run app:build   # app/dist, works from any folder (base './')
+npm run app:build   # app/dist, works from any folder (base './'); one .html file per page
+node app/tests/compare.mjs join.html 'join.html#dialog' …   # old page vs React page: DOM + screenshots, th/en/lo, desktop + phone
+node app/tests/behaviour.mjs                                # the same clicks on both; the answers must match
 ```
+
+`compare.mjs` and `behaviour.mjs` need `npm run app:build` first. They never send anything: the form endpoint is answered inside the page and the CAPTCHA script is blocked.
 
 The first time: `npm --prefix app install`.
 
@@ -52,8 +56,21 @@ Editing `artists.js` or `circles.js` reloads the dev page.
 The pages' CSS rules clash with each other (body, :root, .hero …). So each route puts its CSS into `<head>` only while it is on screen, in the old order.
 `fonts/fonts.css` stays a render-blocking `<link>` in `app/index.html`, same as before.
 
-`app/src/App.jsx` is a temporary check page (language button, every work, page-CSS switcher). Step 3 replaces it with the router.
+## Pages (step 3 on)
 
-## Not moved yet (needs components or a page, later steps)
+- **Same URLs, real files.** Every address is a real `.html` file (`app/scripts/pages.mjs` writes them after `vite build`), so any static host works without rewrite rules.
+  - Links stay plain `<a href>`, with no client-side router. `app/src/lib/routes.js` picks the page from the file name. The old `?id=` forms still work, and `cutaway-<id>.html` redirects.
+- **`<PageShell>`** (`components/PageShell.jsx`) wraps every page: its CSS, its sprite, the page-change curtain (`lib/curtain.js`).
+- **Shared components:**
+  - `Nav` (+ `LangButton`, phone menu)
+  - `Coin` (+ `lib/coin.js`)
+  - `Toast`
+  - `Dialogs`: `useDialogs().openJoin()`, form dialogs, Turnstile, the Done view
+  - `lib/forms.js`: `deliver`, `subscribeNews`
+  - `lib/meta.js`: `usePageMeta`
+- **Keep the old markup:** same ids and classes, and `data-t="key"` on the texts the old HTML marked with it. `circles.css` styles `html[lang=lo] [data-t]`, and the old tests use the ids.
+- **Old bug kept on purpose:** the old `ransom()` wrote `font-family:"Special Elite"` inside `style="…"`. The quote ends the attribute, so those letters never got Special Elite. `OLD_QUOTE_BUG` in `components/art.jsx` keeps that look. Set it to `false` for the intended font.
 
-Toast, dialogs and forms (`deliver`, `openJoin`, `openInquiry`, Turnstile), nav / mobile menu, coins (`coin3d`), page curtain, `setMeta`, the SVG sprite (`#orb` …) and the favicon of each page.
+## Not moved yet (later steps)
+
+`openInquiry` (step 4), the newsletter form and Support button (home), the favicon is shared already; per-page `<head>` meta tags (og, JSON-LD) come with the pre-render step.

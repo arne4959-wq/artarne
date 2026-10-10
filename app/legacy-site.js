@@ -6,6 +6,10 @@
 //   virtual:circles/config           CONFIG, SHIPPING, RATES                       from ../circles.js
 //   virtual:circles/css/<file>       the raw text of ../<file>.css (no .css on the id, or Vite would run it as a stylesheet)
 //   virtual:circles/page-css/<page>  the raw text of the <style> block in ../<page>.html
+//   virtual:circles/page-body/<page> the inner HTML of the first <main> in ../<page>.html (long static text: privacy, terms)
+//   virtual:circles/sprite/<page>    the inner HTML of the hidden <svg> sprite (#orb, #orb-s …) of ../<page>.html
+//
+// Dev: every *.html address answers with app/index.html (src/routes.js picks the page from the file name).
 //
 // CSS comes in as raw text (not processed by Vite), so url(art/...) keeps resolving against the page URL,
 // exactly like the old site. The folders the pages point at (art, fonts, og, vendor) are served from the
@@ -42,13 +46,23 @@ const LOADERS = {
     if (!m) throw new Error(`legacy-site: no <style> block in ${name}.html`);
     return `export default ${JSON.stringify(m[1])};`;
   }}),
+  'page-body': name => ({watch: name + '.html', code: src => {
+    const m = src.match(/<main\b[^>]*>([\s\S]*?)<\/main>/);
+    if (!m) throw new Error(`legacy-site: no <main> in ${name}.html`);
+    return `export default ${JSON.stringify(m[1])};`;
+  }}),
+  sprite: name => ({watch: name + '.html', code: src => {
+    const m = src.match(/<svg width="0" height="0"[^>]*>([\s\S]*?)<\/svg>\s*(?=<nav|<header|<main|<div|<a)/);
+    if (!m) throw new Error(`legacy-site: no hidden <svg> sprite in ${name}.html`);
+    return `export default ${JSON.stringify(m[1])};`;
+  }}),
 };
 
 function load(id) {
   const rest = id.slice(R.length), slash = rest.indexOf('/');
   const kind = slash < 0 ? rest : rest.slice(0, slash), arg = slash < 0 ? '' : rest.slice(slash + 1);
   const make = LOADERS[kind];
-  if (!make || (kind === 'css' && !/^[\w-]+$/.test(arg)) || (kind === 'page-css' && !/^[\w-]+$/.test(arg))) throw new Error(`legacy-site: unknown module ${id.slice(1)}`);
+  if (!make || (kind === 'css' && !/^[\w-]+$/.test(arg)) || (['page-css', 'page-body', 'sprite'].includes(kind) && !/^[\w-]+$/.test(arg))) throw new Error(`legacy-site: unknown module ${id.slice(1)}`);
   const {watch, code} = make(arg), file = path.join(SITE, watch);
   return {file, code: code(fs.readFileSync(file, 'utf8'))};
 }
@@ -74,6 +88,8 @@ export default function legacySite() {
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url || '').split('?')[0]).replace(/^\/+/, '');
         const top = url.split('/')[0];
+        // a page address (join.html, studio-dao.html …): serve the app shell, src/routes.js picks the page
+        if (/^[\w-]+\.html$/.test(url) && url !== 'index.html') { req.url = '/index.html' + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''); return next(); }
         if (!STATIC.includes(top) && !STATIC_FILES.includes(url)) return next();
         const file = path.join(SITE, url);
         if (!file.startsWith(SITE + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) return next();

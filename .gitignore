@@ -10,3 +10,4 @@ screenshots/
 _preview/
 app/node_modules/
 app/dist/
+app/tests/out/

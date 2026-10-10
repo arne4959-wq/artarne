@@ -82,12 +82,16 @@ for (const L of ['th', 'en', 'lo']) test(`helpers match circles.js in ${L}`, () 
 
 test('<Ransom> gives the same chips as ransom()', () => {
   const o = oldFor('th', oldData);
-  const norm = s => s.replace(/&#x27;/g, '&#39;').replace(/&quot;/g, '"');
-  const cases = [['circles', 0, false], ['เมืองของศิลปิน', 3, false], ['ไม่มี​หอศิลป์ no gallery', 1, true], ['ที่ไม่ยอมเงียบ', 2, true], ['A & <b>', 0, false]];
+  // compare what a browser would read: the chip structure, the text, and each style="…" cut where its quote ends
+  // (the old markup has a quote bug in font-family:"Special Elite", see OLD_QUOTE_BUG in components/art.jsx)
+  const styles = h => [...h.matchAll(/style="([^"]*)"/g)].map(m => m[1].replace(/&quot;/g, '"').split(';').map(d => d.trim()).filter(d => /:\s*\S/.test(d)).map(d => d.replace(/\s*:\s*/, ':')).join(';'));
+  const shape = h => h.replace(/<span[^>]*?class="(sp|rw)"[^>]*>/g, '<$1>').replace(/<span[^>]*>/g, '<s>').replace(/<\/span>/g, '</>').replace(/&#x27;/g, "'").replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  const cases = [['circles', 0, false], ['เมืองของศิลปิน', 3, false], ['ไม่มี\u200bหอศิลป์ no gallery', 1, true], ['ที่ไม่ยอมเงียบ', 2, true], ['A & <b>', 0, false], ['GET A BUILDING', 2, true]];
   for (const [text, seed, wrap] of cases) {
     const el = {innerHTML: ''}; o.ransom(el, text, seed, wrap);
-    const html = renderToStaticMarkup(React.createElement(artJsx.Ransom, {text, seed, wrap}));
-    assert.equal(norm(html), `<span>${norm(el.innerHTML)}</span>`, `ransom("${text}", ${seed}, ${wrap})`);
+    const html = renderToStaticMarkup(React.createElement(artJsx.Ransom, {text, seed, wrap})).replace(/^<span>|<\/span>$/g, '');
+    assert.deepEqual(styles(html), styles(el.innerHTML), `styles of ransom("${text}", ${seed}, ${wrap})`);
+    assert.equal(shape(html.replace(/ style="[^"]*"/g, '')), shape(el.innerHTML.replace(/ style="[^"]*"[^>]*/g, '')), `chips of ransom("${text}", ${seed}, ${wrap})`);
   }
 });
 
@@ -123,4 +127,21 @@ test('every old page has CSS for its route, in the old order', async () => {
     // index.html links circles.css before fonts.css, the others after: either way circles.css comes before the page's own <style>
     assert.deepEqual(list, want, `${mod} (${html}.html)`);
   }
+});
+
+test('routes: old .html names and the dynamic ?id= forms', async () => {
+  const {route} = await vite.ssrLoadModule('/src/lib/routes.js');
+  const cases = [
+    ['/', '', {page: 'home'}], ['/index.html', '', {page: 'home'}], ['/sub/dir/', '', {page: 'home'}],
+    ['/join.html', '', {page: 'join'}], ['/privacy.html', '', {page: 'privacy'}], ['/terms.html', '', {page: 'terms'}], ['/404.html', '', {page: 'notFound'}],
+    ['/studio-dao.html', '', {page: 'studio', id: 'dao'}], ['/cutaway.html', '?id=thara&work=1', {page: 'studio', id: 'thara'}], ['/cutaway.html', '', {page: 'studio', id: ''}],
+    ['/cutaway-napha.html', '?work=2', {redirect: 'studio-napha.html?work=2'}],
+    ['/profile-kwan.html', '', {page: 'profile', id: 'kwan'}], ['/profile.html', '?id=pan', {page: 'profile', id: 'pan'}],
+    ['/buy-thara-3.html', '', {page: 'buy', id: 'thara', k: 3}], ['/buy.html', '?id=mali&k=2', {page: 'buy', id: 'mali', k: 2}],
+    ['/nothing.html', '', {page: 'notFound'}], ['/studio-.html', '', {page: 'notFound'}], ['/x/../evil', '', {page: 'notFound'}],
+  ];
+  for (const [p, q, want] of cases) assert.deepEqual(route(p, q), want, p + q);
+  // every page file the build writes is a real route (nothing falls through to 404 by accident)
+  const {PAGES} = await import('../scripts/pages.mjs');
+  for (const f of PAGES) if (f !== '404.html') assert.notEqual(route('/' + f, '').page, 'notFound', f);
 });

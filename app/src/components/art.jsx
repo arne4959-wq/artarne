@@ -3,10 +3,15 @@ import {Fragment} from 'react';
 import {useLang} from '../lib/i18n.jsx';
 import {RS, ROT, YOFF, graphemes, workStatus} from '../lib/art.js';
 
+/* OLD_QUOTE_BUG: the old ransom() wrote font-family:"Special Elite" inside style="…", so the quote ended the attribute
+   and those chips never got their font (or weight): they show the heading's font instead. Kept on purpose so the
+   React pages look exactly like the old ones; set it to false to get the Special Elite chips that were intended. */
+export const OLD_QUOTE_BUG = true;
 function Chip({c, i, seed}) {
   const st = RS[(i + seed) % RS.length], k = (i * 3 + seed) % ROT.length;
+  const font = OLD_QUOTE_BUG && st.ff.includes('"') ? {} : {fontFamily: st.ff, fontWeight: st.w || 400};
   return <span className={/^\s+$/.test(c) ? 'sp' : undefined}
-    style={{'--r': ROT[k] + 'deg', '--y': YOFF[k] + 'px', '--k': i, background: st.bg, color: st.fg, fontFamily: st.ff, fontWeight: st.w || 400}}>{c}</span>;
+    style={{'--r': ROT[k] + 'deg', '--y': YOFF[k] + 'px', '--k': i, background: st.bg, color: st.fg, ...font}}>{c}</span>;
 }
 
 /* <Ransom as="h2" text="..." seed={2} wrap/> — wrap: every WORD is one unbreakable unit (.rw is nowrap);
