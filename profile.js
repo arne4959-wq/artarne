@@ -28,10 +28,10 @@
     const tags = [[discL(A), 'paper', -2], [cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>
       `<li class="pf-tag pf-in pf-pop pf-t-${x[1]}" style="--r:${x[2]}deg;--pf-d:${1 + i * .1}s">${esc(x[0])}</li>`).join('');
     const picks = A.pieces.slice(0, 4).map((p, k) => {
-      const sta = workStatus(p), price = sta ? t('st_sold') : money(p.p);
-      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(pk(p, 't') + ' · ' + (sta ? t('st_sold') : money(p.p)))}">
-        <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(pk(p, 't'))}" loading="lazy" decoding="async" draggable="false">` : ''}
-        <span class="pf-cap"><b>${esc(pk(p, 't'))}</b><span class="pf-cp${sta ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
+      const sta = workStatus(p), price = sta ? t('st_sold') : money(p.p, p);
+      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(titleL(p) + ' · ' + (sta ? t('st_sold') : money(p.p, p)))}">
+        <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''}
+        <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp${sta ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
     }).join('');
     const can = https(CONFIG.donate);
     const supBtn = can

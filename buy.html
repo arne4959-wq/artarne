@@ -128,7 +128,7 @@ function render() {
     setMeta(t('nf_h') + ' — circles', t('nf_p')); return;
   }
   BUY.mount(main, A, k);
-  setMeta(t('title_by', {t: pk(P, 't'), a: nameL(A)}), t('desc_by', {t: pk(P, 't'), a: nameL(A), d: discL(A), p: usd(P.p)}));
+  setMeta(t('title_by', {t: titleL(P), a: nameL(A)}), t('desc_by', {t: titleL(P), a: nameL(A), d: discL(A), p: money(P.p, P)}));
 }
 onLang(render);
 render();

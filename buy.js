@@ -11,7 +11,7 @@
   const LOGOS = [[-6, 14, 300, 26, 'turn'], [64, 46, 260, 22, 'turnr'], [-4, 72, 280, 30, 'turn'], [80, 2, 170, 18, 'turnr']];   // left%, top%, size px, seconds, direction
 
   function html(A, k) {
-    const p = A.pieces[k], name = nameL(A), title = pk(p, 't'), sta = workStatus(p), pay = sta ? '' : payLink(p);
+    const p = A.pieces[k], name = nameL(A), title = titleL(p), sta = workStatus(p), pay = sta ? '' : payLink(p);
     const soldN = A.pieces.filter(x => workStatus(x) === 'sold').length + (+A.sold > 0 ? +A.sold : 0);
     const fx = [RATES.thb > 0 ? `${Math.round(p.p * RATES.thb).toLocaleString('en-US')} ${t('by_thb')}` : ''].filter(Boolean);
     const buyTxt = sta === 'sold' ? t('b_sold', {a: name}) : sta === 'reserved' ? t('b_res') : pay ? t('b_ask', {a: name}) : t('buy', {a: name});
@@ -22,7 +22,7 @@
     const reply = SHIPPING.replyDays ? esc(SHIPPING.replyDays) : '<span class="by-todo">[__]</span>';
     const back = `studio-${A.id}.html?work=${k}`;
     const ask = `<a class="by-btn ${sta || !pay ? 'by-pay' : 'by-ask'}" href="#by-ask" data-by-ask>${BT(buyTxt)}</a>`;
-    const cta = `<div class="by-cta"><span class="by-bprice${sta ? ' by-strike' : ''}">${moneyHtml(p.p)}</span>${pay ? `<a class="by-btn by-pay" href="${esc(pay)}" target="_blank" rel="noopener">${BT(t('b_pay'))}</a>` : ''}${ask}</div>`;
+    const cta = `<div class="by-cta"><span class="by-bprice${sta ? ' by-strike' : ''}">${moneyHtml(p.p, p)}</span>${pay ? `<a class="by-btn by-pay" href="${esc(pay)}" target="_blank" rel="noopener">${BT(t('b_pay'))}</a>` : ''}${ask}</div>`;
     const cell = (l, v) => `<div class="by-cell"><span>${esc(l)}</span><b>${v}</b></div>`;
     return `<div class="by" id="by">
   <div class="by-bg" aria-hidden="true">${LOGOS.map(l => `<i class="by-lg" style="left:${l[0]}%;top:${l[1]}%;width:${l[2]}px;height:${l[2]}px;--t:${l[3]}s;--sp:by-${l[4]}"></i>`).join('')}</div>
@@ -38,7 +38,7 @@
         <div><span class="by-chip">${esc(name)} · ${esc(discL(A))} · ${esc(cityL(A))}</span>
           <h1 class="bl bl-y bl-dk by-title" id="by-title"><span class="bl-t">${esc(title)}</span></h1>
           ${p.q ? `<p class="by-q">“${esc(pk(p, 'q'))}”</p>` : ''}</div>
-        <div class="by-prow"><span class="by-price${sta ? ' by-strike' : ''}${lakOn() ? ' by-kip' : ''}">${moneyHtml(p.p)}</span>${sta ? `<span class="by-chip by-chip-st">${esc(dot)}</span>` : ''}${fx.length ? `<span class="by-fx">≈ ${esc(fx.join(' · '))}</span>` : ''}</div>
+        <div class="by-prow"><span class="by-price${sta ? ' by-strike' : ''}${lakOn() ? ' by-kip' : ''}">${moneyHtml(p.p, p)}</span>${sta ? `<span class="by-chip by-chip-st">${esc(dot)}</span>` : ''}${fx.length ? `<span class="by-fx">≈ ${esc(fx.join(' · '))}</span>` : ''}</div>
         ${cta}
         <p class="by-avail"><i class="by-dot${sta ? ' by-dot-off' : ''}" aria-hidden="true"></i>${esc(dot)} · ${esc(t('by_reply', {d: '@@'})).replace('@@', reply)}</p>
         <section class="by-card" aria-labelledby="by-h-detail"><span class="by-tape by-tape-b"></span>${H('by-h-detail', t('by_detail'), 'y')}
@@ -69,7 +69,7 @@
     return `<form class="by-form">
       <div class="by-two"><label class="by-fld">${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label class="by-fld">${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
       <label class="by-fld">${esc(t('by_country'))}<input name="ship_to" maxlength="120" autocomplete="country-name"></label>
-      <label class="by-fld">${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre, {t: pk(p, 't'), p: money(p.p)}))}</textarea></label>
+      <label class="by-fld">${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre, {t: titleL(p), p: money(p.p, p)}))}</textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
       <p class="by-note">${t('consent_form')}</p>
       <div class="act"><button class="by-btn by-pay" type="submit">${BT(t('id_send'))}</button></div>
@@ -83,7 +83,7 @@
     const box = main.querySelector('.by-box'), pre = workStatus(p) === 'sold' ? 'id_pre_sold' : workStatus(p) === 'reserved' ? 'id_pre_res' : 'id_prefill';
 
     const wire = () => wireForm(box, async f => {
-      const res = await deliver('inquiry', A.email, t('id_subject', {t: pk(p, 't')}), {artist: nameL(A), work: pk(p, 't'), price: money(p.p), name: f.name, email: f.email, ship_to: f.ship_to, message: f.message, captcha: f['cf-turnstile-response']});
+      const res = await deliver('inquiry', A.email, t('id_subject', {t: titleL(p)}), {artist: nameL(A), work: titleL(p), price: money(p.p, p), name: f.name, email: f.email, ship_to: f.ship_to, message: f.message, captcha: f['cf-turnstile-response']});
       done(res);
     });
     const done = res => {

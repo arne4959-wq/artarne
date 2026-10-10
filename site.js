@@ -123,12 +123,13 @@ let dragMoved = false, vel = 0, inertia = 0;
 function refreshCity() {     // fills every building tag in the current language
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
     const a = ARTISTS[i], nm = bd.querySelector('.nm');
-    bd.querySelector('.mon').setAttribute('aria-label', LANG === 'en' ? `${nameL(a)}'s building` : `ตึกของ${a.name}`);
+    bd.querySelector('.mon').setAttribute('aria-label', bldgL(a));
     bd.querySelector('.no').textContent = `NO.${String(i + 1).padStart(2, '0')} · ${t('works_n', {n: a.works.length})}`;
     nm.setAttribute('aria-label', nameL(a)); ransom(nm, nameL(a), i);
     bd.querySelector('.ds').textContent = discL(a);
     let wv = bd.querySelector('.wv'); if (a.wave) { if (!wv) { wv = document.createElement('i'); wv.className = 'wv'; bd.querySelector('.tag').appendChild(wv); } wv.textContent = '★ ' + t('wave'); }
-    bd.querySelector('.wl').textContent = a.pieces.map(p => pk(p, 't')).join(' · ');
+    bd.querySelector('.wl').textContent = a.pieces.map(p => titleL(p)).join(' · ');
+    bd.querySelectorAll('.tile title').forEach(el => { if (el.dataset.k == null) el.dataset.k = a.titles.indexOf(el.textContent); const k = +el.dataset.k; if (k >= 0) el.textContent = LANG === 'lo' ? titleL(a.pieces[k]) : a.titles[k]; });   // hover tooltips of the tiles: Lao gets titleLo, th / en keep the Thai title as before
   });
 }
 function renderCity() {
@@ -293,7 +294,7 @@ function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
-    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: money(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${moneyHtml(p.p)}</span>${statusChip(p)}</span></a></div>`;
+    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: titleL(p), a: nameL(a), p: money(p.p, p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(titleL(p))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${moneyHtml(p.p, p)}</span>${statusChip(p)}</span></a></div>`;
   }).join('');
   $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('feat_count', {n: list.length});
@@ -364,8 +365,8 @@ function renderSpot() {
   const N = ARTISTS[0], p = N.pieces[0], im = $('#afr-img');
   $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
   if (p.img && !im.getAttribute('src')) im.src = p.img;
-  im.alt = pk(p, 't');
-  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y} · ${moneyHtml(p.p)}</span>`;
+  im.alt = titleL(p);
+  $('#afr-cap').innerHTML = `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y} · ${moneyHtml(p.p, p)}</span>`;
   $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
 }
 

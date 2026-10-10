@@ -5,10 +5,13 @@
    endpoint : a form-backend URL (Formspree, Getform, your own API). It receives JSON via POST.
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
-   lakPerUsd: how many Lao kip one US dollar is worth (you set it, e.g. 21000). While it is 0 every price stays in US dollars; once set, prices show in kip
-              (rounded to the nearest 1,000) with the dollar price small next to it. Prices in artists.js stay in US dollars.
+   lakPerUsd: how many Lao kip one US dollar is worth. Only the Lao (lo) pages use it: they show prices in kip, rounded to a tidy figure
+              (under 1,000,000 to the nearest 10,000, from 1,000,000 up to the nearest 100,000: "12,100,000 ₭"). A work's own priceLak (artists.js) wins over it.
+              Thai and English always show US dollars. 0 = Lao pages show dollars too. Prices in artists.js stay in US dollars.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji', lakPerUsd: 0 };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
+const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
+  lakPerUsd: 22400 };   // lakPerUsd: approximate rate, October 2026. It does NOT update itself: change it by hand when the kip moves.
+// turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
 /* ---------- buy page data (buy.js): fill these in. While one is empty the page shows a yellow [__] there; nothing is invented ----------
    SHIPPING.regions     where pieces ship to            SHIPPING.fee          shipping fee
    SHIPPING.days        days until it arrives           SHIPPING.returnDays   days to send back a piece that broke in transit
@@ -32,11 +35,14 @@ if (LITE) document.documentElement.classList.add('lite');
 const $ = q => document.querySelector(q);
 const NF = new Intl.NumberFormat('en-US');          // built once: constructing Intl objects per call is slow
 const usd = n => '$' + NF.format(n);
-/* prices: money(n) is plain text, moneyHtml(n) is markup for visible price tags. With CONFIG.lakPerUsd set: "4,000,000 ₭" (+ the dollar price small); otherwise just "$540". */
-const lakOn = () => +CONFIG.lakPerUsd > 0;
-const lak = n => NF.format(Math.round(n * CONFIG.lakPerUsd / 1000) * 1000) + ' ₭';
-const money = n => lakOn() ? `${lak(n)} / ${usd(n)}` : usd(n);
-const moneyHtml = n => lakOn() ? `${esc(lak(n))}<small class="mny-s">${esc(usd(n))}</small>` : esc(usd(n));
+/* prices: money(n, w) is plain text, moneyHtml(n, w) is markup for visible price tags (n = dollars, w = the work, optional). Lao pages (with CONFIG.lakPerUsd set): "12,100,000 ₭" (moneyHtml adds the dollar price small); Thai / English: just "$540".
+   ราคาจริงควรตั้งเป็นกีบตรงๆ ใน artists.js ภายหลัง ถ้าจะให้ lo ใช้ราคากีบจริง ให้เพิ่มฟิลด์ priceLak
+   (a work's priceLak is always used first, as is; without it the dollars are converted with lakPerUsd and rounded: under 1,000,000 ₭ to 10,000, from 1,000,000 ₭ to 100,000). */
+const lakOn = () => LANG === 'lo' && +CONFIG.lakPerUsd > 0;
+const lakRound = k => { const step = k < 1e6 ? 1e4 : 1e5; return Math.round(k / step) * step; };
+const lak = (n, w) => NF.format(w && +w.priceLak > 0 ? +w.priceLak : lakRound(n * CONFIG.lakPerUsd)) + ' ₭';
+const money = (n, w) => lakOn() ? lak(n, w) : usd(n);
+const moneyHtml = (n, w) => lakOn() ? `${esc(lak(n, w))}<small class="mny-s">${esc(usd(n))}</small>` : esc(usd(n));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
 /* ---------- strings ---------- */
@@ -244,6 +250,7 @@ lo: {
   d_paynote: "ລິ້ງຈ່າຍເງິນເປັນຂອງສິລະປິນເອງ circles ບໍ່ໄດ້ຮັບເງິນແທນ",   // DRAFT lo: needs native review
   nf_h: "ຕຶກນີ້ຍັງບໍ່ໄດ້ສ້າງ",   // DRAFT lo: needs native review
   nf_p: "ບໍ່ມີສິລະປິນຄົນນີ້ໃນເມືອງ ກັບໄປຍ່າງເບິ່ງຕຶກທີ່ມີຢູ່",   // DRAFT lo: needs native review
+  consent_form: "ການສົ່ງຂໍ້ຄວາມນີ້ ໝາຍຄວາມວ່າທ່ານຮັບຊາບ<a href=\"privacy.html\">ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ</a> ຂໍ້ມູນຂອງທ່ານຈະຖືກສົ່ງເຖິງຜູ້ຮັບທີ່ລະບຸເທົ່ານັ້ນ",   // DRAFT lo: needs native review
   id_title: "ລົມກັບ<em>{a}</em>ໂດຍກົງ",   // DRAFT lo: needs native review
   id_intro: "ຂໍ້ຄວາມນີ້ໄປຫາສິລະປິນໂດຍກົງ ບໍ່ຜ່ານຄົນກາງ",   // DRAFT lo: needs native review
   id_name: "ຊື່ຂອງທ່ານ",   // DRAFT lo: needs native review
@@ -289,15 +296,175 @@ lo: {
   by_again: "ສົ່ງຂໍ້ຄວາມອີກ",   // DRAFT lo: needs native review
   title_by: "{t} ໂດຍ{a} — circles",   // DRAFT lo: needs native review
   desc_by: "ຊື້ “{t}” ຜົນງານ{d}ຂອງ{a} ລາຄາ {p} ຊື້ກົງຈາກສິລະປິນ ບໍ່ມີຄົນກາງ",   // DRAFT lo: needs native review
-  // TODO lo: consent_form (falls back to Thai) - legal / privacy wording: needs a proper translation, not a guess
-  // TODO lo: jd_title (falls back to Thai) - join form: the word play on "ตึก" (building) needs a native ear
-  // TODO lo: jd_intro (falls back to Thai) - join form intro: tone matters, ask a native speaker
-  // TODO lo: jd_name (falls back to Thai) - join form label
-  // TODO lo: jd_email (falls back to Thai) - join form label
-  // TODO lo: jd_disc (falls back to Thai) - join form label (art discipline)
-  // TODO lo: jd_other (falls back to Thai) - join form option
-  // TODO lo: jd_link (falls back to Thai) - join form label
-  // TODO lo: jd_msg (falls back to Thai) - join form label
+  f_wave: "★ ຄື້ນລູກໃໝ່",   // DRAFT lo: needs native review
+  legal_privacy: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",   // DRAFT lo: needs native review
+  legal_terms: "ເງື່ອນໄຂການນຳໃຊ້",   // DRAFT lo: needs native review
+  hero_hl1: "ເມືອງຂອງສິລະປິນ",   // DRAFT lo: needs native review
+  hero_hl2: "ພື້ນທີ່ສຳລັບງານສິລະປະ",   // DRAFT lo: needs native review
+  hero_hl3: "ທີ່ບໍ່ຍອມງຽບ",   // DRAFT lo: needs native review
+  hero_lead: "ຕຶກຄອນກຣີດໜຶ່ງຫຼັງ ສິລະປິນໜຶ່ງຄົນ ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ຍ່າງເຂົ້າໄປ ເບິ່ງຜົນງານ ແລ້ວຊື້ກົງຈາກຄົນເຮັດ",   // DRAFT lo: needs native review
+  hero_cta: "ເຂົ້າຊົມເມືອງ →",   // DRAFT lo: needs native review
+  city_h: "ເມືອງ",   // DRAFT lo: needs native review
+  city_p: "ລາກ ຫຼື ເລື່ອນໄປທາງຂວາເພື່ອຍ່າງຜ່ານເມືອງ ຕຶກແຕ່ລະຫຼັງແມ່ນສະຕູດິໂອຂອງສິລະປິນໜຶ່ງຄົນ ພາບທີ່ຝັງຢູ່ໃນຄອນກຣີດແມ່ນຜົນງານຈິງ",   // DRAFT lo: needs native review
+  mani1: "ບໍ່ມີ​ຫໍສິລະປະ",   // DRAFT lo: needs native review
+  mani2: "ບໍ່ມີ​ຄົນກາງ",   // DRAFT lo: needs native review
+  mani3: "ບໍ່ມີ​ຄ່ານາຍໜ້າ",   // DRAFT lo: needs native review
+  mani4: "ມີແຕ່ຄົນເຮັດ ກັບຄົນຊື້",   // DRAFT lo: needs native review
+  mani_aria: "ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ບໍ່ມີຄ່ານາຍໜ້າ ມີແຕ່ຄົນເຮັດກັບຄົນຊື້",   // DRAFT lo: needs native review
+  mani_note: "ທີ່ນີ້ສິລະປິນຕັ້ງລາຄາເອງ ຮັບເງິນເອງ ແລະ ລົມກັບຄົນຊື້ເອງ ບໍ່ມີໃຜມານັ່ງຂັ້ນລະຫວ່າງພວກເຮົາກັບຜົນງານ ເພາະງານສິລະປະຄວນເດີນທາງຈາກມືຄົນເຮັດໄປເຖິງມືຄົນຮັກ ບໍ່ແມ່ນແວະຈ່າຍຄ່າຜ່ານທາງກ່ອນ",   // DRAFT lo: needs native review
+  how_h: "ວິທີໃຊ້ງານ",   // DRAFT lo: needs native review
+  s1_h: "ເລືອກຕຶກ",   // DRAFT lo: needs native review
+  s1_p: "ລາກຍ່າງຜ່ານເມືອງ ຕຶກໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ເຫັນຮູບຮ່າງແລ້ວຖືກໃຈຫຼັງໃດ ກໍຊີ້ຫຼັງນັ້ນ ບໍ່ຕ້ອງມີໃຜແນະນຳ",   // DRAFT lo: needs native review
+  s2_h: "ຍ່າງເຂົ້າໄປເບິ່ງຜົນງານ",   // DRAFT lo: needs native review
+  s2_p: "ເປີດປະຕູຕຶກ ໄລ່ເບິ່ງເທື່ອລະຊັ້ນ ເທື່ອລະຫ້ອງ ຜົນງານແຂວນຢູ່ເທິງຝາຄອນກຣີດຈິງໆ ຈັບບໍ່ໄດ້ ແຕ່ເບິ່ງໄດ້ດົນເທົ່າທີ່ຢາກເບິ່ງ",   // DRAFT lo: needs native review
+  s3_h: "ຊື້ກົງຈາກສິລະປິນ",   // DRAFT lo: needs native review
+  s3_p: "ເຈິຊິ້ນທີ່ຕິດຕາມໄປຮອດໃນຝັນ ກໍລົມກັບຄົນເຮັດໂດຍກົງ ຈ່າຍຕາມລາຄາທີ່ເຂົາຕັ້ງ ເງິນທຸກກີບເຂົ້າກະເປົາຄົນແຕ້ມ ບໍ່ມີໃຜຫັກກ່ອນ",   // DRAFT lo: needs native review
+  feat_h: "ຜົນງານເດັ່ນອາທິດນີ້",   // DRAFT lo: needs native review
+  feat_h_all: "ຜົນງານທັງໝົດໃນເມືອງ",   // DRAFT lo: needs native review
+  sort_label: "ຈັດຮຽງຕາມ",   // DRAFT lo: needs native review
+  sort_cur: "ຄັດມາໃຫ້",   // DRAFT lo: needs native review
+  sort_low: "ລາຄາຕ່ຳ → ສູງ",   // DRAFT lo: needs native review
+  sort_high: "ລາຄາສູງ → ຕ່ຳ",   // DRAFT lo: needs native review
+  sort_new: "ໃໝ່ລ່າສຸດ",   // DRAFT lo: needs native review
+  all_btn: "ເບິ່ງທັງໝົດ {n} ຊິ້ນ",   // DRAFT lo: needs native review
+  feat_count: "ສະແດງ {n} ຊິ້ນ",   // DRAFT lo: needs native review
+  card_aria: "{t} ໂດຍ{a} {p}",   // DRAFT lo: needs native review
+  map_h: "ແຜນທີ່ເມືອງ",   // DRAFT lo: needs native review
+  map_p: "ເບິ່ງຈາກທາງເທິງ ເມືອງແບ່ງເປັນຍ່ານຕາມສາຂາ ກົດຍ່ານ ຫຼື ປຸ່ມກັ່ນຕອງ ແລ້ວຕຶກໃນແຖບເມືອງດ້ານເທິງຈະສະຫວ່າງຂຶ້ນໃຫ້",   // DRAFT lo: needs native review
+  filters_aria: "ກັ່ນຕອງຕາມສາຂາ",   // DRAFT lo: needs native review
+  f_all: "ທັງໝົດ",   // DRAFT lo: needs native review
+  spot_h: "ນະພາ",   // DRAFT lo: needs native review
+  q1: "ເປັນຫຍັງຈຶ່ງເລີກສົ່ງງານເຂົ້າຫໍສິລະປະ?",   // DRAFT lo: needs native review
+  a1: "ສົ່ງໄປສິບສອງຮອບ ໄດ້ຄຳຕອບວ່າ \"ໜ້າສົນໃຈ ແຕ່ຍັງບໍ່ແມ່ນຕອນນີ້\" ຄົບສິບສອງຮອບ ສຸດທ້າຍກໍເຂົ້າໃຈວ່າ \"ຕອນນີ້\" ຂອງພວກເຂົາບໍ່ເຄີຍມາເຖິງ ເລີຍເລີກລໍຖ້າ",   // DRAFT lo: needs native review
+  q2: "ເປັນຫຍັງຕ້ອງຫ້ອງວ່າງກັບໝອກ?",   // DRAFT lo: needs native review
+  a2: "ເພາະທີ່ວ່າງແມ່ນບ່ອນດຽວທີ່ບໍ່ມີໃຜມາບອກວ່າຕ້ອງຮູ້ສຶກແນວໃດ ຫ້ອງວ່າງໜຶ່ງຫ້ອງ ຄົນເບິ່ງຮ້ອຍຄົນ ໄດ້ຮ້ອຍເລື່ອງ ບໍ່ຕ້ອງມີຄີວເຣເຕີແປໃຫ້",   // DRAFT lo: needs native review
+  q3: "ຖ້າຄົນເຂົ້າມາແລ້ວບໍ່ຊື້ເດ?",   // DRAFT lo: needs native review
+  a3: "ກໍບໍ່ເປັນຫຍັງ ເບິ່ງຟຣີ ນັ່ງຖຽງກັບພາບໄດ້ ຖ້າມື້ໃດຜົນງານຕິດຕາມໄປຫຼອນເຖິງເຮືອນ ຄ່ອຍກັບມາລົມລາຄາກັບຄົນແຕ້ມໂດຍກົງ ບໍ່ມີໃຜເກັບຄ່າແນະນຳ",   // DRAFT lo: needs native review
+  spot_cta: "ເຂົ້າໄປໃນຕຶກນະພາ →",   // DRAFT lo: needs native review
+  spot_meta: "NO.01 · {d} · ຕັ້ງແຕ່ {y} · {c}",   // DRAFT lo: needs native review
+  stats_aria: "ຕົວເລກຂອງເມືອງ",   // DRAFT lo: needs native review
+  join_h: "ຢາກມີຕຶກຂອງຕົນເອງບໍ?",   // DRAFT lo: needs native review
+  join_btn: "Join — ຂໍມີຕຶກ →",   // DRAFT lo: needs native review
+  foot_h: "ສິລະປະ<em>ບໍ່ລໍ</em>ໃຜ",   // DRAFT lo: needs native review
+  foot_p: "ຢາກມີຕຶກໃນເມືອງນີ້ ສົ່ງຜົນງານມາໄດ້ເລີຍ ພວກເຮົາບໍ່ຖາມວ່າທ່ານເປັນໃຜ ພວກເຮົາເບິ່ງແຕ່ວ່າຜົນງານຂອງທ່ານເປັນແນວໃດ",   // DRAFT lo: needs native review
+  foot_btn: "ຂໍເຂົ້າຮ່ວມ →",   // DRAFT lo: needs native review
+  foot_menu: "ເມນູ",   // DRAFT lo: needs native review
+  foot_social: "ໂຊຊຽວ",   // DRAFT lo: needs native review
+  news_label: "ຂ່າວຈາກເມືອງ ຕຶກໃໝ່ ຜົນງານໃໝ່ ສົ່ງຕົງເຖິງກ່ອງອີເມວ ບໍ່ສະແປມ ບໍ່ຂາຍຕໍ່",   // DRAFT lo: needs native review
+  news_btn: "ສະໝັກ →",   // DRAFT lo: needs native review
+  foot_copy: "© 2026 CIRCLES · ຕົ້ນແບບ · ສິລະປິນ ແລະ ຜົນງານໃນເວັບນີ້ເປັນຕົວຢ່າງ · NO GALLERY. NO MIDDLEMAN.",   // DRAFT lo: needs native review
+  news_saved: "ບັນທຶກອີເມວໄວ້ໃນເຄື່ອງນີ້ແລ້ວ (ຍັງບໍ່ໄດ້ເຊື່ອມລະບົບສົ່ງຈົດໝາຍ)",   // DRAFT lo: needs native review
+  news_sent: "ສະໝັກຮັບຂ່າວສຳເລັດແລ້ວ",   // DRAFT lo: needs native review
+  cy_h: "ວົງມົນບໍ່ມີປາຍທາງ ສິລະປະກໍຄືກັນ",   // DRAFT lo: needs native review
+  cy_p: "ຊື່ Circles ມາຈາກຄວາມເຊື່ອວ່າງານສິລະປະບໍ່ມີມື້ຈົບ ສິລະປິນເຮັດຊິ້ນໜຶ່ງສຳເລັດ ກໍມີຊິ້ນຕໍ່ໄປລໍຖ້າຢູ່ສະເໝີ ງານທີ່ຖືກຊື້ໄປບໍ່ແມ່ນຈຸດຈົບ ແຕ່ເປັນແຮງໃຫ້ເຮັດຕໍ່ ແລະ ເມືອງນີ້ກໍວົນໄປແບບນັ້ນເລື້ອຍໆ",   // DRAFT lo: needs native review
+  cy_1: "ແຕ້ມ",   // DRAFT lo: needs native review
+  cy_2: "ສະແດງໃນຕຶກ",   // DRAFT lo: needs native review
+  cy_3: "ມີຄົນຊື້",   // DRAFT lo: needs native review
+  cy_4: "ແຕ້ມຕໍ່",   // DRAFT lo: needs native review
+  cy_aria: "ວົງຈອນ 4 ຂັ້ນ: ແຕ້ມ ສະແດງໃນຕຶກ ມີຄົນຊື້ ແລ້ວວົນກັບໄປແຕ້ມຕໍ່",   // DRAFT lo: needs native review
+  sup_h: "ສະໜັບສະໜູນ Circles",   // DRAFT lo: needs native review
+  sup_p: "ຕອນນີ້ສິລະປິນຮັບເງິນເຕັມ ບໍ່ມີຄ່າທຳນຽມ ເວັບຢູ່ໄດ້ດ້ວຍເງິນສະໜັບສະໜູນ ຖ້າມີຄ່າທຳນຽມໃນອະນາຄົດ ພວກເຮົາຈະບອກລ່ວງໜ້າ",   // DRAFT lo: needs native review
+  sup_where: "ເງິນສະໜັບສະໜູນໄປໃສ",   // DRAFT lo: needs native review
+  sup_r1: "ຄ່າເຊີບເວີ ແລະ ໂດເມນ",   // DRAFT lo: needs native review
+  sup_r2: "ການດູແລ ແລະ ພັດທະນາເວັບ",   // DRAFT lo: needs native review
+  sup_r3: "ກິດຈະກຳ ແລະ ພື້ນທີ່ໃໝ່ສຳລັບສິລະປິນ",   // DRAFT lo: needs native review
+  sup_note: "ຕົວຢ່າງ: ໝວດ ແລະ ສັດສ່ວນຍັງບໍ່ຕົກລົງ [__]% ແມ່ນຕົວເລກທີ່ຍັງບໍ່ຮູ້ ຈະໃສ່ເມື່ອມີຂໍ້ມູນຈິງ",   // DRAFT lo: needs native review
+  don_btn: "ສະໜັບສະໜູນ →",   // DRAFT lo: needs native review
+  don_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
+  mq: ["ສິລະປິນບໍ່ມີກົດ", "BUY ART", "ຊື້ກົງຈາກຄົນເຮັດ", "NO MIDDLEMAN", "ເມືອງຂອງສິລະປິນ", "ART NOT SORRY"],   // DRAFT lo: needs native review
+  nav_join: "Join",   // DRAFT lo: needs native review
+  mani_k: "Manifesto",   // DRAFT lo: needs native review
+  how_i: "3 steps",   // DRAFT lo: needs native review
+  feat_i: "Featured",   // DRAFT lo: needs native review
+  map_i: "The",   // DRAFT lo: needs native review
+  spot_i: "Artist of the week",   // DRAFT lo: needs native review
+  join_k: "Get a building",   // DRAFT lo: needs native review
+  join_i: "Your",   // DRAFT lo: needs native review
+  pf_ig: "Instagram",   // DRAFT lo: needs native review
+  works_n: "{n} WORKS",   // DRAFT lo: needs native review
+  fold_spot: "ອ່ານບົດສຳພາດ 3 ຂໍ້",   // DRAFT lo: needs native review
+  fold_foot: "ເມນູ ໂຊຊຽວ ແລະ ຈົດໝາຍຂ່າວ",   // DRAFT lo: needs native review
+  pf_h: "ໂປຣໄຟລ໌ຂອງ{a}",   // DRAFT lo: needs native review
+  pf_open: "ຮັບງານສັ່ງເຮັດ",   // DRAFT lo: needs native review
+  pf_until: "· ຄິວວ່າງເດືອນ {m}",   // DRAFT lo: needs native review
+  pf_cn: "ແນວຄິດຂອງຜົນງານ{a}",   // DRAFT lo: needs native review
+  pf_nw: "ຜົນງານໃນພິພິທະພັນ",   // DRAFT lo: needs native review
+  pf_ns: "ຂາຍແລ້ວ",   // DRAFT lo: needs native review
+  pf_ny: "ເລີ່ມເຮັດງານສິລະປະ",   // DRAFT lo: needs native review
+  pf_tl: "ເສັ້ນທາງທີ່ຜ່ານມາ",   // DRAFT lo: needs native review
+  pf_wh: "ຜົນງານໃນພິພິທະພັນ",   // DRAFT lo: needs native review
+  pf_hover: "ຊີ້ທີ່ພາບເພື່ອເບິ່ງລາຄາ",   // DRAFT lo: needs native review
+  pf_all: "ຍ່າງເຂົ້າໄປເບິ່ງທັງໝົດ →",   // DRAFT lo: needs native review
+  pf_sup1: "ມັກຜົນງານຂອງ{a}ບໍ?",   // DRAFT lo: needs native review
+  pf_sup2: "ຊ່ວຍໃຫ້ສ້າງງານຕໍ່",   // DRAFT lo: needs native review
+  pf_supn: "ທຸກການສະໜັບສະໜູນໄປເຖິງສິລະປິນໂດຍກົງ ໃນຊ່ວງເລີ່ມຕົ້ນນີ້ Circles ຍັງບໍ່ຫັກຄ່າທຳນຽມຈາກສິລະປິນ",   // DRAFT lo: needs native review
+  pf_supb: "ສະໜັບສະໜູນ{a}",   // DRAFT lo: needs native review
+  pf_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
+  pf_share: "ແຊໂປຣໄຟລ໌ ↗",   // DRAFT lo: needs native review
+  pf_copy: "ສຳເນົາລິ້ງ",   // DRAFT lo: needs native review
+  pf_copied: "ສຳເນົາລິ້ງແລ້ວ",   // DRAFT lo: needs native review
+  pf_marq: "ART NOT SORRY ★ ວົງມົນບໍ່ມີມື້ຈົບ ★ CIRCLES ★ ຍ່າງເຂົ້າພິພິທະພັນ ★ ",   // DRAFT lo: needs native review
+  wave: "ຄື້ນລູກໃໝ່",   // DRAFT lo: needs native review
+  cw_est: "ກໍ່ຕັ້ງ {y}",   // DRAFT lo: needs native review
+  cw_hint: "▼ ພາບຕັດຕຶກເທື່ອລະຊັ້ນ ກົດທີ່ຜົນງານເພື່ອເບິ່ງລາຍລະອຽດເຕັມ",   // DRAFT lo: needs native review
+  cw_section: "SECTION A–A · ບໍ່ມີລິຟ ໃຊ້ຂັ້ນໄດເທົ່ານັ້ນ",   // DRAFT lo: needs native review
+  cw_meta: "{d} · ຕັ້ງແຕ່ {y} · {c}",   // DRAFT lo: needs native review
+  cw_prev: "← ຕຶກກ່ອນໜ້າ",   // DRAFT lo: needs native review
+  cw_next: "ຕຶກຖັດໄປ →",   // DRAFT lo: needs native review
+  cw_roof: "{n} · STUDIO",   // DRAFT lo: needs native review
+  cw_look_sold: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
+  cw_look: "ເບິ່ງລາຍລະອຽດ · ຊື້ →",   // DRAFT lo: needs native review
+  jn_kick: "ສຳລັບສິລະປິນ",   // DRAFT lo: needs native review
+  jn_cta: "ເລົ່າໃຫ້ພວກເຮົາຟັງສັ້ນໆວ່າທ່ານເຮັດງານແບບໃດ ແນບລິ້ງຜົນງານ ແລ້ວພວກເຮົາຈະຕິດຕໍ່ກັບທາງອີເມວ",   // DRAFT lo: needs native review
+  jb_p: "ຕັ້ງລາຄາເອງ ຮັບເງິນເອງ ບໍ່ມີໃຜຄັດງານ",   // DRAFT lo: needs native review
+  jb_btn: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
+  jd_title: "ຂໍມີ<em>ຕຶກ</em>ໃນເມືອງນີ້",   // DRAFT lo: needs native review
+  jd_intro: "ເລົ່າໃຫ້ຟັງສັ້ນໆວ່າທ່ານເຮັດຫຍັງ ບໍ່ຕ້ອງມີປະຫວັດຍາວ ບໍ່ຕ້ອງມີໃຜຮັບຮອງ ພວກເຮົາເບິ່ງທີ່ຜົນງານ",   // DRAFT lo: needs native review
+  jd_name: "ຊື່ / ນາມປາກກາ",   // DRAFT lo: needs native review
+  jd_email: "ອີເມວ",   // DRAFT lo: needs native review
+  jd_disc: "ສາຂາ",   // DRAFT lo: needs native review
+  jd_other: "ອື່ນໆ",   // DRAFT lo: needs native review
+  jd_link: "ລິ້ງຜົນງານ (ເວັບ / Instagram / Drive)",   // DRAFT lo: needs native review
+  jd_msg: "ເລົ່າກ່ຽວກັບຜົນງານຂອງທ່ານ",   // DRAFT lo: needs native review
+  title_pf: "ໂປຣໄຟລ໌ຂອງ{a} — circles",   // DRAFT lo: needs native review
+  desc_pf: "ຮູ້ຈັກ{a} ສິລະປິນສາຂາ{d} ແນວຄິດຂອງຜົນງານ ຜົນງານທີ່ຂາຍຢູ່ ແລະ ຊ່ອງທາງສະໜັບສະໜູນ ຫຼື ສັ່ງເຮັດງານ",   // DRAFT lo: needs native review
+  title_idx: "circles — ເມືອງຂອງສິລະປິນ ຊື້ກົງຈາກຄົນເຮັດ",   // DRAFT lo: needs native review
+  title_cw: "ຕຶກຂອງ{a} — circles",   // DRAFT lo: needs native review
+  desc_idx: "circles ເມືອງຂອງສິລະປິນ ຕຶກຄອນກຣີດໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ຍ່າງເຂົ້າໄປເບິ່ງຜົນງານແລ້ວຊື້ກົງຈາກຄົນເຮັດ",   // DRAFT lo: needs native review
+  desc_cw: "ຍ່າງເຂົ້າໄປໃນຕຶກຂອງ{a} ສິລະປິນສາຂາ{d} ເບິ່ງຜົນງານເທື່ອລະຊັ້ນ ແລ້ວຊື້ກົງຈາກສິລະປິນ",   // DRAFT lo: needs native review
+  fnote_wave: "ໄຮໄລທ໌ {n} ຕຶກຄື້ນລູກໃໝ່ໃນແຖບເມືອງແລ້ວ",   // DRAFT lo: needs native review
+  ld_top: "circles · ເມືອງຂອງສິລະປິນ",   // DRAFT lo: needs native review
+  ld_text: "ກຳລັງສ້າງເມືອງ…",   // DRAFT lo: needs native review
+  pager_l: "ເລື່ອນຊ້າຍ",   // DRAFT lo: needs native review
+  pager_r: "ເລື່ອນຂວາ",   // DRAFT lo: needs native review
+  strip_aria: "ເມືອງຂອງສິລະປິນ ເລື່ອນຊ້າຍຂວາ",   // DRAFT lo: needs native review
+  bd_aria: "ເຂົ້າຕຶກຂອງ{a} {d}",   // DRAFT lo: needs native review
+  less_btn: "ເບິ່ງສະເພາະຊິ້ນເດັ່ນ",   // DRAFT lo: needs native review
+  district: "ຍ່ານ",   // DRAFT lo: needs native review
+  plaza: "PLAZA · ຈະຕຸລັດກາງເມືອງ",   // DRAFT lo: needs native review
+  fnote: "ໄຮໄລທ໌ {n} ຕຶກສາຂາ{d}ໃນແຖບເມືອງແລ້ວ",   // DRAFT lo: needs native review
+  fnote_go: "ເບິ່ງຕຶກໃນແຖບເມືອງ ↑",   // DRAFT lo: needs native review
+  fnote_in: "ເຂົ້າໄປໃນຕຶກ →",   // DRAFT lo: needs native review
+  fnote_x: "ລ້າງຕົວກັ່ນຕອງ ✕",   // DRAFT lo: needs native review
+  st1: "ສິລະປິນໃນເມືອງ",   // DRAFT lo: needs native review
+  st2: "ຜົນງານໃນຕຶກ",   // DRAFT lo: needs native review
+  st3: "ສາຂາສິລະປະ",   // DRAFT lo: needs native review
+  st4: "ເງິນທີ່ເຖິງມືສິລະປິນ",   // DRAFT lo: needs native review
+  p1_h: "ຕຶກເປັນຂອງທ່ານ",   // DRAFT lo: needs native review
+  p1_p: "ຈັດຫ້ອງ ວາງຜົນງານ ປ່ຽນຊັ້ນໄດ້ຕາມໃຈ ຕຶກໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ບໍ່ມີໃຜມາແບ່ງຝາດ້ວຍ",   // DRAFT lo: needs native review
+  p2_h: "ເງິນເຂົ້າທ່ານ 100%",   // DRAFT lo: needs native review
+  p2_p: "ຕັ້ງລາຄາເອງ ຮັບເງິນເອງ ບໍ່ມີຄ່ານາຍໜ້າ ບໍ່ມີຄ່າຝາກຂາຍ ບໍ່ມີໃຜຫັກກ່ອນຮອດມື",   // DRAFT lo: needs native review
+  p3_h: "ບໍ່ມີໃຜຄັດງານ",   // DRAFT lo: needs native review
+  p3_p: "ບໍ່ມີຄະນະກຳມະການ ບໍ່ມີຫົວຂໍ້ປະຈຳປີ ບໍ່ຖາມວ່າຮຽນຈົບຈາກໃສ ເຮັດມາແລ້ວຢາກໃຫ້ຄົນເຫັນ ກໍສ້າງຕຶກໄດ້ເລີຍ",   // DRAFT lo: needs native review
+  skip_main: "ຂ້າມໄປທີ່ເນື້ອຫາ",   // DRAFT lo: needs native review
+  social_soon: "ລິ້ງໂຊຊຽວຈະເປີດຕອນເວັບຂຶ້ນອອນລາຍ",   // DRAFT lo: needs native review
+  to_label: "ເຖິງ",   // DRAFT lo: needs native review
+  demo_note: "ຂໍ້ມູນສິລະປິນ ແລະ ອີເມວໃນເວັບນີ້ເປັນຂໍ້ມູນຕົວຢ່າງ",   // DRAFT lo: needs native review
+  v_city: "ເບິ່ງແບບຕຶກ",   // DRAFT lo: needs native review
+  v_map: "ເບິ່ງແບບແຜນທີ່",   // DRAFT lo: needs native review
+  v_aria: "ເລືອກມຸມມອງເມືອງ",   // DRAFT lo: needs native review
+  // TODO lo: news_consent (falls back to Thai) - newsletter consent (privacy wording): needs a proper translation, not a guess
+  // TODO lo: jd_subject (falls back to Thai) - subject line of the join-request email that reaches the site owner: left in Thai so the owner can read it
 },
 /* lo:end */
 };
@@ -316,9 +483,11 @@ const t = (k, v) => {
   if (v && typeof s === 'string') for (const x in v) s = s.split('{' + x + '}').join(v[x]);
   return s;
 };
-const pk = (o, k) => (LANG === 'en' && o[k + 'En'] != null) ? o[k + 'En'] : o[k];
-const nameL = a => pk(a, 'name'), discL = a => LANG === 'en' ? (DISC_EN[a.disc] || a.disc) : a.disc, cityL = a => LANG === 'en' ? (CITY_EN[a.city] || a.city) : a.city;
-const fmtSize = p => LANG === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : p.s;
+const pk = (o, k) => (LANG === 'en' && o[k + 'En'] != null) ? o[k + 'En'] : (LANG === 'lo' && o[k + 'Lo'] != null) ? o[k + 'Lo'] : o[k];   // Lo fields are optional: a missing one is the Thai text
+const nameL = a => pk(a, 'name'), discL = a => LANG === 'en' ? (DISC_EN[a.disc] || a.disc) : LANG === 'lo' ? (DISC_LO[a.disc] || a.disc) : a.disc, cityL = a => LANG === 'en' ? (CITY_EN[a.city] || a.city) : LANG === 'lo' ? (CITY_LO[a.city] || a.city) : a.city;
+const titleL = p => (LANG === 'lo' && p.titleLo != null) ? p.titleLo : pk(p, 't');   // a work's title; Lao uses titleLo (Lao-script spelling), missing = the Thai title
+const bldgL = a => LANG === 'en' ? `${nameL(a)}'s building` : LANG === 'lo' ? 'ຕຶກຂອງ' + nameL(a) : 'ตึกของ' + a.name;   // "NO.04 · ตึกของ…" and the building's aria-label
+const fmtSize = p => LANG === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : (LANG === 'lo' && p.sLo != null) ? p.sLo : p.s;
 /* the language button cycles TH -> EN -> ລາວ -> TH; it shows the language it will switch to */
 const LANG_NEXT = {th: 'en', en: 'lo', lo: 'th'}, LANG_BTN = {th: 'TH', en: 'EN', lo: 'ລາວ'}, LANG_NAME = {th: 'ภาษาไทย', en: 'English', lo: 'ພາສາລາວ'};
 const langHooks = [];
@@ -385,7 +554,7 @@ const workStatus = p => (p && (p.status === 'sold' || p.status === 'reserved')) 
 const payLink = p => (p && typeof p.pay === 'string' && /^https:\/\/\S+$/.test(p.pay)) ? p.pay : '';
 const stampHtml = p => { const s = workStatus(p); return s ? `<i class="stamp ${s}">${esc(t(s === 'sold' ? 'st_sold' : 'st_res'))}</i>` : ''; };
 const statusChip = p => { const s = workStatus(p); return s ? `<span class="chip ${s}">${esc(t(s === 'sold' ? 'st_sold' : 'st_res'))}</span>` : ''; };
-const artImg = (a, k) => { const p = a.pieces[k]; return p.img ? `<img src="${esc(p.img)}" alt="${esc(pk(p, 't'))}" loading="lazy" decoding="async" draggable="false">` : ''; };
+const artImg = (a, k) => { const p = a.pieces[k]; return p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''; };
 const artistById = id => ARTISTS.find(a => a.id === id);
 
 /* ---------- toast ---------- */
@@ -456,7 +625,7 @@ function mountTurnstile(form) {
 /* "ขอมีตึก" — join request */
 function openJoin() {
   const d = mountDialog('dlg-join');
-  const opts = [...new Set(ARTISTS.map(a => a.disc))].map(x => `<option value="${esc(x)}">${esc(LANG === 'en' ? (DISC_EN[x] || x) : x)}</option>`).join('') + `<option value="other">${esc(t('jd_other'))}</option>`;
+  const opts = [...new Set(ARTISTS.map(a => a.disc))].map(x => `<option value="${esc(x)}">${esc(LANG === 'en' ? (DISC_EN[x] || x) : LANG === 'lo' ? (DISC_LO[x] || x) : x)}</option>`).join('') + `<option value="other">${esc(t('jd_other'))}</option>`;
   d.innerHTML = dlgShell(t('jd_title'),
     `<form><p class="intro">${esc(t('jd_intro'))}</p>
       <div class="row"><label>${esc(t('jd_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label>${esc(t('jd_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
@@ -481,13 +650,13 @@ function openInquiry(id, k, pre) {
   d.innerHTML = dlgShell(t('id_title', {a: esc(nameL(a))}),
     `<form><p class="intro">${esc(t('id_intro'))}</p>
       <div class="row"><label>${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label>${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
-      <label>${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre || 'id_prefill', {t: pk(p, 't'), p: money(p.p)}))}</textarea></label>
+      <label>${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre || 'id_prefill', {t: titleL(p), p: money(p.p, p)}))}</textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
       <p class="note">${t('consent_form')}</p>
       <div class="act"><button class="btn pk" type="submit">${esc(t('id_send'))}</button><button class="btn ghost" type="button" data-close>${esc(t('jd_cancel'))}</button></div>
       ${CONFIG.endpoint ? '' : `<p class="note">${esc(t('note_mailto'))}</p>`}</form>`);
   wireForm(d, async f => {
-    const res = await deliver('inquiry', a.email, t('id_subject', {t: pk(p, 't')}), {artist: nameL(a), work: pk(p, 't'), price: money(p.p), name: f.name, email: f.email, message: f.message, captcha: f['cf-turnstile-response']});
+    const res = await deliver('inquiry', a.email, t('id_subject', {t: titleL(p)}), {artist: nameL(a), work: titleL(p), price: money(p.p, p), name: f.name, email: f.email, message: f.message, captcha: f['cf-turnstile-response']});
     showDone(d, res, a.email);
   });
   if (!d.open) d.showModal();

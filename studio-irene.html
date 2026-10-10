@@ -537,9 +537,9 @@ function render(initial) {
         <div class="room">
           <span class="fl">FL.0${level} — ROOM ${ROOMS[level - 1]}</span>
           ${deco(A.kind, i, n)}
-          <button type="button" class="work${workStatus(A.pieces[k]) === 'sold' ? ' is-sold' : ''}" data-k="${k}" aria-label="${esc(pk(A.pieces[k], 't') + ' · ' + money(A.pieces[k].p) + ' — ' + t('cw_view', {t: pk(A.pieces[k], 't')}))}">
+          <button type="button" class="work${workStatus(A.pieces[k]) === 'sold' ? ' is-sold' : ''}" data-k="${k}" aria-label="${esc(titleL(A.pieces[k]) + ' · ' + money(A.pieces[k].p, A.pieces[k]) + ' — ' + t('cw_view', {t: titleL(A.pieces[k])}))}">
             <span class="aw"><i class="beam"></i><span class="art" style="--ar:${A.pieces[k].ar};--h:${frameH(A.pieces[k].ar)}px;--art:${artBg(A.works, k)}">${artImg(A, k)}${stampHtml(A.pieces[k])}</span></span>
-            <span class="lbl"><i class="tape"></i><small>${A.pieces[k].y} · ${esc(fmtSize(A.pieces[k]))}</small><b>${esc(pk(A.pieces[k], 't'))}</b>${A.pieces[k].q ? `<i class="q">“${esc(pk(A.pieces[k], 'q'))}”</i>` : ''}<span class="prow"><span class="pr${workStatus(A.pieces[k]) ? ' strike' : ''}">${moneyHtml(A.pieces[k].p)}</span>${statusChip(A.pieces[k])}</span><span class="go">${esc(t(workStatus(A.pieces[k]) === 'sold' ? 'cw_look_sold' : 'cw_look'))}</span></span>
+            <span class="lbl"><i class="tape"></i><small>${A.pieces[k].y} · ${esc(fmtSize(A.pieces[k]))}</small><b>${esc(titleL(A.pieces[k]))}</b>${A.pieces[k].q ? `<i class="q">“${esc(pk(A.pieces[k], 'q'))}”</i>` : ''}<span class="prow"><span class="pr${workStatus(A.pieces[k]) ? ' strike' : ''}">${moneyHtml(A.pieces[k].p, A.pieces[k])}</span>${statusChip(A.pieces[k])}</span><span class="go">${esc(t(workStatus(A.pieces[k]) === 'sold' ? 'cw_look_sold' : 'cw_look'))}</span></span>
           </button>
         </div>
         <div class="slab"></div>
@@ -548,7 +548,7 @@ function render(initial) {
   main.innerHTML = `
     <header class="cut-head">
       <a class="back ${cls}" href="index.html#city">${esc(t('cw_back'))}</a>
-      <div class="kicker ${cls}" style="--i:1">NO.${String(idx + 1).padStart(2, '0')} · ${esc(LANG === 'en' ? nameL(A) + "'s building" : 'ตึกของ' + A.name)}${A.wave ? ' · ★ ' + esc(t('wave')) : ''}</div>
+      <div class="kicker ${cls}" style="--i:1">NO.${String(idx + 1).padStart(2, '0')} · ${esc(bldgL(A))}${A.wave ? ' · ★ ' + esc(t('wave')) : ''}</div>
       <h1 class="rn ${cls}" style="--i:2" id="rn-title" aria-label="${esc(nameL(A))}"></h1>
       <div class="est ${cls}" style="--i:3"><span>${esc(t('cw_est', {y: A.since}))}</span></div>
       <div class="meta ${cls}" style="--i:3">${esc(t('cw_meta', {d: discL(A), y: A.since, c: cityL(A)}))}</div>
@@ -580,7 +580,7 @@ function fillDlg(k) {
   const p = A.pieces[k]; openK = k;
   const level = k + 1;
   $('#dlg-fl').textContent = `FL.0${level} — ROOM ${ROOMS[level - 1]}`;
-  $('#dlg-t').textContent = pk(p, 't');
+  $('#dlg-t').textContent = titleL(p);
   const fr = $('#dlg-frame'); fr.style.setProperty('--ar', p.ar); fr.style.setProperty('--art', artBg(A.works, k)); fr.innerHTML = artImg(A, k) + stampHtml(p);
   $('#dlg-by').innerHTML = t('d_by', {a: esc(nameL(A)), d: esc(discL(A)), c: esc(cityL(A))});
   const story = $('#dlg-story'); story.hidden = !p.st;
@@ -595,7 +595,7 @@ function fillDlg(k) {
     + (steps.length ? `<ol class="cc-steps" aria-label="${esc(t('cc_steps'))}">${steps.slice(0, 3).map((x, i) => `<li class="cc-card"><i class="cc-tape" aria-hidden="true"></i><small>${esc(t('cc_step', {n: i + 1}))}</small><b>${esc(pk(x, 'h'))}</b><p>${esc(pk(x, 'd'))}</p></li>`).join('')}</ol>` : '');
   $('#dlg-dl').innerHTML = `<div><dt>${esc(t('lb_year'))}</dt><dd>${p.y}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div class="w"><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div>`;
   const sta = workStatus(p), pay = sta ? '' : payLink(p);       // sold / reserved works never show a pay button
-  $('#dlg-price').innerHTML = moneyHtml(p.p); $('#dlg-price').classList.toggle('strike', !!sta);
+  $('#dlg-price').innerHTML = moneyHtml(p.p, p); $('#dlg-price').classList.toggle('strike', !!sta);
   $('#dlg-pnote').textContent = t('d_note'); $('#dlg-pnote').hidden = !!sta;
   const stt = $('#dlg-stt'); stt.hidden = !sta; stt.textContent = sta ? t(sta === 'sold' ? 'd_sold' : 'd_res') : '';
   const payA = $('#dlg-pay'); payA.hidden = !pay; if (pay) { payA.href = pay; payA.textContent = t('b_pay'); } else payA.removeAttribute('href');
@@ -607,7 +607,7 @@ function fillDlg(k) {
   $('#dlg-paynote').hidden = !pay; $('#dlg-paynote').textContent = pay ? t('d_paynote') : '';
   const pv = $('#dlg-prev'), nx = $('#dlg-next'), n = A.pieces.length;
   pv.setAttribute('aria-label', t('w_prev')); nx.setAttribute('aria-label', t('w_next')); pv.disabled = k === 0; nx.disabled = k === n - 1;
-  $('#dlg-th').innerHTML = A.pieces.map((q, j) => `<button type="button" class="th${j === k ? ' on' : ''}" data-th="${j}" style="--art:${artBg(A.works, j)}" aria-label="${esc(pk(q, 't'))}"${j === k ? ' aria-current="true"' : ''}>${artImg(A, j)}</button>`).join('');
+  $('#dlg-th').innerHTML = A.pieces.map((q, j) => `<button type="button" class="th${j === k ? ' on' : ''}" data-th="${j}" style="--art:${artBg(A.works, j)}" aria-label="${esc(titleL(q))}"${j === k ? ' aria-current="true"' : ''}>${artImg(A, j)}</button>`).join('');
   $('#dlg-cnt').textContent = `${k + 1} / ${n}`;
 }
 function openWork(k) {
