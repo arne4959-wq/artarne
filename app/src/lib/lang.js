@@ -42,5 +42,7 @@ export function makeLang(lang) {
   const lak = (n, w) => NF.format(w && +w.priceLak > 0 ? +w.priceLak : lakRound(n * CONFIG.lakPerUsd)) + ' ₭';
   const money = (n, w) => lakOn ? lak(n, w) : usd(n);
   const moneyHtml = (n, w) => lakOn ? `${esc(lak(n, w))}<small class="mny-s">${esc(usd(n))}</small>` : esc(usd(n));
-  return {lang, t, pk, nameL, discL, cityL, titleL, bldgL, fmtSize, money, moneyHtml, lakOn};
+  const kip = (n, w) => (+CONFIG.lakPerUsd > 0 ? lak(n, w) : '');   // kip in every language: the LAO QR block always asks for kip
+  const usdText = usd;
+  return {lang, t, pk, nameL, discL, cityL, titleL, bldgL, fmtSize, money, moneyHtml, lakOn, kip, usdText};
 }

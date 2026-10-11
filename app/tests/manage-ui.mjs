@@ -16,6 +16,7 @@ const mock = `
   let works = [
     {id:'w1', artist_id:'napha', position:0, title:'เช้าหมอก', title_en:'Morning Fog', price_usd:1800, price_lak:null, ar:'4/5', img:null, status:'', edition:null, year:2022},
     {id:'w2', artist_id:'napha', position:1, title:'ห้องว่าง', title_en:'Empty Room', price_usd:450, price_lak:10000000, ar:'1/1', img:'art/napha-2.svg', status:'reserved', edition:12, year:2021}];
+  let notices = [{id:'n1', artist_id:'napha', work_id:'w1', buyer_name:'Somchai', buyer_email:'somchai@mail.com', ship_to:'Vientiane', message:'Paid 12:30', slip_path:null, price_usd:1800, price_lak:40000000, status:'new', created_at:'2026-10-11T05:00:00Z', works:{title:'เช้าหมอก', title_en:'Morning Fog', status:'reserved'}}];
   const json = (b, status = 200) => new Response(JSON.stringify(b), {status, headers: {'Content-Type': 'application/json'}});
   const real = window.fetch.bind(window);
   window.fetch = async (input, init = {}) => {
@@ -30,6 +31,11 @@ const mock = `
       if (method === 'PATCH') { const id = new URL(url).searchParams.get('id').replace('eq.', ''); works = works.map(w => w.id === id ? {...w, ...JSON.parse(body)} : w); return new Response(null, {status: 204}); }
       if (method === 'DELETE') { const id = new URL(url).searchParams.get('id').replace('eq.', ''); works = works.filter(w => w.id !== id); return new Response(null, {status: 204}); }
       if (method === 'POST') { const b = JSON.parse(body); works.push({id: 'w' + (works.length + 1), ...b}); return new Response(null, {status: 201}); }
+    }
+    if (url.includes('/rest/v1/payment_notices')) {
+      if (method === 'HEAD') return new Response(null, {status: 200, headers: {'content-range': '0-0/' + notices.filter(n => n.status === 'new').length}});
+      if (method === 'GET') return json(notices);
+      if (method === 'PATCH') { const id = new URL(url).searchParams.get('id').replace('eq.', ''); notices = notices.map(n => n.id === id ? {...n, ...JSON.parse(body)} : n); return new Response(null, {status: 204}); }
     }
     if (url.includes('/rest/v1/artist_payment')) { if (method === 'GET') return one ? json({artist_id:'napha', bank:'BCEL', account_name:'Napha S.', account_no:'010 12 345', qr_path:null}) : json([]); return new Response(null, {status: 201}); }
     if (url.includes('/rest/v1/artist_private')) { if (method === 'GET') return one ? json({email:'napha@studio.com'}) : json([]); return new Response(null, {status: 201}); }
@@ -111,6 +117,16 @@ for (const [name, w, h, touch] of [['desk', 1280, 900, false], ['phone', 390, 84
     await b.ev("window.__calls.length=0");
     await clickText('.mg-mini.del', 'ลบ'); await sleep(200);
     check('first delete press only asks', !/DELETE/.test(await b.ev("JSON.stringify(window.__calls)")));
+    // payments tab: a buyer's notice, confirmed by the artist
+    check('the Payments tab shows a badge with the waiting notices', await b.ev("/1/.test(document.querySelector('#tab-orders .mg-badge')?.textContent||'')"));
+    await clickText('.mg-tab', 'แจ้งโอน'); await sleep(400);
+    check('the notice shows buyer, e-mail, address and price in kip and dollars', await b.ev("(()=>{const t=document.querySelector('.mg-order')?.textContent||'';return /Somchai/.test(t)&&/somchai@mail.com/.test(t)&&/Vientiane/.test(t)&&/40,000,000/.test(t)&&/1,800/.test(t)})()"));
+    await b.shot(`${out}/dash-orders-${name}.png`);
+    await b.ev("window.__calls.length=0");
+    await clickText('.mg-order .mg-mini', 'ได้รับเงินแล้ว'); await sleep(500);
+    const co = await b.ev("JSON.stringify(window.__calls)");
+    check('"Money received" confirms the notice and sets the work to sold', /payment_notices/.test(co) && /confirmed/.test(co) && /rest\/v1\/works/.test(co) && /sold/.test(co), co.slice(0, 400));
+    check('the confirmed notice has no more buttons', await b.ev("!document.querySelector('.mg-order .mg-mini.ok')"));
     // profile tab
     await clickText('.mg-tab', 'โปรไฟล์'); await sleep(300);
     await b.shot(`${out}/dash-profile-${name}.png`);

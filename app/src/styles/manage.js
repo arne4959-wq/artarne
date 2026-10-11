@@ -179,6 +179,21 @@ html[lang="th"] .mg-tab,html[lang="lo"] .mg-tab{font-family:"Chonburi",var(--tha
 .mg-ok{font:400 .95rem var(--type);}
 .mg-ok.bad{color:var(--tartan-red);}
 
+/* payment notices */
+.mg-badge{display:inline-block;margin-left:.5rem;min-width:1.6em;padding:0 .35em;background:var(--pink);color:var(--black);border:2px solid var(--black);font:400 .85em/1.5 var(--anton);letter-spacing:0;}
+.mg-orders{list-style:none;display:grid;gap:1.4rem;}
+.mg-order{background:var(--bone);border:var(--line) solid var(--black);box-shadow:6px 6px 0 var(--black);padding:1rem 1.1rem;}
+.mg-order.confirmed{background:var(--paper);}.mg-order.rejected{opacity:.7;}
+.mg-order p{font:400 .98rem/1.7 var(--thai);margin:.15rem 0;}
+.mg-order p span{font:400 .8rem var(--type);letter-spacing:.1em;text-transform:uppercase;margin-right:.4rem;}
+.mg-ohead{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;justify-content:space-between;}
+.mg-ohead b{font:400 1.2rem/1.4 "Chonburi",var(--thai);}
+.mg-st{font:400 .85rem var(--anton);letter-spacing:.12em;padding:.15rem .6rem;border:2px solid var(--black);background:var(--gold);}
+.mg-st.confirmed{background:var(--paper);}.mg-st.rejected{background:var(--tartan-red);color:var(--paper);}
+.mg-ometa{font:400 .9rem var(--type)!important;}
+.mg-order .mg-acts{margin-top:.8rem;flex-wrap:wrap;}
+.mg-mini.ok{background:var(--black);color:var(--paper);}
+
 /* works */
 .mg-works{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2rem;margin-bottom:1.6rem;}
 .mg-work{background:var(--bone);border:var(--line) solid var(--black);box-shadow:6px 6px 0 var(--black);display:flex;flex-direction:column;position:relative;}

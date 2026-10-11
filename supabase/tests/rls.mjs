@@ -23,6 +23,7 @@ grant all on storage.objects, storage.buckets to authenticated;
 insert into auth.users(id,email) values ('${A}','a@x.co'),('${B}','b@x.co'),('${C}','c@x.co'),('${ADM}','admin@x.co');
 `);
 await db.exec(fs.readFileSync(new URL('../migrations/001_init.sql', import.meta.url),'utf8'));
+await db.exec(fs.readFileSync(new URL('../migrations/002_payment_notices.sql', import.meta.url),'utf8'));
 console.log('migration applied');
 let pass=0, fail=0;
 const as = async (who, sql) => {   // who: null=postgres, 'anon', uid, 'admin'
@@ -85,4 +86,22 @@ r = await as(ADM,"update artists set approved=true where id='art-c' returning id
 r = await as(ADM,"insert into artists(id,name,disc,city) values ('admin-made','n','d','c') returning id"); ok('admin creates artist', r.n===1, JSON.stringify(r));
 r = await as(ADM,"select email from artist_private"); ok('admin reads e-mails', r.rows?.length===2, JSON.stringify(r));
 r = await as(null,"update artists set approved=false where id='art-c' returning id"); ok('service/superuser path still works', r.n===1, JSON.stringify(r));
+
+// ---- payment notices (002) ----
+await as(null, `insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd,status)
+  select 'art-a', id, 'Buyer One', 'b1@x.co', 100, 'new' from works where artist_id='art-a' and position=0 limit 1`);
+await as(null, `insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd)
+  select 'art-b', id, 'Buyer Two', 'b2@x.co', 300 from works where artist_id='art-b' limit 1`);
+r = await as('anon','select * from payment_notices'); ok('anon cannot read notices', !!r.err);
+r = await as('anon',"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd) select 'art-a',id,'x','x@x.co',1 from works limit 1"); ok('anon cannot create a notice (only the Edge Function can)', !!r.err);
+r = await as(A,'select buyer_name from payment_notices'); ok('A sees only own notices', JSON.stringify(r.rows.map(x=>x.buyer_name))==='["Buyer One"]', JSON.stringify(r));
+r = await as(A,"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd) select 'art-a',id,'fake','f@x.co',1 from works where artist_id='art-a' limit 1"); ok('an artist cannot create notices either', !!r.err);
+r = await as(A,"update payment_notices set status='confirmed' where artist_id='art-a' returning id"); ok('A confirms own notice', r.n===1, JSON.stringify(r));
+r = await as(A,"update payment_notices set status='rejected' where artist_id='art-b'"); ok('A cannot decide B notice', !!r.err || r.n===0, JSON.stringify(r));
+r = await as(A,"update payment_notices set buyer_email='steal@x.co' where artist_id='art-a'"); ok('A cannot edit the buyer data', !!r.err, JSON.stringify(r));
+r = await as(A,"update payment_notices set status='paid' where artist_id='art-a'"); ok('bad status rejected', !!r.err);
+r = await as(A,"delete from payment_notices where artist_id='art-a'"); ok('A cannot delete notices', !!r.err || r.n===0, JSON.stringify(r));
+r = await as(ADM,'select count(*)::int as n from payment_notices'); ok('admin sees all notices', r.rows[0].n===2, JSON.stringify(r));
+r = await as(null,"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd) select 'art-a',id,'x','not-an-email',1 from works limit 1"); ok('bad buyer e-mail rejected', !!r.err);
+r = await as(null,"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd,slip_path) select 'art-a',id,'x','x@x.co',1,'../etc/passwd' from works limit 1"); ok('bad slip path rejected', !!r.err);
 console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail?1:0);

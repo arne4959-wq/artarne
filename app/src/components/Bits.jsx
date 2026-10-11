@@ -19,3 +19,8 @@ export function Fill({text, with: parts}) {
   const keys = Object.keys(parts), re = new RegExp('(' + keys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')');
   return <>{text.split(re).map((x, i) => keys.includes(x) ? <Fragment key={i}>{parts[x]}</Fragment> : x)}</>;
 }
+
+/* the blade-style heading pieces of the buy page, shared with LaoPay */
+export const BT = ({children}) => <span className="bl-t">{children}</span>;
+export const H = ({id, text, c, dk}) => <h2 className={`bl bl-${c}${dk ? ' bl-dk' : ''} by-h`} id={id}><BT>{text}</BT></h2>;
+export const Cell = ({l, children}) => <div className="by-cell"><span>{l}</span><b>{children}</b></div>;

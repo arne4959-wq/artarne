@@ -9,7 +9,8 @@ import {artistById, workStatus, payLink} from '../lib/art.js';
 import {deliver} from '../lib/forms.js';
 import PageShell from '../components/PageShell.jsx';
 import Nav, {MENU_FULL} from '../components/Nav.jsx';
-import {MiniFoot, NotFoundSection, Fill} from '../components/Bits.jsx';
+import {MiniFoot, NotFoundSection, Fill, BT, H, Cell} from '../components/Bits.jsx';
+import LaoPay from '../components/LaoPay.jsx';
 import {useWiredForm, captchaOn, Turnstile} from '../components/Dialogs.jsx';
 import {useToast} from '../components/Toast.jsx';
 import sprite from 'virtual:circles/sprite/buy';
@@ -17,9 +18,6 @@ import styles from '../styles/buy.js';
 
 const LOGOS = [[-6, 14, 300, 26, 'turn'], [64, 46, 260, 22, 'turnr'], [-4, 72, 280, 30, 'turn'], [80, 2, 170, 18, 'turnr']];   // left%, top%, size px, seconds, direction
 const Todo = ({v}) => v ? v : <span className="by-todo">[__]</span>;
-const BT = ({children}) => <span className="bl-t">{children}</span>;
-const H = ({id, text, c, dk}) => <h2 className={`bl bl-${c}${dk ? ' bl-dk' : ''} by-h`} id={id}><BT>{text}</BT></h2>;
-const Cell = ({l, children}) => <div className="by-cell"><span>{l}</span><b>{children}</b></div>;
 const Money = ({cls, p}) => { const {moneyHtml} = useLang(); return <span className={cls} dangerouslySetInnerHTML={{__html: moneyHtml(p.p, p)}}/>; };
 
 /* the message form; after sending it shows the result and a "send another" button that brings the form back */
@@ -98,6 +96,7 @@ function BuyBody({A, k}) {
           {pay ? <p>{t('d_paynote')}</p> : null}
           <p>{since}</p></div></section>
       </div>
+      {!sta && !pay && <LaoPay A={A} k={k} p={p}/>}
       <div className="by-askrow">
         <section className="by-card by-formcard" id="by-ask" aria-labelledby="by-h-ask"><H id="by-h-ask" text={t('by_ask_h', {a: name})} c="p"/>
           <div className="by-box"><AskForm A={A} k={k} pre={pre}/></div></section>

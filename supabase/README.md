@@ -1,6 +1,6 @@
 # supabase/
 
-Database for artists who manage their own works (step 1 of the plan). Nothing in the site reads it yet.
+Database for artists who manage their own works, and the "I have paid" notices of buyers. The site reads it: `manage.html` (artists sign in and edit) and the LAO QR block of the buy pages.
 
 `migrations/001_init.sql` creates the tables `artists`, `artist_private` (e-mail), `artist_payment` (LAO QR + account), `works`, the storage buckets `art`, `qr`, `slips`, and the access rules. Field names follow `artists.js` (`nameEn` is `name_en`, and so on).
 
@@ -49,6 +49,24 @@ insert into artist_private (artist_id, email) values ('mali', 'their@email');
 
 The account number and QR are public on purpose: they are printed on the buy page, like on any QR payment sign.
 
+## Step 3: "I have paid" notices (LAO QR)
+
+1. SQL editor → run `migrations/002_payment_notices.sql` (after `001`).
+2. Install the Supabase CLI, `supabase login`, `supabase link --project-ref <your ref>`.
+3. Secrets (the service-role key is added by the platform; never put it in this repo):
+   ```
+   supabase secrets set TURNSTILE_SECRET=<the secret key of your Cloudflare Turnstile widget>
+   supabase secrets set ALLOWED_ORIGIN=https://<your site>        # optional; without it any site may call the function
+   supabase secrets set RESEND_API_KEY=<key> MAIL_FROM="circles <notices@your-domain>"   # optional: e-mails the artist
+   ```
+   Cloudflare → Turnstile: the widget must list the site's host (and `localhost` for development). Its **site key** is already in `CONFIG.turnstileSiteKey`.
+4. `supabase functions deploy payment-notice --no-verify-jwt` (visitors are anonymous; the function does its own check, the CAPTCHA).
+5. Try it once by hand: an artist with payment details (manage.html → Get paid), open the buy page of one of their works that is for sale, send a notice. Expect: it appears in the artist's **Payments** tab, the work is on hold ("ON HOLD"), and (with Resend) the artist gets an e-mail.
+
+What the function guarantees: it refuses without a valid Turnstile token, for an unknown, unapproved or sold work, more than 5 notices per hour from one e-mail, and more than 10 unanswered notices on one work. The price, status and work come from the database, never from the visitor. A slip is an image of at most 2 MB, stored privately; the artist opens it with a short-lived link.
+
+`functions/payment-notice/logic.js` holds the rules as plain JavaScript and is tested with Node (`supabase/tests/notice-logic.test.mjs`). `index.ts` needs Deno and a real project: it is **not** run by any test here, so step 5 is the check that matters.
+
 ## Notes for the code that will use this
 
 - Reorder works with **one** UPDATE statement (`set position = case ...`). The unique `(artist_id, position)` is checked at the end of each statement, so a swap works; two separate updates would collide. `ON CONFLICT` upserts cannot use this constraint.
@@ -60,6 +78,7 @@ The account number and QR are public on purpose: they are printed on the buy pag
 
 ```
 npx -y -p @electric-sql/pglite node supabase/tests/rls.mjs
+node --test supabase/tests/notice-logic.test.mjs
 ```
 
-42 checks in an in-memory Postgres with a stand-in for Supabase's `auth` and `storage` schemas: what anon, an artist, another artist and the admin can read and write, plus the constraints (status, price, https links, e-mail, 40-work limit, reorder). This checks the SQL, **not** the real Supabase service. After step 1 is deployed, repeat three checks by hand on the real project: (1) with the anon key, `select * from artist_private` is refused, (2) an invited artist cannot update another artist's row, (3) an artist cannot upload into someone else's folder.
+54 checks in an in-memory Postgres with a stand-in for Supabase's `auth` and `storage` schemas: what anon, an artist, another artist and the admin can read and write, plus the constraints (status, price, https links, e-mail, 40-work limit, reorder). This checks the SQL, **not** the real Supabase service. After step 1 is deployed, repeat three checks by hand on the real project: (1) with the anon key, `select * from artist_private` is refused, (2) an invited artist cannot update another artist's row, (3) an artist cannot upload into someone else's folder.
