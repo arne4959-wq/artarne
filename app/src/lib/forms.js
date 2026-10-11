@@ -2,6 +2,7 @@
 import {CONFIG} from 'virtual:circles/config';
 
 export async function deliver(kind, to, subject, fields) {
+  to = to || CONFIG.contact;   // an artist from the database has no public address: the message goes to the site's own contact
   const body = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n');
   if (CONFIG.endpoint) {
     try {

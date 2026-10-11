@@ -4,11 +4,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {readLive, mergeArtists} from '../../tools/live-data.mjs';
 
 const APP = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.resolve(APP, process.env.CIRCLES_DIST || 'dist');                       // tests build a second copy elsewhere
 const DATA = process.env.CIRCLES_FIXTURE && fs.existsSync(path.join(process.env.CIRCLES_FIXTURE, 'artists.js')) ? path.join(process.env.CIRCLES_FIXTURE, 'artists.js') : path.join(APP, '..', 'artists.js');
-const {ARTISTS} = new Function(fs.readFileSync(DATA, 'utf8') + '\nreturn {ARTISTS};')();
+const demo = new Function(fs.readFileSync(DATA, 'utf8') + '\nreturn {ARTISTS};')().ARTISTS;
+const ARTISTS = mergeArtists(demo, readLive(path.dirname(DATA)));   // the real artists of artists.live.json come first, like in the app
 export const PAGES = ['join.html', 'manage.html', 'privacy.html', 'terms.html', '404.html', 'cutaway.html', 'buy.html', 'profile.html',
   ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`),
   ...ARTISTS.flatMap(a => a.pieces.map((_, k) => `buy-${a.id}-${k}.html`))];

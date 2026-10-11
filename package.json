@@ -11,6 +11,7 @@
     "test": "node tests/run.mjs",
     "test:perf": "node tests/run.mjs perf",
     "test:all": "node tests/run.mjs all",
+    "pull": "node tools/pull-artists.mjs",
     "app:dev": "npm --prefix app run dev",
     "app:build": "npm --prefix app run build",
     "app:test": "npm --prefix app test"

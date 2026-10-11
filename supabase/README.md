@@ -67,6 +67,23 @@ What the function guarantees: it refuses without a valid Turnstile token, for an
 
 `functions/payment-notice/logic.js` holds the rules as plain JavaScript and is tested with Node (`supabase/tests/notice-logic.test.mjs`). `index.ts` needs Deno and a real project: it is **not** run by any test here, so step 5 is the check that matters.
 
+## Step 4: real artists on the site (`npm run pull`)
+
+The site is static, so what an artist saves in `manage.html` reaches the public pages when the site is built again:
+
+```
+npm run pull              # reads approved artists + their works from Supabase (public columns only), writes artists.live.json
+npm run pull -- --hide-demo   # also hide the sample artists once at least one real artist is there (never leaves the city empty)
+npm run app:build         # builds the pages: studio-<id>.html, profile-<id>.html, buy-<id>-<k>.html for every real artist too
+```
+
+- `artists.live.json` is generated; commit it, so a build works without the network. The sample artists of `artists.js` stay until you pass `--hide-demo` (or delete them).
+- Real artists come first in the city, oldest first. An approved artist with no works yet is left out until the first work is added.
+- The e-mail is never in the file (it is not a public column). Buyers' messages go to `CONFIG.contact` until an inquiry function exists. Payment details (account, QR) are not in the file either: the buy page asks for them live, so a changed QR shows at once.
+- A sold or reserved work is baked in at build time, so the buy button can lag until the next build. (Showing the live status at once is a later step.)
+- Run `npm run pull` again after an artist adds a work or you approve someone. Automating it (a scheduled build, or a database webhook) needs the deploy host, which is not chosen yet.
+- Test: `node app/tests/live-build.mjs` builds the app with a made-up real artist and opens its pages in Chrome (no network).
+
 ## Notes for the code that will use this
 
 - Reorder works with **one** UPDATE statement (`set position = case ...`). The unique `(artist_id, position)` is checked at the end of each statement, so a swap works; two separate updates would collide. `ON CONFLICT` upserts cannot use this constraint.

@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {CONFIG, SHIPPING, RATES} from 'virtual:circles/config';
 import {useLang} from '../lib/i18n.jsx';
+import {useMt} from '../lib/manageStrings.js';
 import {usePageMeta} from '../lib/meta.js';
 import {reduce} from '../lib/env.js';
 import {artistById, workStatus, payLink} from '../lib/art.js';
@@ -47,13 +48,13 @@ function AskForm({A, k, pre}) {
 }
 
 function BuyBody({A, k}) {
-  const L = useLang(), {t} = L;
+  const L = useLang(), {t} = L, mt = useMt();
   const p = A.pieces[k], name = L.nameL(A), title = L.titleL(p), sta = workStatus(p), pay = sta ? '' : payLink(p);
   const soldN = A.pieces.filter(x => workStatus(x) === 'sold').length + (+A.sold > 0 ? +A.sold : 0);
   const fx = [RATES.thb > 0 ? `${Math.round(p.p * RATES.thb).toLocaleString('en-US')} ${t('by_thb')}` : ''].filter(Boolean);
   const buyTxt = sta === 'sold' ? t('b_sold', {a: name}) : sta === 'reserved' ? t('b_res') : pay ? t('b_ask', {a: name}) : t('buy', {a: name});
   const pre = sta === 'sold' ? 'id_pre_sold' : sta === 'reserved' ? 'id_pre_res' : 'id_prefill';
-  const stk = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : t('by_one');
+  const stk = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : p.edition ? mt('w_ed', {n: p.edition}) : t('by_one');   // a work with an edition is not "one of a kind"
   const dot = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : t('by_free');
   const steps = pay ? ['p_how1', 'p_how2', 'p_how3'] : ['d_how1', 'd_how2', 'd_how3'];
   const reply = SHIPPING.replyDays ? SHIPPING.replyDays : <span className="by-todo">[__]</span>;

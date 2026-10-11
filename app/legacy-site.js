@@ -1,7 +1,7 @@
 // legacy-site.js — Vite plugin that lets the React app read the plain-HTML site in the folder above,
 // so nothing is copied while both versions live side by side (artists.js stays the single source of truth).
 //
-//   virtual:circles/data             ARTISTS, DISC_EN, CITY_EN, DISC_LO, CITY_LO   from ../artists.js
+//   virtual:circles/data             ARTISTS, DISC_EN, CITY_EN, DISC_LO, CITY_LO   from ../artists.js (+ the real artists of ../artists.live.json in front)
 //   virtual:circles/strings          STR (th / en / lo)                            from ../circles.js
 //   virtual:circles/config           CONFIG, SHIPPING, RATES                       from ../circles.js
 //   virtual:circles/css/<file>       the raw text of ../<file>.css (no .css on the id, or Vite would run it as a stylesheet)
@@ -18,6 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {readLive} from '../tools/live-data.mjs';
 
 export const SITE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const STATIC = ['art', 'fonts', 'og', 'vendor'];
@@ -35,7 +36,12 @@ const grab = (src, re, what, file) => {
 
 /* each one returns the module source; `watch` is the file it was read from */
 const LOADERS = {
-  data: () => ({watch: 'artists.js', code: src => `${src}\nexport {ARTISTS, DISC_EN, CITY_EN, DISC_LO, CITY_LO};`}),
+  /* the sample artists of artists.js, after the real ones of artists.live.json (tools/pull-artists.mjs; see tools/live-data.mjs for the merge rule) */
+  data: () => ({watch: 'artists.js', code: src => {
+    const live = readLive(FIXTURE && fs.existsSync(path.join(FIXTURE, 'artists.live.json')) ? FIXTURE : SITE);
+    const merged = live.hideDemo && live.artists.length ? '__LIVE' : '[...__LIVE, ...ARTISTS]';
+    return `${src}\nconst __LIVE = ${JSON.stringify(live.artists)};\nconst __ALL = ${merged};\nexport {__ALL as ARTISTS, DISC_EN, CITY_EN, DISC_LO, CITY_LO};`;
+  }}),
   strings: () => ({watch: 'circles.js', code: src => `export ${grab(src, /^const STR = \{[\s\S]*?^\};/m, 'const STR', 'circles.js')}`}),
   config: () => ({watch: 'circles.js', code: src => [
     grab(src, /^const CONFIG = \{[\s\S]*?\};/m, 'const CONFIG', 'circles.js'),
@@ -83,11 +89,12 @@ export default function legacySite() {
       if (!id.startsWith(R)) return null;
       const {file, code} = load(id);
       this.addWatchFile(file);
+      if (id === R + 'data' && fs.existsSync(path.join(SITE, 'artists.live.json'))) this.addWatchFile(path.join(SITE, 'artists.live.json'));
       return code;
     },
     // dev: changing artists.js / circles.js / a page's CSS reloads the modules that read it
     configureServer(server) {
-      server.watcher.add([path.join(SITE, 'artists.js'), path.join(SITE, 'circles.js'), path.join(SITE, '*.css'), path.join(SITE, '*.html')]);
+      server.watcher.add([path.join(SITE, 'artists.js'), path.join(SITE, 'artists.live.json'), path.join(SITE, 'circles.js'), path.join(SITE, '*.css'), path.join(SITE, '*.html')]);
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url || '').split('?')[0]).replace(/^\/+/, '');
         const top = url.split('/')[0];
