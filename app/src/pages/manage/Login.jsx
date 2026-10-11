@@ -5,14 +5,13 @@ import {Ransom} from '../../components/art.jsx';
 import {isEmail} from '../../lib/manage.js';
 import {supabase, supabaseReady} from '../../lib/supabase.js';
 import {reduce} from '../../lib/env.js';
-import {Wall, WallNear, Bird, useWallMotion} from './Wall.jsx';
+import {Wall, WallNear, Bird} from './Wall.jsx';
 import KeyBurst from './KeyBurst.jsx';
 
 export default function Login({linkBad = false}) {
   const mt = useMt();
   const [email, setEmail] = useState(''), [phase, setPhase] = useState('idle'), [err, setErr] = useState(linkBad ? 'lg_link_bad' : '');
-  const [focus, setFocus] = useState(false), [bump, setBump] = useState(0), wall = useRef(null), timer = useRef(0);
-  useWallMotion(wall);
+  const [bump, setBump] = useState(0), timer = useRef(0);
   useEffect(() => () => clearTimeout(timer.current), []);
 
   async function submit(e) {
@@ -30,7 +29,7 @@ export default function Login({linkBad = false}) {
   }
 
   const busy = phase === 'sending' || phase === 'opening';
-  return <main id="main" ref={wall} className={'mg-wall' + (focus ? ' focus' : '')}>
+  return <main id="main" className="mg-wall">
     <Wall/>
     <section className={'mg-door in' + (phase === 'opening' ? ' opening' : '')} aria-labelledby="mg-title">
       <div className="mg-hazard" aria-hidden="true"></div>
@@ -54,7 +53,7 @@ export default function Login({linkBad = false}) {
             {err === 'lg_link_bad' && <p className="mg-bad" role="alert">{mt(err)}</p>}
             <label className="mg-field"><span>{mt('lg_email')}</span>
               <input className="mg-slot" type="email" name="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck="false" required
-                value={email} onChange={e => setEmail(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} disabled={busy}
+                value={email} onChange={e => setEmail(e.target.value)} disabled={busy}
                 placeholder="you@studio.com" aria-invalid={err && err !== 'lg_link_bad' ? 'true' : undefined}/></label>
             {err && err !== 'lg_link_bad' && <p className="mg-err" role="alert">{mt(err)}</p>}
             <button type="submit" className="btn mg-go" disabled={busy}>{busy ? mt('lg_sending') : mt('lg_btn')}</button>

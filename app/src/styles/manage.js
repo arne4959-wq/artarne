@@ -22,41 +22,31 @@ const manage = `
   background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);}
 
 /* ───────── the wall comes alive ─────────
-   Depth: far and mid shapes sit behind the door, near shapes in front of its edge; each depth is shifted by the pointer (--nx, --ny from Wall.jsx)
-   by a different amount. Stickers: a black copy of every shape sits 10% down and right. Only transform and opacity ever animate. */
+   Far and mid pieces sit behind the door, near pieces in front of its edge, all standing still. Stickers: a black copy of every piece sits
+   a little down and right. Only transform and opacity ever animate. */
 .mg-wall{container-type:inline-size;}
-.mg-lay{position:absolute;inset:0;pointer-events:none;z-index:0;
-  transform:translate3d(calc(var(--nx,0) * var(--d) * 30px),calc(var(--ny,0) * var(--d) * 20px),0);will-change:transform;}
-.mg-lay.far{--d:-.3;opacity:.62;}
-.mg-lay.mid{--d:.25;}
-.mg-lay.near{--d:1;z-index:3;}
+.mg-lay{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.mg-lay.far{opacity:.62;}
+.mg-lay.near{z-index:3;}
 .sp{position:absolute;width:var(--z);height:calc(var(--z) * var(--a,1));transform:rotate(var(--r));}
-.sp>span,.fl,.sn,.bl{position:absolute;inset:0;display:block;}
-.fl{animation:mgFloat var(--t) ease-in-out var(--w) infinite alternate;will-change:transform;}
-.sn{animation:mgSpin 11s linear infinite;animation-play-state:paused;}
-.mg-wall.focus .mid .sn,.mg-wall.focus .near .sn{animation-play-state:running;}
+.bl{position:absolute;inset:0;display:block;}
 .mg-lay.far .bl{filter:blur(1px);}.mg-lay.near .bl{filter:blur(2.5px);}
 .sh,.fg{position:absolute;inset:0;display:block;}
 .sh{background:var(--black);transform:translate(calc(var(--z) * .11),calc(var(--z) * .11));}
 .fg{background:var(--c);}
-.b-stud{border-radius:50%;}
-.fg.b-stud{background:radial-gradient(circle at 34% 30%,var(--paper) 0 14%,var(--concrete) 16% 58%,var(--black) 60%);border:2px solid var(--black);}
 .b-tape{clip-path:polygon(0 0,5% 18%,0 36%,5% 54%,0 72%,5% 90%,0 100%,100% 100%,95% 82%,100% 64%,95% 46%,100% 28%,95% 10%,100% 0);}
 .fg.b-tape{background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(14,13,12,.16) 9px 11px),var(--c);}
 .fg.b-patch{background:${tartan(46)};border:2px dashed var(--paper);outline:2px solid var(--black);outline-offset:-2px;}
 svg.sh,svg.fg{background:none;width:100%;height:100%;overflow:visible;}
 .peel{clip-path:polygon(0 0,100% 0,100% 62%,62% 100%,0 100%);}
 .fold{position:absolute;right:0;bottom:0;width:38%;height:38%;background:var(--paper);clip-path:polygon(0 0,100% 0,0 100%);transform:translate(calc(var(--z) * .06),calc(var(--z) * .06));}
-@keyframes mgFloat{from{transform:translate3d(0,0,0) rotate(0deg);}to{transform:translate3d(0,calc(var(--amp,14px) * -1),0) rotate(9deg);}}
-@keyframes mgSpin{to{transform:rotate(360deg);}}
 
 /* light (the look of the city strip on the home page): below the door so the text on it stays clear */
 .mg-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;}
 .mg-ray{position:absolute;top:-12%;height:126%;left:var(--x);width:var(--w);transform:skewX(22deg);transform-origin:0 0;
   background:linear-gradient(90deg,transparent,rgba(232,183,48,.22) 28%,rgba(244,241,232,.16) 50%,rgba(232,183,48,.22) 72%,transparent);
   -webkit-mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);
-  opacity:.35;animation:mgRay var(--T) ease-in-out infinite;animation-delay:var(--o);will-change:transform,opacity;}
-@keyframes mgRay{50%{opacity:1;transform:skewX(22deg) translate3d(18px,0,0);}}
+  opacity:.7;}
 
 /* people on the kerb (pixel art, lib/pixel.js). The wall is a size container, so cqw = a percent of its width. */
 .spr{position:relative;width:calc(16px * var(--px,3));height:calc(16px * var(--px,3));}
@@ -225,7 +215,7 @@ html[lang="th"] .mg-tab,html[lang="lo"] .mg-tab{font-family:"Chonburi",var(--tha
   .mg-tab{flex:1 1 auto;text-align:center;}
 }
 @media(prefers-reduced-motion:reduce){
-  .mg-door.in,.mg-door.in .mg-stamp,.fl,.sn,.mg-ray,.mg-bolt.re,.mg-stamp.re,.mg-door.opening{animation:none;}
+  .mg-door.in,.mg-door.in .mg-stamp,.mg-bolt.re,.mg-stamp.re,.mg-door.opening{animation:none;}
   .mg-door.in,.mg-door.in .mg-stamp{opacity:1;}.mg-door.in .mg-stamp,.mg-stamp.re{transform:rotate(9deg);opacity:1;}
   .mg-ray{opacity:.7;}
   .mg-w{animation:none!important;transform:translate3d(var(--rx),0,0);}.mg-w .wk{animation:none!important;opacity:1;}.mg-w .st{animation:none!important;opacity:0;}

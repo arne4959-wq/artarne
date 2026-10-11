@@ -67,9 +67,3 @@ export function dustTile(seed, n, size, alpha) {
   }
   return c.toDataURL('image/png');
 }
-
-/* ---------- pointer and tilt, as -1…1 ---------- */
-const clamp = v => Math.max(-1, Math.min(1, v));
-export const pointerNorm = (x, y, w, h) => ({nx: clamp((x / w - .5) * 2), ny: clamp((y / h - .5) * 2)});
-/* a phone held upright rests at beta ≈ 45°; ±25° of tilt reaches the edge */
-export const tiltNorm = (gamma, beta) => ({nx: clamp((gamma || 0) / 25), ny: clamp(((beta || 45) - 45) / 25)});
