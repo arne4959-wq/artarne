@@ -45,10 +45,10 @@ There is no component library, no Storybook and no framework. A "component" is a
 | Studio page = picture hall | `cutaway.html` (template), `museum.js`, `pixel-punks.js` | `.mus-` `.work-dlg` |
 | Artist profile | `profile.html`, `profile.js`, `profile.css` | `.pf-` |
 | Buy page of one work | `buy.html`, `buy.js`, `buy.css` | `.by-` |
-| Shared: language, forms, dialogs, toast, zoom, quick view | `circles.js`, `circles.css` | `.cdlg` `.z-` `.qv-` `.chip` `.stamp` |
+| Shared: language, forms, dialogs, toast, zoom, quick view, bottom bar | `circles.js`, `circles.css` | `.cdlg` `.z-` `.qv-` `.bn-` `.chip` `.stamp` |
 | Legal pages | `privacy.html`, `terms.html`, `legal.css` | |
 
-Shared helpers in `circles.js` (use them, do not re-implement): `$`, `esc`, `t(key, vars)`, `pk(obj,'t')` (Thai/English field), `usd`, `nameL/discL/cityL`, `fmtSize`, `workStatus`, `payLink`, `statusChip`, `stampHtml`, `artImg`, `artBg`, `mountDialog`, `dlgShell`, `showDone`, `deliver`, `wireForm`, `openInquiry`, `openZoom` + `zoomBtn()` + `data-zoomable`, `openQuick(artistId, workIndex, list)`, `isDraft()`, `toast`.
+Shared helpers in `circles.js` (use them, do not re-implement): `$`, `esc`, `t(key, vars)`, `pk(obj,'t')` (Thai/English field), `usd`, `nameL/discL/cityL`, `fmtSize`, `workStatus`, `payLink`, `statusChip`, `stampHtml`, `artImg`, `artBg`, `mountDialog`, `dlgShell`, `showDone`, `deliver`, `wireForm`, `openInquiry`, `openZoom` + `zoomBtn()` + `data-zoomable`, `openQuick(artistId, workIndex, list)`, `mountBnav()` (the phone bottom bar, called by `wireNav()`), `isDraft()`, `toast`.
 
 Static twins: `studio-<id>.html`, `profile-<id>.html`, `buy-<id>-<k>.html` and the `<!--pre:…-->` blocks in `index.html` are **generated** by `node tools/build.mjs`. Never hand-edit them; edit the template or script, then rebuild.
 `design/buy-reference.html` and `design/profile-reference.html` are static visual references, not shipped code.
@@ -82,7 +82,7 @@ Name them by purpose (`z-open`, `sf-ico`). When Figma has an icon, redraw it as 
 ## 6. Styling approach
 
 - **Where CSS lives:** page-specific CSS in `<style>` inside the page (`index.html` is the biggest); shared parts in `circles.css`; a feature that spans pages gets its own file with a unique prefix (`buy.css`, `profile.css`, `museum.css`).
-- **Methodology:** flat class selectors, one prefix per feature (`.by-`, `.pf-`, `.mus-`, `.sf-`, `.qv-`, `.z-`). A new feature takes a new prefix and does not override existing rules. Comment block at the top of the block says which script uses it.
+- **Methodology:** flat class selectors, one prefix per feature (`.by-`, `.pf-`, `.mus-`, `.sf-`, `.qv-`, `.z-`, `.bn-`). A new feature takes a new prefix and does not override existing rules. Comment block at the top of the block says which script uses it.
 - **The look (apply to every new piece):**
   - Borders `var(--line)` (3px) solid `--black` (2px for dense controls like the filter bar). Radius 0.
   - Hard offset shadows, no blur: `box-shadow:5px 5px 0 var(--black)` (or `--pink` / `--gold`). Hover moves the element up-left and grows the shadow; active moves it down-right.
@@ -92,7 +92,8 @@ Name them by purpose (`z-open`, `sf-ico`). When Figma has an icon, redraw it as 
   - Pop-up motion is stepped (`steps(1,end)` keyframes) for a cut-and-paste feel.
 - **Touch and accessibility:** targets at least 44px (`@media(hover:none)` rules cancel hover lifts), visible `:focus-visible` outline (pink or black, 3px, offset 3px), `prefers-reduced-motion` turns animation off, contrast checked on the paper and black surfaces.
 - **Responsive:** mobile is a first-class target (375px). `max-width` media queries at about 860px and 600px, `clamp()` for type and sizes, `svh`/`dvh` for full-height layouts, no horizontal scroll. Weak devices get `html.lite` (see `lite:decide` in `circles.js`).
-- **Language:** every visible string exists in Thai and English. Text in HTML carries `data-t="key"` (also `data-t-ph`, `data-t-aria`); strings live in `STR.th` and `STR.en` in `circles.js` (same keys). Text built in JS calls `t('key', {vars})`. Dynamic markup must re-render in `onLang(fn)`. Data fields come as `name` / `nameEn`, `t` / `tEn`.
+- **Phone navigation:** under 768px a fixed bottom bar (City · Art · Artists · Language, `#bnav`, class `html.has-bnav`) is injected on every page that loads `circles.js`. Anything else fixed to the foot of the screen must sit above it: use `bottom:calc(var(--bn-h) + env(safe-area-inset-bottom,0px))` (see `.toast` and `.by-cta` in `circles.css`). It is a `div role=navigation`, not a `<nav>`, because every page styles a bare `nav{}` as its top menu.
+- **Language:** the visitor picks one of `LOCALE` = `th | en | lo`; `LANG` (`th | en`) is the language of the content and of `<html lang>` (Lao reads English data). `STR.lo` holds the few strings written in Lao so far and `t()` falls back to English for the rest. Add Lao by adding keys to `STR.lo`. Every visible string exists in Thai and English. Text in HTML carries `data-t="key"` (also `data-t-ph`, `data-t-aria`); strings live in `STR.th` and `STR.en` in `circles.js` (same keys). Text built in JS calls `t('key', {vars})`. Dynamic markup must re-render in `onLang(fn)`. Data fields come as `name` / `nameEn`, `t` / `tEn`.
 
 ## 7. Project structure
 

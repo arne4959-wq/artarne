@@ -42,7 +42,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;',
 /* ---------- strings ---------- */
 const STR = {
 th: {
-  nav_city:'เมือง', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'Join', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
+  nav_city:'เมือง', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'Join', bn_city:'เมือง', bn_art:'ผลงาน', bn_artists:'ศิลปิน', bn_lang:'ภาษา', bn_aria:'เมนูด้านล่าง', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
   wave:'คลื่นลูกใหม่', f_wave:'★ คลื่นลูกใหม่', fnote_wave:'ไฮไลต์ {n} ตึกคลื่นลูกใหม่ในแถบเมืองแล้ว',
   ld_top:'circles · เมืองของศิลปิน', ld_text:'กำลังสร้างเมือง…',
   legal_privacy:'นโยบายความเป็นส่วนตัว', legal_terms:'เงื่อนไขการใช้งาน',
@@ -113,7 +113,7 @@ th: {
   mq:['ศิลปินไม่มีกฎ','BUY ART','ซื้อตรงจากคนทำ','NO MIDDLEMAN','เมืองของศิลปิน','ART NOT SORRY'],
 },
 en: {
-  nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', menu_aria:'Menu', lang_aria:'Switch language',
+  nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', bn_city:'City', bn_art:'Art', bn_artists:'Artists', bn_lang:'Language', bn_aria:'Bottom navigation', menu_aria:'Menu', lang_aria:'Switch language',
   wave:'NEW WAVE', f_wave:'★ New wave', fnote_wave:'Highlighted {n} new-wave building(s) in the strip',
   ld_top:'circles · a city of artists', ld_text:'Building the city…',
   legal_privacy:'Privacy policy', legal_terms:'Terms of use',
@@ -182,17 +182,24 @@ en: {
   mq:['NO RULES FOR ARTISTS','BUY ART','BUY FROM THE MAKER','NO MIDDLEMAN','CITY OF ARTISTS','ART NOT SORRY'],
 },
 };
+/* Lao (ລາວ): only what is written in Lao so far. Every other string, and all artist data, falls back to English (see t()).
+   To translate more, add keys here with the same names as in STR.th / STR.en. */
+STR.lo = {bn_city:'ເມືອງ', bn_art:'ຜົນງານ', bn_artists:'ສິລະປິນ', bn_lang:'ພາສາ', bn_aria:'ເມນູດ້ານລຸ່ມ'};
 
 /* ---------- language ---------- */
-let LANG = (() => {
+/* LOCALE = what the visitor picked (th / en / lo). LANG = the language of the content and of <html lang> (th / en): Lao reads English until more of STR.lo is written. */
+const LOCALES = ['th', 'en', 'lo'], LOCALE_NAME = {th: 'ไทย', en: 'English', lo: 'ລາວ'};
+let LOCALE = (() => {
   try {
-    const q = new URLSearchParams(location.search).get('lang'); if (q === 'th' || q === 'en') return q;
-    const s = localStorage.getItem('circles-lang'); if (s === 'th' || s === 'en') return s;
+    const q = new URLSearchParams(location.search).get('lang'); if (LOCALES.includes(q)) return q;
+    const s = localStorage.getItem('circles-lang'); if (LOCALES.includes(s)) return s;
   } catch (e) {}
   return String((navigator.languages && navigator.languages[0]) || navigator.language || 'th').toLowerCase().startsWith('th') ? 'th' : 'en';
 })();
+let LANG = LOCALE === 'lo' ? 'en' : LOCALE;
+const nextLocale = () => LOCALES[(LOCALES.indexOf(LOCALE) + 1) % LOCALES.length];
 const t = (k, v) => {
-  let s = STR[LANG][k]; if (s === undefined) s = STR.th[k]; if (s === undefined) return k;
+  let s = LOCALE === 'lo' ? STR.lo[k] : undefined; if (s === undefined) s = STR[LANG][k]; if (s === undefined) s = STR.th[k]; if (s === undefined) return k;
   if (v && typeof s === 'string') for (const x in v) s = s.split('{' + x + '}').join(v[x]);
   return s;
 };
@@ -202,17 +209,18 @@ const fmtSize = p => LANG === 'en' ? p.s.replace('ซม.', 'cm').replace('ส�
 const langHooks = [];
 const onLang = fn => { langHooks.push(fn); };
 function applyLang() {
-  document.documentElement.lang = LANG;
+  document.documentElement.lang = LANG; document.documentElement.dataset.locale = LOCALE;
   document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
   document.querySelectorAll('[data-t-html]').forEach(el => { el.innerHTML = t(el.dataset.tHtml); });
   document.querySelectorAll('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
   document.querySelectorAll('[data-t-ph]').forEach(el => { el.setAttribute('placeholder', t(el.dataset.tPh)); });
-  const lb = $('#lang'); if (lb) { lb.textContent = LANG === 'th' ? 'EN' : 'TH'; lb.setAttribute('aria-label', lb.textContent + ' — ' + (LANG === 'th' ? 'English' : 'ภาษาไทย')); lb.setAttribute('lang', LANG === 'th' ? 'en' : 'th'); }
+  const lb = $('#lang'); if (lb) { const nx = nextLocale(); lb.textContent = nx.toUpperCase(); lb.setAttribute('aria-label', nx.toUpperCase() + ' — ' + LOCALE_NAME[nx]); lb.setAttribute('lang', nx); }
   const mb = $('#menu-btn'); if (mb) mb.setAttribute('aria-label', t('menu_aria'));
   langHooks.forEach(fn => fn());
 }
 function setLang(l) {
-  LANG = l; try { localStorage.setItem('circles-lang', l); } catch (e) {}
+  if (!LOCALES.includes(l)) return;
+  LOCALE = l; LANG = l === 'lo' ? 'en' : l; try { localStorage.setItem('circles-lang', l); } catch (e) {}
   applyLang();
 }
 function setMeta(title, desc) {
@@ -519,9 +527,58 @@ function wireDonate() {
   el.replaceWith(a);
 }
 
+/* ---------- bottom navigation (phones, narrower than 768px): City · Art · Artists · Language ----------
+   Injected by wireNav() on every page that loads this file; shown by the media query in circles.css (.bn-). On the home page the links are
+   plain #city / #featured / #map anchors (the page's own smooth scroll and map-view code handle them); on other pages they go to index.html#… */
+const BN_ICON = {
+  city: '<path d="M2 21h20M4 21V10h5v11M9 21V3h7v18M16 21v-8h4v8M12 7h1.5M12 11h1.5M12 15h1.5"/>',
+  art: '<path d="M3 4h18v16H3zM3 16l5-5 4 4 3-3 6 6"/><circle cx="16.5" cy="8.5" r="1.4"/>',
+  artists: '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 21c0-4.6 3.4-7 7.5-7s7.5 2.4 7.5 7z"/>',
+  lang: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.4 3.2 3.4 14.8 0 18M12 3c-3.4 3.2-3.4 14.8 0 18"/>',
+};
+function mountBnav() {
+  if (document.getElementById('bnav')) return;
+  const home = /(^|\/)(index\.html)?$/.test(location.pathname), at = h => (home ? '' : 'index.html') + h;
+  const svg = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${BN_ICON[k]}</svg>`;
+  const nav = document.createElement('div'); nav.id = 'bnav'; nav.className = 'bnav'; nav.setAttribute('role', 'navigation');   // not a <nav>: every page styles a bare nav{} as its top menu
+  nav.innerHTML = [['city', '#city'], ['art', '#featured'], ['artists', '#map']].map(([k, h]) => `<a class="bn" data-bn="${k}" href="${at(h)}">${svg(k)}<b class="bn-l"></b></a>`).join('')
+    + `<button type="button" class="bn bn-lang" id="bn-lang">${svg('lang')}<span class="bn-codes" aria-hidden="true">${LOCALES.map(l => `<i data-l="${l}">${l.toUpperCase()}</i>`).join('')}</span></button>`;
+  document.body.appendChild(nav); document.documentElement.classList.add('has-bnav');
+  const refresh = () => {
+    nav.setAttribute('aria-label', t('bn_aria'));
+    nav.querySelectorAll('.bn[data-bn]').forEach(a => { const l = a.querySelector('.bn-l'); l.textContent = t('bn_' + a.dataset.bn); l.lang = LOCALE; });
+    const lb = nav.querySelector('#bn-lang');
+    lb.setAttribute('aria-label', `${t('bn_lang')}: ${LOCALE_NAME[LOCALE]} → ${LOCALE_NAME[nextLocale()]}`);
+    lb.querySelectorAll('i').forEach(i => i.classList.toggle('on', i.dataset.l === LOCALE));
+  };
+  onLang(refresh); refresh();
+  nav.querySelector('#bn-lang').addEventListener('click', () => setLang(nextLocale()));
+  /* which button is lit: on the home page it follows the section on screen, on the other pages it follows the kind of page */
+  const lit = k => nav.querySelectorAll('.bn[data-bn]').forEach(a => { if (a.dataset.bn === k) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
+  if (home) {
+    let q = 0;
+    const spy = () => {
+      q = 0; const vh = innerHeight, on = id => { const el = document.getElementById(id); if (!el) return false; const r = el.getBoundingClientRect(); return r.top < vh * .55 && r.bottom > vh * .45; };
+      const mapOn = (document.getElementById('map') || {hidden: true}).hidden === false;
+      lit(on('city') ? (mapOn ? 'artists' : 'city') : on('featured') ? 'art' : '');
+    };
+    const soon = () => { if (!q) q = requestAnimationFrame(spy); };
+    addEventListener('scroll', soon, {passive: true}); addEventListener('resize', soon); addEventListener('hashchange', soon);
+    document.addEventListener('click', () => setTimeout(soon, 80)); spy();
+  } else {
+    const f = location.pathname.split('/').pop();
+    lit(/^(studio|profile)-/.test(f) || f === 'cutaway.html' || f === 'profile.html' ? 'artists' : /^buy/.test(f) ? 'art' : '');
+  }
+  /* an on-screen keyboard would push the bar over the form: hide it while a text field has focus */
+  const typing = e => e.target && e.target.matches && e.target.matches('input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),textarea,select');
+  addEventListener('focusin', e => { if (typing(e)) document.documentElement.classList.add('bn-kbd'); });
+  addEventListener('focusout', () => document.documentElement.classList.remove('bn-kbd'));
+}
+
 function wireNav() {
   wireDonate();
-  const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(LANG === 'th' ? 'en' : 'th'));
+  mountBnav();
+  const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(nextLocale()));
   const mb = $('#menu-btn'), mn = $('#mnav'); if (!mb || !mn) return;
   const set = open => { mb.setAttribute('aria-expanded', open); mn.classList.toggle('open', open); mn.toggleAttribute('inert', !open); };
   set(false);
