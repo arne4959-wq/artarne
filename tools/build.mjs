@@ -59,7 +59,7 @@ try {
 
   /* ---- 1. one static page per artist ---- */
   for (const a of ARTISTS) {
-    await b.go(`${server.url}/cutaway.html?id=${a.id}`, 3000);
+    await b.go(`${server.url}/cutaway.html?id=${a.id}&live`, 3000);
     await b.ev("document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));0");
     const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
     if (!got.main || !/class="(floor|mus)[ "]/.test(got.main)) throw new Error(`render of ${a.id} produced no floors`);
@@ -70,16 +70,16 @@ try {
       '@type': 'VisualArtwork', name: p.t, alternateName: p.tEn, creator: {'@type': 'Person', name: a.name, alternateName: a.nameEn, homeLocation: {'@type': 'Place', name: a.city}},
       dateCreated: String(p.y), artMedium: p.mEn, image: abs(p.img), offers: {'@type': 'Offer', price: p.p, priceCurrency: 'USD', availability: 'https://schema.org/InStock'}}}))};
     let html = template
-      .replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main" data-pre="1" data-studio="${a.id}">${got.main}</main>`)
-      .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(got.title)}</title>`)
-      .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-      .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-      .replace('</head>', `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
+      .replace(/<main id="main">[\s\S]*?<\/main>/, () => `<main id="main" data-pre="1" data-studio="${a.id}">${got.main}</main>`)
+      .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(got.title)}</title>`)
+      .replace(/(<meta name="description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+      .replace(/(<meta property="og:title" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.title) + post)
+      .replace(/(<meta property="og:description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.title) + post)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+      .replace(/(<meta property="og:image" content=")[^"]*(")/, (m, pre, post) => pre + ogImg + post)
+      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, (m, pre, post) => pre + ogImg + post)
+      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
     write(url, html);
     console.log('  wrote', url);
   }
@@ -87,7 +87,7 @@ try {
   /* ---- 1b. one static profile page per artist (profile-<id>.html, from profile.html) ---- */
   const ptemplate = read('profile.html');
   for (const a of ARTISTS) {
-    await b.go(`${server.url}/profile.html?id=${a.id}`, 2500);
+    await b.go(`${server.url}/profile.html?id=${a.id}&live`, 2500);
     const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
     if (!got.main || !/class="pf[ "]/.test(got.main) || !got.main.includes('class="pf-name"')) throw new Error(`render of profile ${a.id} produced no profile`);
     if (got.title === read('cutaway.html').match(/<title>([\s\S]*?)<\/title>/)[1]) throw new Error(`profile ${a.id} kept the generic title`);
@@ -98,16 +98,16 @@ try {
       homeLocation: {'@type': 'Place', name: CITY_EN[a.city] || a.city}, image: ogImg, url: abs(url), ...(a.instagram && /^https:\/\//.test(a.instagram) ? {sameAs: [a.instagram]} : {}),
       subjectOf: {'@type': 'WebPage', url: abs(`studio-${a.id}.html`)}};
     let html = ptemplate
-      .replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main" data-pre="1" data-profile="${a.id}">${got.main}</main>`)
-      .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(got.title)}</title>`)
-      .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-      .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-      .replace('</head>', `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(person)}</script>\n</head>`);
+      .replace(/<main id="main">[\s\S]*?<\/main>/, () => `<main id="main" data-pre="1" data-profile="${a.id}">${got.main}</main>`)
+      .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(got.title)}</title>`)
+      .replace(/(<meta name="description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+      .replace(/(<meta property="og:title" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.title) + post)
+      .replace(/(<meta property="og:description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.title) + post)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+      .replace(/(<meta property="og:image" content=")[^"]*(")/, (m, pre, post) => pre + ogImg + post)
+      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, (m, pre, post) => pre + ogImg + post)
+      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(person)}</script>\n</head>`);
     write(url, html);
     console.log('  wrote', url);
   }
@@ -118,7 +118,7 @@ try {
   for (const a of ARTISTS) {
     for (let k = 0; k < a.pieces.length; k++) {
       const p = a.pieces[k];
-      await b.go(`${server.url}/buy.html?id=${a.id}&k=${k}`, 1800);
+      await b.go(`${server.url}/buy.html?id=${a.id}&k=${k}&live`, 1800);
       const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
       got.main = got.main.replace(/<div class="cf-holder">[\s\S]*?<\/div><\/div>(?=<div class="act">)/, '');   // the CAPTCHA widget is mounted again when the page runs, never bake its leftovers
       if (!got.main || !got.main.includes('class="by-title"') || !got.main.includes('class="by-form"')) throw new Error(`render of buy page ${a.id}-${k} produced no buy page`);
@@ -130,16 +130,16 @@ try {
         dateCreated: String(p.y), artMedium: p.mEn, image: abs(p.img), url: abs(url),
         offers: {'@type': 'Offer', price: p.p, priceCurrency: 'USD', availability: AVAIL[p.status] || 'https://schema.org/InStock', url: abs(url)}};
       let html = btemplate
-        .replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main" data-pre="1" data-buy-id="${a.id}" data-buy-k="${k}">${got.main}</main>`)
-        .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(got.title)}</title>`)
-        .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-        .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-        .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-        .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-        .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-        .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-        .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-        .replace('</head>', `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
+        .replace(/<main id="main">[\s\S]*?<\/main>/, () => `<main id="main" data-pre="1" data-buy-id="${a.id}" data-buy-k="${k}">${got.main}</main>`)
+        .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(got.title)}</title>`)
+        .replace(/(<meta name="description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+        .replace(/(<meta property="og:title" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.title) + post)
+        .replace(/(<meta property="og:description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+        .replace(/(<meta name="twitter:title" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.title) + post)
+        .replace(/(<meta name="twitter:description" content=")[^"]*(")/, (m, pre, post) => pre + esc(got.desc) + post)
+        .replace(/(<meta property="og:image" content=")[^"]*(")/, (m, pre, post) => pre + ogImg + post)
+        .replace(/(<meta name="twitter:image" content=")[^"]*(")/, (m, pre, post) => pre + ogImg + post)
+        .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
       write(url, html);
       console.log('  wrote', url);
     }
@@ -157,14 +157,14 @@ try {
 
   /* ---- 3. home page: static twins of the JS-built blocks (cards, filters, map) + studio links ---- */
   await b.view(1280, 900);
-  await b.go(`${server.url}/index.html`, 4000);
+  await b.go(`${server.url}/index.html?live`, 4000);
   const frag = await b.ev(`({masonry: document.getElementById('masonry').innerHTML, filters: document.getElementById('filters').innerHTML, map: document.getElementById('map-grid').innerHTML})`);
   const clean = h => h.replace(/class="mi (?:pop|reveal)[^"]*"/g, 'class="mi reveal in"');      // the static cards must be visible without JS
   const list = `<noscript><div class="ns"><p>circles — เมืองของศิลปิน · A city of artists. Pick a building:</p><ul>${ARTISTS.map(a => `<li><a href="studio-${a.id}.html">${esc(a.name)} / ${esc(a.nameEn)} — ${esc(a.disc)} · ${esc(DISC_EN[a.disc] || '')} · ${esc(a.city)}</a></li>`).join('')}</ul></div></noscript>`;
   let idx = read('index.html');
   const fill = (name, content) => { const re = new RegExp(`<!--pre:${name}-->[\\s\\S]*?<!--/pre:${name}-->`); if (!re.test(idx)) throw new Error('marker missing: ' + name); idx = idx.replace(re, () => `<!--pre:${name}-->${content}<!--/pre:${name}-->`); };
   fill('masonry', clean(frag.masonry)); fill('filters', clean(frag.filters)); fill('map', clean(frag.map)); fill('strip', list);
-  if (SITE) idx = idx.replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${abs('og.png')}$2`).replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${abs('og.png')}$2`);
+  if (SITE) idx = idx.replace(/(<meta property="og:image" content=")[^"]*(")/, (m, pre, post) => pre + abs('og.png') + post).replace(/(<meta name="twitter:image" content=")[^"]*(")/, (m, pre, post) => pre + abs('og.png') + post);
   write('index.html', idx);
   console.log('  updated index.html (pre-rendered blocks)');
 

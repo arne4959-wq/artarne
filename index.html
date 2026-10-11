@@ -570,6 +570,7 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .sup-w li{display:grid;grid-template-columns:1fr auto;gap:.35rem 1rem;align-items:end;font:400 .98rem/1.5 var(--thai);}
 .sup-bar{grid-column:1 / -1;height:16px;border:2px solid var(--black);background:repeating-linear-gradient(135deg,var(--black) 0 10px,var(--gold) 10px 20px);}
 .sup-v{font:400 1.6rem/1 var(--anton);letter-spacing:.04em;}
+.sup-w[hidden],.sup-w [hidden]{display:none;}
 .sup-note{margin-top:1.1rem;font:400 .8rem/1.7 var(--type);color:#6E685C;}
 @media(max-width:860px){.sup{grid-template-columns:1fr;padding:3rem 1.2rem;}}
 
@@ -831,7 +832,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
     <p class="sec-p reveal" data-t="sup_p">ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า</p>
     <button type="button" class="btn pk soon" id="donate-btn" disabled data-t="don_soon">เร็วๆ นี้</button>
   </div>
-  <div class="sup-w reveal" style="--i:1">
+  <div class="sup-w reveal" style="--i:1" hidden>
     <h3 data-t="sup_where">เงินสนับสนุนไปไหน</h3>
     <ul>
       <li><span data-t="sup_r1">ค่าเซิร์ฟเวอร์และโดเมน</span><b class="sup-v">[__]%</b><i class="sup-bar" aria-hidden="true"></i></li>

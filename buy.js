@@ -1,11 +1,11 @@
 /* buy.js — the buy page of one work (buy.html / buy-<id>-<k>.html, k = position of the work in artists.js, from 0).
    Look: design/buy-reference.html (reference only). Styles: buy.css, every rule starts with .by-.
-   Data: artists.js (title, price, material, size, year, picture, quote, status, pay link). Not invented: anything unknown is a yellow [__]
-   that comes from SHIPPING / RATES in circles.js. The message form is the site's own: deliver() / wireForm() / CONFIG.endpoint, nothing new.
+   Data: artists.js (title, price, material, size, year, picture, quote, status, pay link). Not invented: anything unknown (SHIPPING / RATES in circles.js)
+   is a yellow [__] on your own computer (isDraft() in circles.js) and is left out on the live site. The message form is the site's own: deliver() / wireForm() / CONFIG.endpoint, nothing new.
    Uses from the page: t, esc, pk, usd, nameL, discL, cityL, fmtSize, workStatus, payLink, deliver, wireForm, CONFIG, SHIPPING, RATES, reduce.
    Exposes window.BUY = {mount}. */
 (function () {
-  const todo = v => v ? esc(v) : '<span class="by-todo">[__]</span>';
+  const todo = v => v ? esc(v) : isDraft() ? '<span class="by-todo">[__]</span>' : '';   // '' = the line is left out
   // one tile per Thai syllable-ish cluster: a leading vowel stays with its consonant, tone marks / upper and lower vowels / a trailing า ะ ำ stay with it too
   const CL = /[เ-ไ]?[ก-ฮ][ัิ-ฺ็-๎]*[ะาำๅ]?|[^\s]/gu;
   const ROT = [-4, 3, -2, 5, -5, 2, -3];
@@ -29,11 +29,13 @@
     const stk = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : t('by_one');
     const dot = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : t('by_free');
     const steps = (pay ? ['p_how1', 'p_how2', 'p_how3'] : ['d_how1', 'd_how2', 'd_how3']);
-    const reply = SHIPPING.replyDays ? esc(SHIPPING.replyDays) : '<span class="by-todo">[__]</span>';
+    const reply = todo(SHIPPING.replyDays);
     const back = `studio-${A.id}.html?work=${k}`;
     const ask = `<a class="by-btn ${sta || !pay ? 'by-pay' : 'by-ask'}" href="#by-ask" data-by-ask>${esc(buyTxt)}</a>`;
     const cta = `<div class="by-cta"><span class="by-bprice${sta ? ' by-strike' : ''}">${esc(usd(p.p))}</span>${pay ? `<a class="by-btn by-pay" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}${ask}</div>`;
-    const cell = (l, v) => `<div class="by-cell"><span>${esc(l)}</span><b>${v}</b></div>`;
+    const cell = (l, v) => v ? `<div class="by-cell"><span>${esc(l)}</span><b>${v}</b></div>` : '';
+    const ship = cell(t('by_to'), todo(SHIPPING.regions)) + cell(t('by_fee'), todo(SHIPPING.fee)) + cell(t('by_days'), SHIPPING.days ? esc(t('by_dayu', {d: SHIPPING.days})) : todo(''))
+      + cell(t('by_break'), SHIPPING.returnDays ? esc(t('by_ret', {d: SHIPPING.returnDays})) : todo(''));
     return `<div class="by" id="by">
   <div class="by-bg" aria-hidden="true">${LOGOS.map(l => `<i class="by-lg" style="left:${l[0]}%;top:${l[1]}%;width:${l[2]}px;height:${l[2]}px;--t:${l[3]}s;--sp:by-${l[4]}"></i>`).join('')}</div>
   <div class="by-marq" aria-hidden="true"><div class="by-marq-t">${esc(t('by_marq')).repeat(10)}</div></div>
@@ -50,7 +52,7 @@
           ${p.q ? `<p class="by-q">“${esc(pk(p, 'q'))}”</p>` : ''}</div>
         <div class="by-prow"><span class="by-price${sta ? ' by-strike' : ''}">${esc(usd(p.p))}</span>${sta ? `<span class="by-chip by-chip-st">${esc(dot)}</span>` : ''}${fx.length ? `<span class="by-fx">≈ ${esc(fx.join(' · '))}</span>` : ''}</div>
         ${cta}
-        <p class="by-avail"><i class="by-dot${sta ? ' by-dot-off' : ''}" aria-hidden="true"></i>${esc(dot)} · ${esc(t('by_reply', {d: '@@'})).replace('@@', reply)}</p>
+        <p class="by-avail"><i class="by-dot${sta ? ' by-dot-off' : ''}" aria-hidden="true"></i>${esc(dot)}${reply ? ` · ${esc(t('by_reply', {d: '@@'})).replace('@@', reply)}` : ''}</p>
         <section class="by-card" aria-labelledby="by-h-detail"><span class="by-tape by-tape-b"></span><h2 id="by-h-detail">${esc(t('by_detail'))}</h2>
           ${cell(t('lb_medium'), esc(pk(p, 'm')))}${cell(t('lb_size'), esc(fmtSize(p)))}${cell(t('lb_year'), esc(p.y))}${cell(t('by_cert'), todo(SHIPPING.certificate))}</section>
       </div>
@@ -59,7 +61,7 @@
       <section class="by-card by-tilt-l" aria-labelledby="by-h-how"><span class="by-tape by-tape-c"></span><h2 id="by-h-how">${esc(t('by_how'))}</h2>
         ${steps.map((s, i) => `<div class="by-step"><b class="by-n by-n${i}">${i + 1}</b><div><b>${esc(t(s))}</b></div></div>`).join('')}</section>
       <section class="by-card by-tilt-r" aria-labelledby="by-h-ship"><span class="by-tape by-tape-d"></span><h2 id="by-h-ship">${esc(t('by_ship'))}</h2>
-        ${cell(t('by_to'), todo(SHIPPING.regions))}${cell(t('by_fee'), todo(SHIPPING.fee))}${cell(t('by_days'), SHIPPING.days ? esc(t('by_dayu', {d: SHIPPING.days})) : todo(''))}${cell(t('by_break'), SHIPPING.returnDays ? esc(t('by_ret', {d: SHIPPING.returnDays})) : todo(''))}</section>
+        ${ship || `<p class="by-note">${esc(t('by_ship_ask'))}</p>`}</section>
       <section class="by-safe" aria-labelledby="by-h-safe"><span class="by-tape by-tape-e"></span><div class="by-in2"><h2 id="by-h-safe">${esc(t('by_safe'))}</h2>
         <p>${esc(t('by_safe_p'))} <a href="mailto:${esc(CONFIG.contact)}">${esc(CONFIG.contact)}</a></p>
         ${pay ? `<p>${esc(t('d_paynote'))}</p>` : ''}
@@ -68,7 +70,7 @@
     <div class="by-askrow">
       <section class="by-card by-formcard" id="by-ask" aria-labelledby="by-h-ask"><h2 id="by-h-ask">${esc(t('by_ask_h', {a: name}))}</h2>
         <div class="by-box">${formHtml(A, k, pre)}</div></section>
-      <div class="by-card by-after"><span>${esc(t('by_after'))}</span><b>${esc(t('by_after_p', {a: '@A', d: '@@'})).replace('@A', esc(name)).replace('@@', reply)}</b></div>
+      <div class="by-card by-after"><span>${esc(t('by_after'))}</span><b>${reply ? esc(t('by_after_p', {a: '@A', d: '@@'})).replace('@A', esc(name)).replace('@@', reply) : esc(t('by_after_p0', {a: name}))}</b></div>
     </div>
   </div>
 </div>`;

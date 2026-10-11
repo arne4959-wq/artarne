@@ -369,6 +369,18 @@ function renderSpot() {
   $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
 }
 
+/* support box: the % of each row comes from SUPPORT in circles.js. Not decided yet = [__] on your own computer, the row (or the whole box) left out on the live site */
+(function renderSupport() {
+  const box = $('.sup-w'); if (!box) return;
+  const v = [SUPPORT.servers, SUPPORT.site, SUPPORT.events].map(n => +n > 0 ? +n : 0), draft = isDraft();
+  box.querySelectorAll('li').forEach((li, i) => {
+    li.hidden = !v[i] && !draft;
+    if (v[i]) { li.querySelector('.sup-v').textContent = v[i] + '%'; li.querySelector('.sup-bar').style.width = v[i] + '%'; }
+  });
+  box.querySelector('.sup-note').hidden = !draft;
+  box.hidden = !draft && !v.some(Boolean);
+})();
+
 /* city numbers: count up when scrolled into view */
 (function () {
   $('#c-art').dataset.count = ARTISTS.length;
