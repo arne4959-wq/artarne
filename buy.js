@@ -43,7 +43,7 @@
     <a class="by-back" href="${esc(back)}">${esc(t('by_back', {a: name}))}</a>
     <div class="by-hero">
       <div class="by-pic">
-        <div class="by-frame"><img src="${esc(p.img)}" alt="${esc(title + ' — ' + name)}" decoding="async" draggable="false"><span class="by-tape by-tape-a"></span></div>
+        <div class="by-frame" data-zoomable><img src="${esc(p.img)}" alt="${esc(title + ' — ' + name)}" decoding="async" draggable="false"><span class="by-tape by-tape-a"></span>${zoomBtn()}</div>
         <span class="by-sticker" aria-hidden="true">${esc(stk)}</span>
       </div>
       <div class="by-info">

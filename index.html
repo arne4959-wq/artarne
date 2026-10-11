@@ -489,6 +489,13 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .sortl select{font:400 .9rem var(--type);color:var(--black);background-color:var(--paper);border:var(--line) solid var(--black);padding:.5rem 2rem .5rem .8rem;border-radius:0;-webkit-appearance:none;appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,var(--black) 50%),linear-gradient(-45deg,transparent 50%,var(--black) 50%);background-position:calc(100% - 16px) 55%,calc(100% - 10px) 55%;background-size:6px 6px;background-repeat:no-repeat;cursor:pointer;box-shadow:4px 4px 0 var(--black);}
 .feat-count{font:400 .8rem var(--type);letter-spacing:.1em;color:var(--tartan-red);}
+.qbox{flex:1 1 260px;max-width:420px;}
+.qbox input{width:100%;min-height:44px;font:400 .95rem var(--thai);color:var(--black);background:var(--paper);border:var(--line) solid var(--black);border-radius:0;padding:.5rem .9rem;box-shadow:4px 4px 0 var(--black);-webkit-appearance:none;appearance:none;}
+.qbox input::placeholder{color:#6E685C;}
+.qbox input:focus-visible{outline:3px solid var(--pink);outline-offset:3px;}
+.qbox input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;width:18px;height:18px;cursor:pointer;background:linear-gradient(45deg,transparent 44%,var(--black) 44% 56%,transparent 56%),linear-gradient(-45deg,transparent 44%,var(--black) 44% 56%,transparent 56%);}
+.q-none{column-span:all;font:400 1rem/1.7 var(--thai);background:var(--paper);border:var(--line) solid var(--black);padding:1.2rem 1.4rem;max-width:560px;box-shadow:6px 6px 0 var(--black);}
+@media(max-width:600px){.qbox{flex-basis:100%;max-width:none;}}
 .mi.pop{animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0) * 45ms);}
 .card .art{position:relative;overflow:hidden;}
 .tag .wv{position:absolute;top:-15px;right:-12px;z-index:3;font:400 .68rem var(--anton);font-style:normal;letter-spacing:.14em;background:var(--gold);color:var(--black);border:2px solid var(--black);padding:.1rem .5rem;transform:rotate(5deg);box-shadow:2px 2px 0 var(--black);white-space:nowrap;}
@@ -622,12 +629,12 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
 .masonry .card .art{border:0;}
 .masonry .card .art img{transition:transform .7s var(--ease);}
 .masonry .card:hover .art img,.masonry .card:focus-visible .art img{transform:scale(1.04);}
-.masonry .card .plate{position:absolute;left:0;right:0;bottom:0;margin:0;border:0;background:linear-gradient(to top,rgba(14,13,12,.94),rgba(14,13,12,0));padding:3.2rem 1rem .9rem;opacity:0;transition:opacity .3s var(--ease);z-index:3;}
+.masonry .card .plate{--fade:3.2rem;position:absolute;left:0;right:0;bottom:0;margin:0;border:0;background:linear-gradient(to top,rgba(14,13,12,.94),rgba(14,13,12,.86) calc(100% - var(--fade)),rgba(14,13,12,0));padding:var(--fade) 1rem .9rem;opacity:0;transition:opacity .3s var(--ease);z-index:3;}
 .masonry .card .pn{color:var(--paper);}
 .masonry .card .pa{color:var(--gold);}
 .masonry .card:hover .plate,.masonry .card:focus-visible .plate{opacity:1;}
 .masonry .card:focus-visible{outline:4px solid var(--pink);outline-offset:3px;}
-@media(hover:none){.masonry .card .plate{opacity:1;padding:2.2rem .7rem .6rem;}}
+@media(hover:none){.masonry .card .plate{--fade:2.2rem;opacity:1;padding:var(--fade) .7rem .6rem;}}
 @media(max-width:860px){.masonry{column-gap:.7rem;}.mi{margin-bottom:.7rem;}}
 @media(prefers-reduced-motion:reduce){.masonry .card .art img,.masonry .card .plate{transition:none;}}
 /* ===== works-img:end ===== */
@@ -781,6 +788,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <div class="sec-k reveal">This week</div>
   <h2 class="sec-t reveal"><span id="feat-h">ผลงานเด่นสัปดาห์นี้</span></h2>
   <div class="feat-bar reveal">
+    <div class="qbox" role="search"><input type="search" id="q" autocomplete="off" spellcheck="false" enterkeyhint="search" data-t-ph="q_ph" data-t-aria="q_aria" placeholder="ค้นหา ชื่องาน ศิลปิน สาขา เมือง" aria-label="ค้นหาผลงานทั้งหมด"></div>
     <label class="sortl"><span data-t="sort_label">เรียงตาม</span>
       <select id="sort"><option value="cur" data-t="sort_cur">คัดมาให้</option><option value="low" data-t="sort_low">ราคาต่ำ → สูง</option><option value="high" data-t="sort_high">ราคาสูง → ต่ำ</option><option value="new" data-t="sort_new">ใหม่ล่าสุด</option></select></label>
     <button type="button" class="fbtn" id="all-btn" aria-pressed="false"></button>

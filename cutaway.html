@@ -414,7 +414,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 <dialog class="work-dlg" id="dlg" aria-labelledby="dlg-t">
   <button type="button" class="dlg-x" id="dlg-x" data-t-aria="close" aria-label="ปิด">✕</button>
   <div class="dlg-in">
-    <div class="dlg-art"><div class="frame" id="dlg-frame"></div></div>
+    <div class="dlg-art"><div class="frame" id="dlg-frame" data-zoomable></div></div>
     <div class="dlg-body">
       <div class="meta" id="dlg-fl"></div>
       <h2 id="dlg-t"></h2>
@@ -545,7 +545,7 @@ function fillDlg(k) {
   const level = k + 1;
   $('#dlg-fl').textContent = `FL.0${level} — ROOM ${ROOMS[level - 1]}`;
   $('#dlg-t').textContent = pk(p, 't');
-  const fr = $('#dlg-frame'); fr.style.setProperty('--ar', p.ar); fr.style.setProperty('--art', artBg(A.works, k)); fr.innerHTML = artImg(A, k) + stampHtml(p);
+  const fr = $('#dlg-frame'); fr.style.setProperty('--ar', p.ar); fr.style.setProperty('--art', artBg(A.works, k)); fr.innerHTML = artImg(A, k) + stampHtml(p) + (p.img ? zoomBtn() : '');
   $('#dlg-by').innerHTML = t('d_by', {a: esc(nameL(A)), d: esc(discL(A)), c: esc(cityL(A))});
   const story = $('#dlg-story'); story.hidden = !p.st;
   if (p.st) { $('#dlg-sk').textContent = t('d_story'); $('#dlg-q').textContent = pk(p, 'q') || ''; $('#dlg-st').textContent = pk(p, 'st'); }

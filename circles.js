@@ -61,7 +61,7 @@ th: {
   s3_h:'ซื้อตรงจากศิลปิน', s3_p:'เจอชิ้นที่ตามไปถึงในฝัน ก็คุยกับคนทำโดยตรง จ่ายตามราคาที่เขาตั้ง เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน',
   feat_i:'Featured', feat_h:'ผลงานเด่นสัปดาห์นี้', feat_h_all:'ผลงานทั้งหมดในเมือง',
   sort_label:'เรียงตาม', sort_cur:'คัดมาให้', sort_low:'ราคาต่ำ → สูง', sort_high:'ราคาสูง → ต่ำ', sort_new:'ใหม่ล่าสุด',
-  all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', card_aria:'{t} โดย{a} {p}',
+  all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', q_ph:'ค้นหา ชื่องาน ศิลปิน สาขา เมือง', q_aria:'ค้นหาผลงานทั้งหมด', q_none:'ไม่พบผลงานที่ตรงกับ “{q}” ลองคำอื่น หรือดูงานทั้งหมด', q_clear:'ล้างคำค้น', z_open:'ขยายดูภาพ', z_in:'ขยาย', z_out:'ย่อ', z_fit:'พอดีจอ', z_hint:'เลื่อนลูกกลิ้ง ดับเบิลคลิก หรือกด + − เพื่อซูม ลากเพื่อเลื่อนภาพ กด Esc เพื่อปิด', z_hint_t:'แตะสองครั้งหรือใช้สองนิ้วเพื่อซูม ลากเพื่อเลื่อนภาพ', card_aria:'{t} โดย{a} {p}',
   map_i:'The', map_h:'แผนที่เมือง', map_p:'มองจากข้างบน เมืองแบ่งเป็นย่านตามสาขา กดย่านหรือปุ่มกรอง แล้วตึกในแถบเมืองด้านบนจะสว่างขึ้นให้',
   filters_aria:'กรองตามสาขา', f_all:'ทั้งหมด', district:'ย่าน', plaza:'PLAZA · จัตุรัสกลางเมือง',
   fnote:'ไฮไลต์ {n} ตึกสาขา{d}ในแถบเมืองแล้ว', fnote_go:'ดูตึกในแถบเมือง ↑', fnote_in:'เข้าไปในตึก →', fnote_x:'ล้างตัวกรอง ✕',
@@ -91,7 +91,7 @@ th: {
   captcha_wait:'รอให้การตรวจสอบเสร็จก่อนส่ง', note_mailto:'ตอนนี้ฟอร์มนี้ทำงานผ่านแอปอีเมลของคุณ', demo_note:'ข้อมูลศิลปินและอีเมลในเว็บนี้เป็นข้อมูลตัวอย่าง',
   /* cutaway */
   cw_est:'ก่อตั้ง {y}', cw_back:'← กลับไปเดินเมือง', cw_hint:'▼ ภาพตัดตึกทีละชั้น กดที่ผลงานเพื่อดูรายละเอียดเต็ม', cw_section:'SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น',
-  mus_name:'พิพิธภัณฑ์ของ{a}', mus_aria:'โถงแสดงภาพของ{a}', mus_prev:'← ภาพก่อน', mus_next:'เดินต่อ →', mus_more:'รายละเอียดและแนวคิด', mus_map:'ผังตึก', mus_hint:'▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม',
+  mus_name:'พิพิธภัณฑ์ของ{a}', mus_aria:'โถงแสดงภาพของ{a}', mus_prev:'← ภาพก่อน', mus_next:'เดินต่อ →', mus_more:'รายละเอียดและแนวคิด', mus_map:'ผังตึก', mus_hint:'▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม', mus_hint_touch:'▼ ปัดซ้าย-ขวาเพื่อเดินดูภาพทีละชิ้น แตะภาพที่สว่างเพื่อดูรายละเอียดเต็ม',
   pf_h:'โปรไฟล์ของ{a}', pf_open:'รับงานสั่งทำ', pf_until:'· คิวว่างเดือน {m}', pf_cn:'แนวคิดของงาน{a}', pf_nw:'ผลงานในพิพิธภัณฑ์', pf_ns:'ขายแล้ว', pf_ny:'เริ่มทำงานศิลปะ', pf_tl:'เส้นทางที่ผ่านมา',
   pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}', pf_soon:'เร็วๆ นี้',
   pf_walk:'เดินเข้าพิพิธภัณฑ์ →', pf_ask:'ถามศิลปิน', pf_ig:'Instagram', pf_share:'แชร์โปรไฟล์ ↗', pf_copy:'คัดลอกลิงก์', pf_copied:'คัดลอกลิงก์แล้ว', pf_marq:'ART NOT SORRY ★ วงกลมไม่มีวันจบ ★ CIRCLES ★ เดินเข้าพิพิธภัณฑ์ ★ ',
@@ -132,7 +132,7 @@ en: {
   s3_h:'Buy direct from the artist', s3_p:'Found the piece that follows you home? Talk to the maker directly and pay the price they set. Every cent goes to the artist, nobody skims first.',
   feat_i:'Featured', feat_h:"This week's picks", feat_h_all:'Every work in the city',
   sort_label:'Sort by', sort_cur:'Curated', sort_low:'Price: low → high', sort_high:'Price: high → low', sort_new:'Newest',
-  all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', card_aria:'{t} by {a}, {p}',
+  all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', q_ph:'Search title, artist, art form, city', q_aria:'Search all works', q_none:'No works match “{q}”. Try another word, or see all works.', q_clear:'Clear search', z_open:'Zoom into the picture', z_in:'Zoom in', z_out:'Zoom out', z_fit:'Fit to screen', z_hint:'Scroll, double-click or press + − to zoom. Drag to move. Esc closes.', z_hint_t:'Double-tap or pinch to zoom. Drag to move.', card_aria:'{t} by {a}, {p}',
   map_i:'The', map_h:'City map', map_p:'From above, the city splits into districts by discipline. Tap a district or a filter and the matching buildings light up in the strip above.',
   filters_aria:'Filter by discipline', f_all:'All', district:'DISTRICT', plaza:'PLAZA · CITY SQUARE',
   fnote:'Highlighted {n} building(s) in the {d} district', fnote_go:'See buildings in the strip ↑', fnote_in:'Enter building →', fnote_x:'Clear filter ✕',
@@ -160,7 +160,7 @@ en: {
   news_saved:'Email saved in this browser only (no mailing system is connected yet)', news_sent:"You're subscribed", news_fail:"Couldn't send. Please try again.",
   captcha_wait:'Please wait for the verification to finish', note_mailto:'For now this form works through your email app', demo_note:'Artist details and emails on this site are sample data',
   cw_est:'Est. {y}', cw_back:'← Back to the city', cw_hint:'▼ The building cut open, floor by floor. Click a work for full details', cw_section:'SECTION A–A · NO LIFT, STAIRS ONLY',
-  mus_name:"{a}'s museum", mus_aria:"{a}'s picture hall", mus_prev:'← Previous', mus_next:'Walk on →', mus_more:'Details & concept', mus_map:'Floor plan', mus_hint:'▼ Walk the hall one work at a time. Use the ← → keys. Click the lit work for full details',
+  mus_name:"{a}'s museum", mus_aria:"{a}'s picture hall", mus_prev:'← Previous', mus_next:'Walk on →', mus_more:'Details & concept', mus_map:'Floor plan', mus_hint:'▼ Walk the hall one work at a time. Use the ← → keys. Click the lit work for full details', mus_hint_touch:'▼ Swipe left or right to walk the hall one work at a time. Tap the lit work for full details',
   pf_h:"{a}'s profile", pf_open:'Taking commissions', pf_until:'· slot open in {m}', pf_cn:"{a}'s concept", pf_nw:'works in the museum', pf_ns:'sold', pf_ny:'making art since', pf_tl:'The road so far',
   pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}', pf_soon:'Coming soon',
   pf_walk:'Walk into the museum →', pf_ask:'Ask the artist', pf_ig:'Instagram', pf_share:'Share profile ↗', pf_copy:'Copy link', pf_copied:'Link copied', pf_marq:'ART NOT SORRY ★ CIRCLES NEVER END ★ CIRCLES ★ WALK INTO THE MUSEUM ★ ',
@@ -293,6 +293,77 @@ function mountDialog(id) {
   if (!d) { d = document.createElement('dialog'); d.id = id; d.className = 'cdlg'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.close(); }); }
   return d;
 }
+/* ---------- picture zoom (buy page, work details): wheel, double-click / double-tap, two-finger pinch, drag to move, + − 0 and arrow keys, Esc closes.
+   An element with data-zoomable gets it: a click on its <img>, or on the zoomBtn() inside it, opens that picture full screen. ---------- */
+const zoomBtn = () => `<button type="button" class="z-open" data-zoom data-t-aria="z_open" aria-label="${esc(t('z_open'))}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6M10 7v6M7 10h6"/></svg></button>`;
+function openZoom(img) {
+  if (!img) return;
+  const d = mountDialog('zoom'); d.classList.add('zdlg'); d.setAttribute('data-lenis-prevent', ''); d.setAttribute('aria-label', img.alt || t('z_open'));
+  d.innerHTML = `<div class="z-stage"><img src="${esc(img.currentSrc || img.src)}" alt="${esc(img.alt)}" draggable="false"></div>
+<div class="z-bar"><button type="button" class="z-b" data-z="out" aria-label="${esc(t('z_out'))}">−</button><button type="button" class="z-b" data-z="fit" aria-label="${esc(t('z_fit'))}">1×</button><button type="button" class="z-b" data-z="in" aria-label="${esc(t('z_in'))}">+</button><button type="button" class="cdlg-x" data-close aria-label="${esc(t('close'))}">✕</button></div>
+<p class="z-hint">${esc(t(matchMedia('(hover:none)').matches ? 'z_hint_t' : 'z_hint'))}</p>`;
+  const stage = d.querySelector('.z-stage'), pic = stage.querySelector('img'), MAX = 6;
+  let s = 1, x = 0, y = 0, w0 = 0, h0 = 0, animT = 0;
+  const size = () => {      // the picture at scale 1 = as large as fits the screen
+    const ar = (pic.naturalWidth / pic.naturalHeight) || (img.naturalWidth / img.naturalHeight) || 1, W = stage.clientWidth, H = stage.clientHeight;
+    w0 = Math.min(W, H * ar); h0 = w0 / ar; pic.style.width = w0 + 'px'; pic.style.height = h0 + 'px';
+  };
+  const draw = () => {      // keep the picture covering the screen once it is larger than it
+    const mx = Math.max(0, (w0 * s - stage.clientWidth) / 2), my = Math.max(0, (h0 * s - stage.clientHeight) / 2);
+    x = Math.min(mx, Math.max(-mx, x)); y = Math.min(my, Math.max(-my, y));
+    pic.style.transform = `translate(${x}px,${y}px) scale(${s})`; stage.classList.toggle('zoomed', s > 1.01);
+  };
+  const zoomAt = (n, px = 0, py = 0) => { n = Math.min(MAX, Math.max(1, n)); x = px - (px - x) * n / s; y = py - (py - y) * n / s; s = n; draw(); };   // (px, py) from the stage centre stays put
+  const ease = () => { stage.classList.add('anim'); clearTimeout(animT); animT = setTimeout(() => stage.classList.remove('anim'), 280); };
+  const rel = (cx, cy) => { const r = stage.getBoundingClientRect(); return [cx - r.left - r.width / 2, cy - r.top - r.height / 2]; };
+  stage.addEventListener('wheel', e => { e.preventDefault(); zoomAt(s * Math.exp(-e.deltaY * .0018), ...rel(e.clientX, e.clientY)); }, {passive: false});
+  const pts = new Map(); let pinch = null, lastTap = null;
+  stage.addEventListener('pointerdown', e => {
+    stage.setPointerCapture(e.pointerId); pts.set(e.pointerId, {x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t: e.timeStamp});
+    if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = {d: Math.hypot(a.x - b.x, a.y - b.y) || 1, s}; }
+  });
+  stage.addEventListener('pointermove', e => {
+    const p = pts.get(e.pointerId); if (!p) return;
+    const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+    if (pts.size === 2 && pinch) { const [a, b] = [...pts.values()]; zoomAt(pinch.s * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, ...rel((a.x + b.x) / 2, (a.y + b.y) / 2)); }
+    else if (pts.size === 1 && s > 1) { x += dx; y += dy; draw(); }
+  });
+  const up = (e, cancel) => {
+    const p = pts.get(e.pointerId); if (!p) return;
+    pts.delete(e.pointerId); if (pts.size < 2) pinch = null;
+    if (cancel || pts.size || Math.hypot(e.clientX - p.x0, e.clientY - p.y0) > 10 || e.timeStamp - p.t > 300) return;
+    if (lastTap && e.timeStamp - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 30) {   // double tap / double click: fit ↔ 2.5×
+      lastTap = null; ease(); zoomAt(s > 1.01 ? 1 : 2.5, ...rel(e.clientX, e.clientY));
+    } else lastTap = {x: e.clientX, y: e.clientY, t: e.timeStamp};
+  };
+  stage.addEventListener('pointerup', e => up(e, false));
+  stage.addEventListener('pointercancel', e => up(e, true));
+  d.querySelector('.z-bar').addEventListener('click', e => {
+    const b = e.target.closest('[data-z]'); if (!b) return;
+    ease(); zoomAt(b.dataset.z === 'in' ? s * 1.6 : b.dataset.z === 'out' ? s / 1.6 : 1);
+  });
+  d.querySelector('[data-close]').addEventListener('click', () => d.close());
+  d.onkeydown = e => {
+    const k = e.key, step = 80;
+    if (k === '+' || k === '=') { ease(); zoomAt(s * 1.6); }
+    else if (k === '-' || k === '_') { ease(); zoomAt(s / 1.6); }
+    else if (k === '0') { ease(); zoomAt(1); }
+    else if (/^Arrow/.test(k)) { if (s > 1) { ease(); x += k === 'ArrowLeft' ? step : k === 'ArrowRight' ? -step : 0; y += k === 'ArrowUp' ? step : k === 'ArrowDown' ? -step : 0; draw(); } }
+    else return;
+    e.preventDefault(); e.stopPropagation();
+  };
+  const onResize = () => { size(); draw(); };
+  addEventListener('resize', onResize);
+  d.addEventListener('close', () => removeEventListener('resize', onResize), {once: true});
+  d.showModal();
+  if (pic.complete && pic.naturalWidth) onResize(); else { onResize(); pic.addEventListener('load', onResize, {once: true}); }
+}
+document.addEventListener('click', e => {
+  const host = e.target.closest('[data-zoomable]'); if (!host || e.button) return;
+  if (!e.target.closest('[data-zoom]') && e.target.tagName !== 'IMG') return;
+  e.preventDefault(); openZoom(host.querySelector('img'));
+});
+
 function dlgShell(title, inner) {
   return `<div class="cdlg-h"><h2>${title}</h2><button type="button" class="cdlg-x" data-close aria-label="${esc(t('close'))}">✕</button></div>${inner}`;
 }

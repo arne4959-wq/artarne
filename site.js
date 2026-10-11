@@ -281,8 +281,15 @@ let langInit = false;
 const FEAT = [['mali', 0], ['phop', 2], ['napha', 0], ['phrae', 2], ['thara', 0], ['pan', 0], ['kwan', 2], ['irene', 1]], TAPE = [-5, 4, -3, 6, -6, 3, -4, 5];
 let showAll = false, sortBy = 'cur';
 const allWorks = () => ARTISTS.flatMap(a => a.pieces.map((p, k) => ({a, p, k})));
+/* search: every word typed must appear in the work's title, medium or year, or its artist's name, art form or city (Thai or English) */
+let query = '';
+const norm = s => String(s ?? '').normalize('NFC').toLowerCase();
+const words = () => norm(query).split(/\s+/).filter(Boolean);
+const hay = ({a, p}) => norm([a.name, a.nameEn, a.disc, DISC_EN[a.disc], a.city, CITY_EN[a.city], p.t, p.tEn, p.m, p.mEn, p.y].join(' '));
 function worksList() {
-  let l = showAll ? allWorks() : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
+  const w = words();
+  let l = w.length ? allWorks().filter(x => { const h = hay(x); return w.every(v => h.includes(v)); })
+    : showAll ? allWorks() : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
   if (sortBy === 'low') l = [...l].sort((x, y) => x.p.p - y.p.p);
   else if (sortBy === 'high') l = [...l].sort((x, y) => y.p.p - x.p.p);
   else if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y || y.p.p - x.p.p);
@@ -294,14 +301,15 @@ function renderFeatured(mode) {
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
     return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span></a></div>`;
-  }).join('');
-  $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
+  }).join('') || `<p class="q-none" role="status">${esc(t('q_none', {q: query.trim()}))}</p>`;
+  $('#feat-h').textContent = t(showAll || words().length ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('feat_count', {n: list.length});
   const ab = $('#all-btn'); ab.textContent = showAll ? t('less_btn') : t('all_btn', {n: total}); ab.setAttribute('aria-pressed', showAll);
 }
 $('#masonry').addEventListener('click', e => { const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(b.dataset.id, +b.dataset.k); });
 $('#sort').addEventListener('change', e => { sortBy = e.target.value; renderFeatured('pop'); });
 $('#all-btn').addEventListener('click', () => { showAll = !showAll; renderFeatured('pop'); });
+$('#q').addEventListener('input', e => { clearTimeout(worksList._t); worksList._t = setTimeout(() => { query = e.target.value; renderFeatured('pop'); }, 150); });
 
 /* city map: top-down plan, districts by discipline */
 const PLAN = {

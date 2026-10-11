@@ -175,7 +175,7 @@
     if (!wrap || !tower) return;
     tower.outerHTML = build();
     wrap.classList.add('mus-on');
-    const hint = main.querySelector('.hint'); if (hint) hint.textContent = t('mus_hint');
+    const hint = main.querySelector('.hint'); if (hint) hint.textContent = t(matchMedia('(hover:none)').matches ? 'mus_hint_touch' : 'mus_hint');   // phones: swipe and tap, no keys
     update(); fitKey = ''; fit();
     if (ro) ro.disconnect();
     if ('ResizeObserver' in window) { ro = new ResizeObserver(fit); ro.observe(document.getElementById('mus')); }   // the parent box: our own stage height changes do not re-trigger it into a loop
@@ -192,6 +192,14 @@
       const ar = e.target.closest('.mus-art');
       if (ar) { const k = +ar.dataset.k; if (k === cur) openWork(k); else go(k); }
     });
+    /* phones: a swipe left / right along the hall walks to the next / previous work */
+    let sw = null;
+    main.addEventListener('touchstart', e => { sw = e.touches.length === 1 && e.target.closest('#mus') ? {x: e.touches[0].clientX, y: e.touches[0].clientY} : null; }, {passive: true});
+    main.addEventListener('touchend', e => {
+      if (!sw) return;
+      const tc = e.changedTouches[0], dx = tc.clientX - sw.x, dy = tc.clientY - sw.y; sw = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1));
+    }, {passive: true});
     document.addEventListener('keydown', e => {
       if (!document.getElementById('mus') || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
       if (document.querySelector('dialog[open]') || /^(INPUT|TEXTAREA|SELECT)$/.test((e.target || {}).tagName || '')) return;
