@@ -1,6 +1,7 @@
 /* artists.js — the single source of truth for every artist, building and artwork.
    Loaded by index.html and cutaway.html. Edit prices / texts / images HERE only.
    Fields ending in "En" are the English versions. `img` can be swapped for a real photo (any path).
+   Optional Lao spellings for the home-page search: nameLo (artist), tLo (work). Without them a Lao search still finds Thai names that sound the same.
    Selling, per work (all optional):
      status:'sold'       the work is sold: a SOLD stamp, the price crossed out, moved to the end of lists
      status:'reserved'   someone is holding it: an ON HOLD stamp, buyers can ask to be next in line

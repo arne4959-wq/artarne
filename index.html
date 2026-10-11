@@ -484,18 +484,44 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .tape-wrap.r .tape-bar{transform:rotate(1deg);}
 .stk{position:absolute;right:3rem;top:1.6rem;z-index:3;font:400 .95rem var(--anton);letter-spacing:.12em;background:var(--pink);color:var(--black);border:var(--line) solid var(--black);padding:.25rem .7rem;transform:rotate(7deg);box-shadow:4px 4px 0 var(--black);}
 .stk.gold{background:var(--gold);transform:rotate(-6deg);}
-.feat-bar{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.4rem;margin:2rem 0 0;}
 .sortl{display:flex;align-items:center;gap:.7rem;font:400 .8rem var(--type);letter-spacing:.12em;text-transform:uppercase;}
 .sortl select{font:400 .9rem var(--type);color:var(--black);background-color:var(--paper);border:var(--line) solid var(--black);padding:.5rem 2rem .5rem .8rem;border-radius:0;-webkit-appearance:none;appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,var(--black) 50%),linear-gradient(-45deg,transparent 50%,var(--black) 50%);background-position:calc(100% - 16px) 55%,calc(100% - 10px) 55%;background-size:6px 6px;background-repeat:no-repeat;cursor:pointer;box-shadow:4px 4px 0 var(--black);}
 .feat-count{font:400 .8rem var(--type);letter-spacing:.1em;color:var(--tartan-red);}
-.qbox{flex:1 1 260px;max-width:420px;}
-.qbox input{width:100%;min-height:44px;font:400 .95rem var(--thai);color:var(--black);background:var(--paper);border:var(--line) solid var(--black);border-radius:0;padding:.5rem .9rem;box-shadow:4px 4px 0 var(--black);-webkit-appearance:none;appearance:none;}
-.qbox input::placeholder{color:#6E685C;}
-.qbox input:focus-visible{outline:3px solid var(--pink);outline-offset:3px;}
-.qbox input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;width:18px;height:18px;cursor:pointer;background:linear-gradient(45deg,transparent 44%,var(--black) 44% 56%,transparent 56%),linear-gradient(-45deg,transparent 44%,var(--black) 44% 56%,transparent 56%);}
-.q-none{column-span:all;font:400 1rem/1.7 var(--thai);background:var(--paper);border:var(--line) solid var(--black);padding:1.2rem 1.4rem;max-width:560px;box-shadow:6px 6px 0 var(--black);}
-@media(max-width:600px){.qbox{flex-basis:100%;max-width:none;}}
+/* ===== search & filter bar (works wall): 2px black lines on paper, bold type, pink = on. site.js: worksList(), syncBar() ===== */
+.sf{display:grid;gap:.9rem;max-width:1000px;margin:2rem 0 0;padding:1rem 1rem .8rem;background:var(--paper);border:2px solid var(--black);box-shadow:6px 6px 0 var(--black);}
+html:not(.js) .sf{display:none;}
+.sf-top{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1.1rem;}
+.sf-q{position:relative;flex:1 1 300px;min-width:0;}
+.sf-ico{position:absolute;left:.8rem;top:50%;width:20px;height:20px;transform:translateY(-50%);fill:none;stroke:var(--black);stroke-width:2.8;stroke-linecap:round;pointer-events:none;}
+.sf-q input{width:100%;min-height:48px;padding:.55rem .8rem .55rem 2.7rem;font:600 1rem/1.4 "IBM Plex Sans Thai","Noto Sans Lao","Noto Sans Lao UI","Phetsarath OT","Lao UI",system-ui,sans-serif;color:var(--black);background:var(--bone);border:2px solid var(--black);border-radius:0;-webkit-appearance:none;appearance:none;}
+.sf-q input::placeholder{color:#5E584D;font-weight:400;}
+.sf-q input:focus{outline:none;background:#fff;box-shadow:4px 4px 0 var(--pink);}
+.sf-q input:focus-visible{outline:2px solid var(--black);outline-offset:3px;}
+.sf-q input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;width:20px;height:20px;cursor:pointer;background:linear-gradient(45deg,transparent 42%,var(--black) 42% 58%,transparent 58%),linear-gradient(-45deg,transparent 42%,var(--black) 42% 58%,transparent 58%);}
+.sf .sortl select{min-height:48px;border-width:2px;font-weight:600;box-shadow:3px 3px 0 var(--black);}
+.sf-chips{display:flex;flex-wrap:wrap;gap:.8rem 1.6rem;}
+.sf-g{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;}
+.sf-k{font:400 .74rem var(--type);letter-spacing:.14em;text-transform:uppercase;color:var(--tartan-red);margin-right:.15rem;}
+.sf-chip{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.35rem .75rem;font:400 .95rem/1 var(--anton);letter-spacing:.08em;text-transform:uppercase;color:var(--black);background:var(--paper);border:2px solid var(--black);border-radius:0;cursor:pointer;box-shadow:3px 3px 0 var(--black);transition:transform .15s var(--ease),box-shadow .15s var(--ease);}
+.sf-chip:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--black);}
+.sf-chip:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--black);}
+.sf-chip[aria-pressed="true"]{background:var(--black);color:var(--paper);box-shadow:3px 3px 0 var(--pink);}
+.sf-chip[aria-pressed="true"]:hover{box-shadow:5px 5px 0 var(--pink);}
+.sf-chip:focus-visible{outline:3px solid var(--pink);outline-offset:3px;}
+.sf-chip.zero{border-style:dashed;box-shadow:none;}
+.sf-n{min-width:1.7em;padding:.22rem .35rem;font:400 .74rem/1 var(--type);letter-spacing:0;text-align:center;background:var(--black);color:var(--paper);font-variant-numeric:tabular-nums;}
+.sf-chip[aria-pressed="true"] .sf-n{background:var(--pink);color:var(--black);}
+.sf-chip.zero .sf-n{background:var(--bone);color:var(--black);}
+.sf-foot{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1.2rem;min-height:44px;padding-top:.6rem;border-top:2px dashed var(--black);}
+.sf-reset{min-height:44px;padding:0 .1rem;font:400 .9rem var(--anton);letter-spacing:.1em;text-transform:uppercase;color:var(--black);background:none;border:0;border-bottom:3px solid var(--pink);cursor:pointer;}
+.sf-reset:hover{color:var(--tartan-red);}
+.sf-reset:focus-visible{outline:3px solid var(--pink);outline-offset:3px;}
+.q-none{column-span:all;display:grid;justify-items:start;gap:.6rem;max-width:560px;font:400 1rem/1.7 var(--thai);background:var(--paper);border:2px solid var(--black);padding:1.1rem 1.3rem;box-shadow:6px 6px 0 var(--black);}
+@media(hover:none){.sf-chip:hover{transform:none;box-shadow:3px 3px 0 var(--black);}.sf-chip[aria-pressed="true"]:hover{box-shadow:3px 3px 0 var(--pink);}}
+@media(prefers-reduced-motion:reduce){.sf-chip{transition:none;}}
+@media(max-width:600px){.sf{padding:.85rem .8rem .7rem;box-shadow:4px 4px 0 var(--black);}.sf-chips{gap:.7rem;}.sf-chip{padding:.35rem .6rem;font-size:.9rem;}}
+/* ===== search & filter bar: end ===== */
 .mi.pop{animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0) * 45ms);}
 .card .art{position:relative;overflow:hidden;}
 .tag .wv{position:absolute;top:-15px;right:-12px;z-index:3;font:400 .68rem var(--anton);font-style:normal;letter-spacing:.14em;background:var(--gold);color:var(--black);border:2px solid var(--black);padding:.1rem .5rem;transform:rotate(5deg);box-shadow:2px 2px 0 var(--black);white-space:nowrap;}
@@ -787,12 +813,17 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <span class="stk" aria-hidden="true">NEW EVERY WEEK ★</span>
   <div class="sec-k reveal">This week</div>
   <h2 class="sec-t reveal"><span id="feat-h">ผลงานเด่นสัปดาห์นี้</span></h2>
-  <div class="feat-bar reveal">
-    <div class="qbox" role="search"><input type="search" id="q" autocomplete="off" spellcheck="false" enterkeyhint="search" data-t-ph="q_ph" data-t-aria="q_aria" placeholder="ค้นหา ชื่องาน ศิลปิน สาขา เมือง" aria-label="ค้นหาผลงานทั้งหมด"></div>
-    <label class="sortl"><span data-t="sort_label">เรียงตาม</span>
+  <div class="sf reveal" id="sf">
+    <div class="sf-top">
+      <div class="sf-q" role="search"><svg class="sf-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><input type="search" id="q" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-controls="masonry" data-t-ph="q_ph" data-t-aria="q_aria" placeholder="ค้นหาชื่องาน ชื่อศิลปิน (ไทย · English · ລາວ)" aria-label="ค้นหาผลงานตามชื่องานหรือชื่อศิลปิน"></div>
+      <label class="sortl"><span data-t="sort_label">เรียงตาม</span>
       <select id="sort"><option value="cur" data-t="sort_cur">คัดมาให้</option><option value="low" data-t="sort_low">ราคาต่ำ → สูง</option><option value="high" data-t="sort_high">ราคาสูง → ต่ำ</option><option value="new" data-t="sort_new">ใหม่ล่าสุด</option></select></label>
-    <button type="button" class="fbtn" id="all-btn" aria-pressed="false"></button>
-    <span class="feat-count" id="feat-count" role="status"></span>
+    </div>
+    <div class="sf-chips" role="group" data-t-aria="sf_group" aria-label="ตัวกรองด่วน">
+      <div class="sf-g"><span class="sf-k" data-t="sf_status">สถานะ</span><button type="button" class="sf-chip" id="all-btn" data-f="all" aria-pressed="false"><span data-t="sf_all">ทั้งหมด</span><b class="sf-n"></b></button><button type="button" class="sf-chip" data-f="avail" aria-pressed="false"><span data-t="sf_avail">ยังว่างอยู่</span><b class="sf-n"></b></button></div>
+      <div class="sf-g"><span class="sf-k" data-t="sf_price">ราคา</span><button type="button" class="sf-chip" data-f="p1" aria-pressed="false"><span data-t="sf_p1">ต่ำกว่า $300</span><b class="sf-n"></b></button><button type="button" class="sf-chip" data-f="p2" aria-pressed="false"><span data-t="sf_p2">$300–600</span><b class="sf-n"></b></button><button type="button" class="sf-chip" data-f="p3" aria-pressed="false"><span data-t="sf_p3">$600+</span><b class="sf-n"></b></button></div>
+    </div>
+    <div class="sf-foot"><span class="feat-count" id="feat-count" role="status"></span><button type="button" class="sf-reset" id="sf-reset" data-t="sf_reset" hidden>ล้างตัวกรอง</button></div>
   </div>
   <div class="masonry" id="masonry"><!--pre:masonry--><div class="mi reveal in" style="--i:0"><a class="card" href="studio-mali.html?work=0" draggable="false" data-id="mali" data-k="0" data-cur="VIEW" aria-label="ซ้อนทับ โดยมะลิ $85"><i class="tape" style="--tr:-5deg"></i><span class="art" style="--ar:4/5;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#E8584F 0 40%,#3F6FA8 40% 66%,#F0C14B 66%)"><img src="art/mali-1.svg" alt="ซ้อนทับ" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ซ้อนทับ</span><span class="pa">มะลิ · ริโซกราฟ</span><span class="pp">$85</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-phop.html?work=2" draggable="false" data-id="phop" data-k="2" data-cur="VIEW" aria-label="คลื่นตาราง โดยภพ $340"><i class="tape" style="--tr:4deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#E8E4D8 0 18%,transparent 18.5%),linear-gradient(135deg,#2E2A3A 0 50%,#C9A24B 50%)"><img src="art/phop-3.svg" alt="คลื่นตาราง" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">คลื่นตาราง</span><span class="pa">ภพ · ศิลปะเจเนอเรทีฟ</span><span class="pp">$340</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-phrae.html?work=2" draggable="false" data-id="phrae" data-k="2" data-cur="VIEW" aria-label="ไฟล์เสีย โดยแพร $650"><i class="tape" style="--tr:-3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#3FB8AF 0 18%,transparent 18.5%),linear-gradient(135deg,#1B1B26 0 50%,#D6457A 50%)"><img src="art/phrae-3.svg" alt="ไฟล์เสีย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ไฟล์เสีย</span><span class="pa">แพร · กลิตช์อาร์ต</span><span class="pp">$650</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-thara.html?work=0" draggable="false" data-id="thara" data-k="0" data-cur="VIEW" aria-label="ถนนเปียก โดยธารา $420"><i class="tape" style="--tr:6deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#4A6080 0 40%,#2D4A6A 40% 66%,#6B8099 66%)"><img src="art/thara-1.svg" alt="ถนนเปียก" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ถนนเปียก</span><span class="pa">ธารา · ภาพถ่าย</span><span class="pp">$420</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-pan.html?work=0" draggable="false" data-id="pan" data-k="0" data-cur="VIEW" aria-label="เส้นใยในดิน โดยป่าน $380"><i class="tape" style="--tr:-6deg"></i><span class="art" style="--ar:1/1;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#2A241C 0 40%,#8F9A6C 40% 66%,#D8CFA6 66%)"><img src="art/pan-1.svg" alt="เส้นใยในดิน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นใยในดิน</span><span class="pa">ป่าน · ไบโออาร์ต</span><span class="pp">$380</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-kwan.html?work=2" draggable="false" data-id="kwan" data-k="2" data-cur="VIEW" aria-label="รถไฟในฝัน โดยขวัญ $390"><i class="tape" style="--tr:3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#B888B8 0 18%,transparent 18.5%),linear-gradient(135deg,#9B6B9B 0 50%,#7A4A7A 50%)"><img src="art/kwan-3.svg" alt="รถไฟในฝัน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">รถไฟในฝัน</span><span class="pa">ขวัญ · ภาพประกอบ</span><span class="pp">$390</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-irene.html?work=1" draggable="false" data-id="irene" data-k="1" data-cur="VIEW" aria-label="เส้นด้าย โดยไอรีน $520"><i class="tape" style="--tr:-4deg"></i><span class="art" style="--ar:5/9;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 34% 40%,#4A7040 0 22%,transparent 22.5%),radial-gradient(circle at 68% 64%,#3A6030 0 30%,transparent 30.5%),#5A8050"><img src="art/irene-2.svg" alt="เส้นด้าย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นด้าย</span><span class="pa">ไอรีน · สิ่งทอ</span><span class="pp">$520</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-napha.html?work=0" draggable="false" data-id="napha" data-k="0" data-cur="VIEW" aria-label="เช้าหมอก โดยนภา $1,800"><i class="tape" style="--tr:5deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#C4958A 0 40%,#7A4A40 40% 66%,#D4CFCA 66%)"><img src="art/napha-1.svg" alt="เช้าหมอก" loading="lazy" decoding="async" draggable="false"><i class="stamp sold">ขายแล้ว</i></span><span class="plate"><span class="pn">เช้าหมอก</span><span class="pa">นภา · จิตรกรรม</span><span class="pp strike">$1,800</span><span class="chip sold">ขายแล้ว</span></span></a></div><!--/pre:masonry--></div>
 </section>

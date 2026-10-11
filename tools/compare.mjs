@@ -11,7 +11,7 @@
 // Pages are opened with ?live, so they show what a visitor of the real site sees (no yellow [__] draft marks).
 import fs from 'node:fs';
 import path from 'node:path';
-import {execSync, spawnSync} from 'node:child_process';
+import {execSync, spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {startServer, launch, findChrome, sleep} from './browser.mjs';
 
@@ -89,7 +89,7 @@ async function snap(name) {
     }
     console.log();
     if (!process.argv.includes('--no-lh')) for (const f of KEY.filter(k => pages.includes(k))) for (const form of ['mobile', 'desktop']) {
-      data.lighthouse[`${f} ${form}`] = lighthouse(`${server.url}/${f}?live`, form, path.join(dir, `lh-${form}-${f.replace(/\.html$/, '')}.json`));
+      data.lighthouse[`${f} ${form}`] = await lighthouse(`${server.url}/${f}?live`, form, path.join(dir, `lh-${form}-${f.replace(/\.html$/, '')}.json`));
       console.log(`  lighthouse ${f} ${form}:`, JSON.stringify(data.lighthouse[`${f} ${form}`]));
     }
   } finally { server.close(); }
@@ -105,13 +105,20 @@ async function jpeg(b, file, w, fullH) {
   if (fullH) { await b.ev('scrollTo(0,0)'); await sleep(200); }
 }
 
-function lighthouse(url, form, file) {
+async function lighthouse(url, form, file) {
   // the home page never goes CPU-idle (city animations, smooth scroll), so cap the load wait instead of letting Lighthouse wait it out
   const flags = ['-y', `lighthouse@${LH}`, url, '--output=json', `--output-path=${file}`, '--quiet', '--only-categories=performance,accessibility,best-practices,seo', '--max-wait-for-load=25000',
     `--chrome-flags=--headless=new${process.env.CI || process.getuid?.() === 0 ? ' --no-sandbox' : ''}`];
   if (form === 'desktop') flags.push('--preset=desktop');
-  const r = spawnSync('npx', flags, {env: {...process.env, CHROME_PATH: findChrome()}, encoding: 'utf8', timeout: 420000});
-  if (r.status !== 0 || !fs.existsSync(file)) return {error: (r.stderr || r.error?.message || 'lighthouse failed').trim().split('\n').pop().slice(0, 200)};
+  // async on purpose: the pages are served by this same process, so it must keep answering while Lighthouse loads them
+  const r = await new Promise(res => {
+    const c = spawn('npx', flags, {env: {...process.env, CHROME_PATH: findChrome()}, stdio: ['ignore', 'ignore', 'pipe']});
+    let err = ''; c.stderr.on('data', d => { err = (err + d).slice(-2000); });
+    const kill = setTimeout(() => c.kill('SIGKILL'), 420000);
+    c.on('close', status => { clearTimeout(kill); res({status, err}); });
+    c.on('error', e => { clearTimeout(kill); res({status: -1, err: e.message}); });
+  });
+  if (r.status !== 0 || !fs.existsSync(file)) return {error: (r.err || 'lighthouse failed').trim().split('\n').pop().slice(0, 200)};
   const j = JSON.parse(fs.readFileSync(file, 'utf8'));
   const out = Object.fromEntries(Object.entries(j.categories).map(([k, c]) => [k, Math.round(c.score * 100)]));
   out.lcp = Math.round(j.audits['largest-contentful-paint']?.numericValue || 0);
@@ -174,7 +181,7 @@ async function lhOnly(name) {
   try {
     for (const f of KEY) for (const form of ['mobile', 'desktop']) {
       const k = `${f} ${form}`; if (data.lighthouse[k] && !data.lighthouse[k].error && !process.argv.includes('--all')) continue;
-      data.lighthouse[k] = lighthouse(`${server.url}/${f}?live`, form, path.join(OUT, name, `lh-${form}-${f.replace(/\.html$/, '')}.json`));
+      data.lighthouse[k] = await lighthouse(`${server.url}/${f}?live`, form, path.join(OUT, name, `lh-${form}-${f.replace(/\.html$/, '')}.json`));
       console.log(`  lighthouse ${k}:`, JSON.stringify(data.lighthouse[k]));
       fs.writeFileSync(file, JSON.stringify(data, null, 1));
     }

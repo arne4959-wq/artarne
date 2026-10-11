@@ -279,37 +279,86 @@ addEventListener('pageshow', e => { if (e.persisted) { document.getElementById('
 /* ================= v6: sections driven by artists.js + circles.js (two languages) ================= */
 let langInit = false;
 const FEAT = [['mali', 0], ['phop', 2], ['napha', 0], ['phrae', 2], ['thara', 0], ['pan', 0], ['kwan', 2], ['irene', 1]], TAPE = [-5, 4, -3, 6, -6, 3, -4, 5];
-let showAll = false, sortBy = 'cur';
+let sortBy = 'cur';
 const allWorks = () => ARTISTS.flatMap(a => a.pieces.map((p, k) => ({a, p, k})));
-/* search: every word typed must appear in the work's title, medium or year, or its artist's name, art form or city (Thai or English) */
-let query = '';
-const norm = s => String(s ?? '').normalize('NFC').toLowerCase();
-const words = () => norm(query).split(/\s+/).filter(Boolean);
-const hay = ({a, p}) => norm([a.name, a.nameEn, a.disc, DISC_EN[a.disc], a.city, CITY_EN[a.city], p.t, p.tEn, p.m, p.mEn, p.y].join(' '));
+
+/* ===== search & filter bar =====
+   Search: every word typed must appear in the work's title (t / tEn / tLo), its artist's name (name / nameEn / nameLo),
+   art form, city, medium or year. Thai, Lao and English meet in one spelling (fold below), so ນະພາ finds นภา.
+   Quick filters: ทั้งหมด = every work instead of this week's picks, ยังว่างอยู่ = no sold works, and one price band. */
+const LAO = {'ກ':'ก','ຂ':'ข','ຄ':'ค','ງ':'ง','ຈ':'จ','ສ':'ส','ຊ':'ซ','ຍ':'ย','ດ':'ด','ຕ':'ต','ຖ':'ถ','ທ':'ท','ນ':'น','ບ':'บ','ປ':'ป','ຜ':'ผ','ຝ':'ฝ','ພ':'พ','ຟ':'ฟ','ມ':'ม','ຢ':'ย','ຣ':'ร','ລ':'ล','ວ':'ว','ຫ':'ห','ອ':'อ','ຮ':'ฮ',
+  'ໜ':'หน','ໝ':'หม','ຼ':'ล','ຽ':'ย','ະ':'ะ','ັ':'ั','າ':'า','ຳ':'ำ','ິ':'ิ','ີ':'ี','ຶ':'ึ','ື':'ื','ຸ':'ุ','ູ':'ู','ົ':'','ເ':'เ','ແ':'แ','ໂ':'โ','ໃ':'ใ','ໄ':'ไ','ໆ':'',
+  '່':'','້':'','໊':'','໋':'','໌':'์','ໍ':'ํ','໐':'0','໑':'1','໒':'2','໓':'3','໔':'4','໕':'5','໖':'6','໗':'7','໘':'8','໙':'9'};
+const MERGE = {'ภ':'พ','ธ':'ท','ฑ':'ท','ฒ':'ท','ศ':'ส','ษ':'ส','ณ':'น','ฬ':'ล','ฎ':'ด','ฏ':'ต','ฐ':'ถ','ฆ':'ค','ช':'ซ','ฌ':'ซ','ญ':'ย','ร':'ล','ฤ':'ล'};   // Thai letters Lao writes with one
+const FINAL = [[/[กขคฆ]$/, 'ก'], [/[จชซฎฏฐฑฒดตถทธศษส]$/, 'ด'], [/[บปพฟภ]$/, 'บ'], [/[ญณนรลฬ]$/, 'น']];                               // a word-final consonant as Lao writes it
+function foldWord(w, finals) {
+  w = w.replace(/[຀-໿]/g, c => LAO[c] ?? c)
+    .replace(/[ก-ฮ][ิุ]?์/g, '')                      // silent letters (การันต์)
+    .replace(/[่-๋็ๆ]/g, '')                          // tone marks, mai taikhu, repeat mark
+    .replace(/ห(?=[งนมยลวร])/g, '');                   // leading silent ห (หมอก, ຕະຫຼາດ)
+  if (finals && w.length > 1) { const f = FINAL.find(([re]) => re.test(w)); if (f) w = w.replace(f[0], f[1]); }
+  return w.replace(/[ก-ฮ]/g, c => MERGE[c] ?? c).replace(/ะ/g, '');
+}
+const splitWords = s => String(s ?? '').normalize('NFC').toLowerCase().replace(/[’'`]/g, '').replace(/[-‐–—_/·.,()“”"!?]/g, ' ').split(/\s+/).filter(Boolean);
+const foldHay = s => { const w = splitWords(s); return w.map(x => foldWord(x, true)).join(' ') + ' | ' + w.map(x => foldWord(x, false)).join(' '); };
+const foldQuery = s => splitWords(s).map(x => [foldWord(x, true), foldWord(x, false)]);   // with and without the final-consonant step, so a half-typed word still finds
+const HAY = new Map();
+const hay = ({a, p}) => { let h = HAY.get(p); if (!h) HAY.set(p, h = foldHay([a.name, a.nameEn, a.nameLo, a.disc, DISC_EN[a.disc], a.city, CITY_EN[a.city], p.t, p.tEn, p.tLo, p.m, p.mEn, p.y].join(' '))); return h; };
+const PRICE = {p1: v => v < 300, p2: v => v >= 300 && v < 600, p3: v => v >= 600};
+const F = {all: false, avail: false, price: ''};
+let query = '', qKey = [];
+const pass = (x, f = F) => qKey.every(([a, b]) => hay(x).includes(a) || hay(x).includes(b)) && (!f.avail || workStatus(x.p) !== 'sold') && (!f.price || PRICE[f.price](x.p.p));
+const narrowed = () => !!(qKey.length || F.avail || F.price);
+const wholeCity = () => F.all || narrowed();
 function worksList() {
-  const w = words();
-  let l = w.length ? allWorks().filter(x => { const h = hay(x); return w.every(v => h.includes(v)); })
-    : showAll ? allWorks() : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
+  let l = wholeCity() ? allWorks().filter(x => pass(x)) : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
   if (sortBy === 'low') l = [...l].sort((x, y) => x.p.p - y.p.p);
   else if (sortBy === 'high') l = [...l].sort((x, y) => y.p.p - x.p.p);
   else if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y || y.p.p - x.p.p);
   return [...l.filter(x => workStatus(x.p) !== 'sold'), ...l.filter(x => workStatus(x.p) === 'sold')];   // sold works go last
 }
-/* mode: 'init' = revealed on scroll, 'pop' = animated re-sort, 'still' = language switch (no animation) */
+/* each chip shows how many works it would give with everything else as it is now */
+function syncBar() {
+  const all = allWorks(), count = f => all.filter(x => pass(x, f)).length;
+  document.querySelectorAll('#sf .sf-chip').forEach(b => {
+    const k = b.dataset.f;
+    const n = k === 'all' ? count({avail: false, price: ''}) : k === 'avail' ? count({...F, avail: true}) : count({...F, price: k});
+    const on = k === 'all' ? F.all && !F.avail && !F.price : k === 'avail' ? F.avail : F.price === k;
+    b.querySelector('.sf-n').textContent = n; b.classList.toggle('zero', !n); b.setAttribute('aria-pressed', on);
+  });
+  $('#sf-reset').hidden = !(F.all || narrowed() || query.trim());
+}
+function resetBar() { F.all = F.avail = false; F.price = ''; query = ''; qKey = []; $('#q').value = ''; renderFeatured('pop'); }
+
+/* mode: 'init' = revealed on scroll, 'pop' = animated re-sort, 'still' = typing / language switch (no animation) */
 function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
     return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span></a></div>`;
-  }).join('') || `<p class="q-none" role="status">${esc(t('q_none', {q: query.trim()}))}</p>`;
-  $('#feat-h').textContent = t(showAll || words().length ? 'feat_h_all' : 'feat_h');
-  $('#feat-count').textContent = t('feat_count', {n: list.length});
-  const ab = $('#all-btn'); ab.textContent = showAll ? t('less_btn') : t('all_btn', {n: total}); ab.setAttribute('aria-pressed', showAll);
+  }).join('') || `<div class="q-none" role="status"><p>${esc(qKey.length ? t('q_none', {q: query.trim()}) : t('sf_none'))}</p><button type="button" class="sf-reset" data-sf-reset>${esc(t('sf_reset'))}</button></div>`;
+  $('#feat-h').textContent = t(wholeCity() ? 'feat_h_all' : 'feat_h');
+  $('#feat-count').textContent = wholeCity() ? t('sf_count', {n: list.length, t: total}) : t('feat_count', {n: list.length});
+  syncBar();
 }
-$('#masonry').addEventListener('click', e => { const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(b.dataset.id, +b.dataset.k); });
+$('#masonry').addEventListener('click', e => {
+  if (e.target.closest('[data-sf-reset]')) return resetBar();
+  const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(b.dataset.id, +b.dataset.k);
+});
 $('#sort').addEventListener('change', e => { sortBy = e.target.value; renderFeatured('pop'); });
-$('#all-btn').addEventListener('click', () => { showAll = !showAll; renderFeatured('pop'); });
-$('#q').addEventListener('input', e => { clearTimeout(worksList._t); worksList._t = setTimeout(() => { query = e.target.value; renderFeatured('pop'); }, 150); });
+$('#sf').addEventListener('click', e => {
+  if (e.target.closest('#sf-reset')) return resetBar();
+  const b = e.target.closest('.sf-chip'); if (!b) return;
+  const k = b.dataset.f;
+  if (k === 'all') { F.all = true; F.avail = false; F.price = ''; }
+  else if (k === 'avail') { F.all = true; F.avail = !F.avail; }
+  else { F.all = true; F.price = F.price === k ? '' : k; }
+  renderFeatured('pop');
+});
+let qRaf = 0;
+const onQuery = () => { cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(() => { query = $('#q').value; qKey = foldQuery(query); renderFeatured('still'); }); };   // every keystroke, one render per frame
+$('#q').addEventListener('input', e => { if (!e.isComposing) onQuery(); });
+$('#q').addEventListener('compositionend', onQuery);
 
 /* city map: top-down plan, districts by discipline */
 const PLAN = {
@@ -346,7 +395,7 @@ function syncFilter(scrollStrip) {
   $('#map-grid').classList.toggle('f', !!d);
   const wave = d === '*wave';
   document.querySelectorAll('.dist').forEach(el => { const on = wave ? el.dataset.w === '1' : el.dataset.d === d; el.classList.toggle('on', on); });
-  document.querySelectorAll('.fbtn[data-d]').forEach(b => { if (b.id === 'all-btn') return; const on = b.dataset.d === d; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  document.querySelectorAll('.fbtn[data-d]').forEach(b => { const on = b.dataset.d === d; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
   let first = null, n = 0, only = null;
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
     const hit = !d || (wave ? !!ARTISTS[i].wave : ARTISTS[i].disc === d);

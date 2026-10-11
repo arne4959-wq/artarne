@@ -416,7 +416,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
       <div class="est reveal in" style="--i:3"><span>ก่อตั้ง 2011</span></div>
       <div class="meta reveal in" style="--i:3">ภาพถ่าย · ตั้งแต่ 2011 · กรุงเทพฯ</div>
       <p class="reveal in" style="--i:4">ธาราเดินถ่ายถนนตอนฝนตกเพราะคนอื่นหลบฝนกันหมด ไม่มีใครมาแย่งมุม ทุกภาพอัดเองในห้องมืด และไม่เคยยอมกดปุ่ม "ทำให้สวยขึ้น"</p>
-      <div class="hint reveal in" style="--i:5">▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม</div>
+      <div class="hint reveal in" style="--i:5">▼ ปัดซ้าย-ขวาเพื่อเดินดูภาพทีละชิ้น แตะภาพที่สว่างเพื่อดูรายละเอียดเต็ม</div>
     </header>
     <div class="tower-wrap mus-on">
       <section class="mus" id="mus" aria-label="โถงแสดงภาพของธารา">
@@ -450,7 +450,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 <dialog class="work-dlg" id="dlg" aria-labelledby="dlg-t">
   <button type="button" class="dlg-x" id="dlg-x" data-t-aria="close" aria-label="ปิด">✕</button>
   <div class="dlg-in">
-    <div class="dlg-art"><div class="frame" id="dlg-frame"></div></div>
+    <div class="dlg-art"><div class="frame" id="dlg-frame" data-zoomable></div></div>
     <div class="dlg-body">
       <div class="meta" id="dlg-fl"></div>
       <h2 id="dlg-t"></h2>
@@ -581,7 +581,7 @@ function fillDlg(k) {
   const level = k + 1;
   $('#dlg-fl').textContent = `FL.0${level} — ROOM ${ROOMS[level - 1]}`;
   $('#dlg-t').textContent = pk(p, 't');
-  const fr = $('#dlg-frame'); fr.style.setProperty('--ar', p.ar); fr.style.setProperty('--art', artBg(A.works, k)); fr.innerHTML = artImg(A, k) + stampHtml(p);
+  const fr = $('#dlg-frame'); fr.style.setProperty('--ar', p.ar); fr.style.setProperty('--art', artBg(A.works, k)); fr.innerHTML = artImg(A, k) + stampHtml(p) + (p.img ? zoomBtn() : '');
   $('#dlg-by').innerHTML = t('d_by', {a: esc(nameL(A)), d: esc(discL(A)), c: esc(cityL(A))});
   const story = $('#dlg-story'); story.hidden = !p.st;
   if (p.st) { $('#dlg-sk').textContent = t('d_story'); $('#dlg-q').textContent = pk(p, 'q') || ''; $('#dlg-st').textContent = pk(p, 'st'); }
