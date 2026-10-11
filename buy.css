@@ -15,7 +15,7 @@
 .by-todo{display:inline-block;font:400 .75rem var(--type);background:var(--by-yel);color:var(--by-ink);padding:0 6px;border:2px solid var(--by-ink);}
 .by-back{align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;color:var(--by-yel);font:400 .85rem var(--type);letter-spacing:.1em;text-decoration:none;border-bottom:3px solid var(--by-pink);}
 .by-back:hover{background:var(--by-yel);color:var(--by-ink);}
-.by a:focus-visible,.by button:focus-visible,.by input:focus-visible,.by textarea:focus-visible{outline:4px solid var(--by-yel);outline-offset:3px;}
+.by a:focus-visible,.by button:focus-visible,.by input:focus-visible,.by textarea:focus-visible{outline:3px solid var(--by-ink);box-shadow:0 0 0 3px var(--by-paper);outline-offset:3px;}
 
 .by-hero{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:4rem;align-items:start;margin-top:-2.5rem;}
 .by-pic{position:relative;}
@@ -59,6 +59,7 @@
 @keyframes by-pulse{0%,100%{box-shadow:7px 7px 0 var(--by-ink),7px 7px 0 3px var(--by-paper);}50%{box-shadow:7px 7px 0 var(--by-ink),7px 7px 0 3px var(--by-yel),0 0 28px rgba(255,46,136,.7);}}
 .by-ask{background:var(--by-paper);}
 .by-ghost{background:var(--by-paper);margin-top:.8rem;font-size:1rem;}
+.by-nopay{margin:0;font:400 .9rem/1.6 var(--thai);color:var(--by-paper);border-left:6px solid var(--by-pink);padding-left:.8rem;}
 .by-avail{display:flex;align-items:center;gap:.7rem;margin:0;font:400 .85rem/1.5 var(--type);letter-spacing:.06em;}
 .by-dot{flex:none;width:14px;height:14px;background:#2BE070;border:3px solid var(--by-paper);border-radius:50%;animation:by-blink 1.2s steps(2,end) infinite;}
 @keyframes by-blink{0%,100%{opacity:1;}50%{opacity:.3;}}
@@ -92,7 +93,7 @@
 .by-fld input,.by-fld textarea{font:400 1rem/1.5 var(--thai);color:var(--by-ink);background:#fff;border:3px solid var(--by-ink);padding:.7rem .8rem;min-height:46px;width:100%;border-radius:0;box-shadow:inset 4px 4px 0 rgba(14,13,12,.08);}
 .by-fld textarea{min-height:110px;resize:vertical;}
 .by-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
-.by-note{margin:0;font:400 .8rem/1.7 var(--type);color:#4a4642;}
+.by-note{margin:0;font:400 .8rem/1.7 var(--type);color:#4A453D;}
 .by-note a{color:var(--by-ink);}
 .by-form .act{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.4rem;}
 .by-form .by-btn{display:inline-flex;}
@@ -150,3 +151,14 @@ html.lite .by-frame:hover{transform:rotate(-1.5deg);}
 html.lite .by-card:hover,html.lite .by-step:hover{transform:none;}
 html.lite .by-rl:hover{transform:rotate(var(--r,0deg));}
 html.lite .by-lg:nth-child(n+3){display:none;}
+
+/* more from the same artist, shown on sold / reserved works */
+.by-more{margin-top:1.4rem;}
+.by-more h2{font-size:1.4rem;margin-bottom:.9rem;}
+.by-more-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;}
+.by-mini{display:grid;grid-template-columns:72px 1fr;gap:.7rem;align-items:center;min-height:72px;padding:.5rem;background:var(--by-paper);color:var(--by-ink);border:var(--line,3px) solid var(--by-ink);box-shadow:4px 4px 0 var(--by-ink);text-decoration:none;}
+.by-mini img{width:72px;height:72px;object-fit:cover;display:block;border:2px solid var(--by-ink);}
+.by-mini b{display:block;font:400 1rem/1.3 "Chonburi",var(--thai);}
+.by-mini i{display:inline-block;margin-top:.25rem;font:400 1rem var(--anton);font-style:normal;background:var(--by-pink);border:2px solid var(--by-ink);padding:0 .45rem;}
+.by-mini:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--by-ink);}
+@media(hover:none){.by-mini:hover{transform:none;box-shadow:4px 4px 0 var(--by-ink);}}

@@ -104,7 +104,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 
 <nav>
   <a class="brand" href="index.html"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb-s"/></svg>CIRCLES</a>
-  <div class="links"><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
+  <div class="links"><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#featured" data-t="nav_works">ผลงาน</a><a href="index.html#map" data-t="nav_artists">ศิลปิน</a><a href="index.html#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
   <div class="mnav" id="mnav" inert><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#manifesto" data-t="foot_manifesto">Manifesto</a><a href="index.html#how" data-t="foot_how">วิธีใช้งาน</a><a href="index.html#featured" data-t="foot_feat">ผลงานเด่น</a><a href="index.html#map" data-t="foot_map">แผนที่เมือง</a><a href="join.html" data-t="foot_join">ขอมีตึก</a></div>
 </nav>
 
@@ -123,12 +123,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
           <h1 class="by-title" id="by-title" style="--by-fs: 64px;"><span class="by-sr">รถไฟในฝัน</span><span class="by-w"><span class="by-rl by-l0" style="--r:-4deg;--d:0.00s" aria-hidden="true">ร</span><span class="by-rl by-l1" style="--r:3deg;--d:0.08s" aria-hidden="true">ถ</span><span class="by-rl by-l2" style="--r:-2deg;--d:0.16s" aria-hidden="true">ไฟ</span><span class="by-rl by-l3" style="--r:5deg;--d:0.24s" aria-hidden="true">ใน</span><span class="by-rl by-l4" style="--r:-5deg;--d:0.32s" aria-hidden="true">ฝั</span><span class="by-rl by-l0" style="--r:2deg;--d:0.40s" aria-hidden="true">น</span></span></h1>
           <p class="by-q">“รถไฟที่ไม่มีสถานีปลายทาง”</p></div>
         <div class="by-prow"><span class="by-price">$390</span></div>
-        <div class="by-cta"><span class="by-bprice">$390</span><a class="by-btn by-pay" href="#by-ask" data-by-ask="">ซื้อตรงจากขวัญ →</a></div>
+        <div class="by-cta"><span class="by-bprice">$390</span><a class="by-btn by-pay" href="#by-ask" data-by-ask="">ส่งข้อความขอซื้อ →</a></div>
+        <p class="by-nopay">ยังไม่ต้องจ่ายเงินตอนนี้ ส่งข้อความก่อน แล้วตกลงราคา การส่ง และวิธีจ่ายกับศิลปิน</p>
         <p class="by-avail"><i class="by-dot" aria-hidden="true"></i>ยังว่าง</p>
         <section class="by-card" aria-labelledby="by-h-detail"><span class="by-tape by-tape-b"></span><h2 id="by-h-detail">รายละเอียดงาน</h2>
           <div class="by-cell"><span>วัสดุ</span><b>หมึกจีนและสีไม้บนกระดาษสา</b></div><div class="by-cell"><span>ขนาด</span><b>60 × 90 ซม.</b></div><div class="by-cell"><span>ปี</span><b>2024</b></div></section>
       </div>
     </div>
+    
     <div class="by-row3">
       <section class="by-card by-tilt-l" aria-labelledby="by-h-how"><span class="by-tape by-tape-c"></span><h2 id="by-h-how">ซื้อยังไง</h2>
         <div class="by-step"><b class="by-n by-n0">1</b><div><b>ส่งข้อความถึงศิลปิน</b></div></div><div class="by-step"><b class="by-n by-n1">2</b><div><b>คุยเรื่องราคาและการจัดส่ง</b></div></div><div class="by-step"><b class="by-n by-n2">3</b><div><b>จ่ายเงินให้ศิลปินโดยตรง</b></div></div></section>
@@ -146,10 +148,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
       <label class="by-fld">ส่งไปที่ไหน (ประเทศ / เมือง)<input name="ship_to" maxlength="120" autocomplete="country-name"></label>
       <label class="by-fld">ข้อความ<textarea name="message" required="" maxlength="1500">สวัสดี สนใจผลงาน “รถไฟในฝัน” ($390) อยากคุยเรื่องราคาและการจัดส่ง ขอบคุณ</textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-      <p class="by-note">ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อความจะถึงทีม circles ก่อน แล้วเราส่งต่อให้ผู้รับที่ระบุ (ผ่านผู้ให้บริการรับฟอร์ม)</p>
-      <div class="cf-holder"></div><div class="act"><button class="by-btn by-pay" type="submit">ส่งถึงศิลปิน →</button></div>
+      <p class="by-note demo-note">เว็บนี้เป็นรุ่นทดลอง ศิลปิน ผลงาน และอีเมลเป็นข้อมูลตัวอย่าง ยังไม่มีงานขายจริง</p><p class="by-note">ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อความจะถึงทีม circles ก่อน แล้วเราส่งต่อให้ผู้รับที่ระบุ (ผ่านผู้ให้บริการรับฟอร์ม)</p>
+      <div class="cf-holder"></div><div class="act"><button class="by-btn by-pay" type="submit">ส่งข้อความ →</button></div>
       </form></div></section>
-      <div class="by-card by-after"><span>ส่งแล้วจะเห็นข้อความ:</span><b>“ส่งถึงขวัญแล้ว คำตอบจะส่งไปที่อีเมลของคุณ”</b></div>
+      <div class="by-card by-after"><span>ส่งแล้วจะเห็นข้อความ:</span><b>“ส่งถึงทีม circles แล้ว เราจะส่งต่อให้ขวัญ คำตอบจะส่งไปที่อีเมลของคุณ”</b></div>
     </div>
   </div>
 </div></main>

@@ -171,10 +171,12 @@
 
   function mount(main, a) {
     A = a; G = geometry(a); if (cur >= G.n) cur = 0;
+    if (!mount._started) { mount._started = true; const f = a.pieces.findIndex(p => !workStatus(p)); if (f > -1) cur = f; }   // open on a work that can still be asked about, not on a struck-out price
     const wrap = main.querySelector('.tower-wrap'), tower = main.querySelector('#tower');
     if (!wrap || !tower) return;
     tower.outerHTML = build();
     wrap.classList.add('mus-on');
+    const bioP = main.querySelector('.cut-head p'); if (bioP) bioP.addEventListener('click', () => bioP.classList.toggle('open'));   // phones: the bio shows 3 lines, a tap shows all
     const hint = main.querySelector('.hint'); if (hint) hint.textContent = t(matchMedia('(hover:none)').matches ? 'mus_hint_touch' : 'mus_hint');   // phones: swipe and tap, no keys
     update(); fitKey = ''; fit();
     if (ro) ro.disconnect();

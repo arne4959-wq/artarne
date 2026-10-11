@@ -52,11 +52,13 @@
           ${p.q ? `<p class="by-q">“${esc(pk(p, 'q'))}”</p>` : ''}</div>
         <div class="by-prow"><span class="by-price${sta ? ' by-strike' : ''}">${esc(usd(p.p))}</span>${sta ? `<span class="by-chip by-chip-st">${esc(dot)}</span>` : ''}${fx.length ? `<span class="by-fx">≈ ${esc(fx.join(' · '))}</span>` : ''}</div>
         ${cta}
+        ${sta ? '' : `<p class="by-nopay">${esc(t('by_nopay'))}</p>`}
         <p class="by-avail"><i class="by-dot${sta ? ' by-dot-off' : ''}" aria-hidden="true"></i>${esc(dot)}${reply ? ` · ${esc(t('by_reply', {d: '@@'})).replace('@@', reply)}` : ''}</p>
         <section class="by-card" aria-labelledby="by-h-detail"><span class="by-tape by-tape-b"></span><h2 id="by-h-detail">${esc(t('by_detail'))}</h2>
           ${cell(t('lb_medium'), esc(pk(p, 'm')))}${cell(t('lb_size'), esc(fmtSize(p)))}${cell(t('lb_year'), esc(p.y))}${cell(t('by_cert'), todo(SHIPPING.certificate))}</section>
       </div>
     </div>
+    ${sta ? moreHtml(A, k) : ''}
     <div class="by-row3">
       <section class="by-card by-tilt-l" aria-labelledby="by-h-how"><span class="by-tape by-tape-c"></span><h2 id="by-h-how">${esc(t('by_how'))}</h2>
         ${steps.map((s, i) => `<div class="by-step"><b class="by-n by-n${i}">${i + 1}</b><div><b>${esc(t(s))}</b></div></div>`).join('')}</section>
@@ -76,6 +78,13 @@
 </div>`;
   }
 
+  /* a sold or reserved work is not a dead end: offer the same artist's works that can still be asked about */
+  function moreHtml(A, k) {
+    const list = A.pieces.map((q, i) => [q, i]).filter(([q, i]) => i !== k && !workStatus(q)).slice(0, 3);
+    if (!list.length) return '';
+    return `<section class="by-card by-more" aria-labelledby="by-h-more"><h2 id="by-h-more">${esc(t('by_more_h', {a: nameL(A)}))}</h2><div class="by-more-g">${list.map(([q, i]) => `<a class="by-mini" href="buy-${esc(A.id)}-${i}.html"><img src="${esc(q.img)}" alt="" loading="lazy" decoding="async"><span><b>${esc(pk(q, 't'))}</b><i>${esc(usd(q.p))}</i></span></a>`).join('')}</div></section>`;
+  }
+
   function formHtml(A, k, pre) {
     const p = A.pieces[k];
     return `<form class="by-form">
@@ -83,7 +92,7 @@
       <label class="by-fld">${esc(t('by_country'))}<input name="ship_to" maxlength="120" autocomplete="country-name"></label>
       <label class="by-fld">${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre, {t: pk(p, 't'), p: usd(p.p)}))}</textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-      <p class="by-note">${t('consent_form')}</p>
+      ${CONFIG.demo ? `<p class="by-note demo-note">${esc(t('demo_note'))}</p>` : ''}<p class="by-note">${t('consent_form')}</p>
       <div class="act"><button class="by-btn by-pay" type="submit">${esc(t('id_send'))}</button></div>
       ${CONFIG.endpoint ? '' : `<p class="by-note">${esc(t('note_mailto'))}</p>`}</form>`;
   }

@@ -54,7 +54,7 @@
       <ul class="pf-strip">${picks}</ul>
       <a class="pf-all" href="studio-${esc(A.id)}.html">${esc(t('pf_all'))}</a>
     </div>
-    <div class="pf-sup pf-in pf-pop" style="--r:-1deg;--pf-d:2.6s"><div class="pf-sbox">
+    <div class="pf-sup pf-in pf-pop${can ? '' : ' draft-only'}" style="--r:-1deg;--pf-d:2.6s"><div class="pf-sbox">
       <span class="pf-heart" aria-hidden="true">♥</span>
       <div class="pf-stx"><h3>${esc(t('pf_sup1', {a: name}))} <span>${esc(t('pf_sup2'))}</span></h3><p>${esc(t('pf_supn'))}</p></div>
       <div class="pf-sb">${supBtn}</div></div><i class="pf-tp pf-tp-gold pf-tp-s"></i></div>

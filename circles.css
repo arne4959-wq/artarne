@@ -32,12 +32,12 @@
 .cdlg label{display:grid;gap:.35rem;font:400 .78rem var(--type);letter-spacing:.12em;color:var(--tartan-red);text-transform:uppercase;}
 .cdlg input,.cdlg select,.cdlg textarea{font:400 1rem/1.5 var(--thai);color:var(--black);background:var(--bone);border:var(--line) solid var(--black);padding:.65rem .8rem;width:100%;border-radius:0;}
 .cdlg textarea{min-height:120px;resize:vertical;}
-.cdlg input:focus-visible,.cdlg select:focus-visible,.cdlg textarea:focus-visible{outline:3px solid var(--pink);outline-offset:2px;background:var(--paper);}
+.cdlg input:focus-visible,.cdlg select:focus-visible,.cdlg textarea:focus-visible{outline:3px solid var(--black);box-shadow:0 0 0 3px var(--paper);outline-offset:2px;background:var(--paper);}
 .cdlg .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .cdlg .act{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;}
 .cdlg .btn.ghost{background:var(--paper);color:var(--black);box-shadow:6px 6px 0 var(--black);}
 .cdlg .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
-.cdlg .note{font:400 .8rem/1.7 var(--type);color:#6E685C;}
+.cdlg .note{font:400 .8rem/1.7 var(--type);color:#4A453D;}
 .cdlg .note a{color:var(--black);text-decoration:none;border-bottom:2px solid var(--pink);}
 .cdlg-done h3{font:400 1.6rem/1.4 "Chonburi",var(--thai);}
 .cdlg-done pre{font:400 .85rem/1.7 var(--type);background:var(--bone);border:2px dashed var(--black);padding:.8rem 1rem;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow:auto;}
@@ -90,7 +90,7 @@ html.pgc-in::after{content:"";position:fixed;inset:0;background:#0E0D0C;z-index:
 .stamp{position:absolute;left:50%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-12deg);font:400 clamp(.85rem,2.2vw,1.4rem)/1 "Anton","Chonburi",Impact,sans-serif;font-style:normal;letter-spacing:.14em;text-transform:uppercase;padding:.35em .75em .3em;border:4px double currentColor;background:rgba(244,241,232,.9);pointer-events:none;white-space:nowrap;box-shadow:3px 3px 0 rgba(14,13,12,.35);}
 .stamp.sold{color:#A3182C;}
 .stamp.reserved{color:#0E0D0C;background:rgba(232,183,48,.94);}
-.chip{display:inline-block;font:400 .72rem/1.2 "Anton","Chonburi",Impact,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .45rem;border:2px solid #0E0D0C;vertical-align:middle;margin-left:.45rem;}
+.chip{display:inline-block;font:400 .75rem/1.2 "Anton","Chonburi",Impact,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .45rem;border:2px solid #0E0D0C;vertical-align:middle;margin-left:.45rem;}
 .chip.sold{background:#A3182C;color:#F4F1E8;}
 .chip.reserved{background:#E8B730;color:#0E0D0C;}
 .strike{text-decoration:line-through;text-decoration-thickness:3px;opacity:.55;}
@@ -123,7 +123,7 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
 .fold>summary::after{content:"+";font:400 1.5rem/1 var(--anton);}
 .fold[open]>summary::after{content:"\2212";}
 .fold>summary:hover{background:var(--gold);border-color:var(--gold);color:var(--black);}
-.fold>summary:focus-visible{outline:3px solid var(--pink);outline-offset:4px;}
+.fold>summary:focus-visible{outline:3px solid var(--black);box-shadow:0 0 0 3px var(--paper);outline-offset:4px;}
 .fold-body{padding-top:1.4rem;}
 .fold-spot{margin:0 0 1.8rem;}
 .fold-foot{flex:1 0 100%;border-top:2px dashed rgba(244,241,232,.3);padding-top:1.6rem;}
@@ -208,6 +208,8 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
 @keyframes qvPunch{0%{transform:translateX(70px) skewX(-12deg);opacity:0}25%{transform:translateX(-16px) skewX(6deg);opacity:1}50%{transform:translateX(9px) skewX(-3deg)}75%{transform:translateX(-3px)}100%{transform:none}}
 @keyframes qvStamp{0%,30%{transform:rotate(-2deg) scale(2.6);opacity:0}45%{transform:rotate(-6deg) scale(.88);opacity:1}60%{transform:rotate(-1deg) scale(1.1)}78%{transform:rotate(-3deg) scale(.97)}100%{transform:rotate(-2deg)}}
 @keyframes qvJolt{0%{transform:translate(-12px,5px) rotate(-2.2deg)}33%{transform:translate(9px,-4px) rotate(1.6deg)}66%{transform:translate(-3px,1px) rotate(-.6deg)}100%{transform:none}}
+/* the phone-only price beside the main button (see the 860px block) */
+.qv-sp{display:none;}
 @media (max-width:860px){
   .cdlg.qv{overflow-y:auto;overflow-x:hidden;}
   .cdlg.qv[open]{display:block;}
@@ -216,6 +218,12 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
   .qv-nav{top:auto;bottom:.2rem;margin-top:0;width:56px;height:48px;}
   .qv-prev{left:.4rem;}.qv-next{right:.4rem;}
   .qv-info{overflow:visible;border-left:0;border-top:var(--line) solid var(--black);box-shadow:0 -8px 0 var(--gold);padding:1.6rem 1.1rem 2.4rem;}
+  /* price and the one main button stay on screen while the story scrolls; the second 'ask' button is left out here (the buy page has the form) */
+  .qv-cta{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:.8rem;margin:.6rem -1.1rem -2.4rem;padding:.7rem 1.1rem calc(.7rem + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:var(--line) solid var(--black);}
+  .qv-cta .qv-btn{flex:1;min-height:52px;}
+  .qv-cta .qv-btn[data-qv-ask]{display:none;}
+  .qv-sp{display:block;font:400 1.5rem var(--anton);letter-spacing:.02em;white-space:nowrap;}
+  .qv-sp.qv-strike{text-decoration:line-through;text-decoration-thickness:3px;}
 }
 @media (hover:none){.qv-btn:hover{transform:none;box-shadow:5px 5px 0 var(--black);}}
 @media (prefers-reduced-motion:reduce){.qv,.qv *{animation:none !important;transition:none !important;}}
@@ -239,7 +247,7 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
   .bn[aria-current]{background:var(--black);color:var(--paper);box-shadow:inset 0 5px 0 var(--pink);}
   .bn[aria-current]:active{background:var(--black);}
   .bn-codes{display:flex;gap:2px;}
-  .bn-codes i{font:400 .62rem/1 var(--anton);font-style:normal;letter-spacing:.04em;padding:3px 3px 2px;box-shadow:inset 0 0 0 2px var(--black);clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,0 100%);}
+  .bn-codes i{font:400 .75rem/1 var(--anton);font-style:normal;letter-spacing:.04em;padding:3px 3px 2px;box-shadow:inset 0 0 0 2px var(--black);clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,0 100%);}
   .bn-codes i.on{background:var(--black);color:var(--paper);}
   .bn:active .bn-codes i.on{background:var(--black);}
   html[data-locale="lo"] .bn-l{letter-spacing:0;text-transform:none;font-size:.86rem;}
@@ -251,3 +259,21 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
   html.has-bnav .by-wrap{padding-bottom:calc(9.5rem + var(--bn-h));}
 }
 @media (prefers-reduced-motion:reduce){.bn{transition:none;}}
+
+
+/* unfinished parts (empty Support link, placeholder social links): visible only on the owner's computer, where isDraft() adds html.is-draft */
+.draft-only{display:none !important;}
+.is-draft .draft-only{display:revert !important;}
+
+/* skip link: the first Tab stop on every page */
+.skip{position:absolute;left:-9999px;top:0;}
+.skip:focus{left:1rem;top:1rem;z-index:999;background:var(--gold);color:var(--black);padding:.7rem 1.1rem;border:var(--line) solid var(--black);font:400 1rem var(--type);}
+
+/* tap and click targets: menu links in the desktop header, links in footers on phones */
+nav .links a{padding-block:.7rem;}
+@media(max-width:767.98px){
+  footer a,.foot-more a,.legal footer a,.mini-foot a{display:inline-block;min-height:44px;line-height:44px;}
+}
+
+/* sample-data notice above the consent line in every message form; switch it off with CONFIG.demo = false once real artists are in */
+.demo-note{font-weight:700;border-left:6px solid var(--gold);padding-left:.7rem;}

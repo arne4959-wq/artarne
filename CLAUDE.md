@@ -113,6 +113,10 @@ design/                           static visual references
 ```
 
 **Data rules.** Prices are USD numbers. A work can have `status:'sold'|'reserved'`, `pay:'https://…'`, concept blocks. Never invent shipping, fees, rates or percentages: empty values in `SHIPPING`, `RATES`, `SUPPORT` show a yellow `[__]` on a developer's own computer (`isDraft()`) and are left out on the live site. `RATES.thb` is the baht per dollar used for "≈ ฿" prices and is empty until the owner sets it.
+Values from `artists.js` that reach markup or CSS are checked: `tools/build.mjs` stops with a plain message on a bad id (only a-z, 0-9, -), colour (#hex), year, price, ratio, missing picture file, `status` or `pay` value, and `circles.js` (`cleanArtists()`) repairs them in the browser. Still use `esc()` for every text field.
+Unfinished parts that must not show on the live site (a Support box without a link, placeholder social links) carry the class `draft-only`; they appear only where `isDraft()` is true (`html.is-draft`). `CONFIG.demo = true` adds a "sample data" notice above the consent line of every message form; set it to false when real artists are in.
+Messages from forms reach the circles team first (Formspree), who pass them on: text must not say they go "directly" to the artist.
+The home wall keeps its filters in the address (`?q= &avail=1 &price=p1 &sort=low &all=1`) and every dialog from `mountDialog()` adds a history entry, so Back closes it.
 
 ## Checklist for implementing a Figma frame
 

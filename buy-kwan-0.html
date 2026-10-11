@@ -104,7 +104,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 
 <nav>
   <a class="brand" href="index.html"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb-s"/></svg>CIRCLES</a>
-  <div class="links"><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
+  <div class="links"><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#featured" data-t="nav_works">ผลงาน</a><a href="index.html#map" data-t="nav_artists">ศิลปิน</a><a href="index.html#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
   <div class="mnav" id="mnav" inert><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#manifesto" data-t="foot_manifesto">Manifesto</a><a href="index.html#how" data-t="foot_how">วิธีใช้งาน</a><a href="index.html#featured" data-t="foot_feat">ผลงานเด่น</a><a href="index.html#map" data-t="foot_map">แผนที่เมือง</a><a href="join.html" data-t="foot_join">ขอมีตึก</a></div>
 </nav>
 
@@ -124,11 +124,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
           <p class="by-q">“เด็กที่มีลมเป็นเพื่อนสนิท”</p></div>
         <div class="by-prow"><span class="by-price by-strike">$260</span><span class="by-chip by-chip-st">ขายแล้ว</span></div>
         <div class="by-cta"><span class="by-bprice by-strike">$260</span><a class="by-btn by-pay" href="#by-ask" data-by-ask="">ถามขวัญเรื่องงานแบบนี้ →</a></div>
+        
         <p class="by-avail"><i class="by-dot by-dot-off" aria-hidden="true"></i>ขายแล้ว</p>
         <section class="by-card" aria-labelledby="by-h-detail"><span class="by-tape by-tape-b"></span><h2 id="by-h-detail">รายละเอียดงาน</h2>
           <div class="by-cell"><span>วัสดุ</span><b>หมึกและสีไม้บนกระดาษ</b></div><div class="by-cell"><span>ขนาด</span><b>42 × 59 ซม.</b></div><div class="by-cell"><span>ปี</span><b>2022</b></div></section>
       </div>
     </div>
+    <section class="by-card by-more" aria-labelledby="by-h-more"><h2 id="by-h-more">ผลงานอื่นของขวัญที่ยังว่าง</h2><div class="by-more-g"><a class="by-mini" href="buy-kwan-1.html"><img src="art/kwan-2.svg" alt="" loading="lazy" decoding="async"><span><b>สวนหลังบ้าน</b><i>$310</i></span></a><a class="by-mini" href="buy-kwan-2.html"><img src="art/kwan-3.svg" alt="" loading="lazy" decoding="async"><span><b>รถไฟในฝัน</b><i>$390</i></span></a></div></section>
     <div class="by-row3">
       <section class="by-card by-tilt-l" aria-labelledby="by-h-how"><span class="by-tape by-tape-c"></span><h2 id="by-h-how">ซื้อยังไง</h2>
         <div class="by-step"><b class="by-n by-n0">1</b><div><b>ส่งข้อความถึงศิลปิน</b></div></div><div class="by-step"><b class="by-n by-n1">2</b><div><b>คุยเรื่องราคาและการจัดส่ง</b></div></div><div class="by-step"><b class="by-n by-n2">3</b><div><b>จ่ายเงินให้ศิลปินโดยตรง</b></div></div></section>
@@ -146,10 +148,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
       <label class="by-fld">ส่งไปที่ไหน (ประเทศ / เมือง)<input name="ship_to" maxlength="120" autocomplete="country-name"></label>
       <label class="by-fld">ข้อความ<textarea name="message" required="" maxlength="1500">สวัสดี เห็นผลงาน “เด็กกับลม” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ</textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-      <p class="by-note">ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อความจะถึงทีม circles ก่อน แล้วเราส่งต่อให้ผู้รับที่ระบุ (ผ่านผู้ให้บริการรับฟอร์ม)</p>
-      <div class="cf-holder"></div><div class="act"><button class="by-btn by-pay" type="submit">ส่งถึงศิลปิน →</button></div>
+      <p class="by-note demo-note">เว็บนี้เป็นรุ่นทดลอง ศิลปิน ผลงาน และอีเมลเป็นข้อมูลตัวอย่าง ยังไม่มีงานขายจริง</p><p class="by-note">ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อความจะถึงทีม circles ก่อน แล้วเราส่งต่อให้ผู้รับที่ระบุ (ผ่านผู้ให้บริการรับฟอร์ม)</p>
+      <div class="cf-holder"></div><div class="act"><button class="by-btn by-pay" type="submit">ส่งข้อความ →</button></div>
       </form></div></section>
-      <div class="by-card by-after"><span>ส่งแล้วจะเห็นข้อความ:</span><b>“ส่งถึงขวัญแล้ว คำตอบจะส่งไปที่อีเมลของคุณ”</b></div>
+      <div class="by-card by-after"><span>ส่งแล้วจะเห็นข้อความ:</span><b>“ส่งถึงทีม circles แล้ว เราจะส่งต่อให้ขวัญ คำตอบจะส่งไปที่อีเมลของคุณ”</b></div>
     </div>
   </div>
 </div></main>

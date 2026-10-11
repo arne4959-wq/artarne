@@ -5,8 +5,9 @@
    endpoint : a form-backend URL (Formspree, Getform, your own API). It receives JSON via POST.
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
+   demo     : true shows a "sample data" notice above the consent line of every message form. Set it to false when real artists are in.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
+const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', demo: true, turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
 
 /* ---------- data guard: values from artists.js that are printed into markup or CSS must have the expected shape ----------
    An id or colour such as  x" onmouseover="…  would reach the page unescaped in several templates. Bad values are repaired (a bad id skips the artist) once, here,
@@ -35,6 +36,7 @@ function isDraft() {
   try { const q = new URLSearchParams(location.search); if (q.has('live')) return false; return q.has('draft') || location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); }
   catch (e) { return false; }
 }
+if (isDraft()) document.documentElement.classList.add('is-draft');   // shows .draft-only parts (unfinished boxes) on the owner's computer only
 
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* ===== lite:decide ===== phones, very weak devices (2 cores or 2 GB) and data-saver get fewer moving things. ?lite or ?full in the address forces it. */
@@ -56,14 +58,14 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;',
 /* ---------- strings ---------- */
 const STR = {
 th: {
-  nav_city:'เมือง', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'Join', bn_city:'เมือง', bn_art:'ผลงาน', bn_artists:'ศิลปิน', bn_lang:'ภาษา', bn_aria:'เมนูด้านล่าง', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
+  skip:'ข้ามไปที่เนื้อหา', nav_city:'เมือง', nav_works:'ผลงาน', nav_artists:'ศิลปิน', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'Join', bn_city:'เมือง', bn_art:'ผลงาน', bn_artists:'ศิลปิน', bn_lang:'ภาษา', bn_aria:'เมนูด้านล่าง', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
   wave:'คลื่นลูกใหม่', f_wave:'★ คลื่นลูกใหม่', fnote_wave:'ไฮไลต์ {n} ตึกคลื่นลูกใหม่ในแถบเมืองแล้ว',
   ld_top:'circles · เมืองของศิลปิน', ld_text:'กำลังสร้างเมือง…',
   legal_privacy:'นโยบายความเป็นส่วนตัว', legal_terms:'เงื่อนไขการใช้งาน',
   consent_form:'ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อความจะถึงทีม circles ก่อน แล้วเราส่งต่อให้ผู้รับที่ระบุ (ผ่านผู้ให้บริการรับฟอร์ม)',
   news_consent:'สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ',
   hero_hl1:'เมืองของศิลปิน', hero_hl2:'พื้นที่สำหรับงานศิลปะ', hero_hl3:'ที่ไม่ยอมเงียบ',
-  hero_lead:'ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจาก\u2060คน\u2060ทำ', hero_cta:'เข้าชมเมือง →',
+  hero_lead:'ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจาก\u2060คน\u2060ทำ', hero_cta:'เข้าชมเมือง →', hero_alt:'ดูผลงานและราคา ↓',
   city_h:'เมือง', city_p:'ลากหรือเลื่อนไปทางขวาเพื่อเดินผ่านเมือง ตึกแต่ละหลังคือสตูดิโอของศิลปินหนึ่งคน ภาพที่ฝังอยู่ในคอนกรีตคือผลงานจริง',
   pager_l:'เลื่อนซ้าย', pager_r:'เลื่อนขวา', strip_aria:'เมืองของศิลปิน เลื่อนซ้ายขวา', bd_aria:'เข้าตึกของ{a} {d}', works_n:'{n} WORKS',
   mani_k:'Manifesto', mani1:'ไม่มี\u200bหอศิลป์', mani2:'ไม่มี\u200bคนกลาง', mani3:'ไม่มี\u200bค่าหัวคิว', mani4:'มีแค่คนทำ กับคนซื้อ',
@@ -97,12 +99,12 @@ th: {
   /* dialogs + feedback */
   close:'ปิด', jd_title:'ขอมี<em>ตึก</em>ในเมืองนี้', jd_intro:'เล่าให้ฟังสั้น ๆ ว่าคุณทำอะไร ไม่ต้องมีประวัติยาว ไม่ต้องมีใครรับรอง เราดูที่งาน',
   jd_name:'ชื่อ / นามปากกา', jd_email:'อีเมล', jd_disc:'สาขา', jd_other:'อื่น ๆ', jd_link:'ลิงก์ผลงาน (เว็บ / Instagram / Drive)', jd_msg:'เล่าเกี่ยวกับงานของคุณ', jd_send:'ส่งคำขอ →', jd_cancel:'ยกเลิก',
-  jd_subject:'ขอมีตึกใน circles — {n}', id_title:'คุยกับ<em>{a}</em>ตรง ๆ', id_intro:'ข้อความนี้ถึงทีม circles แล้วเราส่งต่อให้ศิลปิน ส่วนการตกลงราคาและการจ่ายเงินคุณทำกับศิลปินโดยตรง', id_name:'ชื่อของคุณ', id_email:'อีเมลของคุณ', id_msg:'ข้อความ', id_send:'ส่งถึงศิลปิน →',
+  jd_subject:'ขอมีตึกใน circles — {n}', id_title:'คุยกับ<em>{a}</em>ตรง ๆ', id_intro:'ข้อความนี้ถึงทีม circles แล้วเราส่งต่อให้ศิลปิน ส่วนการตกลงราคาและการจ่ายเงินคุณทำกับศิลปินโดยตรง', id_name:'ชื่อของคุณ', id_email:'อีเมลของคุณ', id_msg:'ข้อความ', id_send:'ส่งข้อความ →',
   id_prefill:'สวัสดี สนใจผลงาน “{t}” ({p}) อยากคุยเรื่องราคาและการจัดส่ง ขอบคุณ', id_subject:'สนใจผลงาน “{t}” — circles',
-  done_mail:'เปิดแอปอีเมลของคุณแล้ว', done_mail_p:'กดส่งในแอปอีเมลเพื่อให้ข้อความถึงปลายทาง ถ้าไม่มีอะไรเปิดขึ้น ให้คัดลอกข้อความด้านล่างแล้วส่งเอง', done_sent:'ส่งเรียบร้อย', done_sent_p:'ขอบคุณ ข้อความถึงปลายทางแล้ว',
+  done_mail:'เปิดแอปอีเมลของคุณแล้ว', done_mail_p:'กดส่งในแอปอีเมลเพื่อให้ข้อความถึงปลายทาง ถ้าไม่มีอะไรเปิดขึ้น ให้คัดลอกข้อความด้านล่างแล้วส่งเอง', done_sent:'ส่งเรียบร้อย', done_sent_p:'ขอบคุณ ข้อความถึงทีม circles แล้ว เราจะส่งต่อให้ศิลปิน และคำตอบจะส่งไปที่อีเมลของคุณ',
   copy_msg:'คัดลอกข้อความ', copied:'คัดลอกแล้ว', copy_fail:'คัดลอกไม่ได้ ลองเลือกข้อความแล้วคัดลอกเอง', to_label:'ถึง',
   news_saved:'บันทึกอีเมลไว้ในเครื่องนี้แล้ว (ยังไม่ได้เชื่อมระบบส่งจดหมาย)', news_sent:'สมัครรับข่าวเรียบร้อย', news_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
-  captcha_wait:'รอให้การตรวจสอบเสร็จก่อนส่ง', note_mailto:'ตอนนี้ฟอร์มนี้ทำงานผ่านแอปอีเมลของคุณ', demo_note:'ข้อมูลศิลปินและอีเมลในเว็บนี้เป็นข้อมูลตัวอย่าง',
+  captcha_wait:'รอให้การตรวจสอบเสร็จก่อนส่ง', note_mailto:'ตอนนี้ฟอร์มนี้ทำงานผ่านแอปอีเมลของคุณ', demo_note:'เว็บนี้เป็นรุ่นทดลอง ศิลปิน ผลงาน และอีเมลเป็นข้อมูลตัวอย่าง ยังไม่มีงานขายจริง',
   /* cutaway */
   cw_est:'ก่อตั้ง {y}', cw_back:'← กลับไปเดินเมือง', cw_hint:'▼ ภาพตัดตึกทีละชั้น กดที่ผลงานเพื่อดูรายละเอียดเต็ม', cw_section:'SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น',
   mus_name:'พิพิธภัณฑ์ของ{a}', mus_aria:'โถงแสดงภาพของ{a}', mus_prev:'← ภาพก่อน', mus_next:'เดินต่อ →', mus_more:'รายละเอียดและแนวคิด', mus_map:'ผังตึก', mus_hint:'▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม', mus_hint_touch:'▼ ปัดซ้าย-ขวาเพื่อเดินดูภาพทีละชิ้น แตะภาพที่สว่างเพื่อดูรายละเอียดเต็ม',
@@ -114,10 +116,10 @@ th: {
   by_back:'← กลับพิพิธภัณฑ์ของ{a}', by_marq:'ART NOT SORRY ★ ไม่มีคนกลาง ★ ซื้อตรงจากศิลปิน ★ CIRCLES NEVER END ★ ', by_one:'ชิ้นเดียวในโลก', by_free:'ยังว่าง', by_reply:'ตอบเร็วสุดภายใน {d} วัน', by_lak:'กีบ', by_thb:'บาท',
   by_detail:'รายละเอียดงาน', by_cert:'ใบรับรอง', by_how:'ซื้อยังไง', by_ship:'การส่งของ', by_to:'ส่งได้ที่', by_fee:'ค่าส่ง', by_days:'ถึงมือภายใน', by_dayu:'{d} วัน', by_break:'ถ้าแตกระหว่างทาง', by_ret:'คืนได้ {d} วัน',
   by_safe:'ปลอดภัยไหม?', by_safe_p:'เงินไปที่ศิลปินโดยตรง circles ไม่ได้รับเงินแทน ถ้ามีปัญหา ติดต่อ', by_since:'ทำงานศิลปะตั้งแต่ {y}', by_soldn:'ขายไปแล้ว {n} ชิ้น',
-  by_ask_h:'ทัก{a} (ไม่ต้องออกจากหน้านี้)', by_country:'ส่งไปที่ไหน (ประเทศ / เมือง)', by_after:'ส่งแล้วจะเห็นข้อความ:', by_after_p:'“ส่งถึง{a}แล้ว จะตอบไปที่อีเมลของคุณภายใน {d} วัน”', by_after_p0:'“ส่งถึง{a}แล้ว คำตอบจะส่งไปที่อีเมลของคุณ”', by_ship_ask:'เรื่องการส่ง ถามศิลปินได้เลยในข้อความด้านล่าง', by_again:'ส่งอีกข้อความ', by_err:'ส่งไม่สำเร็จ ข้อความของคุณยังอยู่ในช่อง ลองกดส่งอีกครั้ง หรือส่งทางอีเมลเอง', by_err_mail:'ส่งทางอีเมลแทน',
+  by_ask_h:'ทัก{a} (ไม่ต้องออกจากหน้านี้)', by_country:'ส่งไปที่ไหน (ประเทศ / เมือง)', by_after:'ส่งแล้วจะเห็นข้อความ:', by_after_p:'“ส่งถึง{a}แล้ว จะตอบไปที่อีเมลของคุณภายใน {d} วัน”', by_after_p0:'“ส่งถึงทีม circles แล้ว เราจะส่งต่อให้{a} คำตอบจะส่งไปที่อีเมลของคุณ”', by_ship_ask:'เรื่องการส่ง ถามศิลปินได้เลยในข้อความด้านล่าง', by_again:'ส่งอีกข้อความ', by_err:'ส่งไม่สำเร็จ ข้อความของคุณยังอยู่ในช่อง ลองกดส่งอีกครั้ง หรือส่งทางอีเมลเอง', by_err_mail:'ส่งทางอีเมลแทน',
   title_by:'{t} โดย{a} — circles', desc_by:'ซื้อ “{t}” ผลงาน{d}ของ{a} ราคา {p} ซื้อตรงจากศิลปิน ไม่มีคนกลาง',
   cw_meta:'{d} · ตั้งแต่ {y} · {c}', cw_view:'ดูรายละเอียด {t}', cw_prev:'← ตึกก่อนหน้า', cw_next:'ตึกถัดไป →', cw_roof:'{n} · STUDIO',
-  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด', buy:'ซื้อตรงจาก{a} →', w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →', st_sold:"ขายแล้ว", st_res:"จองแล้ว", cw_look_sold:"ดูรายละเอียด →", d_sold:"ชิ้นนี้มีเจ้าของแล้ว", d_res:"มีคนจองไว้แล้ว ถ้าหลุดจอง ศิลปินจะแจ้งคนที่ต่อคิว", b_sold:"ถาม{a}เรื่องงานแบบนี้ →", b_res:"ขอต่อคิวชิ้นนี้ →", b_pay:"จ่ายเลย →", b_ask:"มีคำถาม? ทัก{a}ก่อน", p_how1:"กดจ่ายผ่านลิงก์ของศิลปิน", p_how2:"ศิลปินทักกลับเรื่องการจัดส่ง", p_how3:"เงินเข้าบัญชีศิลปินโดยตรง", d_paynote:"ลิงก์จ่ายเงินเป็นของศิลปินเอง circles ไม่ได้รับเงินแทน", id_pre_sold:"สวัสดี เห็นผลงาน “{t}” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ", id_pre_res:"สวัสดี สนใจผลงาน “{t}” ({p}) ถ้าคนที่จองไว้ไม่ซื้อ ขอต่อคิวด้วย ขอบคุณ", v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด · ซื้อ →', d_by:'โดย <b>{a}</b> · {d} · {c}', d_note:'ราคาที่ศิลปินตั้งเอง ไม่มีค่าคอมมิชชัน', d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
+  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด', buy:'ส่งข้อความขอซื้อ →', by_more_h:'ผลงานอื่นของ{a}ที่ยังว่าง', by_nopay:'ยังไม่ต้องจ่ายเงินตอนนี้ ส่งข้อความก่อน แล้วตกลงราคา การส่ง และวิธีจ่ายกับศิลปิน', w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →', st_sold:"ขายแล้ว", st_res:"จองแล้ว", cw_look_sold:"ดูรายละเอียด →", d_sold:"ชิ้นนี้มีเจ้าของแล้ว", d_res:"มีคนจองไว้แล้ว ถ้าหลุดจอง ศิลปินจะแจ้งคนที่ต่อคิว", b_sold:"ถาม{a}เรื่องงานแบบนี้ →", b_res:"ขอต่อคิวชิ้นนี้ →", b_pay:"จ่ายเลย →", b_ask:"มีคำถาม? ทัก{a}ก่อน", p_how1:"กดจ่ายผ่านลิงก์ของศิลปิน", p_how2:"ศิลปินทักกลับเรื่องการจัดส่ง", p_how3:"เงินเข้าบัญชีศิลปินโดยตรง", d_paynote:"ลิงก์จ่ายเงินเป็นของศิลปินเอง circles ไม่ได้รับเงินแทน", id_pre_sold:"สวัสดี เห็นผลงาน “{t}” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ", id_pre_res:"สวัสดี สนใจผลงาน “{t}” ({p}) ถ้าคนที่จองไว้ไม่ซื้อ ขอต่อคิวด้วย ขอบคุณ", v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด · ซื้อ →', d_by:'โดย <b>{a}</b> · {d} · {c}', d_note:'ราคาที่ศิลปินตั้งเอง ไม่มีค่าคอมมิชชัน', d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
   cy_h:'วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน', cy_p:'ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ งานที่ถูกซื้อไปไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ', cy_1:'วาด', cy_2:'โชว์ในตึก', cy_3:'มีคนซื้อ', cy_4:'วาดต่อ', cy_aria:'วงจร 4 ขั้น: วาด โชว์ในตึก มีคนซื้อ แล้ววนกลับไปวาดต่อ',
   sup_h:'สนับสนุน Circles', sup_p:'ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า', sup_where:'เงินสนับสนุนไปไหน', sup_r1:'ค่าเซิร์ฟเวอร์และโดเมน', sup_r2:'การดูแลและพัฒนาเว็บ', sup_r3:'กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน', sup_note:'ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง', don_btn:'สนับสนุน →', don_soon:'เร็วๆ นี้', d_how1:'ส่งข้อความถึงศิลปิน', d_how2:'คุยเรื่องราคาและการจัดส่ง', d_how3:'จ่ายเงินให้ศิลปินโดยตรง',
   title_idx:'circles — เมืองของศิลปิน ซื้อตรงจากคนทำ', title_cw:'ตึกของ{a} — circles',
@@ -127,14 +129,14 @@ th: {
   mq:['ศิลปินไม่มีกฎ','BUY ART','ซื้อตรงจากคนทำ','NO MIDDLEMAN','เมืองของศิลปิน','ART NOT SORRY'],
 },
 en: {
-  nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', bn_city:'City', bn_art:'Art', bn_artists:'Artists', bn_lang:'Language', bn_aria:'Bottom navigation', menu_aria:'Menu', lang_aria:'Switch language',
+  skip:'Skip to content', nav_city:'City', nav_works:'Works', nav_artists:'Artists', nav_about:'About', nav_map:'Map', nav_join:'Join', bn_city:'City', bn_art:'Works', bn_artists:'Artists', bn_lang:'Language', bn_aria:'Bottom navigation', menu_aria:'Menu', lang_aria:'Switch language',
   wave:'NEW WAVE', f_wave:'★ New wave', fnote_wave:'Highlighted {n} new-wave building(s) in the strip',
   ld_top:'circles · a city of artists', ld_text:'Building the city…',
   legal_privacy:'Privacy policy', legal_terms:'Terms of use',
   consent_form:'By sending this you accept the <a href="privacy.html">privacy policy</a>. Your message reaches the circles team first, who pass it on to the recipient named above (through a form service).',
   news_consent:'By subscribing you accept the <a href="privacy.html">privacy policy</a>. Unsubscribe any time.',
   hero_hl1:'A city of artists', hero_hl2:'Room for art', hero_hl3:"that won't shut up",
-  hero_lead:'One concrete building, one artist. No gallery, no middleman. Walk in, look at the work, then buy straight from the person who made it.', hero_cta:'Enter the city →',
+  hero_lead:'One concrete building, one artist. No gallery, no middleman. Walk in, look at the work, then buy straight from the person who made it.', hero_cta:'Enter the city →', hero_alt:'See works and prices ↓',
   city_h:'City', city_p:"Drag or scroll right to walk through the city. Each building is one artist's studio, and the pictures set into the concrete are real works.",
   pager_l:'Scroll left', pager_r:'Scroll right', strip_aria:'City of artists, scroll left and right', bd_aria:"Enter {a}'s building, {d}", works_n:'{n} WORKS',
   mani_k:'Manifesto', mani1:'NO GALLERY', mani2:'NO MIDDLEMAN', mani3:'NO CUT TAKEN', mani4:'JUST MAKER + BUYER',
@@ -167,12 +169,12 @@ en: {
   social_soon:'Social links open when the site goes live',
   close:'Close', jd_title:'Request a <em>building</em> in this city', jd_intro:"Tell us briefly what you make. No long CV, no references. We look at the work.",
   jd_name:'Name / pen name', jd_email:'Email', jd_disc:'Discipline', jd_other:'Other', jd_link:'Link to your work (site / Instagram / Drive)', jd_msg:'Tell us about your work', jd_send:'Send request →', jd_cancel:'Cancel',
-  jd_subject:'Building request for circles — {n}', id_title:'Talk to <em>{a}</em> directly', id_intro:'This message reaches the circles team, who pass it on to the artist. Price and payment you agree with the artist directly.', id_name:'Your name', id_email:'Your email', id_msg:'Message', id_send:'Send to the artist →',
+  jd_subject:'Building request for circles — {n}', id_title:'Talk to <em>{a}</em> directly', id_intro:'This message reaches the circles team, who pass it on to the artist. Price and payment you agree with the artist directly.', id_name:'Your name', id_email:'Your email', id_msg:'Message', id_send:'Send message →',
   id_prefill:"Hi, I'm interested in “{t}” ({p}). Could we talk about price and shipping? Thanks.", id_subject:'Interested in “{t}” — circles',
-  done_mail:'Your email app is opening', done_mail_p:"Press send in your email app so the message reaches its destination. If nothing opened, copy the text below and send it yourself.", done_sent:'Sent', done_sent_p:'Thank you. The message has been delivered.',
+  done_mail:'Your email app is opening', done_mail_p:"Press send in your email app so the message reaches its destination. If nothing opened, copy the text below and send it yourself.", done_sent:'Sent', done_sent_p:'Thank you. Your message reached the circles team, who will pass it on to the artist. The reply will come to your email.',
   copy_msg:'Copy message', copied:'Copied', copy_fail:"Couldn't copy. Select the text and copy it yourself.", to_label:'To',
   news_saved:'Email saved in this browser only (no mailing system is connected yet)', news_sent:"You're subscribed", news_fail:"Couldn't send. Please try again.",
-  captcha_wait:'Please wait for the verification to finish', note_mailto:'For now this form works through your email app', demo_note:'Artist details and emails on this site are sample data',
+  captcha_wait:'Please wait for the verification to finish', note_mailto:'For now this form works through your email app', demo_note:'This site is a trial version. Artists, works and emails are sample data, and nothing is for sale yet.',
   cw_est:'Est. {y}', cw_back:'← Back to the city', cw_hint:'▼ The building cut open, floor by floor. Click a work for full details', cw_section:'SECTION A–A · NO LIFT, STAIRS ONLY',
   mus_name:"{a}'s museum", mus_aria:"{a}'s picture hall", mus_prev:'← Previous', mus_next:'Walk on →', mus_more:'Details & concept', mus_map:'Floor plan', mus_hint:'▼ Walk the hall one work at a time. Use the ← → keys. Click the lit work for full details', mus_hint_touch:'▼ Swipe left or right to walk the hall one work at a time. Tap the lit work for full details',
   pf_h:"{a}'s profile", pf_open:'Taking commissions', pf_until:'· slot open in {m}', pf_cn:"{a}'s concept", pf_nw:'works in the museum', pf_ns:'sold', pf_ny:'making art since', pf_tl:'The road so far',
@@ -183,10 +185,10 @@ en: {
   by_back:"← Back to {a}'s museum", by_marq:'ART NOT SORRY ★ NO MIDDLEMAN ★ BUY DIRECT FROM THE ARTIST ★ CIRCLES NEVER END ★ ', by_one:'ONE OF A KIND', by_free:'Available', by_reply:'Usually replies within {d} days', by_lak:'LAK', by_thb:'THB',
   by_detail:'Details', by_cert:'Certificate', by_how:'How to buy', by_ship:'Shipping', by_to:'Ships to', by_fee:'Shipping fee', by_days:'Arrives within', by_dayu:'{d} days', by_break:'If it breaks in transit', by_ret:'returnable within {d} days',
   by_safe:'Is it safe?', by_safe_p:'The money goes straight to the artist; circles never holds it. If something goes wrong, contact', by_since:'Making art since {y}', by_soldn:'{n} sold',
-  by_ask_h:'Message {a} (without leaving this page)', by_country:'Ship to (country / city)', by_after:'Once you send, you will see:', by_after_p:'“Sent to {a}. A reply will reach your email within {d} days.”', by_after_p0:'“Sent to {a}. The reply will come to your email.”', by_ship_ask:'Ask the artist about shipping in the message below.', by_again:'Send another message', by_err:'Could not send. Your message is still in the box. Try again, or send it by email yourself.', by_err_mail:'Send by email instead',
+  by_ask_h:'Message {a} (without leaving this page)', by_country:'Ship to (country / city)', by_after:'Once you send, you will see:', by_after_p:'“Sent to {a}. A reply will reach your email within {d} days.”', by_after_p0:'“Sent to the circles team, who will pass it on to {a}. The reply will come to your email.”', by_ship_ask:'Ask the artist about shipping in the message below.', by_again:'Send another message', by_err:'Could not send. Your message is still in the box. Try again, or send it by email yourself.', by_err_mail:'Send by email instead',
   title_by:'{t} by {a} — circles', desc_by:'Buy “{t}”, a {d} work by {a}, {p}. Direct from the artist, no middleman.',
   cw_meta:'{d} · since {y} · {c}', cw_view:'View details of {t}', cw_prev:'← Previous building', cw_next:'Next building →', cw_roof:'{n} · STUDIO',
-  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size', buy:'Buy direct from {a} →', w_prev:'← Previous work', w_next:'Next work →', st_sold:"SOLD", st_res:"ON HOLD", cw_look_sold:"View details →", d_sold:"This one has found a home.", d_res:"Someone has reserved it. If that falls through, the artist will tell whoever is next in line.", b_sold:"Ask {a} about similar work →", b_res:"Join the queue →", b_pay:"Pay now →", b_ask:"Questions? Message {a} first", p_how1:"Pay through the artist's own link", p_how2:"The artist gets in touch about delivery", p_how3:"The money goes straight to the artist", d_paynote:"The payment link belongs to the artist. circles never holds the money.", id_pre_sold:"Hi, I saw “{t}” has sold and I love it. Do you have similar work, or take commissions? Thanks.", id_pre_res:"Hi, I'm interested in “{t}” ({p}). If the reservation falls through, could I be next in line? Thanks.", v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View & buy →', d_by:'by <b>{a}</b> · {d} · {c}', d_note:'Price set by the artist. No commission.', d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
+  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size', buy:'Message {a} to buy →', by_more_h:'More from {a}, still available', by_nopay:'No payment yet. Send a message first, then agree on price, shipping and payment with the artist.', w_prev:'← Previous work', w_next:'Next work →', st_sold:"SOLD", st_res:"ON HOLD", cw_look_sold:"View details →", d_sold:"This one has found a home.", d_res:"Someone has reserved it. If that falls through, the artist will tell whoever is next in line.", b_sold:"Ask {a} about similar work →", b_res:"Join the queue →", b_pay:"Pay now →", b_ask:"Questions? Message {a} first", p_how1:"Pay through the artist's own link", p_how2:"The artist gets in touch about delivery", p_how3:"The money goes straight to the artist", d_paynote:"The payment link belongs to the artist. circles never holds the money.", id_pre_sold:"Hi, I saw “{t}” has sold and I love it. Do you have similar work, or take commissions? Thanks.", id_pre_res:"Hi, I'm interested in “{t}” ({p}). If the reservation falls through, could I be next in line? Thanks.", v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View & buy →', d_by:'by <b>{a}</b> · {d} · {c}', d_note:'Price set by the artist. No commission.', d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
   cy_h:'A circle has no end. Neither does art.', cy_p:'The name Circles comes from the belief that art is never finished. When an artist completes one piece, the next is already waiting. A sale is not an ending. It is what lets the artist keep going, and the city keeps turning that way.', cy_1:'Draw', cy_2:'Show in the building', cy_3:'Someone buys', cy_4:'Draw again', cy_aria:'A loop of 4 steps: draw, show in the building, someone buys, then back to drawing again',
   sup_h:'Support Circles', sup_p:'Right now artists keep the full amount, with no fees. The site runs on support. If we ever add a fee, we will tell you in advance.', sup_where:'Where the support goes', sup_r1:'Servers and domain', sup_r2:'Running and improving the site', sup_r3:'Events and new space for artists', sup_note:'Sample: the categories and shares are not final. [__]% marks a number we do not know yet and will fill in once we have real data.', don_btn:'Support →', don_soon:'Coming soon', d_how1:'Message the artist', d_how2:'Agree on price and shipping', d_how3:'Pay the artist directly',
   title_idx:'circles — a city of artists. Buy straight from the maker', title_cw:"{a}'s building — circles",
@@ -232,10 +234,20 @@ function applyLang() {
   const mb = $('#menu-btn'); if (mb) mb.setAttribute('aria-label', t('menu_aria'));
   langHooks.forEach(fn => fn());
 }
+function mountSkip() {
+  if (document.querySelector('.skip')) return;
+  const m = document.getElementById('main') || document.querySelector('main') || document.getElementById('hero'); if (!m) return;
+  if (!m.id) m.id = 'main'; m.tabIndex = -1;
+  const a = document.createElement('a'); a.className = 'skip'; a.href = '#' + m.id; a.dataset.t = 'skip'; a.textContent = t('skip');
+  a.addEventListener('click', e => { e.preventDefault(); m.focus(); m.scrollIntoView({block: 'start'}); });
+  document.body.prepend(a);
+}
 function setLang(l) {
   if (!LOCALES.includes(l)) return;
+  const was = LOCALE;
   LOCALE = l; LANG = l === 'lo' ? 'en' : l; try { localStorage.setItem('circles-lang', l); } catch (e) {}
   applyLang();
+  if (l === 'lo' && was !== 'lo') toast('ພາສາລາວ: ແປແລ້ວບາງສ່ວນ · Lao is partly translated, the rest is in English');   // be honest: only the menu is in Lao so far
 }
 function setMeta(title, desc) {
   document.title = title;
@@ -310,9 +322,24 @@ async function deliver(kind, to, subject, fields) {
   return {mode: 'mailto', body, to, subject};
 }
 
+/* the browser's Back button (and the Android back gesture) closes the open dialog instead of leaving the page: each dialog opened through mountDialog adds one history entry */
+const dlgStack = []; let dlgIgnorePop = 0;
+function trackDialog(d) {
+  const open = d.showModal.bind(d);
+  d.showModal = () => { if (d.open) return; open(); dlgStack.push(d); try { history.pushState({dlg: dlgStack.length}, ''); } catch (e) {} };
+  d.addEventListener('close', () => {
+    const i = dlgStack.lastIndexOf(d); if (i < 0) return;      // already closed by Back
+    dlgStack.splice(i, 1); dlgIgnorePop++;
+    try { history.back(); } catch (e) { dlgIgnorePop--; }     // remove the entry this dialog added
+  });
+}
+addEventListener('popstate', () => {
+  if (dlgIgnorePop) { dlgIgnorePop--; return; }
+  const d = dlgStack.pop(); if (d && d.open) d.close();
+});
 function mountDialog(id) {
   let d = document.getElementById(id);
-  if (!d) { d = document.createElement('dialog'); d.id = id; d.className = 'cdlg'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.close(); }); }
+  if (!d) { d = document.createElement('dialog'); d.id = id; d.className = 'cdlg'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.close(); }); trackDialog(d); }
   return d;
 }
 /* ---------- picture zoom (buy page, work details): wheel, double-click / double-tap, two-finger pinch, drag to move, + − 0 and arrow keys, Esc closes.
@@ -413,7 +440,7 @@ function openQuick(id, k, list) {
   ${p.q ? `<p class="qv-q">“${esc(pk(p, 'q'))}”</p>` : ''}
   <dl class="qv-dl"><div><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div><dt>${esc(t('lb_year'))}</dt><dd>${esc(p.y)}</dd></div></dl>
   <div class="qv-price"><b class="${sta === 'sold' ? 'qv-strike' : ''}">${esc(usd(p.p))}</b>${thb ? `<span class="qv-thb">≈ ${esc(thb)}</span>` : isDraft() ? '<span class="qv-thb">≈ ฿<i class="qv-todo">[__]</i></span>' : ''}</div>
-  <div class="qv-cta">${pay ? `<a class="qv-btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="qv-btn ${pay ? '' : 'pk'}" href="buy-${esc(a.id)}-${ck}.html">${esc(buyTxt)}</a><button type="button" class="qv-btn" data-qv-ask>${esc(t('qv_ask'))}</button></div>
+  <div class="qv-cta"><b class="qv-sp${sta === 'sold' ? ' qv-strike' : ''}">${esc(usd(p.p))}</b>${pay ? `<a class="qv-btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="qv-btn ${pay ? '' : 'pk'}" href="buy-${esc(a.id)}-${ck}.html">${esc(buyTxt)}</a><button type="button" class="qv-btn" data-qv-ask>${esc(t('qv_ask'))}</button></div>
   <a class="qv-walk" href="studio-${esc(a.id)}.html?work=${ck}">${esc(t('qv_walk'))}</a>
 </aside>
 <button type="button" class="qv-x" data-close aria-label="${esc(t('close'))}">✕</button>`;
@@ -477,6 +504,8 @@ function mountTurnstile(form) {
   else document.getElementById('cf-ts').addEventListener('load', draw);
 }
 
+const demoNote = cls => CONFIG.demo ? `<p class="${cls} demo-note">${esc(t('demo_note'))}</p>` : '';
+
 /* "ขอมีตึก" — join request */
 function openJoin() {
   const d = mountDialog('dlg-join');
@@ -488,7 +517,7 @@ function openJoin() {
       <label>${esc(t('jd_link'))}<input name="link" type="url" placeholder="https://" maxlength="200"></label>
       <label>${esc(t('jd_msg'))}<textarea name="message" required maxlength="1500"></textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-      <p class="note">${t('consent_form')}</p>
+      ${demoNote('note')}<p class="note">${t('consent_form')}</p>
       <div class="act"><button class="btn" type="submit">${esc(t('jd_send'))}</button><button class="btn ghost" type="button" data-close>${esc(t('jd_cancel'))}</button></div>
       ${CONFIG.endpoint ? '' : `<p class="note">${esc(t('note_mailto'))}</p>`}</form>`);
   wireForm(d, async f => {
@@ -507,7 +536,7 @@ function openInquiry(id, k, pre) {
       <div class="row"><label>${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label>${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
       <label>${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre || 'id_prefill', {t: pk(p, 't'), p: usd(p.p)}))}</textarea></label>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-      <p class="note">${t('consent_form')}</p>
+      ${demoNote('note')}<p class="note">${t('consent_form')}</p>
       <div class="act"><button class="btn pk" type="submit">${esc(t('id_send'))}</button><button class="btn ghost" type="button" data-close>${esc(t('jd_cancel'))}</button></div>
       ${CONFIG.endpoint ? '' : `<p class="note">${esc(t('note_mailto'))}</p>`}</form>`);
   wireForm(d, async f => {
@@ -535,6 +564,7 @@ function wireDonate() {
   const el = $('#donate-btn'); if (!el) return;
   let ok = false; try { ok = new URL(CONFIG.donate).protocol === 'https:'; } catch (e) {}
   if (!ok) return;
+  $('#support')?.classList.remove('draft-only');
   const a = document.createElement('a');
   a.id = el.id; a.className = 'btn pk';
   a.href = CONFIG.donate; a.target = '_blank'; a.rel = 'noopener'; a.dataset.t = 'don_btn';
@@ -591,6 +621,7 @@ function mountBnav() {
 
 function wireNav() {
   wireDonate();
+  mountSkip();
   mountBnav();
   const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(nextLocale()));
   const mb = $('#menu-btn'), mn = $('#mnav'); if (!mb || !mn) return;

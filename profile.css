@@ -124,7 +124,7 @@ a.pf-sbtn:hover{background:var(--gold);}
 .pf-live{flex-basis:100%;text-align:center;min-height:1.4em;font:400 .95rem var(--thai);}
 .pf-live:not(:empty){background:var(--black);color:var(--paper);padding:.2rem .8rem;flex-basis:auto;}
 
-.pf a:focus-visible,.pf button:focus-visible{outline:4px solid var(--pink);outline-offset:4px;}
+.pf a:focus-visible,.pf button:focus-visible{outline:3px solid var(--black);box-shadow:0 0 0 3px var(--paper);outline-offset:4px;}
 .pf-sbox a:focus-visible,.pf-sbox button:focus-visible{outline-color:var(--gold);}
 .pf-tag:hover,.pf-st:hover{transform:translateY(-6px) rotate(0deg) scale(1.06);box-shadow:10px 10px 0 var(--black);}
 

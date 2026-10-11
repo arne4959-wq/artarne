@@ -65,7 +65,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
     <tr><td>คุณสมัครรับข่าว</td><td>อีเมล</td></tr>
     <tr><td>คุณเปิดเว็บ</td><td>เว็บไซต์นี้ไม่ติดตั้งคุกกี้ ไม่ใช้เครื่องมือวิเคราะห์ผู้เข้าชม และไม่มีโฆษณา ผู้ให้บริการโฮสติ้งอาจเก็บบันทึกการเข้าถึงตามปกติ (เช่น IP, เวลา) เพื่อความปลอดภัยของระบบ</td></tr>
   </table>
-  <p>ที่เก็บข้อมูลในเบราว์เซอร์ของคุณ (ไม่ถูกส่งไปไหน): <code>circles-lang</code> จำภาษาที่เลือก, <code>circles-seen</code> (ใช้แค่ในแท็บนั้น) จำว่าดูหน้าเปิดเรื่องแล้ว และ <code>circles-news</code> เก็บอีเมลที่สมัครรับข่าวไว้ในเครื่องนี้ในกรณีที่ยังไม่ได้เชื่อมระบบส่งจดหมาย</p>
+  <p>ที่เก็บข้อมูลในเบราว์เซอร์ของคุณ (ไม่ถูกส่งไปไหน): <code>circles-lang</code> จำภาษาที่เลือก, <code>circles-seen</code> (ใช้แค่ในแท็บนั้น) และ <code>circles-seen-at</code> (เก็บเวลา 24 ชั่วโมง) จำว่าดูหน้าเปิดเรื่องแล้ว และ <code>circles-news</code> เก็บอีเมลที่สมัครรับข่าวไว้ในเครื่องนี้ในกรณีที่ยังไม่ได้เชื่อมระบบส่งจดหมาย</p>
 
   <h2>3. เราใช้ข้อมูลเพื่ออะไร</h2>
   <ul>
@@ -115,7 +115,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
     <tr><td>You subscribe to the newsletter</td><td>Email address</td></tr>
     <tr><td>You browse the site</td><td>This site sets no cookies, runs no analytics and shows no ads. Our hosting provider may keep ordinary access logs (e.g. IP address, time) for security.</td></tr>
   </table>
-  <p>Stored in your own browser only (never sent anywhere): <code>circles-lang</code> remembers your language, <code>circles-seen</code> (this tab only) remembers that you saw the intro, and <code>circles-news</code> keeps a newsletter email on this device while no mailing system is connected.</p>
+  <p>Stored in your own browser only (never sent anywhere): <code>circles-lang</code> remembers your language, <code>circles-seen</code> (this tab only) and <code>circles-seen-at</code> (kept for 24 hours) remember that you saw the intro, and <code>circles-news</code> keeps a newsletter email on this device while no mailing system is connected.</p>
 
   <h2>3. Why we use it</h2>
   <ul>
@@ -152,7 +152,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 <script src="circles.js"></script>
 <script>
 function legalTitle() { const th = LANG === 'th'; setMeta((th ? 'นโยบายความเป็นส่วนตัว' : 'Privacy policy') + ' — circles', th ? 'circles เก็บข้อมูลอะไร ใช้ทำอะไร ส่งให้ใคร และสิทธิของคุณ' : 'What circles collects, why, who sees it, and your rights'); }
-if (isDraft()) document.documentElement.classList.add('is-draft');
 onLang(legalTitle); wireNav(); applyLang();
 </script>
 </body>

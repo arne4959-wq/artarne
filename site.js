@@ -309,7 +309,7 @@ const F = {all: false, avail: false, price: ''};
 let query = '', qKey = [];
 const pass = (x, f = F) => qKey.every(([a, b]) => hay(x).includes(a) || hay(x).includes(b)) && (!f.avail || workStatus(x.p) !== 'sold') && (!f.price || PRICE[f.price](x.p.p));
 const narrowed = () => !!(qKey.length || F.avail || F.price);
-const wholeCity = () => F.all || narrowed();
+const wholeCity = () => F.all || narrowed() || sortBy !== 'cur';        // sorting only makes sense over every work, not over the 8 picks
 function worksList() {
   let l = wholeCity() ? allWorks().filter(x => pass(x)) : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
   if (sortBy === 'low') l = [...l].sort((x, y) => x.p.p - y.p.p);
@@ -328,6 +328,26 @@ function syncBar() {
   });
   $('#sf-reset').hidden = !(F.all || narrowed() || query.trim());
 }
+/* the wall keeps its filters in the address (?q= &avail=1 &price=p1 &sort=low &all=1): Back from a buy page, a reload or a shared link lands on the same list */
+const SORTS = ['cur', 'low', 'high', 'new'];
+function writeUrl() {
+  try {
+    const u = new URL(location.href), q = u.searchParams, set = (k, v) => v ? q.set(k, v) : q.delete(k);
+    set('q', query.trim()); set('avail', F.avail ? '1' : ''); set('price', F.price); set('sort', sortBy !== 'cur' ? sortBy : '');
+    set('all', F.all && !F.avail && !F.price && !query.trim() && sortBy === 'cur' ? '1' : '');
+    history.replaceState(history.state, '', u.pathname + (q.toString() ? '?' + q : '') + u.hash);
+  } catch (e) {}
+}
+function readUrl() {
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.get('q')) { query = q.get('q').slice(0, 80); qKey = foldQuery(query); $('#q').value = query; }
+    if (q.get('avail') === '1') { F.avail = true; F.all = true; }
+    if (PRICE[q.get('price')]) { F.price = q.get('price'); F.all = true; }
+    if (SORTS.includes(q.get('sort'))) { sortBy = q.get('sort'); $('#sort').value = sortBy; }
+    if (q.get('all') === '1') F.all = true;
+  } catch (e) {}
+}
 function resetBar() { F.all = F.avail = false; F.price = ''; query = ''; qKey = []; $('#q').value = ''; renderFeatured('pop'); }
 
 /* mode: 'init' = revealed on scroll, 'pop' = animated re-sort, 'still' = typing / language switch (no animation) */
@@ -338,14 +358,16 @@ function renderFeatured(mode) {
     return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span></a></div>`;
   }).join('') || `<div class="q-none" role="status"><p>${esc(qKey.length ? t('q_none', {q: query.trim()}) : t('sf_none'))}</p><button type="button" class="sf-reset" data-sf-reset>${esc(t('sf_reset'))}</button></div>`;
   $('#feat-h').textContent = t(wholeCity() ? 'feat_h_all' : 'feat_h');
-  $('#feat-count').textContent = wholeCity() ? t('sf_count', {n: list.length, t: total}) : t('feat_count', {n: list.length});
-  syncBar();
+  $('#feat-count').textContent = t('sf_count', {n: list.length, t: total});
+  $('#sf-more').hidden = wholeCity(); $('#sf-all').textContent = t('all_btn', {n: total});
+  syncBar(); writeUrl();
 }
 $('#masonry').addEventListener('click', e => {
   if (e.target.closest('[data-sf-reset]')) return resetBar();
   const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault();
   openQuick(b.dataset.id, +b.dataset.k, [...document.querySelectorAll('#masonry .card')].map(c => [c.dataset.id, +c.dataset.k]));   // the arrows walk the works now on the wall
 });
+$('#sf-all').addEventListener('click', () => { F.all = true; renderFeatured('pop'); });
 $('#sort').addEventListener('change', e => { sortBy = e.target.value; renderFeatured('pop'); });
 $('#sf').addEventListener('click', e => {
   if (e.target.closest('#sf-reset')) return resetBar();
@@ -459,7 +481,7 @@ onLang(() => {
   if (langInit) { renderFeatured('still'); renderMap(); }
   setMeta(t('title_idx'), t('desc_idx'));
 });
-renderFeatured('init'); renderMap();
+readUrl(); renderFeatured('init'); renderMap();
 
 renderCity();
 observe([...document.querySelectorAll('.bd')], strip);
@@ -471,21 +493,24 @@ wireNav(); applyLang(); langInit = true;
 (function () {
   const root = document.documentElement, loader = document.getElementById('loader'), countEl = document.getElementById('loader-count');
   const boot = () => root.classList.remove('pre');
-  let seen = false; try { seen = sessionStorage.getItem('circles-seen') === '1'; } catch (e) {}
+  let seen = false; try { seen = sessionStorage.getItem('circles-seen') === '1' || Date.now() - +localStorage.getItem('circles-seen-at') < 864e5; } catch (e) {}   // seen this session, or within the last 24 h
   if (reduce || seen) { loader.remove(); boot(); return; }
-  const DUR = 1700, t0 = performance.now();
+  const DUR = 900, t0 = performance.now();               // short: the intro must not stand between a buyer and the works
   const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
   const counted = new Promise(res => (function tick(now) {
     const k = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - k, 3);
     countEl.textContent = String(Math.round(e * 100)).padStart(3, '0');
     k < 1 ? requestAnimationFrame(tick) : res();
   })(t0));
+  let gone = false;
   const go = () => {
-    try { sessionStorage.setItem('circles-seen', '1'); } catch (e) {}
+    if (gone) return; gone = true;
+    try { sessionStorage.setItem('circles-seen', '1'); localStorage.setItem('circles-seen-at', String(Date.now())); } catch (e) {}
     loader.classList.add('done');
     setTimeout(boot, 520);
     setTimeout(() => loader.remove(), 1400);
   };
+  loader.addEventListener('click', go);                    // tap to skip
   Promise.all([fontsReady, counted]).then(go);
   setTimeout(go, 6000);                      // safety net
 })();
