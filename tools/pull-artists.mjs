@@ -28,7 +28,8 @@ try {
   const artists = await get(`artists?select=${ARTIST_COLUMNS}&approved=eq.true&demo=eq.false&order=created_at`);
   const ids = artists.map(a => a.id);
   const works = ids.length ? await get(`works?select=${WORK_COLUMNS}&artist_id=in.(${ids.join(',')})&order=artist_id,position`) : [];
-  const live = rowsToArtists(artists, works);
+  const pays = ids.length ? await get(`artist_payment?select=artist_id,bank,account_name,account_no,qr_path&artist_id=in.(${ids.join(',')})`) : [];   // public by design (printed next to the QR)
+  const live = rowsToArtists(artists, works, pays, URL_);
   const keepHide = args.has('--hide-demo') || (!args.has('--show-demo') && readLive(ROOT).hideDemo);
   const out = {pulledAt: new Date().toISOString(), hideDemo: keepHide, artists: live};
   const skipped = artists.length - live.length;

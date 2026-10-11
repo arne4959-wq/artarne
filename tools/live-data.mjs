@@ -25,7 +25,16 @@ export function workToPiece(w) {
   return p;
 }
 
-export function rowToArtist(a, works) {
+/* the artist's bank details (artist_payment is public by design: it is printed next to a QR, like any payment sign) → the `support` field the Support dialog reads.
+   qr_path is a object in the `qr` bucket: <artist_id>/<file>. No account number and no QR = no support (the button stays "coming soon"). */
+export function payToSupport(p, baseUrl) {
+  if (!p || (!p.account_no && !p.qr_path)) return null;
+  const s = {}; put(s, 'bank', p.bank); put(s, 'name', p.account_name); put(s, 'no', p.account_no);
+  if (p.qr_path && baseUrl && /^[a-z0-9-]+\/[A-Za-z0-9._-]+$/.test(p.qr_path)) s.qr = `${baseUrl.replace(/\/+$/, '')}/storage/v1/object/public/qr/${p.qr_path.split('/').map(encodeURIComponent).join('/')}`;
+  return s.no || s.qr ? s : null;
+}
+
+export function rowToArtist(a, works, pay, baseUrl) {
   const mine = works.filter(w => w.artist_id === a.id).sort((x, y) => x.position - y.position);
   const o = {id: a.id};
   put(o, 'name', a.name); put(o, 'nameEn', a.name_en); put(o, 'nameLo', a.name_lo); put(o, 'disc', a.disc);
@@ -41,13 +50,14 @@ export function rowToArtist(a, works) {
   if (a.sold_elsewhere > 0) o.sold = a.sold_elsewhere;
   if (Array.isArray(a.timeline) && a.timeline.length) o.timeline = a.timeline;
   o.pieces = mine.map(workToPiece);
+  const sup = payToSupport((pay || []).find(x => x.artist_id === a.id), baseUrl); if (sup) o.support = sup;
   o.live = true;
   return o;
 }
 
 /* the oldest artist first, like their order of joining */
-export const rowsToArtists = (artistRows, workRows) =>
-  [...artistRows].sort((x, y) => String(x.created_at || '').localeCompare(String(y.created_at || ''))).map(a => rowToArtist(a, workRows)).filter(a => a.pieces.length > 0);
+export const rowsToArtists = (artistRows, workRows, payRows = [], baseUrl = '') =>
+  [...artistRows].sort((x, y) => String(x.created_at || '').localeCompare(String(y.created_at || ''))).map(a => rowToArtist(a, workRows, payRows, baseUrl)).filter(a => a.pieces.length > 0);
 
 /* real artists first, then the sample ones. hideDemo only counts once there is at least one real artist (an empty city would be worse). */
 export function mergeArtists(demo, live) {

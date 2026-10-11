@@ -1,7 +1,7 @@
 // tools/live-data.mjs: database rows → the shape of artists.js, and the merge with the sample artists.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {rowsToArtists, workToPiece, mergeArtists, ARTIST_COLUMNS, WORK_COLUMNS} from '../../tools/live-data.mjs';
+import {rowsToArtists, workToPiece, mergeArtists, payToSupport, ARTIST_COLUMNS, WORK_COLUMNS} from '../../tools/live-data.mjs';
 
 const artist = (o = {}) => ({id: 'mali', name: 'มะลิ', name_en: 'Mali', name_lo: null, disc: 'ศิลปะดิจิทัล', city: 'เวียงจันทน์', since: 2018, bio: 'bio', bio_en: null, bio_lo: null, tagline: null, tagline_en: null,
   concept: null, concept_en: null, instagram: 'https://instagram.com/mali', commission_open: true, commission_until: 'ต.ค.', commission_until_en: 'Oct', sold_elsewhere: 3, timeline: [], scale: '1.10', kind: 'arch',
@@ -50,4 +50,13 @@ test('hideDemo hides the samples only when there is a real artist', () => {
   assert.deepEqual(mergeArtists(demo, {artists: [], hideDemo: true}), demo);   // never an empty city
   assert.deepEqual(mergeArtists(demo, {artists: [], hideDemo: false}), demo);
   assert.deepEqual(mergeArtists(demo, null), demo);
+});
+
+test('bank details become `support` (QR as a public Storage URL); no account and no QR = no support', () => {
+  const base = 'https://x.supabase.co';
+  const [a] = rowsToArtists([artist()], [work()], [{artist_id: 'mali', bank: 'LDB', account_name: 'MALI X', account_no: '123 456', qr_path: 'mali/qr.png'}], base);
+  assert.deepEqual(a.support, {bank: 'LDB', name: 'MALI X', no: '123 456', qr: base + '/storage/v1/object/public/qr/mali/qr.png'});
+  assert.ok(!('support' in rowsToArtists([artist()], [work()])[0]));
+  assert.equal(payToSupport({bank: 'BCEL', account_name: null, account_no: null, qr_path: null}, base), null);
+  assert.equal(payToSupport({bank: 'BCEL', account_no: '1', qr_path: '../evil/x'}, base).qr, undefined);   // a path that is not <artist_id>/<file> is ignored
 });
