@@ -24,6 +24,7 @@ insert into auth.users(id,email) values ('${A}','a@x.co'),('${B}','b@x.co'),('${
 `);
 await db.exec(fs.readFileSync(new URL('../migrations/001_init.sql', import.meta.url),'utf8'));
 await db.exec(fs.readFileSync(new URL('../migrations/002_payment_notices.sql', import.meta.url),'utf8'));
+await db.exec(fs.readFileSync(new URL('../migrations/003_donations.sql', import.meta.url),'utf8'));
 console.log('migration applied');
 let pass=0, fail=0;
 const as = async (who, sql) => {   // who: null=postgres, 'anon', uid, 'admin'
@@ -63,7 +64,8 @@ r = await as(A,"insert into artists(id,user_id,name,disc,city) values ('new-art'
 r = await as(A,"delete from artists where id='art-a'"); ok('A cannot delete artist', !!r.err || r.n===0, JSON.stringify(r));
 r = await as(A,"insert into works(artist_id,position,title,price_usd) values ('art-a',2,'a2',10) returning id"); ok('A adds own work', r.n===1, JSON.stringify(r));
 r = await as(A,"insert into works(artist_id,position,title,price_usd) values ('art-b',5,'evil',10)"); ok('A cannot add work to B', !!r.err, JSON.stringify(r));
-r = await as(A,"update works set status='sold' where artist_id='art-a' and position=0 returning id"); ok('A marks own work sold', r.n===1, JSON.stringify(r));
+r = await as(A,"update works set status='sold' where artist_id='art-a' and position=0 returning id"); ok('nothing is sold any more: a non-empty works.status is refused (003)', !!r.err, JSON.stringify(r));
+r = await as(A,"insert into works(artist_id,position,title) values ('art-a',3,'no price') returning id"); ok('a work needs no price any more (003)', r.n===1, JSON.stringify(r));
 r = await as(A,"update works set artist_id='art-b' where artist_id='art-a' and position=1"); ok('A cannot move work to B', !!r.err || r.n===0, JSON.stringify(r));
 r = await as(A,"update works set status='bogus' where artist_id='art-a'"); ok('bad status rejected', !!r.err);
 r = await as(A,"update works set price_usd=-5 where artist_id='art-a'"); ok('negative price rejected', !!r.err);
@@ -87,21 +89,31 @@ r = await as(ADM,"insert into artists(id,name,disc,city) values ('admin-made','n
 r = await as(ADM,"select email from artist_private"); ok('admin reads e-mails', r.rows?.length===2, JSON.stringify(r));
 r = await as(null,"update artists set approved=false where id='art-c' returning id"); ok('service/superuser path still works', r.n===1, JSON.stringify(r));
 
-// ---- payment notices (002) ----
+// ---- payment notices (002) are retired by 003 ----
 await as(null, `insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd,status)
-  select 'art-a', id, 'Buyer One', 'b1@x.co', 100, 'new' from works where artist_id='art-a' and position=0 limit 1`);
-await as(null, `insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd)
-  select 'art-b', id, 'Buyer Two', 'b2@x.co', 300 from works where artist_id='art-b' limit 1`);
-r = await as('anon','select * from payment_notices'); ok('anon cannot read notices', !!r.err);
-r = await as('anon',"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd) select 'art-a',id,'x','x@x.co',1 from works limit 1"); ok('anon cannot create a notice (only the Edge Function can)', !!r.err);
-r = await as(A,'select buyer_name from payment_notices'); ok('A sees only own notices', JSON.stringify(r.rows.map(x=>x.buyer_name))==='["Buyer One"]', JSON.stringify(r));
-r = await as(A,"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd) select 'art-a',id,'fake','f@x.co',1 from works where artist_id='art-a' limit 1"); ok('an artist cannot create notices either', !!r.err);
-r = await as(A,"update payment_notices set status='confirmed' where artist_id='art-a' returning id"); ok('A confirms own notice', r.n===1, JSON.stringify(r));
-r = await as(A,"update payment_notices set status='rejected' where artist_id='art-b'"); ok('A cannot decide B notice', !!r.err || r.n===0, JSON.stringify(r));
-r = await as(A,"update payment_notices set buyer_email='steal@x.co' where artist_id='art-a'"); ok('A cannot edit the buyer data', !!r.err, JSON.stringify(r));
-r = await as(A,"update payment_notices set status='paid' where artist_id='art-a'"); ok('bad status rejected', !!r.err);
-r = await as(A,"delete from payment_notices where artist_id='art-a'"); ok('A cannot delete notices', !!r.err || r.n===0, JSON.stringify(r));
-r = await as(ADM,'select count(*)::int as n from payment_notices'); ok('admin sees all notices', r.rows[0].n===2, JSON.stringify(r));
-r = await as(null,"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd) select 'art-a',id,'x','not-an-email',1 from works limit 1"); ok('bad buyer e-mail rejected', !!r.err);
-r = await as(null,"insert into payment_notices(artist_id,work_id,buyer_name,buyer_email,price_usd,slip_path) select 'art-a',id,'x','x@x.co',1,'../etc/passwd' from works limit 1"); ok('bad slip path rejected', !!r.err);
+  select 'art-a', id, 'Old Buyer', 'old@x.co', 100, 'new' from works where artist_id='art-a' and position=0 limit 1`);
+r = await as(A,'select * from payment_notices'); ok('retired: an artist can no longer see payment notices', !r.err && r.n===0, JSON.stringify(r));
+r = await as(ADM,'select count(*)::int as n from payment_notices'); ok('retired: the admin can still read the history', r.rows?.[0]?.n===1, JSON.stringify(r));
+
+// ---- donation notices (003) ----
+await as(null, `insert into donation_notices(artist_id,work_id,donor_name,donor_email,amount)
+  select 'art-a', id, 'Donor One', 'd1@x.co', 5 from works where artist_id='art-a' and position=0 limit 1`);
+await as(null, `insert into donation_notices(artist_id,donor_name,donor_email,amount,currency) values ('art-b','Donor Two','d2@x.co',20,'LAK')`);
+r = await as('anon','select * from donation_notices'); ok('anon cannot read donation notices', !!r.err);
+r = await as('anon',"insert into donation_notices(artist_id,donor_name,donor_email,amount) values ('art-a','x','x@x.co',5)"); ok('anon cannot create a donation notice (only the Edge Function can)', !!r.err);
+r = await as(A,'select donor_name from donation_notices'); ok('A sees only own donation notices', JSON.stringify(r.rows.map(x=>x.donor_name))==='["Donor One"]', JSON.stringify(r));
+r = await as(A,"insert into donation_notices(artist_id,donor_name,donor_email,amount) values ('art-a','fake','f@x.co',5)"); ok('an artist cannot create donation notices either', !!r.err);
+r = await as(A,"update donation_notices set status='confirmed' where artist_id='art-a' returning id"); ok('A confirms own donation', r.n===1, JSON.stringify(r));
+r = await as(A,"update donation_notices set status='rejected' where artist_id='art-b'"); ok('A cannot decide B donation', !!r.err || r.n===0, JSON.stringify(r));
+r = await as(A,"update donation_notices set donor_email='steal@x.co' where artist_id='art-a'"); ok('A cannot edit the donor data', !!r.err, JSON.stringify(r));
+r = await as(A,"update donation_notices set amount=999 where artist_id='art-a'"); ok('A cannot edit the amount', !!r.err, JSON.stringify(r));
+r = await as(A,"update donation_notices set status='paid' where artist_id='art-a'"); ok('bad donation status rejected', !!r.err);
+r = await as(A,"delete from donation_notices where artist_id='art-a'"); ok('A cannot delete donation notices', !!r.err || r.n===0, JSON.stringify(r));
+r = await as(ADM,'select count(*)::int as n from donation_notices'); ok('admin sees all donation notices', r.rows[0].n===2, JSON.stringify(r));
+r = await as(null,"insert into donation_notices(artist_id,donor_name,donor_email,amount) values ('art-a','x','not-an-email',5)"); ok('bad donor e-mail rejected', !!r.err);
+r = await as(null,"insert into donation_notices(artist_id,donor_name,donor_email,amount) values ('art-a','x','x@x.co',0)"); ok('amount below 1 rejected', !!r.err);
+r = await as(null,"insert into donation_notices(artist_id,donor_name,donor_email,amount) values ('art-a','x','x@x.co',1001)"); ok('amount above 1000 rejected', !!r.err);
+r = await as(null,"insert into donation_notices(artist_id,donor_name,donor_email,amount,currency) values ('art-a','x','x@x.co',5,'EUR')"); ok('unknown currency rejected', !!r.err);
+r = await as(null,"insert into donation_notices(artist_id,donor_name,donor_email,amount,slip_path) values ('art-a','x','x@x.co',5,'../etc/passwd')"); ok('bad slip path rejected', !!r.err);
+r = await as(null,"delete from works where artist_id='art-a' and position=0"); ok('deleting the inspiring work keeps the donation notice', r.n===1 && (await as(ADM,"select count(*)::int as n from donation_notices where artist_id='art-a' and work_id is null")).rows[0].n===1, JSON.stringify(r));
 console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail?1:0);
