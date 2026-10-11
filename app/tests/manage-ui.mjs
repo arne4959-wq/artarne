@@ -55,12 +55,32 @@ let ok = 0, bad = 0; const check = (n, c, x = '') => { c ? ok++ : bad++; console
 {   // the door (no session)
   await b.view(1280, 900); await b.go(srv.url + '/manage.html?anon', 2500);
   check('no session: the concrete door, no sign-up button', await b.ev("!!document.querySelector('.mg-door') && ![...document.querySelectorAll('button,a')].some(x=>/sign ?up|สมัครสมาชิก/i.test(x.textContent))"));
+  // the wall is alive: three depths, a sticker shadow under every shape, people on the kerb, a bird
+  check('wall has far, mid and near shapes', await b.ev("document.querySelectorAll('.far .sp').length>=8 && document.querySelectorAll('.mid .sp').length>=6 && document.querySelectorAll('.near .sp').length>=4"));
+  check('every shape has its sticker shadow', await b.ev("[...document.querySelectorAll('.sp')].every(s=>s.querySelector('.sh')&&s.querySelector('.fg'))"));
+  check('pixel people and the bird are drawn (canvases 16x16)', await b.ev("document.querySelectorAll('.mg-w').length>=2 && !!document.querySelector('.mg-sit') && !!document.querySelector('.mg-bird') && [...document.querySelectorAll('.spr canvas')].every(c=>c.width===16&&c.height===16)"));
+  await b.ev("dispatchEvent(new PointerEvent('pointermove',{clientX:1270,clientY:10,bubbles:true}))"); await sleep(250);
+  check('the pointer shifts the depths (--nx follows it)', Number(await b.ev("getComputedStyle(document.querySelector('.mg-wall')).getPropertyValue('--nx')")) > .9);
+  check('far and near move opposite ways', await b.ev("(()=>{const m=e=>new DOMMatrix(getComputedStyle(document.querySelector(e)).transform).m41;return m('.mg-lay.far')<0 && m('.mg-lay.near')>0})()"));
+  await b.ev("document.querySelector('input[name=email]').dispatchEvent(new FocusEvent('focusin',{bubbles:true}))"); await sleep(150);   // headless Chrome has no focused window, so send the event itself
+  check('focusing the e-mail field spins the shapes (class focus, spin running)', await b.ev("document.querySelector('.mg-wall').classList.contains('focus') && getComputedStyle(document.querySelector('.mid .sn')).animationPlayState==='running'"));
+  await b.ev("document.querySelector('input[name=email]').dispatchEvent(new FocusEvent('focusout',{bubbles:true}))"); await sleep(100);
+  check('leaving the field calms them (paused again)', await b.ev("getComputedStyle(document.querySelector('.mid .sn')).animationPlayState==='paused'"));
+  // rule: every keyframe of this page animates only transform and opacity
+  check('manage keyframes touch only transform and opacity', await b.ev(`(()=>{const ok=new Set(['transform','opacity']),bad=[];for(const sh of document.styleSheets){let rules;try{rules=sh.cssRules}catch(e){continue}for(const r of rules){if(r.type===7&&/^(mg|fr[24]$)/.test(r.name)){for(const k of r.cssRules)for(const p of k.style)if(!ok.has(p))bad.push(r.name+':'+p)}}}return bad.length?bad.join(','):true})()`), '');
   await b.ev("window.__calls.length=0");
   await b.ev(`(()=>{const e=document.querySelector('input[name=email]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'nobody');e.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.mg-go').click()})()`); await sleep(300);
   check('bad e-mail: error shown, nothing sent', await b.ev("!!document.querySelector('.mg-err')") && !/otp/.test(await b.ev("JSON.stringify(window.__calls)")));
+  check('bad e-mail: the stamp lands again and the bolts rattle', await b.ev("!!document.querySelector('.mg-stamp.re') && document.querySelectorAll('.mg-bolt.re').length===4"));
   await b.ev(`(()=>{const e=document.querySelector('input[name=email]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'Napha@Studio.com');e.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.mg-go').click()})()`); await sleep(600);
   const c = await b.ev("JSON.stringify(window.__calls)");
   check('valid e-mail: one-time link request, never creates a user', /auth\/v1\/otp/.test(c) && /create_user\\?":false/.test(c) && /napha@studio.com/.test(c), c);
+  check('after a valid e-mail the key flies into the lock, with confetti', await b.ev("!!document.querySelector('.mg-door.opening') || !!document.querySelector('.mg-sent')"));
+  await sleep(300);
+  const mid = await b.ev("JSON.stringify({key:!!document.querySelector('.mg-key'),bits:document.querySelectorAll('.mg-bit').length,live:document.querySelector('.mg-sr').textContent})");
+  check('opening: key, 22 confetti pieces, and the screen reader already hears "sent"', /"key":true/.test(mid) && /"bits":22/.test(mid) && /ส่งกุญแจแล้ว/.test(mid), mid);
+  await b.shot(`${out}/login-key.png`);
+  await sleep(1500);
   check('then the "key sent" message shows', await b.ev("!!document.querySelector('.mg-sent')"));
   await b.shot(`${out}/login-sent.png`);
 }

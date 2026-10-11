@@ -17,20 +17,111 @@ const manage = `
 .mg-wall::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;
   background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);}
 
-/* floating shapes: small, a few colours, drifting slowly. Only transform moves. They sit at the sides, the door covers the middle. */
-.mg-conf{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.mg-conf i{position:absolute;display:block;width:var(--z);height:var(--z);background:var(--c);opacity:.9;transform:rotate(var(--r));animation:mgFloat var(--t) ease-in-out var(--w) infinite alternate;}
-.mg-conf .b-dot{border-radius:50%;}
-.mg-conf .b-ring{border-radius:50%;background:none;border:5px solid var(--c);}
-.mg-conf .b-sq{border:2px solid var(--black);}
-.mg-conf .b-star{clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
-.mg-conf .b-plus{clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);}
-.mg-conf .b-tri{clip-path:polygon(50% 4%,98% 92%,2% 92%);}
-@keyframes mgFloat{from{transform:translateY(0) rotate(var(--r));}to{transform:translateY(-16px) rotate(calc(var(--r) + 14deg));}}
-@media(max-width:860px){.mg-conf i:nth-child(n+11){display:none;}}
+/* ───────── the wall comes alive ─────────
+   Depth: far and mid shapes sit behind the door, near shapes in front of its edge; each depth is shifted by the pointer (--nx, --ny from Wall.jsx)
+   by a different amount. Stickers: a black copy of every shape sits 10% down and right. Only transform and opacity ever animate. */
+.mg-wall{container-type:inline-size;}
+.mg-lay{position:absolute;inset:0;pointer-events:none;z-index:0;
+  transform:translate3d(calc(var(--nx,0) * var(--d) * 30px),calc(var(--ny,0) * var(--d) * 20px),0);will-change:transform;}
+.mg-lay.far{--d:-.3;opacity:.62;}
+.mg-lay.mid{--d:.25;}
+.mg-lay.near{--d:1;z-index:3;}
+.sp{position:absolute;width:var(--z);height:var(--z);transform:rotate(var(--r));}
+.sp>span,.fl,.sn,.bl{position:absolute;inset:0;display:block;}
+.fl{animation:mgFloat var(--t) ease-in-out var(--w) infinite alternate;will-change:transform;}
+.sn{animation:mgSpin 11s linear infinite;animation-play-state:paused;}
+.mg-wall.focus .mid .sn,.mg-wall.focus .near .sn{animation-play-state:running;}
+.mg-lay.far .bl{filter:blur(1px);}.mg-lay.near .bl{filter:blur(2.5px);}
+.sh,.fg{position:absolute;inset:0;display:block;}
+.sh{background:var(--black);transform:translate(calc(var(--z) * .11),calc(var(--z) * .11));}
+.fg{background:var(--c);}
+.b-dot{border-radius:50%;}
+.b-ring{background:none;border-radius:50%;}
+.fg.b-ring{border:calc(var(--z) * .17) solid var(--c);}
+.sh.b-ring{background:none;border:calc(var(--z) * .17) solid var(--black);}
+.fg.b-sq{border:2px solid var(--black);}
+.b-star{clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
+.b-plus{clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);}
+.b-tri{clip-path:polygon(50% 4%,98% 92%,2% 92%);}
+.peel{clip-path:polygon(0 0,100% 0,100% 62%,62% 100%,0 100%);}
+.fold{position:absolute;right:0;bottom:0;width:38%;height:38%;background:var(--paper);clip-path:polygon(0 0,100% 0,0 100%);transform:translate(calc(var(--z) * .06),calc(var(--z) * .06));}
+@keyframes mgFloat{from{transform:translate3d(0,0,0) rotate(0deg);}to{transform:translate3d(0,calc(var(--amp,14px) * -1),0) rotate(9deg);}}
+@keyframes mgSpin{to{transform:rotate(360deg);}}
+
+/* light and dust (the look of the city strip on the home page): below the door so the text on it stays clear */
+.mg-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;}
+.mg-ray{position:absolute;top:-12%;height:126%;left:var(--x);width:var(--w);transform:skewX(22deg);transform-origin:0 0;
+  background:linear-gradient(90deg,transparent,rgba(232,183,48,.22) 28%,rgba(244,241,232,.16) 50%,rgba(232,183,48,.22) 72%,transparent);
+  -webkit-mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);
+  opacity:.35;animation:mgRay var(--T) ease-in-out infinite;animation-delay:var(--o);will-change:transform,opacity;}
+@keyframes mgRay{50%{opacity:1;transform:skewX(22deg) translate3d(18px,0,0);}}
+.mg-dust{position:absolute;left:-480px;right:-480px;top:-360px;bottom:-360px;background-size:480px 360px;background-repeat:repeat;will-change:transform;}
+.mg-dust.a{animation:mgDustA 90s linear infinite;}
+.mg-dust.b{animation:mgDustB 140s linear infinite;opacity:.8;}
+@keyframes mgDustA{to{transform:translate3d(-480px,360px,0);}}
+@keyframes mgDustB{to{transform:translate3d(480px,360px,0);}}
+
+/* people on the kerb (pixel art, lib/pixel.js). The wall is a size container, so cqw = a percent of its width. */
+.spr{position:relative;width:calc(16px * var(--px,3));height:calc(16px * var(--px,3));}
+.spr canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;animation:fr4 var(--dur) steps(1,end) infinite;animation-delay:calc(var(--i) * var(--dur) / var(--n));}
+.spr.n2 canvas{animation-name:fr2;}
+@keyframes fr4{0%{opacity:1;}25%{opacity:0;}}
+@keyframes fr2{0%{opacity:1;}50%{opacity:0;}}
+.mg-folk{position:absolute;left:0;right:0;bottom:18px;height:0;z-index:1;pointer-events:none;--px:3;}
+.mg-w{position:absolute;left:0;bottom:0;will-change:transform;}
+.mg-w .flip.rev{transform:scaleX(-1);}
+.mg-w .st{position:absolute;left:0;top:0;opacity:0;}
+.mg-w.a{animation:mgPathA 84s linear infinite;animation-delay:-14s;}
+.mg-w.a .wk{animation:mgOnA 84s linear infinite;animation-delay:-14s;}
+.mg-w.a .st{animation:mgStA 84s linear infinite;animation-delay:-14s;}
+.mg-w.b{animation:mgPathB 104s linear infinite;animation-delay:-40s;}
+.mg-w.b .wk{animation:mgOnB 104s linear infinite;animation-delay:-40s;}
+.mg-w.b .st{animation:mgStB 104s linear infinite;animation-delay:-40s;}
+@keyframes mgPathA{0%{transform:translate3d(-80px,0,0);}38%,52%{transform:translate3d(calc(50cqw - 24px),0,0);}100%{transform:translate3d(calc(100cqw + 80px),0,0);}}
+@keyframes mgOnA{0%,37.9%{opacity:1;}38%,52%{opacity:0;}52.1%,100%{opacity:1;}}
+@keyframes mgStA{0%,37.9%{opacity:0;}38%,52%{opacity:1;}52.1%,100%{opacity:0;}}
+@keyframes mgPathB{0%{transform:translate3d(calc(100cqw + 80px),0,0);}60%,72%{transform:translate3d(calc(30cqw - 24px),0,0);}100%{transform:translate3d(-80px,0,0);}}
+@keyframes mgOnB{0%,59.9%{opacity:1;}60%,72%{opacity:0;}72.1%,100%{opacity:1;}}
+@keyframes mgStB{0%,59.9%{opacity:0;}60%,72%{opacity:1;}72.1%,100%{opacity:0;}}
+.mg-sit{position:absolute;left:5cqw;bottom:0;}
+/* the bird: flies in from the right, lands on the door's corner, looks about, flies off. Lives inside the door. */
+.mg-bird{position:absolute;left:10px;top:-68px;z-index:5;pointer-events:none;--px:4;animation:mgBird 48s linear infinite;will-change:transform;}
+.mg-bird .perch{position:absolute;left:0;top:0;opacity:0;animation:mgPerchOn 48s linear infinite;}
+.mg-bird .fly{animation:mgFlyOn 48s linear infinite;}
+@keyframes mgBird{0%{transform:translate3d(60cqw,-130px,0);}12%,32%{transform:translate3d(0,0,0);}42%,100%{transform:translate3d(-60cqw,-170px,0);}}
+@keyframes mgFlyOn{0%,11.9%{opacity:1;}12%,31.9%{opacity:0;}32%,100%{opacity:1;}}
+@keyframes mgPerchOn{0%,11.9%{opacity:0;}12%,31.9%{opacity:1;}32%,100%{opacity:0;}}
+.mg-bird .fly canvas{animation-name:fr4;}
+.mg-bird .fly.n4 canvas{animation-name:fr4;}
+
+/* the lock on the door's edge, the key and the confetti */
+.mg-lock{position:absolute;right:-26px;top:56%;width:46px;height:70px;z-index:4;background:var(--black);border:3px solid var(--black);box-shadow:4px 4px 0 var(--pink);pointer-events:none;
+  background-image:radial-gradient(circle at 50% 36%,var(--paper) 0 6px,transparent 7px);}
+.mg-lock::after{content:"";position:absolute;left:50%;top:44%;width:12px;height:22px;margin-left:-6px;background:var(--paper);clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);}
+.mg-key{position:absolute;left:50%;top:36%;width:76px;height:22px;margin:-11px 0 0 -76px;transform-origin:100% 50%;opacity:0;animation:mgKey 1.1s var(--ease) both;}
+.k-ring{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;border:5px solid var(--gold);box-shadow:3px 3px 0 var(--black);}
+.k-body{position:absolute;left:20px;top:8px;width:56px;height:7px;background:var(--gold);box-shadow:3px 3px 0 var(--black);clip-path:polygon(0 0,100% 0,100% 100%,86% 100%,86% 190%,74% 190%,74% 100%,60% 100%,60% 230%,46% 230%,46% 100%,0 100%);}
+@keyframes mgKey{0%{opacity:0;transform:translate3d(-300px,90px,0) rotate(-35deg);}12%{opacity:1;}55%{opacity:1;transform:translate3d(-26px,0,0) rotate(0deg);}68%{opacity:1;transform:translate3d(0,0,0) rotate(0deg);}100%{opacity:1;transform:translate3d(0,0,0) rotate(90deg);}}
+.mg-bit{position:absolute;left:50%;top:36%;width:var(--s);height:calc(var(--s) * .62);background:var(--c);border:2px solid var(--black);opacity:0;animation:mgBit .95s var(--ease) calc(.72s + var(--d)) both;}
+@keyframes mgBit{0%{opacity:0;transform:translate3d(0,0,0) scale(.4) rotate(0deg);}12%{opacity:1;}45%{opacity:1;transform:translate3d(calc(var(--dx) * .85),calc(var(--dy) * .85),0) scale(1) rotate(calc(var(--rot) * .6));}100%{opacity:0;transform:translate3d(var(--dx),calc(var(--dy) + 150px),0) scale(.9) rotate(var(--rot));}}
+.mg-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+/* answers to what the visitor does */
+.mg-bolt.re{animation:mgRattle .5s ease-out both;}
+@keyframes mgRattle{0%,100%{transform:translate3d(0,0,0) rotate(0deg);}15%{transform:translate3d(-3px,1px,0) rotate(-14deg);}35%{transform:translate3d(3px,-1px,0) rotate(12deg);}55%{transform:translate3d(-2px,1px,0) rotate(-8deg);}75%{transform:translate3d(1px,0,0) rotate(4deg);}}
+.mg-stamp.re{animation:mgThump .38s var(--ease) both;}
+.mg-door.opening{animation:mgShudder .35s .8s ease-out both;}
+@keyframes mgShudder{0%,100%{transform:translate3d(0,0,0);}30%{transform:translate3d(-3px,0,0);}60%{transform:translate3d(2px,0,0);}}
+@media(max-width:860px){
+  .mg-lay.near{display:none;}
+  .mg-lock{right:-4px;top:42%;width:36px;height:56px;}
+  .mg-folk{--px:2;}.mg-bird{--px:3;top:-52px;}
+  .mg-sit{left:4cqw;}
+}
+
 
 /* ───────── the door ───────── */
-.mg-door{position:relative;z-index:1;width:min(560px,100%);background:var(--grain),var(--bone);border:6px solid var(--black);box-shadow:14px 14px 0 var(--black);
+.mg-door{position:relative;z-index:2;width:min(560px,100%);background:var(--grain),var(--bone);border:6px solid var(--black);box-shadow:14px 14px 0 var(--black);
   padding:4.4rem 2.2rem 2.2rem;transform-origin:50% 0;}
 .mg-door.in{animation:mgSlam .55s var(--ease) both;}
 @keyframes mgSlam{0%{opacity:0;transform:translateY(-46px) rotate(-2.4deg);}70%{opacity:1;transform:translateY(5px) rotate(.4deg);}100%{opacity:1;transform:none;}}
@@ -134,7 +225,14 @@ html[lang="th"] .mg-tab,html[lang="lo"] .mg-tab{font-family:"Chonburi",var(--tha
   .mg-stamp{position:static;display:table;margin:.6rem 0 .5rem auto;font-size:.85rem;}
   .mg-tab{flex:1 1 auto;text-align:center;}
 }
-@media(prefers-reduced-motion:reduce){.mg-conf i{animation:none;}.mg-door.in,.mg-door.in .mg-stamp{animation:none;opacity:1;}.mg-door.in .mg-stamp{transform:rotate(9deg);}}
+@media(prefers-reduced-motion:reduce){
+  .mg-door.in,.mg-door.in .mg-stamp,.fl,.sn,.mg-ray,.mg-dust,.mg-bolt.re,.mg-stamp.re,.mg-door.opening{animation:none;}
+  .mg-door.in,.mg-door.in .mg-stamp{opacity:1;}.mg-door.in .mg-stamp,.mg-stamp.re{transform:rotate(9deg);opacity:1;}
+  .mg-ray{opacity:.7;}.mg-dust{display:none;}
+  .mg-w{animation:none!important;transform:translate3d(var(--rx),0,0);}.mg-w .wk{animation:none!important;opacity:1;}.mg-w .st{animation:none!important;opacity:0;}
+  .mg-bird{animation:none;transform:translate3d(0,0,0);}.mg-bird .fly{animation:none;opacity:0;}.mg-bird .perch{animation:none;opacity:1;}
+  .spr canvas{animation:none!important;}.spr canvas:first-child{opacity:1;}
+}
 `;
 
 export default [c, join, manage];
