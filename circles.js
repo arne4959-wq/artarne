@@ -551,7 +551,8 @@ function artBg(c, k) {
 /* artwork markup: real/generated image over the colour placeholder */
 /* sale status of a work: '' (for sale), 'sold' or 'reserved'; and the artist's own payment link (https only) */
 const workStatus = p => (p && (p.status === 'sold' || p.status === 'reserved')) ? p.status : '';
-const payLink = p => (p && typeof p.pay === 'string' && /^https:\/\/\S+$/.test(p.pay)) ? p.pay : '';
+const httpsHost = u => { try { const x = new URL(u); return x.protocol === 'https:' && x.hostname.includes('.'); } catch (e) { return false; } };
+const payLink = p => (p && typeof p.pay === 'string' && /^https:\/\/\S+$/.test(p.pay) && httpsHost(p.pay)) ? p.pay : '';   // a payment link must be https and have a real host name (https://x is refused)
 const stampHtml = p => { const s = workStatus(p); return s ? `<i class="stamp ${s}">${esc(t(s === 'sold' ? 'st_sold' : 'st_res'))}</i>` : ''; };
 const statusChip = p => { const s = workStatus(p); return s ? `<span class="chip ${s}">${esc(t(s === 'sold' ? 'st_sold' : 'st_res'))}</span>` : ''; };
 const artImg = (a, k) => { const p = a.pieces[k]; return p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''; };

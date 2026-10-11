@@ -13,7 +13,7 @@ import {useDialogs} from '../components/Dialogs.jsx';
 import sprite from 'virtual:circles/sprite/profile';
 import styles from '../styles/profile.js';
 
-const https = u => { try { return new URL(u).protocol === 'https:'; } catch (e) { return false; } };
+const https = u => { try { const x = new URL(u); return x.protocol === 'https:' && x.hostname.includes('.'); } catch (e) { return false; } };
 const chars = s => 'Segmenter' in Intl ? Array.from(new Intl.Segmenter(undefined, {granularity: 'grapheme'}).segment(s), x => x.segment) : Array.from(s);
 const TAPE = ['pink', 'gold'];
 const LOGOS = [   // left%, top%, size px, opacity, start angle, seconds per turn, direction, drift px
@@ -70,10 +70,10 @@ function ProfileBody({A}) {
       <div className="pf-works">
         <div className="pf-wh"><h3 className="bl bl-y"><span className="bl-t">{t('pf_wh')}</span></h3><span className="pf-hv">{t('pf_hover')}</span></div>
         <ul className="pf-strip">{A.pieces.slice(0, 4).map((p, k) => {
-          const sta = workStatus(p), price = sta ? t('st_sold') : L.money(p.p, p);
-          return <li key={k} className="pf-in pf-rise" style={{'--r': [-3, 2, -1.5, 3][k] + 'deg', '--pf-d': (1.9 + k * .12).toFixed(2) + 's'}}><a className="pf-pk" href={`studio-${A.id}.html?work=${k}`} style={{'--ar': p.ar || '1/1'}} aria-label={L.titleL(p) + ' · ' + (sta ? t('st_sold') : L.money(p.p, p))}>
+          const sta = workStatus(p), price = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : L.money(p.p, p);
+          return <li key={k} className="pf-in pf-rise" style={{'--r': [-3, 2, -1.5, 3][k] + 'deg', '--pf-d': (1.9 + k * .12).toFixed(2) + 's'}}><a className="pf-pk" href={`studio-${A.id}.html?work=${k}`} style={{'--ar': p.ar || '1/1'}} aria-label={L.titleL(p) + ' · ' + price}>
             <span className={`pf-tp pf-tp-${TAPE[(k + 1) % 2]}`}></span>{p.img ? <img src={p.img} alt={L.titleL(p)} loading="lazy" decoding="async" draggable="false"/> : null}
-            <span className="pf-cap"><b>{L.titleL(p)}</b><span className={`pf-cp${sta ? ' pf-strike' : ''}`}>{price}</span></span></a></li>;
+            <span className="pf-cap"><b>{L.titleL(p)}</b><span className={`pf-cp${sta === 'sold' ? ' pf-strike' : ''}`}>{price}</span></span></a></li>;
         })}</ul>
         <a className="pf-all" href={`studio-${A.id}.html`}>{t('pf_all')}</a>
       </div>

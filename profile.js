@@ -4,7 +4,7 @@
    Uses from the page: t, esc, pk, usd, nameL, discL, cityL, workStatus, openInquiry, CONFIG.
    Exposes window.PF = {mount}. */
 (function () {
-  const https = u => { try { return new URL(u).protocol === 'https:'; } catch (e) { return false; } };
+  const https = u => { try { const x = new URL(u); return x.protocol === 'https:' && x.hostname.includes('.'); } catch (e) { return false; } };
   const chars = s => 'Segmenter' in Intl ? Array.from(new Intl.Segmenter(undefined, {granularity: 'grapheme'}).segment(s), x => x.segment) : Array.from(s);
   const TAPE = ['pink', 'gold'];
   const LOGOS = [   // left%, top%, size px, opacity, start angle, seconds per turn, direction, drift px
@@ -28,10 +28,10 @@
     const tags = [[discL(A), 'paper', -2], [cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>
       `<li class="pf-tag pf-in pf-pop pf-t-${x[1]}" style="--r:${x[2]}deg;--pf-d:${1 + i * .1}s">${esc(x[0])}</li>`).join('');
     const picks = A.pieces.slice(0, 4).map((p, k) => {
-      const sta = workStatus(p), price = sta ? t('st_sold') : money(p.p, p);
-      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(titleL(p) + ' · ' + (sta ? t('st_sold') : money(p.p, p)))}">
+      const sta = workStatus(p), price = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : money(p.p, p);
+      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(titleL(p) + ' · ' + price)}">
         <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''}
-        <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp${sta ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
+        <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp${sta === 'sold' ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
     }).join('');
     const can = https(CONFIG.donate);
     const supBtn = can

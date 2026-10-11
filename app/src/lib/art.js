@@ -6,7 +6,8 @@ export const artistById = id => ARTISTS.find(a => a.id === id);
 
 /* sale status of a work: '' (for sale), 'sold' or 'reserved'; and the artist's own payment link (https only) */
 export const workStatus = p => (p && (p.status === 'sold' || p.status === 'reserved')) ? p.status : '';
-export const payLink = p => (p && typeof p.pay === 'string' && /^https:\/\/\S+$/.test(p.pay)) ? p.pay : '';
+export const httpsHost = u => { try { const x = new URL(u); return x.protocol === 'https:' && x.hostname.includes('.'); } catch (e) { return false; } };
+export const payLink = p => (p && typeof p.pay === 'string' && /^https:\/\/\S+$/.test(p.pay) && httpsHost(p.pay)) ? p.pay : '';
 
 /* abstract placeholder built from an artist's own colours — sits behind each artwork <img> in case it fails to load */
 export function artBg(c, k) {
