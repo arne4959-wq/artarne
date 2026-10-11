@@ -9,11 +9,11 @@ import {spawn} from 'node:child_process';
 export const sleep = ms => new Promise(r => setTimeout(r, ms));
 const MIME = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.ico': 'image/x-icon'};
 
-/** Serve `root` over http on a free port. `routes` = {'/path': () => 'html string'} for generated pages. Resolves {url, close}. */
+/** Serve `root` over http on a free port. `routes` = {'/path': () => 'html string' | {type, body}} for generated or patched files. Resolves {url, close}. */
 export function startServer(root, routes = {}) {
   const server = http.createServer((req, res) => {
     const u = new URL(req.url, 'http://x'); let p = decodeURIComponent(u.pathname);
-    if (routes[p]) { res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store'}); return res.end(routes[p](u)); }
+    if (routes[p]) { const r = routes[p](u), o = typeof r === 'string' ? {type: 'text/html; charset=utf-8', body: r} : r; res.writeHead(200, {'Content-Type': o.type, 'Cache-Control': 'no-store'}); return res.end(o.body); }   // a route returns a string (a page) or {type, body}
     if (p.endsWith('/')) p += 'index.html';
     const file = path.join(root, p);
     if (!file.startsWith(root) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {

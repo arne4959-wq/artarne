@@ -30,7 +30,7 @@ Stop with `Ctrl+C`. Edit a file, refresh the browser.
 | `og.png`, `og/<id>.png` | share images (site, and one per artist, generated) |
 | `fonts/`, `vendor/` | self-hosted fonts (SIL OFL) and Lenis (MIT) |
 | `tools/build.mjs`, `tools/browser.mjs` | the build step and a tiny Chrome driver |
-| `tests/` | the test suite (`node tests/run.mjs`) |
+| `tests-legacy/` | the tests of the old plain-HTML site (`node tests-legacy/run.mjs`) |
 | `404.html`, `robots.txt`, `.nojekyll`, `serve.py` | hosting helpers |
 
 ## Common edits
@@ -62,9 +62,9 @@ It does not duplicate rendering logic: what it saves is what the browser shows. 
 ## Tests
 
 ```bash
-node tests/run.mjs          # build freshness + smoke + flow  (~8 min)
-node tests/run.mjs perf     # frame rates, normal and with the CPU 4x slower
-node tests/run.mjs all
+node tests-legacy/run.mjs          # build freshness + smoke + flow  (~8 min)
+node tests-legacy/run.mjs perf     # frame rates, normal and with the CPU 4x slower
+node tests-legacy/run.mjs all
 ```
 
 `smoke` opens every page in both languages at 1280px and 375px and checks errors, overflow, accessible names, leftover Thai in English mode and broken images.
@@ -114,14 +114,14 @@ Four artists work in styles that are only now finding an audience, and carry `wa
 **Mali** (risograph, `kind:'stack'`), **Phop** (generative / pen-plotter art, `'dome'`), **Phrae** (glitch art, `'pixel'`), **Pan** (bio art / living mycelium, `'spore'`).
 Each has a bio, 3 works with year / medium / size / price (USD) and a TH + EN text, a studio page, a map district and a hand-drawn concrete building. To add another: copy one of these objects, give it a new `kind` and a building in `monument()` in `site.js`, a footprint in `PLAN`, and a floor shape in `KINDS` in `cutaway.html`, then `node tools/build.mjs`.
 Artwork images are generated placeholders in the same spirit (halftone overprint, plotter lines, glitch slices, spores); swap in real photos via `img:`.
-`node tests/run.mjs newwave` checks the data, the labels, the filter and every new studio. The other suites now read the artist list from `artists.js`, so adding an artist does not break them.
+`node tests-legacy/run.mjs newwave` checks the data, the labels, the filter and every new studio. The other suites now read the artist list from `artists.js`, so adding an artist does not break them.
 
 ## Patterns: checker and tartan
 
 Two patterns carry the colour, both made only from the site palette (defined once in `:root` in `index.html`):
 - `--checker` — a black/paper 2-tone checker (`repeating-conic-gradient`, no image). Used on the edges of the numbers band and the footer, the kerb of two map districts, the gold/black floor under the Spotlight, and (faint) the floor tiles in every studio room.
 - `--tt-red` (the original tartan), `--tt-pink`, `--tt-gold`, `--tt-black` — small 30px tartans in four colourways. Used as washi tape on the artwork cards and the "join" cards, and as the kerb along the foot of each map district. The big red tartan stays on the Hero, the street and the Manifesto.
-To add a colourway, copy one `--tt-*` line and change the base / band / line colours (only palette colours). `node tests/run.mjs layout` checks that the tapes are whole and the map icons never sit on text.
+To add a colourway, copy one `--tt-*` line and change the base / band / line colours (only palette colours). `node tests-legacy/run.mjs layout` checks that the tapes are whole and the map icons never sit on text.
 
 ## HD-2D city strip (Octopath Traveler look, no 3D)
 
@@ -129,12 +129,12 @@ The city strip is built as three planes that move at different speeds when you d
 On top of it: pixel-art people and birds (16×16 canvases drawn in `hd2d.js`, scaled up with `image-rendering: pixelated`, colours from the site palette only), diagonal light shafts and slow dust in a screen-fixed overlay in front of the city.
 Only `transform` and `opacity` animate (frame swaps are `opacity` with `steps()`), so the compositor does the work. With `prefers-reduced-motion` the scene stays but nothing moves: people stand on their first frame, dust is hidden, the light is static, there is no parallax.
 To change it: depth speeds are `--d` on `.far` / `.mid` / `.sky` in `index.html`; the blur is the `filter` on `.far` / `.mid`; who walks and how fast is the `WALKERS` list in `hd2d.js`; the sprites are the character strings at the top of that file (`.` = transparent).
-`node tests/run.mjs hd2d` checks all of it (speeds, blur, 16×16 pixelated sprites, palette, only transform/opacity, reduced motion, 375 px).
+`node tests-legacy/run.mjs hd2d` checks all of it (speeds, blur, 16×16 pixelated sprites, palette, only transform/opacity, reduced motion, 375 px).
 A pixel person also stands at the door of every building (replacing the old vector silhouette; `STAND` in `hd2d.js`, two-frame "breathing", lifts with the building on hover).
 
 **Sizing:** `--bw` (the building width unit) comes from the screen height, so the tallest building + its name tag + the street always fit one screen under the nav: `(100svh − 300px) / --bk`. `--bk` is set from `artists.js` (the largest `scale` × 1.4), so a taller building cannot overflow. Taller screen = bigger city.
 **Ransom text:** `ransom(el, text, seed, true)` wraps every word in an unbreakable `.rw`. A line can only break between words. Thai has no spaces, so the Thai Manifesto lines carry U+200B ("may break here") between words in `STR` (`mani1`…`mani4`).
-`node tests/run.mjs layout` checks these, and the hazard tape that separates the tartan street from the tartan Manifesto.
+`node tests-legacy/run.mjs layout` checks these, and the hazard tape that separates the tartan street from the tartan Manifesto.
 
 ## Art Deco + noir (only two places)
 
@@ -146,7 +146,7 @@ The CSS is the blocks marked `noir + art deco` in `cutaway.html` and `spotlight:
 ## Performance notes
 
 - Animations use `transform` and `opacity` only. The hover shadow of each building is its own flat layer; the concrete grain is one canvas-rendered tile reused as an SVG pattern; the Hero's drifting tartan is a transformed layer.
-- `node tests/run.mjs perf` measures frames in headless Chrome: about 60 fps while scrolling, dragging the city and hovering; with the CPU throttled 4× slower it stays above 50.
+- `node tests-legacy/run.mjs perf` measures frames in headless Chrome: about 60 fps while scrolling, dragging the city and hovering; with the CPU throttled 4× slower it stays above 50.
 - The loader's 1.7 s count-up (first visit of a session) is part of the design, and it is why a first-visit Lighthouse LCP is ~4 s on throttled mobile.
 - `prefers-reduced-motion` is respected everywhere. Tested at 375 px wide.
 
