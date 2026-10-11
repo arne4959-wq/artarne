@@ -14,7 +14,8 @@ const copy = (src, dst) => {
   if (fs.statSync(src).isDirectory()) { fs.mkdirSync(dst, {recursive: true}); for (const n of fs.readdirSync(src)) if (!skip(n)) copy(path.join(src, n), path.join(dst, n)); }
   else fs.copyFileSync(src, dst);
 };
-const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isFile() && /\.(html|css|js)$/.test(n));
+const SHOP = /\bshop:\s*true\b/.test(fs.readFileSync(path.join(root, 'circles.js'), 'utf8'));   // CONFIG.shop: when off, the buy pages are not published
+const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isFile() && /\.(html|css|js)$/.test(n) && (SHOP || !/^buy[.-]/.test(n)));
 for (const n of [...top, ...FILES]) if (fs.existsSync(path.join(root, n))) copy(path.join(root, n), path.join(out, n));
 for (const d of DIRS) if (fs.existsSync(path.join(root, d))) copy(path.join(root, d), path.join(out, d));
 

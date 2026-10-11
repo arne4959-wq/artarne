@@ -26,6 +26,9 @@ const write = (f, s) => { fs.mkdirSync(path.dirname(path.join(ROOT, f)), {recurs
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const { ARTISTS, DISC_EN, CITY_EN } = new Function(read('artists.js') + '\n;return {ARTISTS, DISC_EN, CITY_EN};')();
 
+/* ---- is the site selling? (CONFIG.shop in circles.js). When it is off, no buy pages are built, listed or published; the buy template and the 28 existing files stay in the repository ---- */
+const SHOP = /\bshop:\s*true\b/.test(read('circles.js'));
+
 /* ---- artists.js sanity check: the same shape rules circles.js enforces in the browser, but here a mistake stops the build with a plain message ---- */
 {
   const bad = [], ids = new Set(), RE = {id: /^[a-z0-9][a-z0-9-]*$/, color: /^#[0-9a-f]{3,8}$/i, ar: /^\d{1,3}\/\d{1,3}$/};
@@ -136,7 +139,7 @@ try {
   /* ---- 1c. one static buy page per work (buy-<id>-<k>.html, k = position in artists.js from 0, from buy.html) ---- */
   const btemplate = read('buy.html');
   const AVAIL = {sold: 'https://schema.org/SoldOut', reserved: 'https://schema.org/LimitedAvailability'};
-  for (const a of ARTISTS) {
+  for (const a of SHOP ? ARTISTS : []) {
     for (let k = 0; k < a.pieces.length; k++) {
       const p = a.pieces[k];
       await b.go(`${server.url}/buy.html?id=${a.id}&k=${k}&live`, 1800);
@@ -193,7 +196,7 @@ try {
 
   /* ---- 4. sitemap ---- */
   if (SITE) {
-    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`), ...ARTISTS.flatMap(a => a.pieces.map((_, k) => `buy-${a.id}-${k}.html`)), 'join.html', 'privacy.html', 'terms.html'];
+    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`), ...(SHOP ? ARTISTS.flatMap(a => a.pieces.map((_, k) => `buy-${a.id}-${k}.html`)) : []), 'join.html', 'privacy.html', 'terms.html'];
     write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${abs(u === 'index.html' ? '' : u)}</loc></url>`).join('\n')}\n</urlset>\n`);
     const robots = read('robots.txt').replace(/^#? ?Sitemap:.*$/m, '').trimEnd();
     write('robots.txt', `${robots}\nSitemap: ${abs('sitemap.xml')}\n`);

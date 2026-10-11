@@ -277,3 +277,6 @@ nav .links a{padding-block:.7rem;}
 
 /* sample-data notice above the consent line in every message form; switch it off with CONFIG.demo = false once real artists are in */
 .demo-note{font-weight:700;border-left:6px solid var(--gold);padding-left:.7rem;}
+
+/* selling parts: shown only when CONFIG.shop is true (circles.js adds html.shop-on) */
+html:not(.shop-on) .shop-only{display:none !important;}

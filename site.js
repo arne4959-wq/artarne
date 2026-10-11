@@ -329,7 +329,8 @@ function syncBar() {
   $('#sf-reset').hidden = !(F.all || narrowed() || query.trim());
 }
 /* the wall keeps its filters in the address (?q= &avail=1 &price=p1 &sort=low &all=1): Back from a buy page, a reload or a shared link lands on the same list */
-const SORTS = ['cur', 'low', 'high', 'new'];
+if (!shopOn()) document.querySelectorAll('#sort option[value=low], #sort option[value=high]').forEach(o => o.remove());   // no price sorting when nothing is priced
+const SORTS = shopOn() ? ['cur', 'low', 'high', 'new'] : ['cur', 'new'];
 function writeUrl() {
   try {
     const u = new URL(location.href), q = u.searchParams, set = (k, v) => v ? q.set(k, v) : q.delete(k);
@@ -342,8 +343,8 @@ function readUrl() {
   try {
     const q = new URLSearchParams(location.search);
     if (q.get('q')) { query = q.get('q').slice(0, 80); qKey = foldQuery(query); $('#q').value = query; }
-    if (q.get('avail') === '1') { F.avail = true; F.all = true; }
-    if (PRICE[q.get('price')]) { F.price = q.get('price'); F.all = true; }
+    if (shopOn() && q.get('avail') === '1') { F.avail = true; F.all = true; }
+    if (shopOn() && PRICE[q.get('price')]) { F.price = q.get('price'); F.all = true; }
     if (SORTS.includes(q.get('sort'))) { sortBy = q.get('sort'); $('#sort').value = sortBy; }
     if (q.get('all') === '1') F.all = true;
   } catch (e) {}
@@ -355,7 +356,7 @@ function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
-    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span></a></div>`;
+    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(shopOn() ? t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}) : t('card_aria_np', {t: pk(p, 't'), a: nameL(a)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${shopOn() ? stampHtml(p) : ''}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span>${shopOn() ? `<span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}` : ''}</span></a></div>`;
   }).join('') || `<div class="q-none" role="status"><p>${esc(qKey.length ? t('q_none', {q: query.trim()}) : t('sf_none'))}</p><button type="button" class="sf-reset" data-sf-reset>${esc(t('sf_reset'))}</button></div>`;
   $('#feat-h').textContent = t(wholeCity() ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('sf_count', {n: list.length, t: total});
@@ -445,7 +446,7 @@ function renderSpot() {
   $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
   if (p.img && !im.getAttribute('src')) im.src = p.img;
   im.alt = pk(p, 't');
-  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y} · ${usd(p.p)}</span>`;
+  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y}${shopOn() ? ' · ' + usd(p.p) : ''}</span>`;
   $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
 }
 

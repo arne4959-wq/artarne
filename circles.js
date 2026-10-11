@@ -5,9 +5,10 @@
    endpoint : a form-backend URL (Formspree, Getform, your own API). It receives JSON via POST.
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
+   shop     : false = a gallery of creators and their words (no prices, no buy or message-to-buy buttons, no price filters, no buy pages). true brings the selling parts back; the code is kept.
    demo     : true shows a "sample data" notice above the consent line of every message form. Set it to false when real artists are in.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', demo: true, turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
+const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', demo: true, shop: false, turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
 
 /* ---------- data guard: values from artists.js that are printed into markup or CSS must have the expected shape ----------
    An id or colour such as  x" onmouseover="…  would reach the page unescaped in several templates. Bad values are repaired (a bad id skips the artist) once, here,
@@ -36,6 +37,8 @@ function isDraft() {
   try { const q = new URLSearchParams(location.search); if (q.has('live')) return false; return q.has('draft') || location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); }
   catch (e) { return false; }
 }
+const shopOn = () => CONFIG.shop === true;
+if (shopOn()) document.documentElement.classList.add('shop-on');   // .shop-only parts show only then
 if (isDraft()) document.documentElement.classList.add('is-draft');   // shows .draft-only parts (unfinished boxes) on the owner's computer only
 
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -65,7 +68,7 @@ th: {
   consent_form:'ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อความจะถึงทีม circles ก่อน แล้วเราส่งต่อให้ผู้รับที่ระบุ (ผ่านผู้ให้บริการรับฟอร์ม)',
   news_consent:'สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ',
   hero_hl1:'เมืองของศิลปิน', hero_hl2:'พื้นที่สำหรับงานศิลปะ', hero_hl3:'ที่ไม่ยอมเงียบ',
-  hero_lead:'ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจาก\u2060คน\u2060ทำ', hero_cta:'เข้าชมเมือง →', hero_alt:'ดูผลงานและราคา ↓',
+  hero_lead:'ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจาก\u2060คน\u2060ทำ', hero_cta:'เข้าชมเมือง →', hero_alt:'ดูผลงาน ↓',
   city_h:'เมือง', city_p:'ลากหรือเลื่อนไปทางขวาเพื่อเดินผ่านเมือง ตึกแต่ละหลังคือสตูดิโอของศิลปินหนึ่งคน ภาพที่ฝังอยู่ในคอนกรีตคือผลงานจริง',
   pager_l:'เลื่อนซ้าย', pager_r:'เลื่อนขวา', strip_aria:'เมืองของศิลปิน เลื่อนซ้ายขวา', bd_aria:'เข้าตึกของ{a} {d}', works_n:'{n} WORKS',
   mani_k:'Manifesto', mani1:'ไม่มี\u200bหอศิลป์', mani2:'ไม่มี\u200bคนกลาง', mani3:'ไม่มี\u200bค่าหัวคิว', mani4:'มีแค่คนทำ กับคนซื้อ',
@@ -77,7 +80,7 @@ th: {
   s3_h:'ซื้อตรงจากศิลปิน', s3_p:'เจอชิ้นที่ตามไปถึงในฝัน ก็คุยกับคนทำโดยตรง จ่ายตามราคาที่เขาตั้ง เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน',
   feat_i:'Featured', feat_h:'ผลงานเด่นสัปดาห์นี้', feat_h_all:'ผลงานทั้งหมดในเมือง',
   sort_label:'เรียงตาม', sort_cur:'คัดมาให้', sort_low:'ราคาต่ำ → สูง', sort_high:'ราคาสูง → ต่ำ', sort_new:'ใหม่ล่าสุด',
-  all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', q_ph:'ค้นหาชื่องาน ชื่อศิลปิน (ไทย · English · ລາວ)', q_aria:'ค้นหาผลงานตามชื่องานหรือชื่อศิลปิน', q_none:'ไม่พบผลงานที่ตรงกับ “{q}” ลองคำอื่น หรือล้างตัวกรอง', sf_group:'ตัวกรองด่วน', sf_status:'สถานะ', sf_all:'ทั้งหมด', sf_avail:'ยังว่างอยู่', sf_price:'ราคา', sf_p1:'ต่ำกว่า $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'ล้างตัวกรอง', sf_none:'ไม่มีผลงานในช่วงนี้ ลองตัวกรองอื่น', sf_count:'แสดง {n} จาก {t} ชิ้น', z_open:'ขยายดูภาพ', z_in:'ขยาย', z_out:'ย่อ', z_fit:'พอดีจอ', z_hint:'เลื่อนลูกกลิ้ง ดับเบิลคลิก หรือกด + − เพื่อซูม ลากเพื่อเลื่อนภาพ กด Esc เพื่อปิด', z_hint_t:'แตะสองครั้งหรือใช้สองนิ้วเพื่อซูม ลากเพื่อเลื่อนภาพ', qv_free:'พร้อมขาย', qv_ask:'ทักศิลปิน', qv_walk:'เดินชมตึกของศิลปิน →', qv_prev:'ชิ้นก่อนหน้า', qv_next:'ชิ้นถัดไป', qv_thb:'ประมาณ', card_aria:'{t} โดย{a} {p}',
+  all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', q_ph:'ค้นหาชื่องาน ชื่อศิลปิน (ไทย · English · ລາວ)', q_aria:'ค้นหาผลงานตามชื่องานหรือชื่อศิลปิน', q_none:'ไม่พบผลงานที่ตรงกับ “{q}” ลองคำอื่น หรือล้างตัวกรอง', sf_group:'ตัวกรองด่วน', sf_status:'สถานะ', sf_all:'ทั้งหมด', sf_avail:'ยังว่างอยู่', sf_price:'ราคา', sf_p1:'ต่ำกว่า $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'ล้างตัวกรอง', sf_none:'ไม่มีผลงานในช่วงนี้ ลองตัวกรองอื่น', sf_count:'แสดง {n} จาก {t} ชิ้น', z_open:'ขยายดูภาพ', z_in:'ขยาย', z_out:'ย่อ', z_fit:'พอดีจอ', z_hint:'เลื่อนลูกกลิ้ง ดับเบิลคลิก หรือกด + − เพื่อซูม ลากเพื่อเลื่อนภาพ กด Esc เพื่อปิด', z_hint_t:'แตะสองครั้งหรือใช้สองนิ้วเพื่อซูม ลากเพื่อเลื่อนภาพ', qv_free:'พร้อมขาย', qv_ask:'ทักศิลปิน', qv_walk:'เดินชมตึกของศิลปิน →', qv_prev:'ชิ้นก่อนหน้า', qv_next:'ชิ้นถัดไป', qv_thb:'ประมาณ', card_aria:'{t} โดย{a} {p}', card_aria_np:'{t} โดย{a}',
   map_i:'The', map_h:'แผนที่เมือง', map_p:'มองจากข้างบน เมืองแบ่งเป็นย่านตามสาขา กดย่านหรือปุ่มกรอง แล้วตึกในแถบเมืองด้านบนจะสว่างขึ้นให้',
   filters_aria:'กรองตามสาขา', f_all:'ทั้งหมด', district:'ย่าน', plaza:'PLAZA · จัตุรัสกลางเมือง',
   fnote:'ไฮไลต์ {n} ตึกสาขา{d}ในแถบเมืองแล้ว', fnote_go:'ดูตึกในแถบเมือง ↑', fnote_in:'เข้าไปในตึก →', fnote_x:'ล้างตัวกรอง ✕',
@@ -136,7 +139,7 @@ en: {
   consent_form:'By sending this you accept the <a href="privacy.html">privacy policy</a>. Your message reaches the circles team first, who pass it on to the recipient named above (through a form service).',
   news_consent:'By subscribing you accept the <a href="privacy.html">privacy policy</a>. Unsubscribe any time.',
   hero_hl1:'A city of artists', hero_hl2:'Room for art', hero_hl3:"that won't shut up",
-  hero_lead:'One concrete building, one artist. No gallery, no middleman. Walk in, look at the work, then buy straight from the person who made it.', hero_cta:'Enter the city →', hero_alt:'See works and prices ↓',
+  hero_lead:'One concrete building, one artist. No gallery, no middleman. Walk in, look at the work, then buy straight from the person who made it.', hero_cta:'Enter the city →', hero_alt:'See the works ↓',
   city_h:'City', city_p:"Drag or scroll right to walk through the city. Each building is one artist's studio, and the pictures set into the concrete are real works.",
   pager_l:'Scroll left', pager_r:'Scroll right', strip_aria:'City of artists, scroll left and right', bd_aria:"Enter {a}'s building, {d}", works_n:'{n} WORKS',
   mani_k:'Manifesto', mani1:'NO GALLERY', mani2:'NO MIDDLEMAN', mani3:'NO CUT TAKEN', mani4:'JUST MAKER + BUYER',
@@ -148,7 +151,7 @@ en: {
   s3_h:'Buy direct from the artist', s3_p:'Found the piece that follows you home? Talk to the maker directly and pay the price they set. Every cent goes to the artist, nobody skims first.',
   feat_i:'Featured', feat_h:"This week's picks", feat_h_all:'Every work in the city',
   sort_label:'Sort by', sort_cur:'Curated', sort_low:'Price: low → high', sort_high:'Price: high → low', sort_new:'Newest',
-  all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', q_ph:'Search a title or an artist (Thai · English · ລາວ)', q_aria:'Search works by title or artist', q_none:'No works match “{q}”. Try another word, or clear the filters.', sf_group:'Quick filters', sf_status:'Status', sf_all:'All', sf_avail:'Available', sf_price:'Price', sf_p1:'Under $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'Clear filters', sf_none:'No works in this range. Try another filter.', sf_count:'Showing {n} of {t} works', z_open:'Zoom into the picture', z_in:'Zoom in', z_out:'Zoom out', z_fit:'Fit to screen', z_hint:'Scroll, double-click or press + − to zoom. Drag to move. Esc closes.', z_hint_t:'Double-tap or pinch to zoom. Drag to move.', qv_free:'Available', qv_ask:'Message the artist', qv_walk:'Walk through the artist\'s building →', qv_prev:'Previous work', qv_next:'Next work', qv_thb:'about', card_aria:'{t} by {a}, {p}',
+  all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', q_ph:'Search a title or an artist (Thai · English · ລາວ)', q_aria:'Search works by title or artist', q_none:'No works match “{q}”. Try another word, or clear the filters.', sf_group:'Quick filters', sf_status:'Status', sf_all:'All', sf_avail:'Available', sf_price:'Price', sf_p1:'Under $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'Clear filters', sf_none:'No works in this range. Try another filter.', sf_count:'Showing {n} of {t} works', z_open:'Zoom into the picture', z_in:'Zoom in', z_out:'Zoom out', z_fit:'Fit to screen', z_hint:'Scroll, double-click or press + − to zoom. Drag to move. Esc closes.', z_hint_t:'Double-tap or pinch to zoom. Drag to move.', qv_free:'Available', qv_ask:'Message the artist', qv_walk:'Walk through the artist\'s building →', qv_prev:'Previous work', qv_next:'Next work', qv_thb:'about', card_aria:'{t} by {a}, {p}', card_aria_np:'{t} by {a}',
   map_i:'The', map_h:'City map', map_p:'From above, the city splits into districts by discipline. Tap a district or a filter and the matching buildings light up in the strip above.',
   filters_aria:'Filter by discipline', f_all:'All', district:'DISTRICT', plaza:'PLAZA · CITY SQUARE',
   fnote:'Highlighted {n} building(s) in the {d} district', fnote_go:'See buildings in the strip ↑', fnote_in:'Enter building →', fnote_x:'Clear filter ✕',
@@ -432,16 +435,16 @@ function openQuick(id, k, list) {
     const thb = thbOf(p.p);
     const nav = (dir, on) => seq.length > 1 ? `<button type="button" class="qv-nav qv-${dir}" data-qv-go="${dir === 'prev' ? -1 : 1}" aria-label="${esc(t(dir === 'prev' ? 'qv_prev' : 'qv_next'))}"${on ? '' : ' disabled'}>${dir === 'prev' ? '←' : '→'}</button>` : '';
     d.innerHTML = `<div class="qv-stage" data-qv-stage>${nav('prev', pos > 0)}
-  <div class="qv-frame" data-zoomable style="--ar:${esc(p.ar || '1/1')};--arn:${arn};--art:${artBg(a.works, ck)}">${artImg(a, ck)}${stampHtml(p)}${p.img ? zoomBtn() : ''}</div>${nav('next', pos < seq.length - 1)}</div>
+  <div class="qv-frame" data-zoomable style="--ar:${esc(p.ar || '1/1')};--arn:${arn};--art:${artBg(a.works, ck)}">${artImg(a, ck)}${shopOn() ? stampHtml(p) : ''}${p.img ? zoomBtn() : ''}</div>${nav('next', pos < seq.length - 1)}</div>
 <aside class="qv-info">
-  <div class="qv-meta"><span class="qv-st ${sta || 'free'}">${esc(sta === 'sold' ? t('st_sold') : sta === 'reserved' ? t('st_res') : t('qv_free'))}</span>${seq.length > 1 ? `<span class="qv-cnt" aria-hidden="true">${pos + 1} / ${seq.length}</span>` : ''}</div>
+  <div class="qv-meta">${shopOn() ? `<span class="qv-st ${sta || 'free'}">${esc(sta === 'sold' ? t('st_sold') : sta === 'reserved' ? t('st_res') : t('qv_free'))}</span>` : '<span></span>'}${seq.length > 1 ? `<span class="qv-cnt" aria-hidden="true">${pos + 1} / ${seq.length}</span>` : ''}</div>
   <h2 class="qv-t" id="qv-t">${esc(pk(p, 't'))}</h2>
   <p class="qv-by">${t('d_by', {a: `<a href="profile-${esc(a.id)}.html">${esc(nm)}</a>`, d: esc(discL(a)), c: esc(cityL(a))})}</p>
   ${p.q ? `<p class="qv-q">“${esc(pk(p, 'q'))}”</p>` : ''}
   <dl class="qv-dl"><div><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div><dt>${esc(t('lb_year'))}</dt><dd>${esc(p.y)}</dd></div></dl>
-  <div class="qv-price"><b class="${sta === 'sold' ? 'qv-strike' : ''}">${esc(usd(p.p))}</b>${thb ? `<span class="qv-thb">≈ ${esc(thb)}</span>` : isDraft() ? '<span class="qv-thb">≈ ฿<i class="qv-todo">[__]</i></span>' : ''}</div>
-  <div class="qv-cta"><b class="qv-sp${sta === 'sold' ? ' qv-strike' : ''}">${esc(usd(p.p))}</b>${pay ? `<a class="qv-btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="qv-btn ${pay ? '' : 'pk'}" href="buy-${esc(a.id)}-${ck}.html">${esc(buyTxt)}</a><button type="button" class="qv-btn" data-qv-ask>${esc(t('qv_ask'))}</button></div>
-  <a class="qv-walk" href="studio-${esc(a.id)}.html?work=${ck}">${esc(t('qv_walk'))}</a>
+  ${!shopOn() ? '' : `<div class="qv-price"><b class="${sta === 'sold' ? 'qv-strike' : ''}">${esc(usd(p.p))}</b>${thb ? `<span class="qv-thb">≈ ${esc(thb)}</span>` : isDraft() ? '<span class="qv-thb">≈ ฿<i class="qv-todo">[__]</i></span>' : ''}</div>`}
+  ${!shopOn() ? `<div class="qv-cta"><a class="qv-btn pk" href="studio-${esc(a.id)}.html?work=${ck}">${esc(t('qv_walk'))}</a></div>` : `<div class="qv-cta"><b class="qv-sp${sta === 'sold' ? ' qv-strike' : ''}">${esc(usd(p.p))}</b>${pay ? `<a class="qv-btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="qv-btn ${pay ? '' : 'pk'}" href="buy-${esc(a.id)}-${ck}.html">${esc(buyTxt)}</a><button type="button" class="qv-btn" data-qv-ask>${esc(t('qv_ask'))}</button></div>`}
+  ${!shopOn() ? '' : `<a class="qv-walk" href="studio-${esc(a.id)}.html?work=${ck}">${esc(t('qv_walk'))}</a>`}
 </aside>
 <button type="button" class="qv-x" data-close aria-label="${esc(t('close'))}">✕</button>`;
   };

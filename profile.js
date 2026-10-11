@@ -14,7 +14,7 @@
   function stats(A) {
     const sold = A.pieces.filter(p => workStatus(p) === 'sold').length + (+A.sold > 0 ? +A.sold : 0);
     return [
-      [A.pieces.length, 'pf_nw', 'ink', -3], [sold, 'pf_ns', 'pink', 2], [+A.since > 0 ? A.since : 0, 'pf_ny', 'gold', -1.5]]
+      [A.pieces.length, 'pf_nw', 'ink', -3], [shopOn() ? sold : 0, 'pf_ns', 'pink', 2], [+A.since > 0 ? A.since : 0, 'pf_ny', 'gold', -1.5]]
       .filter(s => s[0] > 0);
   }
   function html(A) {
@@ -28,10 +28,10 @@
     const tags = [[discL(A), 'paper', -2], [cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>
       `<li class="pf-tag pf-in pf-pop pf-t-${x[1]}" style="--r:${x[2]}deg;--pf-d:${1 + i * .1}s">${esc(x[0])}</li>`).join('');
     const picks = A.pieces.slice(0, 4).map((p, k) => {
-      const sta = workStatus(p), price = sta ? t('st_sold') : usd(p.p);
-      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(pk(p, 't') + ' · ' + (sta ? t('st_sold') : usd(p.p)))}">
+      const sta = workStatus(p), price = !shopOn() ? '' : sta ? t('st_sold') : usd(p.p);
+      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(pk(p, 't') + (shopOn() ? ' · ' + (sta ? t('st_sold') : usd(p.p)) : ''))}">
         <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(pk(p, 't'))}" loading="lazy" decoding="async" draggable="false">` : ''}
-        <span class="pf-cap"><b>${esc(pk(p, 't'))}</b><span class="pf-cp${sta ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
+        <span class="pf-cap"><b>${esc(pk(p, 't'))}</b>${price ? `<span class="pf-cp${sta ? ' pf-strike' : ''}">${esc(price)}</span>` : ''}</span></a></li>`;
     }).join('');
     const can = https(CONFIG.donate);
     const supBtn = can
@@ -60,7 +60,7 @@
       <div class="pf-sb">${supBtn}</div></div><i class="pf-tp pf-tp-gold pf-tp-s"></i></div>
     <div class="pf-cta pf-in pf-rise" style="--r:0deg;--pf-d:2.2s">
       <a class="pf-go" href="studio-${esc(A.id)}.html">${esc(t('pf_walk'))}</a>
-      <button type="button" class="pf-lk" data-pf-ask>${esc(t('pf_ask'))}</button>
+      <button type="button" class="pf-lk shop-only" data-pf-ask>${esc(t('pf_ask'))}</button>
       ${ig ? `<a class="pf-lk" href="${esc(ig)}" target="_blank" rel="noopener">${esc(t('pf_ig'))}</a>` : ''}
       <button type="button" class="pf-bt pf-bt-gold" data-pf-share>${esc(t('pf_share'))}</button>
       <button type="button" class="pf-bt" data-pf-copy>${esc(t('pf_copy'))}</button>
