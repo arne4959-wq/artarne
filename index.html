@@ -55,7 +55,7 @@
 html{scroll-behavior:smooth;scroll-padding-top:72px;}
 html.lenis{scroll-behavior:auto;}   /* Lenis does the easing; native smooth-scroll on top of it makes anchor jumps fight each other. Stays smooth if Lenis fails to load. */
 body{font-family:var(--thai);background:var(--bone);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-:focus-visible{outline:3px solid var(--pink);outline-offset:4px;}
+:focus-visible{outline:3px solid var(--black);box-shadow:0 0 0 3px var(--paper);outline-offset:4px;}
 .tartan{background:var(--tartan);}
 .concrete{background:var(--grain),repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 44px),var(--concrete);}
 
@@ -215,7 +215,7 @@ nav.scrolled{padding:.55rem 2rem;box-shadow:0 8px 24px rgba(14,13,12,.14);}
 .tag .nm{font-size:1.8rem;margin:.15rem 0 .25rem;display:block;}
 .tag .ds{font:400 .82rem var(--type);letter-spacing:.1em;text-transform:uppercase;}
 .tag .wl{position:absolute;left:-3px;right:-3px;top:calc(100% + 3px);padding:.5rem 1rem .6rem 1.1rem;background:var(--paper);border:var(--line) solid var(--black);border-top:0;
-  font:400 .74rem/1.6 var(--type);color:#6E685C;opacity:0;transform:translateY(-6px);transition:opacity .4s var(--ease),transform .5s var(--ease);}
+  font:400 .74rem/1.6 var(--type);color:#4A453D;opacity:0;transform:translateY(-6px);transition:opacity .4s var(--ease),transform .5s var(--ease);}
 .bd:hover .wl,.bd:focus-visible .wl{opacity:1;transform:none;}
 
 .progress{position:relative;margin:0 3rem;height:6px;background:rgba(14,13,12,.14);cursor:pointer;}
@@ -448,7 +448,7 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
   .masonry{columns:2 140px;column-gap:1.3rem;}
   .mi{margin-bottom:2.2rem;}
   .card .plate{margin:-1.2rem .5rem 0;padding:.55rem .6rem .65rem;}
-  .card .pn{font-size:1rem;}.card .pa{font-size:.68rem;}.card .pp{font-size:.95rem;}
+  .card .pn{font-size:1rem;}.card .pa{font-size:.8rem;}.card .pp{font-size:.95rem;}
   .map{grid-template-columns:repeat(2,1fr);gap:12px;padding:12px;}
   .dist,.plaza{grid-column:span 1!important;min-height:178px;}
   .dist.wide,.plaza{grid-column:span 2!important;}
@@ -484,11 +484,53 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .tape-wrap.r .tape-bar{transform:rotate(1deg);}
 .stk{position:absolute;right:3rem;top:1.6rem;z-index:3;font:400 .95rem var(--anton);letter-spacing:.12em;background:var(--pink);color:var(--black);border:var(--line) solid var(--black);padding:.25rem .7rem;transform:rotate(7deg);box-shadow:4px 4px 0 var(--black);}
 .stk.gold{background:var(--gold);transform:rotate(-6deg);}
-.feat-bar{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.4rem;margin:2rem 0 0;}
 .sortl{display:flex;align-items:center;gap:.7rem;font:400 .8rem var(--type);letter-spacing:.12em;text-transform:uppercase;}
 .sortl select{font:400 .9rem var(--type);color:var(--black);background-color:var(--paper);border:var(--line) solid var(--black);padding:.5rem 2rem .5rem .8rem;border-radius:0;-webkit-appearance:none;appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,var(--black) 50%),linear-gradient(-45deg,transparent 50%,var(--black) 50%);background-position:calc(100% - 16px) 55%,calc(100% - 10px) 55%;background-size:6px 6px;background-repeat:no-repeat;cursor:pointer;box-shadow:4px 4px 0 var(--black);}
 .feat-count{font:400 .8rem var(--type);letter-spacing:.1em;color:var(--tartan-red);}
+/* ===== search & filter bar (works wall): 2px black lines on paper, bold type, pink = on. site.js: worksList(), syncBar() ===== */
+.sf{display:grid;gap:.9rem;max-width:1000px;margin:2rem 0 0;padding:1rem 1rem .8rem;background:var(--paper);border:2px solid var(--black);box-shadow:6px 6px 0 var(--black);}
+html:not(.js) .sf{display:none;}
+.sf-top{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1.1rem;}
+.sf-q{position:relative;flex:1 1 300px;min-width:0;}
+.sf-ico{position:absolute;left:.8rem;top:50%;width:20px;height:20px;transform:translateY(-50%);fill:none;stroke:var(--black);stroke-width:2.8;stroke-linecap:round;pointer-events:none;}
+.sf-q input{width:100%;min-height:48px;padding:.55rem .8rem .55rem 2.7rem;font:600 1rem/1.4 "IBM Plex Sans Thai","Noto Sans Lao","Noto Sans Lao UI","Phetsarath OT","Lao UI",system-ui,sans-serif;color:var(--black);background:var(--bone);border:2px solid var(--black);border-radius:0;-webkit-appearance:none;appearance:none;}
+.sf-q input::placeholder{color:#4A453D;font-weight:400;}
+.sf-q input:focus{outline:none;background:#fff;box-shadow:4px 4px 0 var(--pink);}
+.sf-q input:focus-visible{outline:2px solid var(--black);outline-offset:3px;}
+.sf-q input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;width:20px;height:20px;cursor:pointer;background:linear-gradient(45deg,transparent 42%,var(--black) 42% 58%,transparent 58%),linear-gradient(-45deg,transparent 42%,var(--black) 42% 58%,transparent 58%);}
+.sf .sortl select{min-height:48px;border-width:2px;font-weight:600;box-shadow:3px 3px 0 var(--black);}
+.sf-chips{display:flex;flex-wrap:wrap;gap:.8rem 1.6rem;}
+.sf-g{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;}
+.sf-k{font:400 .74rem var(--type);letter-spacing:.14em;text-transform:uppercase;color:var(--tartan-red);margin-right:.15rem;}
+.sf-chip{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.35rem .75rem;font:400 .95rem/1 var(--anton);letter-spacing:.08em;text-transform:uppercase;color:var(--black);background:var(--paper);border:2px solid var(--black);border-radius:0;cursor:pointer;box-shadow:3px 3px 0 var(--black);transition:transform .15s var(--ease),box-shadow .15s var(--ease);}
+.sf-chip:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--black);}
+.sf-chip:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--black);}
+.sf-chip[aria-pressed="true"]{background:var(--black);color:var(--paper);box-shadow:3px 3px 0 var(--pink);}
+.sf-chip[aria-pressed="true"]:hover{box-shadow:5px 5px 0 var(--pink);}
+.sf-chip:focus-visible{outline:3px solid var(--black);box-shadow:0 0 0 3px var(--paper);outline-offset:3px;}
+.sf-chip.zero{border-style:dashed;box-shadow:none;}
+.sf-n{min-width:1.7em;padding:.22rem .35rem;font:400 .74rem/1 var(--type);letter-spacing:0;text-align:center;background:var(--black);color:var(--paper);font-variant-numeric:tabular-nums;}
+.sf-chip[aria-pressed="true"] .sf-n{background:var(--pink);color:var(--black);}
+.sf-chip.zero .sf-n{background:var(--bone);color:var(--black);}
+.sf-foot{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1.2rem;min-height:44px;padding-top:.6rem;border-top:2px dashed var(--black);}
+.hero-alt{display:inline-block;margin:.4rem 0 0 1.2rem;min-height:44px;line-height:44px;font:400 1rem var(--anton);letter-spacing:.12em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:3px solid var(--pink);}
+.hero-alt:hover,.hero-alt:focus-visible{background:var(--pink);}
+@media(max-width:600px){.hero-alt{margin:.6rem 0 0 0;display:block;width:max-content;}}
+.sf-more{display:flex;justify-content:center;margin-top:2rem;}
+.sf-more[hidden]{display:none;}
+.sf-all{min-height:52px;padding:.4rem 1.8rem;font:400 1.15rem var(--anton);letter-spacing:.12em;text-transform:uppercase;color:var(--black);background:var(--pink);border:3px solid var(--black);box-shadow:5px 5px 0 var(--black);cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s var(--ease);}
+.sf-all:hover,.sf-all:focus-visible{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--black);}
+.sf-all:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--black);}
+@media(hover:none){.sf-all:hover{transform:none;box-shadow:5px 5px 0 var(--black);}}
+.sf-reset{min-height:44px;padding:0 .1rem;font:400 .9rem var(--anton);letter-spacing:.1em;text-transform:uppercase;color:var(--black);background:none;border:0;border-bottom:3px solid var(--pink);cursor:pointer;}
+.sf-reset:hover{color:var(--tartan-red);}
+.sf-reset:focus-visible{outline:3px solid var(--black);box-shadow:0 0 0 3px var(--paper);outline-offset:3px;}
+.q-none{column-span:all;display:grid;justify-items:start;gap:.6rem;max-width:560px;font:400 1rem/1.7 var(--thai);background:var(--paper);border:2px solid var(--black);padding:1.1rem 1.3rem;box-shadow:6px 6px 0 var(--black);}
+@media(hover:none){.sf-chip:hover{transform:none;box-shadow:3px 3px 0 var(--black);}.sf-chip[aria-pressed="true"]:hover{box-shadow:3px 3px 0 var(--pink);}}
+@media(prefers-reduced-motion:reduce){.sf-chip{transition:none;}}
+@media(max-width:600px){.sf{padding:.85rem .8rem .7rem;box-shadow:4px 4px 0 var(--black);}.sf-chips{gap:.7rem;}.sf-chip{padding:.35rem .6rem;font-size:.9rem;}}
+/* ===== search & filter bar: end ===== */
 .mi.pop{animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0) * 45ms);}
 .card .art{position:relative;overflow:hidden;}
 .tag .wv{position:absolute;top:-15px;right:-12px;z-index:3;font:400 .68rem var(--anton);font-style:normal;letter-spacing:.14em;background:var(--gold);color:var(--black);border:2px solid var(--black);padding:.1rem .5rem;transform:rotate(5deg);box-shadow:2px 2px 0 var(--black);white-space:nowrap;}
@@ -561,6 +603,40 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .join-band{background:var(--bone);display:flex;flex-wrap:wrap;gap:1.6rem 3rem;align-items:flex-end;justify-content:space-between;border-top:var(--line) solid var(--black);}
 .join-band .sec-t{margin-bottom:.4rem;}
 .jb-p{font:300 1.05rem/1.8 var(--thai);}
+.sup{background:var(--paper);border-top:var(--line) solid var(--black);display:grid;grid-template-columns:1.1fr 1fr;gap:2.4rem 4rem;align-items:start;}
+.sup .sec-p{margin:.4rem 0 1.8rem;max-width:560px;}
+.sup .btn.soon,.sup .btn.soon:hover{background:var(--bone);color:var(--black);box-shadow:none;transform:none;cursor:not-allowed;}
+.sup-w{position:relative;background:var(--bone);border:var(--line) solid var(--black);box-shadow:8px 8px 0 var(--black);padding:1.6rem 1.5rem 1.3rem;}
+.sup-w h3{font:400 1.5rem/1.35 "Chonburi",var(--thai);margin-bottom:1rem;}
+.sup-w ul{list-style:none;display:grid;gap:1.1rem;}
+.sup-w li{display:grid;grid-template-columns:1fr auto;gap:.35rem 1rem;align-items:end;font:400 .98rem/1.5 var(--thai);}
+.sup-bar{grid-column:1 / -1;height:16px;border:2px solid var(--black);background:repeating-linear-gradient(135deg,var(--black) 0 10px,var(--gold) 10px 20px);}
+.sup-v{font:400 1.6rem/1 var(--anton);letter-spacing:.04em;}
+.sup-w[hidden],.sup-w [hidden]{display:none;}
+.sup-note{margin-top:1.1rem;font:400 .8rem/1.7 var(--type);color:#4A453D;}
+@media(max-width:860px){.sup{grid-template-columns:1fr;padding:3rem 1.2rem;}}
+
+/* ---- loop section ("วงกลมไม่มีปลายทาง"): new rules only ---- */
+.cy{background:var(--paper);border-bottom:var(--line) solid var(--black);display:grid;grid-template-columns:1fr 1fr;gap:3rem 4rem;align-items:center;}
+.cy .sec-p{margin-top:.6rem;max-width:520px;}
+.cy .sec-t{text-wrap:balance;}
+.cy-fig{position:relative;width:min(100%,420px);aspect-ratio:1;margin:0 auto;}
+.cy-ring{position:absolute;inset:17%;width:66%;height:66%;overflow:visible;}
+.cy-ring circle{fill:none;stroke:var(--black);stroke-width:2.5;stroke-dasharray:5 4;}
+.cy-ring path{fill:var(--pink);stroke:var(--black);stroke-width:1.5;stroke-linejoin:round;}
+.cy-orbit{position:absolute;inset:17%;animation:cySpin 16s linear infinite;pointer-events:none;}
+.cy-orbit::before{content:"";position:absolute;top:0;left:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--gold);border:2px solid var(--black);}
+@keyframes cySpin{to{transform:rotate(360deg);}}
+.cy-steps{list-style:none;position:absolute;inset:0;}
+.cy-steps li{position:absolute;display:flex;align-items:center;gap:.5rem;width:max-content;max-width:42%;background:var(--bone);border:var(--line) solid var(--black);box-shadow:4px 4px 0 var(--black);padding:.4rem .7rem .4rem .45rem;font:400 .98rem/1.35 "Chonburi",var(--thai);transform:translate(-50%,-50%);}
+.cy-steps li:nth-child(1){left:50%;top:17%;}
+.cy-steps li:nth-child(2){left:83%;top:50%;}
+.cy-steps li:nth-child(3){left:50%;top:83%;}
+.cy-steps li:nth-child(4){left:17%;top:50%;}
+.cy-steps li:nth-child(2n){background:var(--gold);}
+.cy-steps b{flex:none;display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--black);color:var(--paper);font:400 .95rem var(--anton);}
+@media(max-width:860px){.cy{grid-template-columns:1fr;padding:3rem 1.2rem;}.cy-steps li{font-size:.86rem;padding:.3rem .5rem .3rem .35rem;gap:.35rem;}.cy-steps b{width:1.45rem;height:1.45rem;font-size:.8rem;}}
+@media(prefers-reduced-motion:reduce){.cy-orbit{animation:none;}.cy-orbit::before{display:none;}}
 /* ===== city: view switch + filters above the street, map in the same place ===== */
 .city-tools{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.6rem;padding:0 3rem 1.8rem;}
 .city-tools .filters{margin:0;gap:.6rem;}
@@ -579,6 +655,24 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   .city-tools .fbtn{flex:none;}
   .map-view{padding:0 1.2rem 1rem;}
 }
+/* ===== works-img:start ===== image-first wall: no frame, the details show on hover / focus (always on touch) */
+.masonry{column-gap:1.1rem;}
+.mi{margin-bottom:1.1rem;padding:0;}
+.masonry .card::before{display:none;}
+.masonry .card:hover,.masonry .card:focus-visible{transform:none;}
+.masonry .card .tape{display:none;}
+.masonry .card .art{border:0;}
+.masonry .card .art img{transition:transform .7s var(--ease);}
+.masonry .card:hover .art img,.masonry .card:focus-visible .art img{transform:scale(1.04);}
+.masonry .card .plate{--fade:2.2rem;position:absolute;left:0;right:0;bottom:0;margin:0;border:0;background:linear-gradient(to top,rgba(14,13,12,.94),rgba(14,13,12,.86) calc(100% - var(--fade)),rgba(14,13,12,0));padding:var(--fade) .9rem .7rem;opacity:1;transition:opacity .3s var(--ease);z-index:3;}
+.masonry .card .pn{color:var(--paper);}
+.masonry .card .pa{color:var(--gold);}
+.masonry .card:hover .plate,.masonry .card:focus-visible .plate{opacity:1;}
+.masonry .card:focus-visible{outline:3px solid var(--black);box-shadow:0 0 0 3px var(--paper);outline-offset:3px;}
+@media(hover:none){.masonry .card .plate{--fade:2.2rem;opacity:1;padding:var(--fade) .7rem .6rem;}}
+@media(max-width:860px){.masonry{column-gap:.7rem;}.mi{margin-bottom:.7rem;}}
+@media(prefers-reduced-motion:reduce){.masonry .card .art img,.masonry .card .plate{transition:none;}}
+/* ===== works-img:end ===== */
 </style>
 </head>
 <body>
@@ -621,7 +715,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
 
 <nav id="nav">
   <div class="brand"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb-s"/></svg>CIRCLES</div>
-  <div class="links"><a href="#city" data-t="nav_city">เมือง</a><a href="#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
+  <div class="links"><a href="#city" data-t="nav_city">เมือง</a><a href="#featured" data-t="nav_works">ผลงาน</a><a href="#map" data-t="nav_artists">ศิลปิน</a><a href="#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
   <div class="mnav" id="mnav" inert><a href="#city" data-t="nav_city">เมือง</a><a href="#manifesto" data-t="foot_manifesto">Manifesto</a><a href="#how" data-t="foot_how">วิธีใช้งาน</a><a href="#featured" data-t="foot_feat">ผลงานเด่น</a><a href="#map" data-t="foot_map">แผนที่เมือง</a><a href="join.html" data-t="foot_join">ขอมีตึก</a></div>
 </nav>
 
@@ -632,8 +726,9 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
     <span class="hl rise" style="--i:4" data-t="hero_hl1">เมืองของศิลปิน</span>
     <span class="hl pink rise" style="--i:5" data-t="hero_hl2">พื้นที่สำหรับงานศิลปะ</span>
     <span class="hl gold rise" style="--i:6" data-t="hero_hl3">ที่ไม่ยอมเงียบ</span>
-    <p class="lead rise" style="--i:7" data-t="hero_lead">ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจากคนทำ</p>
-    <a class="btn rise" style="--i:8" href="#city" data-t="hero_cta">เข้าชมเมือง →</a>
+    <a class="btn rise" style="--i:7" href="#city" data-t="hero_cta">เข้าชมเมือง →</a>
+    <a class="hero-alt rise" style="--i:8" href="#featured" data-t="hero_alt">ดูผลงานและราคา ↓</a>
+    <p class="lead rise" style="--i:9" data-t="hero_lead">ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจากคนทำ</p>
   </div>
   <div class="arch concrete" id="arch">
     <div class="arch-in tartan"><div class="arch-par" id="arch-par"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb"/></svg></div></div>
@@ -676,6 +771,24 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <p class="mani-note reveal" style="--i:4" data-t="mani_note">ที่นี่ศิลปินตั้งราคาเอง รับเงินเอง และคุยกับคนซื้อเอง ไม่มีใครมานั่งขวางระหว่างเรากับงาน เพราะงานศิลปะควรเดินจากมือคนทำไปถึงมือคนรัก ไม่ใช่แวะจ่ายค่าผ่านทางก่อน</p>
 </section>
 
+<section class="sec cy" id="cycle" aria-labelledby="cy-h">
+  <div>
+    <div class="sec-k reveal">The loop</div>
+    <h2 class="sec-t reveal" id="cy-h"><span data-t="cy_h">วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน</span></h2>
+    <p class="sec-p reveal" style="--i:1" data-t="cy_p">ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ งานที่ถูกซื้อไปไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ</p>
+  </div>
+  <div class="cy-fig reveal" style="--i:2">
+    <svg class="cy-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(85.4,14.6) rotate(45)"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(85.4,85.4) rotate(135)"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(14.6,85.4) rotate(225)"/><path d="M-5,-4 L5,0 L-5,4 Z" transform="translate(14.6,14.6) rotate(315)"/></svg>
+    <span class="cy-orbit" aria-hidden="true"></span>
+    <ol class="cy-steps" data-t-aria="cy_aria" aria-label="วงจร 4 ขั้น: วาด โชว์ในตึก มีคนซื้อ แล้ววนกลับไปวาดต่อ">
+      <li><b>1</b><span data-t="cy_1">วาด</span></li>
+      <li><b>2</b><span data-t="cy_2">โชว์ในตึก</span></li>
+      <li><b>3</b><span data-t="cy_3">มีคนซื้อ</span></li>
+      <li><b>4</b><span data-t="cy_4">วาดต่อ</span></li>
+    </ol>
+  </div>
+</section>
+
 <section class="sec bp" id="how">
   <div class="sec-k reveal">How it works</div>
   <h2 class="sec-t reveal"><span data-t="how_h">วิธีใช้งาน</span></h2>
@@ -710,13 +823,20 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <span class="stk" aria-hidden="true">NEW EVERY WEEK ★</span>
   <div class="sec-k reveal">This week</div>
   <h2 class="sec-t reveal"><span id="feat-h">ผลงานเด่นสัปดาห์นี้</span></h2>
-  <div class="feat-bar reveal">
-    <label class="sortl"><span data-t="sort_label">เรียงตาม</span>
+  <div class="sf reveal" id="sf">
+    <div class="sf-top">
+      <div class="sf-q" role="search"><svg class="sf-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><input type="search" id="q" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-controls="masonry" data-t-ph="q_ph" data-t-aria="q_aria" placeholder="ค้นหาชื่องาน ชื่อศิลปิน (ไทย · English · ລາວ)" aria-label="ค้นหาผลงานตามชื่องานหรือชื่อศิลปิน"></div>
+      <label class="sortl"><span data-t="sort_label">เรียงตาม</span>
       <select id="sort"><option value="cur" data-t="sort_cur">คัดมาให้</option><option value="low" data-t="sort_low">ราคาต่ำ → สูง</option><option value="high" data-t="sort_high">ราคาสูง → ต่ำ</option><option value="new" data-t="sort_new">ใหม่ล่าสุด</option></select></label>
-    <button type="button" class="fbtn" id="all-btn" aria-pressed="false"></button>
-    <span class="feat-count" id="feat-count" role="status"></span>
+    </div>
+    <div class="sf-chips shop-only" role="group" data-t-aria="sf_group" aria-label="ตัวกรองด่วน">
+      <div class="sf-g"><span class="sf-k" data-t="sf_status">สถานะ</span><button type="button" class="sf-chip" id="all-btn" data-f="all" aria-pressed="false"><span data-t="sf_all">ทั้งหมด</span><b class="sf-n"></b></button><button type="button" class="sf-chip" data-f="avail" aria-pressed="false"><span data-t="sf_avail">ยังว่างอยู่</span><b class="sf-n"></b></button></div>
+      <div class="sf-g"><span class="sf-k" data-t="sf_price">ราคา</span><button type="button" class="sf-chip" data-f="p1" aria-pressed="false"><span data-t="sf_p1">ต่ำกว่า $300</span><b class="sf-n"></b></button><button type="button" class="sf-chip" data-f="p2" aria-pressed="false"><span data-t="sf_p2">$300–600</span><b class="sf-n"></b></button><button type="button" class="sf-chip" data-f="p3" aria-pressed="false"><span data-t="sf_p3">$600+</span><b class="sf-n"></b></button></div>
+    </div>
+    <div class="sf-foot"><span class="feat-count" id="feat-count" role="status"></span><button type="button" class="sf-reset" id="sf-reset" data-t="sf_reset" hidden>ล้างตัวกรอง</button></div>
   </div>
-  <div class="masonry" id="masonry"><!--pre:masonry--><div class="mi reveal in" style="--i:0"><a class="card" href="studio-mali.html?work=0" draggable="false" data-id="mali" data-k="0" data-cur="VIEW" aria-label="ซ้อนทับ โดยมะลิ $85"><i class="tape" style="--tr:-5deg"></i><span class="art" style="--ar:4/5;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#E8584F 0 40%,#3F6FA8 40% 66%,#F0C14B 66%)"><img src="art/mali-1.svg" alt="ซ้อนทับ" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ซ้อนทับ</span><span class="pa">มะลิ · ริโซกราฟ</span><span class="pp">$85</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-phop.html?work=2" draggable="false" data-id="phop" data-k="2" data-cur="VIEW" aria-label="คลื่นตาราง โดยภพ $340"><i class="tape" style="--tr:4deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#E8E4D8 0 18%,transparent 18.5%),linear-gradient(135deg,#2E2A3A 0 50%,#C9A24B 50%)"><img src="art/phop-3.svg" alt="คลื่นตาราง" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">คลื่นตาราง</span><span class="pa">ภพ · ศิลปะเจเนอเรทีฟ</span><span class="pp">$340</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-phrae.html?work=2" draggable="false" data-id="phrae" data-k="2" data-cur="VIEW" aria-label="ไฟล์เสีย โดยแพร $650"><i class="tape" style="--tr:-3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#3FB8AF 0 18%,transparent 18.5%),linear-gradient(135deg,#1B1B26 0 50%,#D6457A 50%)"><img src="art/phrae-3.svg" alt="ไฟล์เสีย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ไฟล์เสีย</span><span class="pa">แพร · กลิตช์อาร์ต</span><span class="pp">$650</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-thara.html?work=0" draggable="false" data-id="thara" data-k="0" data-cur="VIEW" aria-label="ถนนเปียก โดยธารา $420"><i class="tape" style="--tr:6deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#4A6080 0 40%,#2D4A6A 40% 66%,#6B8099 66%)"><img src="art/thara-1.svg" alt="ถนนเปียก" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ถนนเปียก</span><span class="pa">ธารา · ภาพถ่าย</span><span class="pp">$420</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-pan.html?work=0" draggable="false" data-id="pan" data-k="0" data-cur="VIEW" aria-label="เส้นใยในดิน โดยป่าน $380"><i class="tape" style="--tr:-6deg"></i><span class="art" style="--ar:1/1;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#2A241C 0 40%,#8F9A6C 40% 66%,#D8CFA6 66%)"><img src="art/pan-1.svg" alt="เส้นใยในดิน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นใยในดิน</span><span class="pa">ป่าน · ไบโออาร์ต</span><span class="pp">$380</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-kwan.html?work=2" draggable="false" data-id="kwan" data-k="2" data-cur="VIEW" aria-label="รถไฟในฝัน โดยขวัญ $390"><i class="tape" style="--tr:3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#B888B8 0 18%,transparent 18.5%),linear-gradient(135deg,#9B6B9B 0 50%,#7A4A7A 50%)"><img src="art/kwan-3.svg" alt="รถไฟในฝัน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">รถไฟในฝัน</span><span class="pa">ขวัญ · ภาพประกอบ</span><span class="pp">$390</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-irene.html?work=1" draggable="false" data-id="irene" data-k="1" data-cur="VIEW" aria-label="เส้นด้าย โดยไอรีน $520"><i class="tape" style="--tr:-4deg"></i><span class="art" style="--ar:5/9;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 34% 40%,#4A7040 0 22%,transparent 22.5%),radial-gradient(circle at 68% 64%,#3A6030 0 30%,transparent 30.5%),#5A8050"><img src="art/irene-2.svg" alt="เส้นด้าย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นด้าย</span><span class="pa">ไอรีน · สิ่งทอ</span><span class="pp">$520</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-napha.html?work=0" draggable="false" data-id="napha" data-k="0" data-cur="VIEW" aria-label="เช้าหมอก โดยนภา $1,800"><i class="tape" style="--tr:5deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#C4958A 0 40%,#7A4A40 40% 66%,#D4CFCA 66%)"><img src="art/napha-1.svg" alt="เช้าหมอก" loading="lazy" decoding="async" draggable="false"><i class="stamp sold">ขายแล้ว</i></span><span class="plate"><span class="pn">เช้าหมอก</span><span class="pa">นภา · จิตรกรรม</span><span class="pp strike">$1,800</span><span class="chip sold">ขายแล้ว</span></span></a></div><!--/pre:masonry--></div>
+  <div class="masonry" id="masonry"><!--pre:masonry--><div class="mi reveal in" style="--i:0"><a class="card" href="studio-mali.html?work=0" draggable="false" data-id="mali" data-k="0" data-cur="VIEW" aria-label="ซ้อนทับ โดยมะลิ"><i class="tape" style="--tr:-5deg"></i><span class="art" style="--ar:4/5;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#E8584F 0 40%,#3F6FA8 40% 66%,#F0C14B 66%)"><img src="art/mali-1.svg" alt="ซ้อนทับ" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ซ้อนทับ</span><span class="pa">มะลิ · ริโซกราฟ</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-phop.html?work=2" draggable="false" data-id="phop" data-k="2" data-cur="VIEW" aria-label="คลื่นตาราง โดยภพ"><i class="tape" style="--tr:4deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#E8E4D8 0 18%,transparent 18.5%),linear-gradient(135deg,#2E2A3A 0 50%,#C9A24B 50%)"><img src="art/phop-3.svg" alt="คลื่นตาราง" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">คลื่นตาราง</span><span class="pa">ภพ · ศิลปะเจเนอเรทีฟ</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-phrae.html?work=2" draggable="false" data-id="phrae" data-k="2" data-cur="VIEW" aria-label="ไฟล์เสีย โดยแพร"><i class="tape" style="--tr:-3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#3FB8AF 0 18%,transparent 18.5%),linear-gradient(135deg,#1B1B26 0 50%,#D6457A 50%)"><img src="art/phrae-3.svg" alt="ไฟล์เสีย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ไฟล์เสีย</span><span class="pa">แพร · กลิตช์อาร์ต</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-thara.html?work=0" draggable="false" data-id="thara" data-k="0" data-cur="VIEW" aria-label="ถนนเปียก โดยธารา"><i class="tape" style="--tr:6deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#4A6080 0 40%,#2D4A6A 40% 66%,#6B8099 66%)"><img src="art/thara-1.svg" alt="ถนนเปียก" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ถนนเปียก</span><span class="pa">ธารา · ภาพถ่าย</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-pan.html?work=0" draggable="false" data-id="pan" data-k="0" data-cur="VIEW" aria-label="เส้นใยในดิน โดยป่าน"><i class="tape" style="--tr:-6deg"></i><span class="art" style="--ar:1/1;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#2A241C 0 40%,#8F9A6C 40% 66%,#D8CFA6 66%)"><img src="art/pan-1.svg" alt="เส้นใยในดิน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นใยในดิน</span><span class="pa">ป่าน · ไบโออาร์ต</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-kwan.html?work=2" draggable="false" data-id="kwan" data-k="2" data-cur="VIEW" aria-label="รถไฟในฝัน โดยขวัญ"><i class="tape" style="--tr:3deg"></i><span class="art" style="--ar:2/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#B888B8 0 18%,transparent 18.5%),linear-gradient(135deg,#9B6B9B 0 50%,#7A4A7A 50%)"><img src="art/kwan-3.svg" alt="รถไฟในฝัน" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">รถไฟในฝัน</span><span class="pa">ขวัญ · ภาพประกอบ</span></span></a></div><div class="mi reveal in" style="--i:0"><a class="card" href="studio-irene.html?work=1" draggable="false" data-id="irene" data-k="1" data-cur="VIEW" aria-label="เส้นด้าย โดยไอรีน"><i class="tape" style="--tr:-4deg"></i><span class="art" style="--ar:5/9;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 34% 40%,#4A7040 0 22%,transparent 22.5%),radial-gradient(circle at 68% 64%,#3A6030 0 30%,transparent 30.5%),#5A8050"><img src="art/irene-2.svg" alt="เส้นด้าย" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เส้นด้าย</span><span class="pa">ไอรีน · สิ่งทอ</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-napha.html?work=0" draggable="false" data-id="napha" data-k="0" data-cur="VIEW" aria-label="เช้าหมอก โดยนภา"><i class="tape" style="--tr:5deg"></i><span class="art" style="--ar:4/3;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#C4958A 0 40%,#7A4A40 40% 66%,#D4CFCA 66%)"><img src="art/napha-1.svg" alt="เช้าหมอก" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">เช้าหมอก</span><span class="pa">นภา · จิตรกรรม</span></span></a></div><!--/pre:masonry--></div>
+  <div class="sf-more" id="sf-more" hidden><button type="button" class="sf-all" id="sf-all"></button></div>
 </section>
 
 <div class="tape-wrap r" aria-hidden="true"><div class="tape-bar"></div></div>
@@ -729,9 +849,11 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
     <figure class="afr concrete reveal"><div class="afr-in" id="afr-in"><img id="afr-img" alt="" decoding="async"><figcaption id="afr-cap"></figcaption></div></figure>
     <div class="spot-qa">
       <div class="spot-meta reveal" id="spot-meta"></div>
+      <details class="fold fold-spot"><summary><span data-t="fold_spot">อ่านบทสัมภาษณ์ 3 ข้อ</span></summary><div class="fold-body">
       <div class="qa reveal" style="--i:1"><div class="q" data-t="q1">ทำไมถึงเลิกส่งงานเข้าหอศิลป์?</div><p class="a" data-t="a1">ส่งไปสิบสองรอบ ได้คำตอบว่า "น่าสนใจ แต่ยังไม่ใช่ตอนนี้" ครบสิบสองรอบ สุดท้ายก็เข้าใจว่า "ตอนนี้" ของพวกเขาไม่เคยมาถึง เลยเลิกรอ</p></div>
       <div class="qa reveal" style="--i:2"><div class="q" data-t="q2">ทำไมต้องห้องว่างกับหมอก?</div><p class="a" data-t="a2">เพราะที่ว่างคือที่เดียวที่ไม่มีใครมาบอกว่าต้องรู้สึกยังไง ห้องว่างหนึ่งห้อง คนดูร้อยคน ได้ร้อยเรื่อง ไม่ต้องมีคิวเรเตอร์แปลให้</p></div>
       <div class="qa reveal" style="--i:3"><div class="q" data-t="q3">ถ้าคนเดินเข้ามาแล้วไม่ซื้อล่ะ?</div><p class="a" data-t="a3">ก็ไม่เป็นไร เดินดูฟรี นั่งเถียงกับภาพได้ ถ้าวันไหนงานตามไปหลอนถึงบ้าน ค่อยกลับมาคุยราคากับคนวาดตรง ๆ ไม่มีใครเก็บค่าแนะนำ</p></div>
+      </div></details>
       <button type="button" class="btn pk reveal" style="--i:4" onclick="openStudio('napha')" data-t="spot_cta">เข้าไปในตึกนภา →</button>
     </div>
   </div>
@@ -753,13 +875,32 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <a class="btn" href="join.html" data-t="jb_btn">ดูรายละเอียด →</a>
 </section>
 
+<section class="sec sup draft-only" id="support">
+  <div>
+    <div class="sec-k reveal">Support</div>
+    <h2 class="sec-t reveal"><span data-t="sup_h">สนับสนุน Circles</span></h2>
+    <p class="sec-p reveal" data-t="sup_p">ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า</p>
+    <button type="button" class="btn pk soon" id="donate-btn" disabled data-t="don_soon">เร็วๆ นี้</button>
+  </div>
+  <div class="sup-w reveal" style="--i:1" hidden>
+    <h3 data-t="sup_where">เงินสนับสนุนไปไหน</h3>
+    <ul>
+      <li><span data-t="sup_r1">ค่าเซิร์ฟเวอร์และโดเมน</span><b class="sup-v">[__]%</b><i class="sup-bar" aria-hidden="true"></i></li>
+      <li><span data-t="sup_r2">การดูแลและพัฒนาเว็บ</span><b class="sup-v">[__]%</b><i class="sup-bar" aria-hidden="true"></i></li>
+      <li><span data-t="sup_r3">กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน</span><b class="sup-v">[__]%</b><i class="sup-bar" aria-hidden="true"></i></li>
+    </ul>
+    <p class="sup-note" data-t="sup_note">ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง</p>
+  </div>
+</section>
+
 <footer class="foot reveal">
   <h3 data-t-html="foot_h">ศิลปะ<em>ไม่รอ</em>ใคร</h3>
   <p data-t="foot_p">อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง</p>
   <button type="button" class="btn" onclick="openJoin()" data-t="foot_btn">ขอเข้าร่วม →</button>
+  <details class="fold fold-foot"><summary><span data-t="fold_foot">เมนู โซเชียล และจดหมายข่าว</span></summary>
   <div class="foot-more">
     <div><h4 data-t="foot_menu">เมนู</h4><ul><li><a href="#city" data-t="nav_city">เมือง</a></li><li><a href="#manifesto" data-t="foot_manifesto">Manifesto</a></li><li><a href="#how" data-t="foot_how">วิธีใช้งาน</a></li><li><a href="#featured" data-t="foot_feat">ผลงานเด่น</a></li><li><a href="#map" data-t="foot_map">แผนที่เมือง</a></li><li><a href="join.html" data-t="foot_join">ขอมีตึก</a></li></ul></div>
-    <div><h4 data-t="foot_social">โซเชียล</h4><ul>
+    <div class="draft-only"><h4 data-t="foot_social">โซเชียล</h4><ul>
       <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">Instagram · @circles.city</a></li>
       <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">X · @circles_city</a></li>
       <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">YouTube · circles city</a></li>
@@ -770,8 +911,8 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
       <div class="news-r"><input id="news-em" type="email" required placeholder="you@example.com" autocomplete="email"><button class="btn" type="submit" data-t="news_btn">สมัคร →</button></div>
       <small class="news-c" data-t-html="news_consent">สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ</small>
     </form>
-    <div class="foot-c"><span data-t="foot_copy">© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.</span> · <a href="privacy.html" data-t="legal_privacy">นโยบายความเป็นส่วนตัว</a> · <a href="terms.html" data-t="legal_terms">เงื่อนไขการใช้งาน</a></div>
-  </div>
+  </div></details>
+  <div class="foot-c"><span data-t="foot_copy">© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.</span> · <a href="privacy.html" data-t="legal_privacy">นโยบายความเป็นส่วนตัว</a> · <a href="terms.html" data-t="legal_terms">เงื่อนไขการใช้งาน</a></div>
 </footer>
 
 <script src="artists.js" defer></script>

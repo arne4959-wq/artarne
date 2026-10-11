@@ -279,29 +279,110 @@ addEventListener('pageshow', e => { if (e.persisted) { document.getElementById('
 /* ================= v6: sections driven by artists.js + circles.js (two languages) ================= */
 let langInit = false;
 const FEAT = [['mali', 0], ['phop', 2], ['napha', 0], ['phrae', 2], ['thara', 0], ['pan', 0], ['kwan', 2], ['irene', 1]], TAPE = [-5, 4, -3, 6, -6, 3, -4, 5];
-let showAll = false, sortBy = 'cur';
+let sortBy = 'cur';
 const allWorks = () => ARTISTS.flatMap(a => a.pieces.map((p, k) => ({a, p, k})));
+
+/* ===== search & filter bar =====
+   Search: every word typed must appear in the work's title (t / tEn / tLo), its artist's name (name / nameEn / nameLo),
+   art form, city, medium or year. Thai, Lao and English meet in one spelling (fold below), so ນະພາ finds นภา.
+   Quick filters: ทั้งหมด = every work instead of this week's picks, ยังว่างอยู่ = no sold works, and one price band. */
+const LAO = {'ກ':'ก','ຂ':'ข','ຄ':'ค','ງ':'ง','ຈ':'จ','ສ':'ส','ຊ':'ซ','ຍ':'ย','ດ':'ด','ຕ':'ต','ຖ':'ถ','ທ':'ท','ນ':'น','ບ':'บ','ປ':'ป','ຜ':'ผ','ຝ':'ฝ','ພ':'พ','ຟ':'ฟ','ມ':'ม','ຢ':'ย','ຣ':'ร','ລ':'ล','ວ':'ว','ຫ':'ห','ອ':'อ','ຮ':'ฮ',
+  'ໜ':'หน','ໝ':'หม','ຼ':'ล','ຽ':'ย','ະ':'ะ','ັ':'ั','າ':'า','ຳ':'ำ','ິ':'ิ','ີ':'ี','ຶ':'ึ','ື':'ื','ຸ':'ุ','ູ':'ู','ົ':'','ເ':'เ','ແ':'แ','ໂ':'โ','ໃ':'ใ','ໄ':'ไ','ໆ':'',
+  '່':'','້':'','໊':'','໋':'','໌':'์','ໍ':'ํ','໐':'0','໑':'1','໒':'2','໓':'3','໔':'4','໕':'5','໖':'6','໗':'7','໘':'8','໙':'9'};
+const MERGE = {'ภ':'พ','ธ':'ท','ฑ':'ท','ฒ':'ท','ศ':'ส','ษ':'ส','ณ':'น','ฬ':'ล','ฎ':'ด','ฏ':'ต','ฐ':'ถ','ฆ':'ค','ช':'ซ','ฌ':'ซ','ญ':'ย','ร':'ล','ฤ':'ล'};   // Thai letters Lao writes with one
+const FINAL = [[/[กขคฆ]$/, 'ก'], [/[จชซฎฏฐฑฒดตถทธศษส]$/, 'ด'], [/[บปพฟภ]$/, 'บ'], [/[ญณนรลฬ]$/, 'น']];                               // a word-final consonant as Lao writes it
+function foldWord(w, finals) {
+  w = w.replace(/[຀-໿]/g, c => LAO[c] ?? c)
+    .replace(/[ก-ฮ][ิุ]?์/g, '')                      // silent letters (การันต์)
+    .replace(/[่-๋็ๆ]/g, '')                          // tone marks, mai taikhu, repeat mark
+    .replace(/ห(?=[งนมยลวร])/g, '');                   // leading silent ห (หมอก, ຕະຫຼາດ)
+  if (finals && w.length > 1) { const f = FINAL.find(([re]) => re.test(w)); if (f) w = w.replace(f[0], f[1]); }
+  return w.replace(/[ก-ฮ]/g, c => MERGE[c] ?? c).replace(/ะ/g, '');
+}
+const splitWords = s => String(s ?? '').normalize('NFC').toLowerCase().replace(/[’'`]/g, '').replace(/[-‐–—_/·.,()“”"!?]/g, ' ').split(/\s+/).filter(Boolean);
+const foldHay = s => { const w = splitWords(s); return w.map(x => foldWord(x, true)).join(' ') + ' | ' + w.map(x => foldWord(x, false)).join(' '); };
+const foldQuery = s => splitWords(s).map(x => [foldWord(x, true), foldWord(x, false)]);   // with and without the final-consonant step, so a half-typed word still finds
+const HAY = new Map();
+const hay = ({a, p}) => { let h = HAY.get(p); if (!h) HAY.set(p, h = foldHay([a.name, a.nameEn, a.nameLo, a.disc, DISC_EN[a.disc], a.city, CITY_EN[a.city], p.t, p.tEn, p.tLo, p.m, p.mEn, p.y].join(' '))); return h; };
+const PRICE = {p1: v => v < 300, p2: v => v >= 300 && v < 600, p3: v => v >= 600};
+const F = {all: false, avail: false, price: ''};
+let query = '', qKey = [];
+const pass = (x, f = F) => qKey.every(([a, b]) => hay(x).includes(a) || hay(x).includes(b)) && (!f.avail || workStatus(x.p) !== 'sold') && (!f.price || PRICE[f.price](x.p.p));
+const narrowed = () => !!(qKey.length || F.avail || F.price);
+const wholeCity = () => F.all || narrowed() || sortBy !== 'cur';        // sorting only makes sense over every work, not over the 8 picks
 function worksList() {
-  let l = showAll ? allWorks() : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
+  let l = wholeCity() ? allWorks().filter(x => pass(x)) : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
   if (sortBy === 'low') l = [...l].sort((x, y) => x.p.p - y.p.p);
   else if (sortBy === 'high') l = [...l].sort((x, y) => y.p.p - x.p.p);
   else if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y || y.p.p - x.p.p);
   return [...l.filter(x => workStatus(x.p) !== 'sold'), ...l.filter(x => workStatus(x.p) === 'sold')];   // sold works go last
 }
-/* mode: 'init' = revealed on scroll, 'pop' = animated re-sort, 'still' = language switch (no animation) */
+/* each chip shows how many works it would give with everything else as it is now */
+function syncBar() {
+  const all = allWorks(), count = f => all.filter(x => pass(x, f)).length;
+  document.querySelectorAll('#sf .sf-chip').forEach(b => {
+    const k = b.dataset.f;
+    const n = k === 'all' ? count({avail: false, price: ''}) : k === 'avail' ? count({...F, avail: true}) : count({...F, price: k});
+    const on = k === 'all' ? F.all && !F.avail && !F.price : k === 'avail' ? F.avail : F.price === k;
+    b.querySelector('.sf-n').textContent = n; b.classList.toggle('zero', !n); b.setAttribute('aria-pressed', on);
+  });
+  $('#sf-reset').hidden = !(F.all || narrowed() || query.trim());
+}
+/* the wall keeps its filters in the address (?q= &avail=1 &price=p1 &sort=low &all=1): Back from a buy page, a reload or a shared link lands on the same list */
+if (!shopOn()) document.querySelectorAll('#sort option[value=low], #sort option[value=high]').forEach(o => o.remove());   // no price sorting when nothing is priced
+const SORTS = shopOn() ? ['cur', 'low', 'high', 'new'] : ['cur', 'new'];
+function writeUrl() {
+  try {
+    const u = new URL(location.href), q = u.searchParams, set = (k, v) => v ? q.set(k, v) : q.delete(k);
+    set('q', query.trim()); set('avail', F.avail ? '1' : ''); set('price', F.price); set('sort', sortBy !== 'cur' ? sortBy : '');
+    set('all', F.all && !F.avail && !F.price && !query.trim() && sortBy === 'cur' ? '1' : '');
+    history.replaceState(history.state, '', u.pathname + (q.toString() ? '?' + q : '') + u.hash);
+  } catch (e) {}
+}
+function readUrl() {
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.get('q')) { query = q.get('q').slice(0, 80); qKey = foldQuery(query); $('#q').value = query; }
+    if (shopOn() && q.get('avail') === '1') { F.avail = true; F.all = true; }
+    if (shopOn() && PRICE[q.get('price')]) { F.price = q.get('price'); F.all = true; }
+    if (SORTS.includes(q.get('sort'))) { sortBy = q.get('sort'); $('#sort').value = sortBy; }
+    if (q.get('all') === '1') F.all = true;
+  } catch (e) {}
+}
+function resetBar() { F.all = F.avail = false; F.price = ''; query = ''; qKey = []; $('#q').value = ''; renderFeatured('pop'); }
+
+/* mode: 'init' = revealed on scroll, 'pop' = animated re-sort, 'still' = typing / language switch (no animation) */
 function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
-    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span></a></div>`;
-  }).join('');
-  $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
-  $('#feat-count').textContent = t('feat_count', {n: list.length});
-  const ab = $('#all-btn'); ab.textContent = showAll ? t('less_btn') : t('all_btn', {n: total}); ab.setAttribute('aria-pressed', showAll);
+    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(shopOn() ? t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}) : t('card_aria_np', {t: pk(p, 't'), a: nameL(a)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${shopOn() ? stampHtml(p) : ''}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span>${shopOn() ? `<span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}` : ''}</span></a></div>`;
+  }).join('') || `<div class="q-none" role="status"><p>${esc(qKey.length ? t('q_none', {q: query.trim()}) : t('sf_none'))}</p><button type="button" class="sf-reset" data-sf-reset>${esc(t('sf_reset'))}</button></div>`;
+  $('#feat-h').textContent = t(wholeCity() ? 'feat_h_all' : 'feat_h');
+  $('#feat-count').textContent = t('sf_count', {n: list.length, t: total});
+  $('#sf-more').hidden = wholeCity(); $('#sf-all').textContent = t('all_btn', {n: total});
+  syncBar(); writeUrl();
 }
-$('#masonry').addEventListener('click', e => { const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(b.dataset.id, +b.dataset.k); });
+$('#masonry').addEventListener('click', e => {
+  if (e.target.closest('[data-sf-reset]')) return resetBar();
+  const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault();
+  openQuick(b.dataset.id, +b.dataset.k, [...document.querySelectorAll('#masonry .card')].map(c => [c.dataset.id, +c.dataset.k]));   // the arrows walk the works now on the wall
+});
+$('#sf-all').addEventListener('click', () => { F.all = true; renderFeatured('pop'); });
 $('#sort').addEventListener('change', e => { sortBy = e.target.value; renderFeatured('pop'); });
-$('#all-btn').addEventListener('click', () => { showAll = !showAll; renderFeatured('pop'); });
+$('#sf').addEventListener('click', e => {
+  if (e.target.closest('#sf-reset')) return resetBar();
+  const b = e.target.closest('.sf-chip'); if (!b) return;
+  const k = b.dataset.f;
+  if (k === 'all') { F.all = true; F.avail = false; F.price = ''; }
+  else if (k === 'avail') { F.all = true; F.avail = !F.avail; }
+  else { F.all = true; F.price = F.price === k ? '' : k; }
+  renderFeatured('pop');
+});
+let qRaf = 0;
+const onQuery = () => { cancelAnimationFrame(qRaf); qRaf = requestAnimationFrame(() => { query = $('#q').value; qKey = foldQuery(query); renderFeatured('still'); }); };   // every keystroke, one render per frame
+$('#q').addEventListener('input', e => { if (!e.isComposing) onQuery(); });
+$('#q').addEventListener('compositionend', onQuery);
 
 /* city map: top-down plan, districts by discipline */
 const PLAN = {
@@ -338,7 +419,7 @@ function syncFilter(scrollStrip) {
   $('#map-grid').classList.toggle('f', !!d);
   const wave = d === '*wave';
   document.querySelectorAll('.dist').forEach(el => { const on = wave ? el.dataset.w === '1' : el.dataset.d === d; el.classList.toggle('on', on); });
-  document.querySelectorAll('.fbtn[data-d]').forEach(b => { if (b.id === 'all-btn') return; const on = b.dataset.d === d; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  document.querySelectorAll('.fbtn[data-d]').forEach(b => { const on = b.dataset.d === d; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
   let first = null, n = 0, only = null;
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
     const hit = !d || (wave ? !!ARTISTS[i].wave : ARTISTS[i].disc === d);
@@ -365,9 +446,21 @@ function renderSpot() {
   $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
   if (p.img && !im.getAttribute('src')) im.src = p.img;
   im.alt = pk(p, 't');
-  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y} · ${usd(p.p)}</span>`;
+  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y}${shopOn() ? ' · ' + usd(p.p) : ''}</span>`;
   $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
 }
+
+/* support box: the % of each row comes from SUPPORT in circles.js. Not decided yet = [__] on your own computer, the row (or the whole box) left out on the live site */
+(function renderSupport() {
+  const box = $('.sup-w'); if (!box) return;
+  const v = [SUPPORT.servers, SUPPORT.site, SUPPORT.events].map(n => +n > 0 ? +n : 0), draft = isDraft();
+  box.querySelectorAll('li').forEach((li, i) => {
+    li.hidden = !v[i] && !draft;
+    if (v[i]) { li.querySelector('.sup-v').textContent = v[i] + '%'; li.querySelector('.sup-bar').style.width = v[i] + '%'; }
+  });
+  box.querySelector('.sup-note').hidden = !draft;
+  box.hidden = !draft && !v.some(Boolean);
+})();
 
 /* city numbers: count up when scrolled into view */
 (function () {
@@ -389,7 +482,7 @@ onLang(() => {
   if (langInit) { renderFeatured('still'); renderMap(); }
   setMeta(t('title_idx'), t('desc_idx'));
 });
-renderFeatured('init'); renderMap();
+readUrl(); renderFeatured('init'); renderMap();
 
 renderCity();
 observe([...document.querySelectorAll('.bd')], strip);
@@ -401,21 +494,24 @@ wireNav(); applyLang(); langInit = true;
 (function () {
   const root = document.documentElement, loader = document.getElementById('loader'), countEl = document.getElementById('loader-count');
   const boot = () => root.classList.remove('pre');
-  let seen = false; try { seen = sessionStorage.getItem('circles-seen') === '1'; } catch (e) {}
+  let seen = false; try { seen = sessionStorage.getItem('circles-seen') === '1' || Date.now() - +localStorage.getItem('circles-seen-at') < 864e5; } catch (e) {}   // seen this session, or within the last 24 h
   if (reduce || seen) { loader.remove(); boot(); return; }
-  const DUR = 1700, t0 = performance.now();
+  const DUR = 900, t0 = performance.now();               // short: the intro must not stand between a buyer and the works
   const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
   const counted = new Promise(res => (function tick(now) {
     const k = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - k, 3);
     countEl.textContent = String(Math.round(e * 100)).padStart(3, '0');
     k < 1 ? requestAnimationFrame(tick) : res();
   })(t0));
+  let gone = false;
   const go = () => {
-    try { sessionStorage.setItem('circles-seen', '1'); } catch (e) {}
+    if (gone) return; gone = true;
+    try { sessionStorage.setItem('circles-seen', '1'); localStorage.setItem('circles-seen-at', String(Date.now())); } catch (e) {}
     loader.classList.add('done');
     setTimeout(boot, 520);
     setTimeout(() => loader.remove(), 1400);
   };
+  loader.addEventListener('click', go);                    // tap to skip
   Promise.all([fontsReady, counted]).then(go);
   setTimeout(go, 6000);                      // safety net
 })();

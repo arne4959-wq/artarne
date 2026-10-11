@@ -22,7 +22,6 @@ Stop with `Ctrl+C`. Edit a file, refresh the browser.
 | `hd2d.js` | the HD-2D touches on the city strip: pixel people and birds, light shafts, dust (see below) |
 | `studio-<id>.html` | one page per artist, **generated** by `tools/build.mjs` (full content in the HTML, meta tags, JSON-LD) |
 | `cutaway.html` | the template those pages come from. It also works on its own as `cutaway.html?id=napha`, which is the fallback for a studio you have not built yet. `?work=1` opens a piece |
-| `cutaway-napha.html` | old address → redirects to `studio-napha.html` |
 | `artists.js` | **all artists, buildings and artworks** (names, bios, prices, sizes, image paths, EN texts) |
 | `circles.js`, `circles.css` | shared: TH/EN strings, language switch, forms, toast, ransom type, mobile menu, dialogs |
 | `privacy.html`, `terms.html`, `legal.css` | privacy policy and terms of use (TH + EN) — **templates, see "Before you go live"** |
@@ -30,7 +29,8 @@ Stop with `Ctrl+C`. Edit a file, refresh the browser.
 | `og.png`, `og/<id>.png` | share images (site, and one per artist, generated) |
 | `fonts/`, `vendor/` | self-hosted fonts (SIL OFL) and Lenis (MIT) |
 | `tools/build.mjs`, `tools/browser.mjs` | the build step and a tiny Chrome driver |
-| `tests/` | the test suite (`node tests/run.mjs`) |
+| `tools/compare.mjs` | before / after check of every page (screenshots, errors, links, meta tags, Lighthouse), see "Tests" |
+| `tools/dist.mjs` | copies only the public site into `dist/` (see "Put it online") |
 | `404.html`, `robots.txt`, `.nojekyll`, `serve.py` | hosting helpers |
 
 ## Common edits
@@ -57,9 +57,23 @@ node tools/build.mjs --site https://your-domain   # + absolute og:image / canoni
 
 It opens the real pages in headless Chrome (Node 22+ and Chrome/Chromium needed; set `CHROME_PATH` if Chrome is somewhere unusual) and writes the `studio-<id>.html` pages, `og/<id>.png`, and the blocks between the `<!--pre:…-->` markers in `index.html`.
 It does not duplicate rendering logic: what it saves is what the browser shows. Run it again after any change to `artists.js` or to wording.
-`npm run build` does the same if you prefer npm. The tests fail with a clear message when the generated files are out of date.
+`npm run build` does the same if you prefer npm.
 
 ## Tests
+
+**Before / after check (in the repo):** take a snapshot before a change and one after it, then compare.
+
+```bash
+node tools/compare.mjs snap before            # every page: 375px touch + 1280px, Thai + English, plus Lighthouse on 4 key pages
+# ... make your change ...
+node tools/compare.mjs snap after
+node tools/compare.mjs diff before after      # writes compare/report.html: totals, Lighthouse scores, pages that changed, screenshots side by side
+```
+
+It counts JavaScript errors, broken images, links to missing pages, views wider than the screen, images without alt text, visible `[__]` marks and broken or doubled meta tags.
+`--no-lh` skips Lighthouse (faster), `--pages index.html,buy-napha-0.html` checks only those pages. Results stay in `compare/` (not in git). Lighthouse is fetched by `npx` the first time.
+
+**The full test suite** (`tests/`, kept outside git on the author's computer, see `.gitignore`):
 
 ```bash
 node tests/run.mjs          # build freshness + smoke + flow  (~8 min)
@@ -97,13 +111,14 @@ Every form also has a hidden honeypot field against simple bots.
 - **`privacy.html` and `terms.html` are templates.** They are written to match what this site does today (no cookies, no analytics; forms go by email or to your endpoint), but you must fill in the operator's legal name and address and the retention period (`[24]` months), adjust shipping/returns to what your artists really do, then have a lawyer review them. Remove the yellow "template" notice when done. This is not legal advice.
 - Replace the sample data (see above) and put real emails in `artists.js`.
 - Set `CONFIG.endpoint` (and `contact`).
+- Fill `SHIPPING`, `RATES` and `SUPPORT` at the top of `circles.js` (shipping, reply time, certificate, exchange rates, how the support money is split). Until a value is set, your own computer shows a yellow `[__]` in its place and the live site leaves that line out (`?draft` in the address shows the marks anywhere, `?live` hides them on your computer).
 
 ## Put it online
 
 It is a static site, any static host works. Do **not** upload the project folder as is: it also holds dev files (tests, tools, notes, snapshots). Run `npm run dist` (= `node tools/dist.mjs`) first; it copies only the public site into `dist/` and warns about any file the pages point at that is missing. Publish `dist/`.
 
 - **Netlify / Cloudflare Pages**: build command `node tools/dist.mjs`, publish directory = `dist`. Or drag the `dist/` folder in.
-- **GitHub Pages**: Pages can only serve the repo root or `/docs`, so either copy `dist/` into `docs/` and choose `/docs` in Settings → Pages (`.nojekyll` is included), or publish `dist/` with a GitHub Actions workflow. Do not serve the repo root.
+- **GitHub Pages** (set up): `.github/workflows/pages.yml` builds with `--site`, runs `dist.mjs` and publishes `dist/` on every push to `main`. One-time setup: Settings → Pages → Source: **GitHub Actions**. The site is then at `https://arne4959-wq.github.io/artarne/`. Because it lives under `/artarne/`, Google does not read its `robots.txt` (only the one at the domain root): add the site in Google Search Console and submit `sitemap.xml` there.
 
 After you have a domain, run `node tools/build.mjs --site https://your-domain` once (absolute share-image URLs, canonical links, sitemap), then check a share preview with the platforms' debuggers.
 `404.html` also opens a studio that has not been built yet through `cutaway.html?id=`, so a new artist works the moment you add it to `artists.js`, before you re-run the build.

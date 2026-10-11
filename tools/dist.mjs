@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..'), out = path.join(root, 'dist');
 const DIRS = ['art', 'fonts', 'og', 'vendor'];
-const FILES = ['.nojekyll', 'robots.txt', 'og.png'];
+const FILES = ['.nojekyll', 'robots.txt', 'og.png', 'sitemap.xml'];   // sitemap.xml exists only after a --site build
 const skip = n => n === '.DS_Store';
 
 fs.rmSync(out, {recursive: true, force: true}); fs.mkdirSync(out);
@@ -14,9 +14,17 @@ const copy = (src, dst) => {
   if (fs.statSync(src).isDirectory()) { fs.mkdirSync(dst, {recursive: true}); for (const n of fs.readdirSync(src)) if (!skip(n)) copy(path.join(src, n), path.join(dst, n)); }
   else fs.copyFileSync(src, dst);
 };
-const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isFile() && /\.(html|css|js)$/.test(n));
+const SHOP = /\bshop:\s*true\b/.test(fs.readFileSync(path.join(root, 'circles.js'), 'utf8'));   // CONFIG.shop: when off, the buy pages are not published
+const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isFile() && /\.(html|css|js)$/.test(n) && (SHOP || !/^buy[.-]/.test(n)));
 for (const n of [...top, ...FILES]) if (fs.existsSync(path.join(root, n))) copy(path.join(root, n), path.join(out, n));
 for (const d of DIRS) if (fs.existsSync(path.join(root, d))) copy(path.join(root, d), path.join(out, d));
+
+// the templates (cutaway.html, profile.html, buy.html) show Napha by default, a copy of studio/profile/buy-napha: keep them out of search results
+for (const n of ['cutaway.html', 'profile.html', 'buy.html']) {
+  const f = path.join(out, n); if (!fs.existsSync(f)) continue;
+  const html = fs.readFileSync(f, 'utf8');
+  if (!/name="robots"/.test(html)) fs.writeFileSync(f, html.replace(/<meta name="viewport"[^>]*>/, m => `${m}\n<meta name="robots" content="noindex">`));
+}
 
 // every local file the pages point at must exist in dist/
 const missing = new Set();

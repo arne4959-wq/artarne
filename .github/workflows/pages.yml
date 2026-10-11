@@ -1,0 +1,53 @@
+# Builds the site and publishes it to GitHub Pages on every push to main (or by hand: Actions → Pages → Run workflow).
+# A pull request into main runs the same build as a check, without publishing.
+# One-time setup in the repo: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# The build gets the site's real address from Pages, so share images, canonical links and sitemap.xml use absolute URLs
+# (and follow along if a custom domain is set later). The files in the repo keep their relative links for local use.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('pages-check-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+      - name: Build (pre-rendered pages, share images, sitemap)
+        run: node tools/build.mjs --site "${{ steps.pages.outputs.base_url || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}"
+      - name: Copy only the public site into dist/
+        run: node tools/dist.mjs
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
