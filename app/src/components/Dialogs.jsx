@@ -5,14 +5,15 @@
 import {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {CONFIG} from 'virtual:circles/config';
-import {ARTISTS} from '../lib/art.js';
+import {ARTISTS, artistById} from '../lib/art.js';
 import {useLang} from '../lib/i18n.jsx';
 import {deliver} from '../lib/forms.js';
+import {esc} from '../lib/lang.js';
 import {useToast} from './Toast.jsx';
 
 const DialogsCtx = createContext(null);
 export const useDialogs = () => useContext(DialogsCtx);
-const captchaOn = () => !!(CONFIG.endpoint && CONFIG.turnstileSiteKey);
+export const captchaOn = () => !!(CONFIG.endpoint && CONFIG.turnstileSiteKey);
 
 /* <dialog> in <body>; opens with showModal() whenever `seq` changes; a click on the backdrop closes it */
 function Dialog({id, seq, children}) {
@@ -29,7 +30,7 @@ function Head({title, html = false}) {
 }
 
 /* optional CAPTCHA (Cloudflare Turnstile): its script loads only when a site key is configured */
-function Turnstile() {
+export function Turnstile() {
   const ref = useRef(null);
   useEffect(() => {
     const draw = () => window.turnstile && ref.current && window.turnstile.render(ref.current, {sitekey: CONFIG.turnstileSiteKey});
@@ -58,18 +59,26 @@ function Done({res, to}) {
   </>;
 }
 
-/* a form (wireForm): honeypot, CAPTCHA check, submit button disabled while sending, then the Done view */
-function FormBody({title, sendKey, sendClass = 'btn', children, onSubmit}) {
-  const {t} = useLang(), toast = useToast(), [busy, setBusy] = useState(false), [done, setDone] = useState(null);
-  if (done) return <Done {...done}/>;
+/* wireForm of circles.js as a hook: honeypot, CAPTCHA check, submit button disabled while sending.
+   onSubmit(fields, form) runs only for a real, verified submit. */
+export function useWiredForm(onSubmit) {
+  const {t} = useLang(), toast = useToast(), [busy, setBusy] = useState(false);
   const submit = async e => {
     e.preventDefault();
     const form = e.currentTarget;
     if (form.querySelector('.hp input')?.value) return;          // honeypot
     if (captchaOn() && !new FormData(form).get('cf-turnstile-response')) { toast(t('captcha_wait')); return; }
     setBusy(true);
-    try { setDone(await onSubmit(Object.fromEntries(new FormData(form)), form)); } finally { setBusy(false); }
+    try { await onSubmit(Object.fromEntries(new FormData(form)), form); } finally { setBusy(false); }
   };
+  return {submit, busy};
+}
+
+/* a dialog form, then the Done view */
+function FormBody({title, sendKey, sendClass = 'btn', children, onSubmit}) {
+  const {t} = useLang(), [done, setDone] = useState(null);
+  const {submit, busy} = useWiredForm(async (f, form) => setDone(await onSubmit(f, form)));
+  if (done) return <Done {...done}/>;
   return <>
     <Head title={title} html/>
     <form onSubmit={submit}>
@@ -99,12 +108,27 @@ function JoinForm() {
   </FormBody>;
 }
 
+/* "ซื้อตรงจากศิลปิน" — inquiry about one piece; pre = the string key of the prefilled message */
+function InquiryForm({id, k, pre}) {
+  const L = useLang(), {t} = L, a = artistById(id), p = a.pieces[k];
+  return <FormBody title={t('id_title', {a: esc(L.nameL(a))})} sendKey="id_send" sendClass="btn pk" onSubmit={async f => {
+    const res = await deliver('inquiry', a.email, t('id_subject', {t: L.titleL(p)}), {artist: L.nameL(a), work: L.titleL(p), price: L.money(p.p, p), name: f.name, email: f.email, message: f.message, captcha: f['cf-turnstile-response']});
+    return {res, to: a.email};
+  }}>
+    <p className="intro">{t('id_intro')}</p>
+    <div className="row"><label>{t('id_name')}<input name="name" required maxLength={80} autoComplete="name"/></label><label>{t('id_email')}<input name="email" type="email" required maxLength={120} autoComplete="email"/></label></div>
+    <label>{t('id_msg')}<textarea name="message" required maxLength={1500} defaultValue={t(pre || 'id_prefill', {t: L.titleL(p), p: L.money(p.p, p)})}/></label>
+  </FormBody>;
+}
+
 export function DialogsProvider({children}) {
   // each open bumps a counter: the dialog is rebuilt (key) with a fresh form, like the old innerHTML rewrite
-  const [join, setJoin] = useState(0);
+  const [join, setJoin] = useState(0), [inq, setInq] = useState(null);
   const openJoin = useCallback(() => setJoin(n => n + 1), []);
-  return <DialogsCtx.Provider value={{openJoin}}>
+  const openInquiry = useCallback((id, k, pre) => { if (artistById(id)) setInq(o => ({id, k, pre, seq: (o ? o.seq : 0) + 1})); }, []);
+  return <DialogsCtx.Provider value={{openJoin, openInquiry}}>
     {children}
     {join > 0 && <Dialog id="dlg-join" seq={join}><JoinForm key={join}/></Dialog>}
+    {inq && <Dialog id="dlg-inquiry" seq={inq.seq}><InquiryForm key={inq.seq} {...inq}/></Dialog>}
   </DialogsCtx.Provider>;
 }

@@ -14,6 +14,6 @@ export function route(pathname, search = '') {
   if ((m = file.match(/^profile-([a-z0-9-]+)\.html$/i))) return {page: 'profile', id: m[1]};
   if (file === 'profile.html') return {page: 'profile', id: q.get('id') || ''};
   if ((m = file.match(/^buy-([a-z0-9-]+)-(\d+)\.html$/i))) return {page: 'buy', id: m[1], k: +m[2]};
-  if (file === 'buy.html') return {page: 'buy', id: q.get('id') || '', k: +(q.get('k') || 0)};
+  if (file === 'buy.html') return {page: 'buy', id: q.get('id') || '', k: parseInt(q.get('k') ?? '0', 10)};   // parseInt, like the old page
   return {page: 'notFound'};
 }

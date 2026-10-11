@@ -23,6 +23,9 @@ export const SITE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const STATIC = ['art', 'fonts', 'og', 'vendor'];
 const STATIC_FILES = ['og.png', 'robots.txt', '.nojekyll'];
 const P = 'virtual:circles/', R = '\0' + P;
+/* tests only: CIRCLES_FIXTURE=<dir> reads artists.js / circles.js from that folder instead (tests/fixture.mjs makes one) */
+const FIXTURE = process.env.CIRCLES_FIXTURE ? path.resolve(process.env.CIRCLES_FIXTURE) : '';
+const source = f => FIXTURE && fs.existsSync(path.join(FIXTURE, f)) ? path.join(FIXTURE, f) : path.join(SITE, f);
 
 const grab = (src, re, what, file) => {
   const m = src.match(re);
@@ -63,7 +66,7 @@ function load(id) {
   const kind = slash < 0 ? rest : rest.slice(0, slash), arg = slash < 0 ? '' : rest.slice(slash + 1);
   const make = LOADERS[kind];
   if (!make || (kind === 'css' && !/^[\w-]+$/.test(arg)) || (['page-css', 'page-body', 'sprite'].includes(kind) && !/^[\w-]+$/.test(arg))) throw new Error(`legacy-site: unknown module ${id.slice(1)}`);
-  const {watch, code} = make(arg), file = path.join(SITE, watch);
+  const {watch, code} = make(arg), file = source(watch);
   return {file, code: code(fs.readFileSync(file, 'utf8'))};
 }
 

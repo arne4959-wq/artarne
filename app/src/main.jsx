@@ -12,6 +12,8 @@ const PAGES = {
   privacy: lazy(() => import('./pages/Legal.jsx').then(m => ({default: () => <m.default which="privacy"/>}))),
   terms: lazy(() => import('./pages/Legal.jsx').then(m => ({default: () => <m.default which="terms"/>}))),
   notFound: lazy(() => import('./pages/NotFound.jsx')),
+  buy: lazy(() => import('./pages/Buy.jsx')),
+  profile: lazy(() => import('./pages/Profile.jsx')),
 };
 /* pages that are not in React yet (only until their migration step is done; the old site still has them: npm start) */
 const Pending = ({r}) => <main style={{padding: '3rem 1.2rem', font: '1rem/1.8 system-ui'}}><h1>“{r.page}” is not in React yet</h1></main>;

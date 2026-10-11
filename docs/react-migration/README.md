@@ -8,8 +8,8 @@ When every page is done, the root files are removed and `app/` becomes the site.
 | 1. Commit pending work, `react` branch, test baseline | done: [baseline-tests.md](baseline-tests.md) |
 | 2. Vite project, data, strings, helpers, CSS | done (this note) |
 | 3. Simple pages: 404, privacy, terms, join | done: same DOM and look as the old pages (30/30), same behaviour (7/7) |
-| 4. buy, profile | next |
-| 5. studio / museum | |
+| 4. buy, profile | done: see below |
+| 5. studio / museum | next |
 | 6. home (city strip, hd2d, loader) | |
 | 7. pre-render, og images, sitemap, tests | |
 
@@ -20,8 +20,14 @@ npm run app:dev     # http://localhost:5173
 npm run app:test    # parity tests: React helpers vs the old circles.js
 npm run app:build   # app/dist, works from any folder (base './'); one .html file per page
 node app/tests/compare.mjs join.html 'join.html#dialog' …   # old page vs React page: DOM + screenshots, th/en/lo, desktop + phone
-node app/tests/behaviour.mjs                                # the same clicks on both; the answers must match
+node app/tests/behaviour.mjs [words]                        # the same clicks on both; the answers must match (words: only matching scenarios)
+node app/tests/compare.mjs --fixture buy-napha-1.html …     # same, on test data (tests/fixture.mjs)
 ```
+
+**Test data (`app/tests/fixture.mjs`).** The real data has no pay link, commission, timeline, Instagram, filled-in shipping or THB rate. The form endpoint is also set, so the email-app path never runs.
+- The fixture makes edited copies of `artists.js` / `circles.js` that add those, and builds a second app from them (`CIRCLES_FIXTURE`, `CIRCLES_DIST`).
+- It serves the same copies to the old site, so both sides use the same data.
+- `compare.mjs --fixture` uses it, and `behaviour.mjs` uses it for its `fixture ·` scenarios.
 
 `compare.mjs` and `behaviour.mjs` need `npm run app:build` first. They never send anything: the form endpoint is answered inside the page and the CAPTCHA script is blocked.
 
@@ -71,6 +77,10 @@ The pages' CSS rules clash with each other (body, :root, .hero …). So each rou
 - **Keep the old markup:** same ids and classes, and `data-t="key"` on the texts the old HTML marked with it. `circles.css` styles `html[lang=lo] [data-t]`, and the old tests use the ids.
 - **Old bug kept on purpose:** the old `ransom()` wrote `font-family:"Special Elite"` inside `style="…"`. The quote ends the attribute, so those letters never got Special Elite. `OLD_QUOTE_BUG` in `components/art.jsx` keeps that look. Set it to `false` for the intended font.
 
+- **Blanks count:** the old templates had line breaks between inline elements, and a browser shows them as a space. `compare.mjs` records a blank that takes room as `␠`, so a missing one shows up (one was missing on the buy page, before the title). Add `{' '}` where the old markup had one.
+- **Language change:** buy and profile rebuild their content when the language changes (`key={lang}`), like the old `render()`. A half-typed message starts over in the new language, the same as before.
+- **Pre-built files:** `buy-<id>-<k>.html` / `profile-<id>.html` put the same `data-pre` / `data-buy-id` / `data-profile` on `<main>` as the old pre-built files.
+
 ## Not moved yet (later steps)
 
-`openInquiry` (step 4), the newsletter form and Support button (home), the favicon is shared already; per-page `<head>` meta tags (og, JSON-LD) come with the pre-render step.
+The newsletter form and Support button (home). Per-page `<head>` meta tags (og, JSON-LD) come with the pre-render step.
