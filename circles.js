@@ -106,7 +106,7 @@ th: {
   consent_form:'ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อมูลของคุณจะถูกส่งถึงผู้รับที่ระบุเท่านั้น',
   news_consent:'สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ',
   hero_hl1:'เมืองของศิลปิน', hero_hl2:'พื้นที่สำหรับงานศิลปะ', hero_hl3:'ที่ไม่ยอมเงียบ',
-  hero_lead:'ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วซื้อตรงจาก\u2060คน\u2060ทำ', hero_cta:'เข้าชมเมือง →',
+  hero_lead:'ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วสนับสนุนตรงถึง\u2060คน\u2060ทำ', hero_cta:'เข้าชมเมือง →',
   city_h:'เมือง', city_p:'ลากหรือเลื่อนไปทางขวาเพื่อเดินผ่านเมือง ตึกแต่ละหลังคือสตูดิโอของศิลปินหนึ่งคน ภาพที่ฝังอยู่ในคอนกรีตคือผลงานจริง',
   pager_l:'เลื่อนซ้าย', pager_r:'เลื่อนขวา', strip_aria:'เมืองของศิลปิน เลื่อนซ้ายขวา', bd_aria:'เข้าตึกของ{a} {d}', works_n:'{n} WORKS',
   mani_k:'Manifesto', mani1:'ไม่มี\u200bหอศิลป์', mani2:'ไม่มี\u200bคนกลาง', mani3:'ไม่มี\u200bค่าหัวคิว', mani4:'มีแค่คนทำ กับคนซื้อ',
@@ -115,7 +115,7 @@ th: {
   how_i:'3 steps', how_h:'วิธีใช้งาน',
   s1_h:'เลือกตึก', s1_p:'ลากเดินผ่านเมือง ตึกหนึ่งหลังคือศิลปินหนึ่งคน เห็นรูปทรงแล้วถูกใจหลังไหน ก็ชี้หลังนั้น ไม่ต้องมีใครแนะนำ',
   s2_h:'เดินเข้าไปดูงาน', s2_p:'เปิดประตูตึก ไล่ดูทีละชั้น ทีละห้อง ผลงานแขวนอยู่บนผนังคอนกรีตจริง ๆ จับไม่ได้ แต่ดูได้นานเท่าที่อยากดู',
-  s3_h:'ซื้อตรงจากศิลปิน', s3_p:'เจอชิ้นที่ตามไปถึงในฝัน ก็คุยกับคนทำโดยตรง จ่ายตามราคาที่เขาตั้ง เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน',
+  s3_h:'สนับสนุนตรงถึงศิลปิน', s3_p:'เจอชิ้นที่ตามไปถึงในฝัน ก็ขอบคุณคนทำโดยตรง สนับสนุนเท่าที่อยากให้ เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน',
   feat_i:'Featured', feat_h:'ผลงานเด่นสัปดาห์นี้', feat_h_all:'ผลงานทั้งหมดในเมือง',
   sort_label:'เรียงตาม', sort_cur:'คัดมาให้', sort_low:'ราคาต่ำ → สูง', sort_high:'ราคาสูง → ต่ำ', sort_new:'ใหม่ล่าสุด',
   all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', card_aria:'{t} โดย{a} {p}',
@@ -154,20 +154,20 @@ th: {
   pf_walk:'เดินเข้าพิพิธภัณฑ์ →', pf_ask:'ถามศิลปิน', pf_ig:'Instagram', pf_share:'แชร์โปรไฟล์ ↗', pf_copy:'คัดลอกลิงก์', pf_copied:'คัดลอกลิงก์แล้ว', pf_marq:'ART NOT SORRY ★ วงกลมไม่มีวันจบ ★ CIRCLES ★ เดินเข้าพิพิธภัณฑ์ ★ ',
   mus_prof:'ดูโปรไฟล์ศิลปิน', title_pf:'โปรไฟล์ของ{a} — circles', desc_pf:'รู้จัก{a} ศิลปินสาขา{d} แนวคิดของงาน ผลงานที่ขายอยู่ และช่องทางสนับสนุนหรือสั่งทำงาน',
   fold_spot:'อ่านบทสัมภาษณ์ 3 ข้อ', fold_foot:'เมนู โซเชียล และจดหมายข่าว',
-  by_back:'← กลับพิพิธภัณฑ์ของ{a}', by_marq:'ART NOT SORRY ★ ไม่มีคนกลาง ★ ซื้อตรงจากศิลปิน ★ CIRCLES NEVER END ★ ', by_one:'ชิ้นเดียวในโลก', by_free:'ยังว่าง', by_reply:'ตอบเร็วสุดภายใน {d} วัน', by_lak:'กีบ', by_thb:'บาท',
+  by_back:'← กลับพิพิธภัณฑ์ของ{a}', by_marq:'ART NOT SORRY ★ ไม่มีคนกลาง ★ สนับสนุนตรงถึงศิลปิน ★ CIRCLES NEVER END ★ ', by_one:'ชิ้นเดียวในโลก', by_free:'ยังว่าง', by_reply:'ตอบเร็วสุดภายใน {d} วัน', by_lak:'กีบ', by_thb:'บาท',
   by_detail:'รายละเอียดงาน', by_cert:'ใบรับรอง', by_how:'ซื้อยังไง', by_ship:'การส่งของ', by_to:'ส่งได้ที่', by_fee:'ค่าส่ง', by_days:'ถึงมือภายใน', by_dayu:'{d} วัน', by_break:'ถ้าแตกระหว่างทาง', by_ret:'คืนได้ {d} วัน',
   by_safe:'ปลอดภัยไหม?', by_safe_p:'เงินไปที่ศิลปินโดยตรง circles ไม่ได้รับเงินแทน ถ้ามีปัญหา ติดต่อ', by_since:'ทำงานศิลปะตั้งแต่ {y}', by_soldn:'ขายไปแล้ว {n} ชิ้น',
   by_ask_h:'ทัก{a} (ไม่ต้องออกจากหน้านี้)', by_country:'ส่งไปที่ไหน (ประเทศ / เมือง)', by_after:'ส่งแล้วจะเห็นข้อความ:', by_after_p:'“ส่งถึง{a}แล้ว จะตอบไปที่อีเมลของคุณภายใน {d} วัน”', by_again:'ส่งอีกข้อความ',
-  title_by:'{t} โดย{a} — circles', desc_by:'ซื้อ “{t}” ผลงาน{d}ของ{a} ราคา {p} ซื้อตรงจากศิลปิน ไม่มีคนกลาง',
+  title_by:'{t} โดย{a} — circles', desc_by:'ชม “{t}” ผลงาน{d}ของ{a} ราคา {p} สนับสนุนตรงถึงศิลปิน ไม่มีคนกลาง',
   cw_meta:'{d} · ตั้งแต่ {y} · {c}', cw_view:'ดูรายละเอียด {t}', cw_prev:'← ตึกก่อนหน้า', cw_next:'ตึกถัดไป →', cw_roof:'{n} · STUDIO',
-  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด', buy:'ซื้อตรงจาก{a} →', w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →', st_sold:"ขายแล้ว", st_res:"จองแล้ว", cw_look_sold:"ดูรายละเอียด →", d_sold:"ชิ้นนี้มีเจ้าของแล้ว", d_res:"มีคนจองไว้แล้ว ถ้าหลุดจอง ศิลปินจะแจ้งคนที่ต่อคิว", b_sold:"ถาม{a}เรื่องงานแบบนี้ →", b_res:"ขอต่อคิวชิ้นนี้ →", b_pay:"จ่ายเลย →", b_ask:"มีคำถาม? ทัก{a}ก่อน", p_how1:"กดจ่ายผ่านลิงก์ของศิลปิน", p_how2:"ศิลปินทักกลับเรื่องการจัดส่ง", p_how3:"เงินเข้าบัญชีศิลปินโดยตรง", d_paynote:"ลิงก์จ่ายเงินเป็นของศิลปินเอง circles ไม่ได้รับเงินแทน", id_pre_sold:"สวัสดี เห็นผลงาน “{t}” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ", id_pre_res:"สวัสดี สนใจผลงาน “{t}” ({p}) ถ้าคนที่จองไว้ไม่ซื้อ ขอต่อคิวด้วย ขอบคุณ", v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด · ซื้อ →', d_by:'โดย <b>{a}</b> · {d} · {c}', d_note:'ราคาที่ศิลปินตั้งเอง ไม่มีค่าคอมมิชชัน', d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
-  cy_h:'วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน', cy_p:'ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ งานที่ถูกซื้อไปไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ', cy_1:'วาด', cy_2:'โชว์ในตึก', cy_3:'มีคนซื้อ', cy_4:'วาดต่อ', cy_aria:'วงจร 4 ขั้น: วาด โชว์ในตึก มีคนซื้อ แล้ววนกลับไปวาดต่อ',
+  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด', buy:'ซื้อตรงจาก{a} →', w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →', st_sold:"ขายแล้ว", st_res:"จองแล้ว", cw_look_sold:"ดูรายละเอียด →", d_sold:"ชิ้นนี้มีเจ้าของแล้ว", d_res:"มีคนจองไว้แล้ว ถ้าหลุดจอง ศิลปินจะแจ้งคนที่ต่อคิว", b_sold:"ถาม{a}เรื่องงานแบบนี้ →", b_res:"ขอต่อคิวชิ้นนี้ →", b_pay:"จ่ายเลย →", b_ask:"มีคำถาม? ทัก{a}ก่อน", p_how1:"กดจ่ายผ่านลิงก์ของศิลปิน", p_how2:"ศิลปินทักกลับเรื่องการจัดส่ง", p_how3:"เงินเข้าบัญชีศิลปินโดยตรง", d_paynote:"ลิงก์จ่ายเงินเป็นของศิลปินเอง circles ไม่ได้รับเงินแทน", id_pre_sold:"สวัสดี เห็นผลงาน “{t}” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ", id_pre_res:"สวัสดี สนใจผลงาน “{t}” ({p}) ถ้าคนที่จองไว้ไม่ซื้อ ขอต่อคิวด้วย ขอบคุณ", v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด →', d_by:'โดย <b>{a}</b> · {d} · {c}', d_note:'ราคาที่ศิลปินตั้งเอง ไม่มีค่าคอมมิชชัน', d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
+  cy_h:'วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน', cy_p:'ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ งานที่ถูกซื้อไปไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ', cy_1:'วาด', cy_2:'โชว์ในตึก', cy_3:'มีคนสนับสนุน', cy_4:'วาดต่อ', cy_aria:'วงจร 4 ขั้น: วาด โชว์ในตึก มีคนสนับสนุน แล้ววนกลับไปวาดต่อ',
   sup_h:'สนับสนุน Circles', sup_p:'ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า', sup_where:'เงินสนับสนุนไปไหน', sup_r1:'ค่าเซิร์ฟเวอร์และโดเมน', sup_r2:'การดูแลและพัฒนาเว็บ', sup_r3:'กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน', sup_note:'ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง', don_btn:'สนับสนุน →', don_soon:'เร็วๆ นี้', d_how1:'ส่งข้อความถึงศิลปิน', d_how2:'คุยเรื่องราคาและการจัดส่ง', d_how3:'จ่ายเงินให้ศิลปินโดยตรง',
-  title_idx:'circles — เมืองของศิลปิน ซื้อตรงจากคนทำ', title_cw:'ตึกของ{a} — circles',
-  desc_idx:'circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วซื้อตรงจาก\u2060คน\u2060ทำ',
-  desc_cw:'เดินเข้าไปในตึกของ{a} ศิลปินสาขา{d} ดูผลงานทีละชั้น แล้วซื้อตรงจากศิลปิน',
+  title_idx:'circles — เมืองของศิลปิน สนับสนุนตรงถึงคนทำ', title_cw:'ตึกของ{a} — circles',
+  desc_idx:'circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วสนับสนุนตรงถึง\u2060คน\u2060ทำ',
+  desc_cw:'เดินเข้าไปในตึกของ{a} ศิลปินสาขา{d} ดูผลงานทีละชั้น แล้วสนับสนุนตรงถึงศิลปิน',
   nf_h:'ตึกนี้ยังไม่ได้สร้าง', nf_p:'ไม่มีศิลปินคนนี้ในเมือง กลับไปเดินดูตึกที่มีอยู่',
-  mq:['ศิลปินไม่มีกฎ','BUY ART','ซื้อตรงจากคนทำ','NO MIDDLEMAN','เมืองของศิลปิน','ART NOT SORRY'],
+  mq:['ศิลปินไม่มีกฎ','BUY ART','สนับสนุนตรงถึงคนทำ','NO MIDDLEMAN','เมืองของศิลปิน','ART NOT SORRY'],
 },
 en: {
   nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', menu_aria:'Menu', lang_aria:'Switch language',
@@ -177,7 +177,7 @@ en: {
   consent_form:'By sending this you accept the <a href="privacy.html">privacy policy</a>. Your details go only to the recipient named above.',
   news_consent:'By subscribing you accept the <a href="privacy.html">privacy policy</a>. Unsubscribe any time.',
   hero_hl1:'A city of artists', hero_hl2:'Room for art', hero_hl3:"that won't shut up",
-  hero_lead:'One concrete building, one artist. No gallery, no middleman. Walk in, look at the work, then buy straight from the person who made it.', hero_cta:'Enter the city →',
+  hero_lead:'One concrete building, one artist. No gallery, no middleman. Walk in, look at the work, then support the person who made it, directly.', hero_cta:'Enter the city →',
   city_h:'City', city_p:"Drag or scroll right to walk through the city. Each building is one artist's studio, and the pictures set into the concrete are real works.",
   pager_l:'Scroll left', pager_r:'Scroll right', strip_aria:'City of artists, scroll left and right', bd_aria:"Enter {a}'s building, {d}", works_n:'{n} WORKS',
   mani_k:'Manifesto', mani1:'NO GALLERY', mani2:'NO MIDDLEMAN', mani3:'NO CUT TAKEN', mani4:'JUST MAKER + BUYER',
@@ -186,7 +186,7 @@ en: {
   how_i:'3 steps', how_h:'How to use it',
   s1_h:'Pick a building', s1_p:"Drag through the city. One building is one artist. See a shape you like, point at it. Nobody needs to recommend anything.",
   s2_h:'Walk in and look', s2_p:"Open the door and go floor by floor, room by room. The work hangs on real concrete walls. You can't touch it, but you can look as long as you like.",
-  s3_h:'Buy direct from the artist', s3_p:'Found the piece that follows you home? Talk to the maker directly and pay the price they set. Every cent goes to the artist, nobody skims first.',
+  s3_h:'Support the artist directly', s3_p:'Found the piece that follows you home? Thank the maker directly and support them as much as you like. Every cent goes to the artist, nobody skims first.',
   feat_i:'Featured', feat_h:"This week's picks", feat_h_all:'Every work in the city',
   sort_label:'Sort by', sort_cur:'Curated', sort_low:'Price: low → high', sort_high:'Price: high → low', sort_new:'Newest',
   all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', card_aria:'{t} by {a}, {p}',
@@ -223,18 +223,18 @@ en: {
   pf_walk:'Walk into the museum →', pf_ask:'Ask the artist', pf_ig:'Instagram', pf_share:'Share profile ↗', pf_copy:'Copy link', pf_copied:'Link copied', pf_marq:'ART NOT SORRY ★ CIRCLES NEVER END ★ CIRCLES ★ WALK INTO THE MUSEUM ★ ',
   mus_prof:'View artist profile', title_pf:"{a}'s profile — circles", desc_pf:"Meet {a}, {d} artist: the ideas behind the work, the pieces on sale, and ways to support or commission.",
   fold_spot:'Read the 3-question interview', fold_foot:'Menu, social & newsletter',
-  by_back:"← Back to {a}'s museum", by_marq:'ART NOT SORRY ★ NO MIDDLEMAN ★ BUY DIRECT FROM THE ARTIST ★ CIRCLES NEVER END ★ ', by_one:'ONE OF A KIND', by_free:'Available', by_reply:'Usually replies within {d} days', by_lak:'LAK', by_thb:'THB',
+  by_back:"← Back to {a}'s museum", by_marq:'ART NOT SORRY ★ NO MIDDLEMAN ★ SUPPORT THE ARTIST DIRECTLY ★ CIRCLES NEVER END ★ ', by_one:'ONE OF A KIND', by_free:'Available', by_reply:'Usually replies within {d} days', by_lak:'LAK', by_thb:'THB',
   by_detail:'Details', by_cert:'Certificate', by_how:'How to buy', by_ship:'Shipping', by_to:'Ships to', by_fee:'Shipping fee', by_days:'Arrives within', by_dayu:'{d} days', by_break:'If it breaks in transit', by_ret:'returnable within {d} days',
   by_safe:'Is it safe?', by_safe_p:'The money goes straight to the artist; circles never holds it. If something goes wrong, contact', by_since:'Making art since {y}', by_soldn:'{n} sold',
   by_ask_h:'Message {a} (without leaving this page)', by_country:'Ship to (country / city)', by_after:'Once you send, you will see:', by_after_p:'“Sent to {a}. A reply will reach your email within {d} days.”', by_again:'Send another message',
-  title_by:'{t} by {a} — circles', desc_by:'Buy “{t}”, a {d} work by {a}, {p}. Direct from the artist, no middleman.',
+  title_by:'{t} by {a} — circles', desc_by:'See “{t}”, a {d} work by {a}. Support the artist directly, no middleman.',
   cw_meta:'{d} · since {y} · {c}', cw_view:'View details of {t}', cw_prev:'← Previous building', cw_next:'Next building →', cw_roof:'{n} · STUDIO',
-  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size', buy:'Buy direct from {a} →', w_prev:'← Previous work', w_next:'Next work →', st_sold:"SOLD", st_res:"ON HOLD", cw_look_sold:"View details →", d_sold:"This one has found a home.", d_res:"Someone has reserved it. If that falls through, the artist will tell whoever is next in line.", b_sold:"Ask {a} about similar work →", b_res:"Join the queue →", b_pay:"Pay now →", b_ask:"Questions? Message {a} first", p_how1:"Pay through the artist's own link", p_how2:"The artist gets in touch about delivery", p_how3:"The money goes straight to the artist", d_paynote:"The payment link belongs to the artist. circles never holds the money.", id_pre_sold:"Hi, I saw “{t}” has sold and I love it. Do you have similar work, or take commissions? Thanks.", id_pre_res:"Hi, I'm interested in “{t}” ({p}). If the reservation falls through, could I be next in line? Thanks.", v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View & buy →', d_by:'by <b>{a}</b> · {d} · {c}', d_note:'Price set by the artist. No commission.', d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
-  cy_h:'A circle has no end. Neither does art.', cy_p:'The name Circles comes from the belief that art is never finished. When an artist completes one piece, the next is already waiting. A sale is not an ending. It is what lets the artist keep going, and the city keeps turning that way.', cy_1:'Draw', cy_2:'Show in the building', cy_3:'Someone buys', cy_4:'Draw again', cy_aria:'A loop of 4 steps: draw, show in the building, someone buys, then back to drawing again',
+  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size', buy:'Buy direct from {a} →', w_prev:'← Previous work', w_next:'Next work →', st_sold:"SOLD", st_res:"ON HOLD", cw_look_sold:"View details →", d_sold:"This one has found a home.", d_res:"Someone has reserved it. If that falls through, the artist will tell whoever is next in line.", b_sold:"Ask {a} about similar work →", b_res:"Join the queue →", b_pay:"Pay now →", b_ask:"Questions? Message {a} first", p_how1:"Pay through the artist's own link", p_how2:"The artist gets in touch about delivery", p_how3:"The money goes straight to the artist", d_paynote:"The payment link belongs to the artist. circles never holds the money.", id_pre_sold:"Hi, I saw “{t}” has sold and I love it. Do you have similar work, or take commissions? Thanks.", id_pre_res:"Hi, I'm interested in “{t}” ({p}). If the reservation falls through, could I be next in line? Thanks.", v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View details →', d_by:'by <b>{a}</b> · {d} · {c}', d_note:'Price set by the artist. No commission.', d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
+  cy_h:'A circle has no end. Neither does art.', cy_p:'The name Circles comes from the belief that art is never finished. When an artist completes one piece, the next is already waiting. A sale is not an ending. It is what lets the artist keep going, and the city keeps turning that way.', cy_1:'Draw', cy_2:'Show in the building', cy_3:'Someone supports', cy_4:'Draw again', cy_aria:'A loop of 4 steps: draw, show in the building, someone supports, then back to drawing again',
   sup_h:'Support Circles', sup_p:'Right now artists keep the full amount, with no fees. The site runs on support. If we ever add a fee, we will tell you in advance.', sup_where:'Where the support goes', sup_r1:'Servers and domain', sup_r2:'Running and improving the site', sup_r3:'Events and new space for artists', sup_note:'Sample: the categories and shares are not final. [__]% marks a number we do not know yet and will fill in once we have real data.', don_btn:'Support →', don_soon:'Coming soon', d_how1:'Message the artist', d_how2:'Agree on price and shipping', d_how3:'Pay the artist directly',
-  title_idx:'circles — a city of artists. Buy straight from the maker', title_cw:"{a}'s building — circles",
-  desc_idx:'circles is a city of artists. One concrete building is one artist. No gallery, no middleman. Walk in, look at the work, buy straight from the maker.',
-  desc_cw:"Walk into {a}'s building. {d} artist. See the work floor by floor, then buy direct from the artist.",
+  title_idx:'circles — a city of artists. Support the maker directly', title_cw:"{a}'s building — circles",
+  desc_idx:'circles is a city of artists. One concrete building is one artist. No gallery, no middleman. Walk in, look at the work, support the maker directly.',
+  desc_cw:"Walk into {a}'s building. {d} artist. See the work floor by floor, then support the artist directly.",
   nf_h:"This building doesn't exist yet", nf_p:'No artist by that name lives here. Go back and walk the buildings that do.',
   mq:['NO RULES FOR ARTISTS','BUY ART','BUY FROM THE MAKER','NO MIDDLEMAN','CITY OF ARTISTS','ART NOT SORRY'],
 },
@@ -320,7 +320,7 @@ lo: {
   jd_cancel: "ຍົກເລີກ",   // DRAFT lo: needs native review
   jd_send: "ສົ່ງຄຳຂໍ →",   // DRAFT lo: needs native review
   by_back: "← ກັບໄປພິພິທະພັນຂອງ{a}",   // DRAFT lo: needs native review
-  by_marq: "ART NOT SORRY ★ ບໍ່ມີຄົນກາງ ★ ຊື້ກົງຈາກສິລະປິນ ★ CIRCLES NEVER END ★ ",   // DRAFT lo: needs native review
+  by_marq: "ART NOT SORRY ★ ບໍ່ມີຄົນກາງ ★ ສະໜັບສະໜູນກົງເຖິງສິລະປິນ ★ CIRCLES NEVER END ★ ",   // DRAFT lo: needs native review
   by_one: "ຊິ້ນດຽວໃນໂລກ",   // DRAFT lo: needs native review
   by_free: "ຍັງວ່າງ",   // DRAFT lo: needs native review
   by_reply: "ຕອບໄວສຸດພາຍໃນ {d} ວັນ",   // DRAFT lo: needs native review
@@ -346,14 +346,14 @@ lo: {
   by_after_p: "“ສົ່ງຫາ{a}ແລ້ວ ຈະຕອບໄປທີ່ອີເມວຂອງທ່ານພາຍໃນ {d} ວັນ”",   // DRAFT lo: needs native review
   by_again: "ສົ່ງຂໍ້ຄວາມອີກ",   // DRAFT lo: needs native review
   title_by: "{t} ໂດຍ{a} — circles",   // DRAFT lo: needs native review
-  desc_by: "ຊື້ “{t}” ຜົນງານ{d}ຂອງ{a} ລາຄາ {p} ຊື້ກົງຈາກສິລະປິນ ບໍ່ມີຄົນກາງ",   // DRAFT lo: needs native review
+  desc_by: "ເບິ່ງ “{t}” ຜົນງານ{d}ຂອງ{a} ລາຄາ {p} ສະໜັບສະໜູນກົງເຖິງສິລະປິນ ບໍ່ມີຄົນກາງ",   // DRAFT lo: needs native review
   f_wave: "★ ຄື້ນລູກໃໝ່",   // DRAFT lo: needs native review
   legal_privacy: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",   // DRAFT lo: needs native review
   legal_terms: "ເງື່ອນໄຂການນຳໃຊ້",   // DRAFT lo: needs native review
   hero_hl1: "ເມືອງຂອງສິລະປິນ",   // DRAFT lo: needs native review
   hero_hl2: "ພື້ນທີ່ສຳລັບງານສິລະປະ",   // DRAFT lo: needs native review
   hero_hl3: "ທີ່ບໍ່ຍອມງຽບ",   // DRAFT lo: needs native review
-  hero_lead: "ຕຶກຄອນກຣີດໜຶ່ງຫຼັງ ສິລະປິນໜຶ່ງຄົນ ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ຍ່າງເຂົ້າໄປ ເບິ່ງຜົນງານ ແລ້ວຊື້ກົງຈາກຄົນເຮັດ",   // DRAFT lo: needs native review
+  hero_lead: "ຕຶກຄອນກຣີດໜຶ່ງຫຼັງ ສິລະປິນໜຶ່ງຄົນ ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ຍ່າງເຂົ້າໄປ ເບິ່ງຜົນງານ ແລ້ວສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ",   // DRAFT lo: needs native review
   hero_cta: "ເຂົ້າຊົມເມືອງ →",   // DRAFT lo: needs native review
   city_h: "ເມືອງ",   // DRAFT lo: needs native review
   city_p: "ລາກ ຫຼື ເລື່ອນໄປທາງຂວາເພື່ອຍ່າງຜ່ານເມືອງ ຕຶກແຕ່ລະຫຼັງແມ່ນສະຕູດິໂອຂອງສິລະປິນໜຶ່ງຄົນ ພາບທີ່ຝັງຢູ່ໃນຄອນກຣີດແມ່ນຜົນງານຈິງ",   // DRAFT lo: needs native review
@@ -368,8 +368,8 @@ lo: {
   s1_p: "ລາກຍ່າງຜ່ານເມືອງ ຕຶກໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ເຫັນຮູບຮ່າງແລ້ວຖືກໃຈຫຼັງໃດ ກໍຊີ້ຫຼັງນັ້ນ ບໍ່ຕ້ອງມີໃຜແນະນຳ",   // DRAFT lo: needs native review
   s2_h: "ຍ່າງເຂົ້າໄປເບິ່ງຜົນງານ",   // DRAFT lo: needs native review
   s2_p: "ເປີດປະຕູຕຶກ ໄລ່ເບິ່ງເທື່ອລະຊັ້ນ ເທື່ອລະຫ້ອງ ຜົນງານແຂວນຢູ່ເທິງຝາຄອນກຣີດຈິງໆ ຈັບບໍ່ໄດ້ ແຕ່ເບິ່ງໄດ້ດົນເທົ່າທີ່ຢາກເບິ່ງ",   // DRAFT lo: needs native review
-  s3_h: "ຊື້ກົງຈາກສິລະປິນ",   // DRAFT lo: needs native review
-  s3_p: "ເຈິຊິ້ນທີ່ຕິດຕາມໄປຮອດໃນຝັນ ກໍລົມກັບຄົນເຮັດໂດຍກົງ ຈ່າຍຕາມລາຄາທີ່ເຂົາຕັ້ງ ເງິນທຸກກີບເຂົ້າກະເປົາຄົນແຕ້ມ ບໍ່ມີໃຜຫັກກ່ອນ",   // DRAFT lo: needs native review
+  s3_h: "ສະໜັບສະໜູນກົງເຖິງສິລະປິນ",   // DRAFT lo: needs native review
+  s3_p: "ເຈິຊິ້ນທີ່ຕິດຕາມໄປຮອດໃນຝັນ ກໍຂອບໃຈຄົນເຮັດໂດຍກົງ ສະໜັບສະໜູນຕາມທີ່ຢາກໃຫ້ ເງິນທຸກກີບເຂົ້າກະເປົາຄົນແຕ້ມ ບໍ່ມີໃຜຫັກກ່ອນ",   // DRAFT lo: needs native review
   feat_h: "ຜົນງານເດັ່ນອາທິດນີ້",   // DRAFT lo: needs native review
   feat_h_all: "ຜົນງານທັງໝົດໃນເມືອງ",   // DRAFT lo: needs native review
   sort_label: "ຈັດຮຽງຕາມ",   // DRAFT lo: needs native review
@@ -410,9 +410,9 @@ lo: {
   cy_p: "ຊື່ Circles ມາຈາກຄວາມເຊື່ອວ່າງານສິລະປະບໍ່ມີມື້ຈົບ ສິລະປິນເຮັດຊິ້ນໜຶ່ງສຳເລັດ ກໍມີຊິ້ນຕໍ່ໄປລໍຖ້າຢູ່ສະເໝີ ງານທີ່ຖືກຊື້ໄປບໍ່ແມ່ນຈຸດຈົບ ແຕ່ເປັນແຮງໃຫ້ເຮັດຕໍ່ ແລະ ເມືອງນີ້ກໍວົນໄປແບບນັ້ນເລື້ອຍໆ",   // DRAFT lo: needs native review
   cy_1: "ແຕ້ມ",   // DRAFT lo: needs native review
   cy_2: "ສະແດງໃນຕຶກ",   // DRAFT lo: needs native review
-  cy_3: "ມີຄົນຊື້",   // DRAFT lo: needs native review
+  cy_3: "ມີຄົນສະໜັບສະໜູນ",   // DRAFT lo: needs native review
   cy_4: "ແຕ້ມຕໍ່",   // DRAFT lo: needs native review
-  cy_aria: "ວົງຈອນ 4 ຂັ້ນ: ແຕ້ມ ສະແດງໃນຕຶກ ມີຄົນຊື້ ແລ້ວວົນກັບໄປແຕ້ມຕໍ່",   // DRAFT lo: needs native review
+  cy_aria: "ວົງຈອນ 4 ຂັ້ນ: ແຕ້ມ ສະແດງໃນຕຶກ ມີຄົນສະໜັບສະໜູນ ແລ້ວວົນກັບໄປແຕ້ມຕໍ່",   // DRAFT lo: needs native review
   sup_h: "ສະໜັບສະໜູນ Circles",   // DRAFT lo: needs native review
   sup_p: "ຕອນນີ້ສິລະປິນຮັບເງິນເຕັມ ບໍ່ມີຄ່າທຳນຽມ ເວັບຢູ່ໄດ້ດ້ວຍເງິນສະໜັບສະໜູນ ຖ້າມີຄ່າທຳນຽມໃນອະນາຄົດ ພວກເຮົາຈະບອກລ່ວງໜ້າ",   // DRAFT lo: needs native review
   sup_where: "ເງິນສະໜັບສະໜູນໄປໃສ",   // DRAFT lo: needs native review
@@ -422,7 +422,7 @@ lo: {
   sup_note: "ຕົວຢ່າງ: ໝວດ ແລະ ສັດສ່ວນຍັງບໍ່ຕົກລົງ [__]% ແມ່ນຕົວເລກທີ່ຍັງບໍ່ຮູ້ ຈະໃສ່ເມື່ອມີຂໍ້ມູນຈິງ",   // DRAFT lo: needs native review
   don_btn: "ສະໜັບສະໜູນ →",   // DRAFT lo: needs native review
   don_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
-  mq: ["ສິລະປິນບໍ່ມີກົດ", "BUY ART", "ຊື້ກົງຈາກຄົນເຮັດ", "NO MIDDLEMAN", "ເມືອງຂອງສິລະປິນ", "ART NOT SORRY"],   // DRAFT lo: needs native review
+  mq: ["ສິລະປິນບໍ່ມີກົດ", "BUY ART", "ສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ", "NO MIDDLEMAN", "ເມືອງຂອງສິລະປິນ", "ART NOT SORRY"],   // DRAFT lo: needs native review
   nav_join: "Join",   // DRAFT lo: needs native review
   mani_k: "Manifesto",   // DRAFT lo: needs native review
   how_i: "3 steps",   // DRAFT lo: needs native review
@@ -472,7 +472,7 @@ lo: {
   cw_next: "ຕຶກຖັດໄປ →",   // DRAFT lo: needs native review
   cw_roof: "{n} · STUDIO",   // DRAFT lo: needs native review
   cw_look_sold: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
-  cw_look: "ເບິ່ງລາຍລະອຽດ · ຊື້ →",   // DRAFT lo: needs native review
+  cw_look: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
   jn_kick: "ສຳລັບສິລະປິນ",   // DRAFT lo: needs native review
   jn_cta: "ເລົ່າໃຫ້ພວກເຮົາຟັງສັ້ນໆວ່າທ່ານເຮັດງານແບບໃດ ແນບລິ້ງຜົນງານ ແລ້ວພວກເຮົາຈະຕິດຕໍ່ກັບທາງອີເມວ",   // DRAFT lo: needs native review
   jb_p: "ຕັ້ງລາຄາເອງ ຮັບເງິນເອງ ບໍ່ມີໃຜຄັດງານ",   // DRAFT lo: needs native review
@@ -490,10 +490,10 @@ lo: {
   jd_bank: "ທະນາຄານ",   // DRAFT lo: needs native review
   title_pf: "ໂປຣໄຟລ໌ຂອງ{a} — circles",   // DRAFT lo: needs native review
   desc_pf: "ຮູ້ຈັກ{a} ສິລະປິນສາຂາ{d} ແນວຄິດຂອງຜົນງານ ຜົນງານທີ່ຂາຍຢູ່ ແລະ ຊ່ອງທາງສະໜັບສະໜູນ ຫຼື ສັ່ງເຮັດງານ",   // DRAFT lo: needs native review
-  title_idx: "circles — ເມືອງຂອງສິລະປິນ ຊື້ກົງຈາກຄົນເຮັດ",   // DRAFT lo: needs native review
+  title_idx: "circles — ເມືອງຂອງສິລະປິນ ສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ",   // DRAFT lo: needs native review
   title_cw: "ຕຶກຂອງ{a} — circles",   // DRAFT lo: needs native review
-  desc_idx: "circles ເມືອງຂອງສິລະປິນ ຕຶກຄອນກຣີດໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ຍ່າງເຂົ້າໄປເບິ່ງຜົນງານແລ້ວຊື້ກົງຈາກຄົນເຮັດ",   // DRAFT lo: needs native review
-  desc_cw: "ຍ່າງເຂົ້າໄປໃນຕຶກຂອງ{a} ສິລະປິນສາຂາ{d} ເບິ່ງຜົນງານເທື່ອລະຊັ້ນ ແລ້ວຊື້ກົງຈາກສິລະປິນ",   // DRAFT lo: needs native review
+  desc_idx: "circles ເມືອງຂອງສິລະປິນ ຕຶກຄອນກຣີດໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ຍ່າງເຂົ້າໄປເບິ່ງຜົນງານແລ້ວສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ",   // DRAFT lo: needs native review
+  desc_cw: "ຍ່າງເຂົ້າໄປໃນຕຶກຂອງ{a} ສິລະປິນສາຂາ{d} ເບິ່ງຜົນງານເທື່ອລະຊັ້ນ ແລ້ວສະໜັບສະໜູນກົງເຖິງສິລະປິນ",   // DRAFT lo: needs native review
   fnote_wave: "ໄຮໄລທ໌ {n} ຕຶກຄື້ນລູກໃໝ່ໃນແຖບເມືອງແລ້ວ",   // DRAFT lo: needs native review
   ld_top: "circles · ເມືອງຂອງສິລະປິນ",   // DRAFT lo: needs native review
   ld_text: "ກຳລັງສ້າງເມືອງ…",   // DRAFT lo: needs native review
@@ -709,7 +709,7 @@ function openJoin() {
   if (!d.open) d.showModal();
 }
 
-/* "ซื้อตรงจากศิลปิน" — inquiry about one piece */
+/* "สนับสนุนตรงถึงศิลปิน" — inquiry about one piece */
 function openInquiry(id, k, pre) {
   const a = artistById(id); if (!a) return;
   const p = a.pieces[k], d = mountDialog('dlg-inquiry');
