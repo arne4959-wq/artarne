@@ -26,6 +26,27 @@ const write = (f, s) => { fs.mkdirSync(path.dirname(path.join(ROOT, f)), {recurs
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const { ARTISTS, DISC_EN, CITY_EN } = new Function(read('artists.js') + '\n;return {ARTISTS, DISC_EN, CITY_EN};')();
 
+/* ---- artists.js sanity check: the same shape rules circles.js enforces in the browser, but here a mistake stops the build with a plain message ---- */
+{
+  const bad = [], ids = new Set(), RE = {id: /^[a-z0-9][a-z0-9-]*$/, color: /^#[0-9a-f]{3,8}$/i, ar: /^\d{1,3}\/\d{1,3}$/};
+  for (const a of ARTISTS) {
+    if (!RE.id.test(String(a.id))) bad.push(`artist id "${a.id}": only a-z, 0-9 and - are allowed`);
+    if (ids.has(a.id)) bad.push(`artist id "${a.id}" appears twice`); ids.add(a.id);
+    (a.works || []).forEach((c, k) => { if (!RE.color.test(c)) bad.push(`${a.id}: works[${k}] "${c}" is not a #hex colour`); });
+    if (!Number.isFinite(Number(a.scale))) bad.push(`${a.id}: scale must be a number`);
+    (a.pieces || []).forEach((p, k) => {
+      const at = `${a.id}[${k}]`;
+      if (!Number.isFinite(Number(p.y))) bad.push(`${at}: y (year) must be a number`);
+      if (!Number.isFinite(Number(p.p)) || Number(p.p) < 0) bad.push(`${at}: p (price in USD) must be a number`);
+      if (!RE.ar.test(String(p.ar))) bad.push(`${at}: ar must look like 4/3`);
+      if (p.img && !fs.existsSync(path.join(ROOT, p.img))) bad.push(`${at}: picture file "${p.img}" does not exist`);
+      if (p.status && !['sold', 'reserved'].includes(p.status)) bad.push(`${at}: status must be 'sold' or 'reserved'`);
+      if (p.pay && !/^https:\/\/\S+$/.test(p.pay)) bad.push(`${at}: pay must start with https://`);
+    });
+  }
+  if (bad.length) { console.error('artists.js has problems:\n - ' + bad.join('\n - ')); process.exit(1); }
+}
+
 /* ---- share-image card (served by the build's own server so fonts and art load from the project) ---- */
 const ogCard = id => {
   const a = ARTISTS.find(x => x.id === id), p = a.pieces[0], RS = [['#0E0D0C', '#F4F1E8', 'Anton'], ['#FF2E88', '#0E0D0C', 'Anton'], ['#F4F1E8', '#0E0D0C', '"Special Elite"'], ['#E8B730', '#0E0D0C', 'Chonburi']];

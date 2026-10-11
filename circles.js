@@ -7,6 +7,20 @@
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
 const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji' };   // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
+
+/* ---------- data guard: values from artists.js that are printed into markup or CSS must have the expected shape ----------
+   An id or colour such as  x" onmouseover="…  would reach the page unescaped in several templates. Bad values are repaired (a bad id skips the artist) once, here,
+   instead of at every place that prints them. tools/build.mjs applies the same rules and fails the build, so a typo is caught before it is published. */
+const DATA_RE = {id: /^[a-z0-9][a-z0-9-]*$/, color: /^#[0-9a-f]{3,8}$/i, ar: /^\d{1,3}\/\d{1,3}$/};
+(function cleanArtists() {
+  for (let i = ARTISTS.length - 1; i >= 0; i--) {
+    const a = ARTISTS[i];
+    if (!DATA_RE.id.test(String(a.id))) { console.warn('artists.js: skipped an artist with a bad id', a.id); ARTISTS.splice(i, 1); continue; }
+    a.works = (a.works || []).map(c => DATA_RE.color.test(c) ? c : '#8F8C85');
+    a.scale = Number(a.scale) || 1;
+    for (const p of a.pieces || []) { p.y = Number(p.y) || 0; p.p = Number(p.p) || 0; if (!DATA_RE.ar.test(String(p.ar))) p.ar = '4/3'; }
+  }
+})();
 /* ---------- buy page data (buy.js): fill these in. While one is empty, your own computer shows a yellow [__] there and the live site leaves that line out; nothing is invented ----------
    SHIPPING.regions     where pieces ship to            SHIPPING.fee          shipping fee
    SHIPPING.days        days until it arrives           SHIPPING.returnDays   days to send back a piece that broke in transit
