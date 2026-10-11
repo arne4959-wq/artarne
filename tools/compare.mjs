@@ -4,6 +4,7 @@
 //   node tools/compare.mjs snap before            every page, 375px touch + 1280px, Thai + English: screenshots + checks + Lighthouse
 //   node tools/compare.mjs snap after --no-lh     the same without Lighthouse (faster)
 //   node tools/compare.mjs snap x --pages index.html,buy-napha-0.html
+//   node tools/compare.mjs lh before              (re-)run only Lighthouse into an existing snapshot (missing or failed scores)
 //   node tools/compare.mjs diff before after      writes compare/report.html (side by side) and prints the totals
 //
 // Results go to compare/<name>/ (not in git). Uses tools/browser.mjs (no npm packages); Lighthouse runs through npx.
@@ -105,10 +106,11 @@ async function jpeg(b, file, w, fullH) {
 }
 
 function lighthouse(url, form, file) {
-  const flags = ['-y', `lighthouse@${LH}`, url, '--output=json', `--output-path=${file}`, '--quiet', '--only-categories=performance,accessibility,best-practices,seo',
+  // the home page never goes CPU-idle (city animations, smooth scroll), so cap the load wait instead of letting Lighthouse wait it out
+  const flags = ['-y', `lighthouse@${LH}`, url, '--output=json', `--output-path=${file}`, '--quiet', '--only-categories=performance,accessibility,best-practices,seo', '--max-wait-for-load=25000',
     `--chrome-flags=--headless=new${process.env.CI || process.getuid?.() === 0 ? ' --no-sandbox' : ''}`];
   if (form === 'desktop') flags.push('--preset=desktop');
-  const r = spawnSync('npx', flags, {env: {...process.env, CHROME_PATH: findChrome()}, encoding: 'utf8', timeout: 180000});
+  const r = spawnSync('npx', flags, {env: {...process.env, CHROME_PATH: findChrome()}, encoding: 'utf8', timeout: 420000});
   if (r.status !== 0 || !fs.existsSync(file)) return {error: (r.stderr || r.error?.message || 'lighthouse failed').trim().split('\n').pop().slice(0, 200)};
   const j = JSON.parse(fs.readFileSync(file, 'utf8'));
   const out = Object.fromEntries(Object.entries(j.categories).map(([k, c]) => [k, Math.round(c.score * 100)]));
@@ -166,6 +168,20 @@ tr.up td:last-child{background:#cfe9c9}tr.down td:last-child{background:#f6c4c4}
   console.log(`${n} pages changed. Wrote compare/report.html`);
 }
 
+async function lhOnly(name) {
+  const file = path.join(OUT, name, 'data.json'), data = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const server = await startServer(ROOT);
+  try {
+    for (const f of KEY) for (const form of ['mobile', 'desktop']) {
+      const k = `${f} ${form}`; if (data.lighthouse[k] && !data.lighthouse[k].error && !process.argv.includes('--all')) continue;
+      data.lighthouse[k] = lighthouse(`${server.url}/${f}?live`, form, path.join(OUT, name, `lh-${form}-${f.replace(/\.html$/, '')}.json`));
+      console.log(`  lighthouse ${k}:`, JSON.stringify(data.lighthouse[k]));
+      fs.writeFileSync(file, JSON.stringify(data, null, 1));
+    }
+  } finally { server.close(); }
+}
+
 if (cmd === 'snap' && A) await snap(A);
+else if (cmd === 'lh' && A) await lhOnly(A);
 else if (cmd === 'diff' && A && B) diff(A, B);
-else { console.log('usage: node tools/compare.mjs snap <name> [--no-lh] [--pages a.html,b.html]\n       node tools/compare.mjs diff <a> <b>'); process.exit(1); }
+else { console.log('usage: node tools/compare.mjs snap <name> [--no-lh] [--pages a.html,b.html]\n       node tools/compare.mjs lh <name> [--all]\n       node tools/compare.mjs diff <a> <b>'); process.exit(1); }
