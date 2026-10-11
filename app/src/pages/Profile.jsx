@@ -10,6 +10,7 @@ import PageShell from '../components/PageShell.jsx';
 import Nav, {MENU_FULL} from '../components/Nav.jsx';
 import {MiniFoot, NotFoundSection} from '../components/Bits.jsx';
 import {useDialogs} from '../components/Dialogs.jsx';
+import {Fab, SkipLink} from '../components/Ux.jsx';
 import sprite from 'virtual:circles/sprite/profile';
 import styles from '../styles/profile.js';
 
@@ -99,11 +100,12 @@ export default function Profile({id}) {
   usePageMeta(...(A ? [t('title_pf', {a: L.nameL(A)}), t('desc_pf', {a: L.nameL(A), d: L.discL(A)})] : [t('nf_h') + ' — circles', t('nf_p')]));
   const built = /\/profile-[a-z0-9-]+\.html$/i.test(location.pathname) && A ? {'data-pre': '1', 'data-profile': A.id} : {};
   // key: a language change rebuilds the profile (its entrance animation plays again), like the old render() did
-  return <PageShell styles={styles} sprite={sprite}>
+  return <PageShell styles={styles} sprite={sprite} lead={<SkipLink/>}>
     <Nav links={[['index.html#city', 'nav_city'], ['index.html#manifesto', 'nav_about']]} join menu={MENU_FULL}/>
-    <main id="main" {...built}>{A ? <>
+    <main id="main" tabIndex={-1} {...built}>{A ? <>
       <div className="pf-marq" aria-hidden="true" key={'m' + lang}><div className="pf-marq-t">{t('pf_marq').repeat(10)}</div></div>
       <ProfileBody key={lang} A={A}/></> : <NotFoundSection/>}</main>
     <MiniFoot/>
+    {A && <Fab A={A}/>}
   </PageShell>;
 }

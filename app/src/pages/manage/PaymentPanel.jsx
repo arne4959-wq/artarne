@@ -53,6 +53,7 @@ export default function PaymentPanel({artist, userEmail}) {
       <Field label={mt('p_acc_no')} name="account_no" inputMode="numeric" maxLength={40} {...props}/>
     </div>
     <h3 className="mg-h3">{mt('p_qr')}</h3>
+    <p className="mg-note">{mt('p_qr_help')}</p>
     <ImagePick qr src={qrUrl(form.qr_path)} bucket="qr" artistId={artist.id} max={900} png limit={1.9 * 1024 * 1024}
       onDone={({path}) => set('qr_path', path)} label={mt('img_pick')}/>
     <p className="mg-ok" style={{marginBottom: '1.2rem'}}>{mt('p_public')}</p>

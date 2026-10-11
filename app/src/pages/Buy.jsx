@@ -9,6 +9,7 @@ import {reduce} from '../lib/env.js';
 import {artistById, workStatus, payLink} from '../lib/art.js';
 import {deliver} from '../lib/forms.js';
 import PageShell from '../components/PageShell.jsx';
+import {SkipLink} from '../components/Ux.jsx';
 import Nav, {MENU_FULL} from '../components/Nav.jsx';
 import {MiniFoot, NotFoundSection, Fill, BT, H, Cell} from '../components/Bits.jsx';
 import LaoPay from '../components/LaoPay.jsx';
@@ -121,7 +122,7 @@ export default function Buy({id, k}) {
   useEffect(() => { if (!P) return; document.body.classList.add('by-page'); return () => document.body.classList.remove('by-page'); }, [P]);
   // the pre-built buy-<id>-<k>.html files carried these on <main>
   const built = /\/buy-[a-z0-9-]+-\d+\.html$/i.test(location.pathname) && P ? {'data-pre': '1', 'data-buy-id': A.id, 'data-buy-k': String(k)} : {};
-  return <PageShell styles={styles} sprite={sprite}>
+  return <PageShell styles={styles} sprite={sprite} lead={<SkipLink/>}>
     <Nav links={[['index.html#city', 'nav_city'], ['index.html#manifesto', 'nav_about']]} join menu={MENU_FULL}/>
     {/* key: a language change rebuilds the page, like the old render() did (the form starts over in the new language) */}
     <main id="main" {...built}>{P ? <BuyBody key={lang} A={A} k={k}/> : <NotFoundSection/>}</main>

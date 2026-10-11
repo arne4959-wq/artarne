@@ -7,6 +7,7 @@ import {usePageMeta} from '../lib/meta.js';
 import {drawGrain} from '../lib/home.js';
 import {observeIn, useHeroEffects, useCursor, useLenis, useCountUp} from '../lib/useHome.js';
 import PageShell from '../components/PageShell.jsx';
+import {SkipLink} from '../components/Ux.jsx';
 import Nav from '../components/Nav.jsx';
 import {Loader, CursorMarkup, Curtain, Marquee} from '../components/home/HomeTop.jsx';
 import Hero from '../components/home/Hero.jsx';
@@ -25,9 +26,10 @@ export default function Home() {
   useEffect(() => { drawGrain(); }, []);
   useEffect(() => observeIn([...document.querySelectorAll('.reveal')], null), []);   // sections rise as they scroll into view
   useHeroEffects(); useCursor(); useLenis(); useCountUp([]);
-  return <PageShell styles={styles} sprite={sprite}>
+  return <PageShell styles={styles} sprite={sprite} lead={<SkipLink/>}>
     <Loader/><CursorMarkup/><Curtain/><Marquee/>
     <Nav id="nav" brandHref={null} links={LINKS} join menu={MENU}/>
+    <main id="main" tabIndex={-1}>
     <Hero/>
     <City artists={ARTISTS}/>
     <TapeWrap/>
@@ -36,6 +38,8 @@ export default function Home() {
     <Featured artists={ARTISTS}/>
     <TapeWrap r/>
     <Spotlight artists={ARTISTS}/>
-    <Stats artists={ARTISTS}/><JoinBand/><Support/><Footer/>
+    <Stats artists={ARTISTS}/><JoinBand/><Support/>
+    </main>
+    <Footer/>
   </PageShell>;
 }

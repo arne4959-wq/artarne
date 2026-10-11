@@ -676,6 +676,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <div class="mnav" id="mnav" inert><a href="#city" data-t="nav_city">เมือง</a><a href="#manifesto" data-t="foot_manifesto">Manifesto</a><a href="#how" data-t="foot_how">วิธีใช้งาน</a><a href="#featured" data-t="foot_feat">ผลงานเด่น</a><a href="#map" data-t="foot_map">แผนที่เมือง</a><a href="join.html" data-t="foot_join">ขอมีตึก</a></div>
 </nav>
 
+<main id="main">
 <header class="hero" id="hero">
   <div class="hero-copy">
     <div class="kicker rise" style="--i:0">No gallery. No middleman.</div>
@@ -701,6 +702,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   </div>
   <div class="city-tools reveal">
     <div class="vtog" id="vtog" role="group" data-t-aria="v_aria" aria-label="เลือกมุมมองเมือง"><button type="button" class="vt on" data-v="city" aria-pressed="true" data-t="v_city">ดูแบบตึก</button><button type="button" class="vt" data-v="map" aria-pressed="false" data-t="v_map">ดูแบบแผนที่</button></div>
+    <input type="search" class="city-search" id="city-q" data-t-ph="search_ph" data-t-aria="search_aria" placeholder="ค้นหาศิลปิน…" aria-label="ค้นหาศิลปินจากชื่อ สาขา หรือเมือง" maxlength="40" autocomplete="off" enterkeyhint="search">
     <div class="filters" id="filters" role="group" data-t-aria="filters_aria" aria-label="กรองตามสาขา"><!--pre:filters--><button type="button" class="fbtn on" data-d="" aria-pressed="true">ทั้งหมด</button><button type="button" class="fbtn" data-d="*wave" aria-pressed="false">★ คลื่นลูกใหม่</button><button type="button" class="fbtn" data-d="จิตรกรรม" aria-pressed="false">จิตรกรรม</button><button type="button" class="fbtn" data-d="ภาพถ่าย" aria-pressed="false">ภาพถ่าย</button><button type="button" class="fbtn" data-d="ภาพประกอบ" aria-pressed="false">ภาพประกอบ</button><button type="button" class="fbtn" data-d="เซรามิก" aria-pressed="false">เซรามิก</button><button type="button" class="fbtn" data-d="สิ่งทอ" aria-pressed="false">สิ่งทอ</button><button type="button" class="fbtn" data-d="คอลลาจ" aria-pressed="false">คอลลาจ</button><button type="button" class="fbtn" data-d="ริโซกราฟ" aria-pressed="false">ริโซกราฟ</button><button type="button" class="fbtn" data-d="ศิลปะเจเนอเรทีฟ" aria-pressed="false">ศิลปะเจเนอเรทีฟ</button><button type="button" class="fbtn" data-d="กลิตช์อาร์ต" aria-pressed="false">กลิตช์อาร์ต</button><button type="button" class="fbtn" data-d="ไบโออาร์ต" aria-pressed="false">ไบโออาร์ต</button><!--/pre:filters--></div>
     <div class="fnote off" id="fnote" role="status" inert><span id="fnote-t"></span><a href="#strip" data-t="fnote_go">ดูตึกในแถบเมือง ↑</a><a id="fnote-in" href="#" hidden data-t="fnote_in">เข้าไปในตึก →</a><button type="button" id="fnote-x" data-t="fnote_x">ล้างตัวกรอง ✕</button></div>
   </div>
@@ -841,6 +843,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
     <p class="sup-note" data-t="sup_note">ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง</p>
   </div>
 </section>
+</main>
 
 <footer class="foot reveal">
   <h3 data-t-html="foot_h">ศิลปะ<em>ไม่รอ</em>ใคร</h3>

@@ -146,3 +146,19 @@ html[lang=lo] [data-t],html[lang=lo] [data-t-html],html[lang=lo] button,html[lan
 .sup-dlg .act{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
 .jd-pay{border:2px dashed var(--black);padding:.8rem 1rem 1rem;margin:0;display:grid;gap:.7rem;min-width:0;}
 .jd-pay legend{font-weight:700;padding:0 .4rem;}
+
+/* ---- ease of use ---- */
+/* focus ring in two tones (white inside, black outside) so it shows on every colour of the site, pink and gold included */
+:focus-visible{outline:3px solid #0E0D0C!important;outline-offset:3px!important;box-shadow:0 0 0 3px #fff!important;}
+.skip{position:fixed;left:.6rem;top:-5rem;z-index:3000;background:var(--black);color:var(--paper);padding:.8rem 1.1rem;font:700 1rem/1.2 var(--anton,sans-serif);border:3px solid var(--paper);text-decoration:none;transition:top .15s;}
+.skip:focus{top:.6rem;}
+.calm{position:fixed;left:.8rem;bottom:.8rem;z-index:900;min-height:44px;padding:.5rem .9rem;background:var(--paper);color:var(--black);border:3px solid var(--black);font:700 .85rem/1.1 var(--anton,sans-serif);letter-spacing:.04em;cursor:pointer;box-shadow:4px 4px 0 var(--black);}
+html[data-calm="1"] *,html[data-calm="1"] *::before,html[data-calm="1"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+.fab-wrap{position:fixed;right:.8rem;bottom:.8rem;z-index:900;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100vw - 1.6rem);}
+.fab-wrap .btn{min-height:44px;box-shadow:4px 4px 0 var(--black);}
+.fab-wrap .fab-sup.away{display:none;}
+.fab-wrap .fab-share{background:var(--paper);color:var(--black);}
+@media(max-width:900px){.calm{width:44px;padding:.4rem 0;text-align:center;left:.5rem;bottom:.5rem;}.calm-t{display:none;}}
+@media(max-width:600px){.fab-wrap{right:.5rem;bottom:.5rem;max-width:calc(100vw - 4rem);}.fab-wrap .btn{padding:.45rem .75rem;font-size:.8rem;letter-spacing:.06em;}}
+.sup-q{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
+.city-search{flex:1 1 220px;min-width:0;min-height:44px;padding:.5rem .9rem;border:var(--line,3px) solid var(--black);background:var(--paper);color:var(--black);font:400 1rem var(--sans,inherit);}

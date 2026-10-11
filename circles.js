@@ -58,8 +58,8 @@ function openSupport(info, who) {
     + (info.sample ? `<p class="sup-sample" role="note">${esc(t('sup_sample'))}</p>` : '')
     + (info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sup_qr_t', {a: who}))}" width="240" height="240">` : '')
     + `<dl class="sup-dl">${row('sup_bank', info.bank)}${row('sup_acc_name', info.name)}${row('sup_acc_no', info.no)}</dl>`
-    + `<p class="note">${esc(t('sup_direct', {a: who}))}</p>`
-    + `<div class="act">${info.no ? `<button type="button" class="btn" data-copy-acc>${esc(t('sup_copy'))}</button>` : ''}<button type="button" class="btn ghost" data-close>${esc(t('close'))}</button></div></div>`);
+    + `<p class="note">${esc(t('sup_direct', {a: who}))}</p>` + (info.qr ? `<p class="note">${esc(t('sup_hint'))}</p>` : '')
+    + `<div class="act">${info.qr ? `<a class="btn" href="${esc(info.qr)}" download="circles-qr" target="_blank" rel="noopener">${esc(t('sup_save'))}</a>` : ''}${info.no ? `<button type="button" class="btn ghost" data-copy-acc>${esc(t('sup_copy'))}</button>` : ''}<button type="button" class="btn ghost" data-close>${esc(t('close'))}</button></div></div>`);
   d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
   const cp = d.querySelector('[data-copy-acc]');
   if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(info.no); toast(t('sup_copied')); } catch (e) {} };
@@ -150,7 +150,7 @@ th: {
   cw_est:'ก่อตั้ง {y}', cw_back:'← กลับไปเดินเมือง', cw_hint:'▼ ภาพตัดตึกทีละชั้น กดที่ผลงานเพื่อดูรายละเอียดเต็ม', cw_section:'SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น',
   mus_name:'พิพิธภัณฑ์ของ{a}', mus_aria:'โถงแสดงภาพของ{a}', mus_prev:'← ภาพก่อน', mus_next:'เดินต่อ →', mus_more:'รายละเอียดและแนวคิด', mus_map:'ผังตึก', mus_hint:'▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม',
   pf_h:'โปรไฟล์ของ{a}', pf_open:'รับงานสั่งทำ', pf_until:'· คิวว่างเดือน {m}', pf_cn:'แนวคิดของงาน{a}', pf_nw:'ผลงานในพิพิธภัณฑ์', pf_ns:'ขายแล้ว', pf_ny:'เริ่มทำงานศิลปะ', pf_tl:'เส้นทางที่ผ่านมา',
-  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', pf_soon:'เร็วๆ นี้',
+  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', search_ph:'ค้นหาศิลปิน…', search_aria:'ค้นหาศิลปินจากชื่อ สาขา หรือเมือง', fnote_q:'พบ {n} ตึกที่ตรงกับคำค้น', fnote_q0:'ไม่พบศิลปินที่ตรงกับคำค้น', calm_off:'หยุดการเคลื่อนไหว', calm_on:'เปิดการเคลื่อนไหว', share_btn:'แชร์', share_copied:'คัดลอกลิงก์แล้ว', sup_hint:'บนมือถือ: บันทึกรูป QR แล้วเปิดแอปธนาคารของคุณ (เช่น BCEL One) เลือกสแกนจากรูปในเครื่อง', sup_save:'บันทึกรูป QR', pf_soon:'เร็วๆ นี้',
   pf_walk:'เดินเข้าพิพิธภัณฑ์ →', pf_ask:'ถามศิลปิน', pf_ig:'Instagram', pf_share:'แชร์โปรไฟล์ ↗', pf_copy:'คัดลอกลิงก์', pf_copied:'คัดลอกลิงก์แล้ว', pf_marq:'ART NOT SORRY ★ วงกลมไม่มีวันจบ ★ CIRCLES ★ เดินเข้าพิพิธภัณฑ์ ★ ',
   mus_prof:'ดูโปรไฟล์ศิลปิน', title_pf:'โปรไฟล์ของ{a} — circles', desc_pf:'รู้จัก{a} ศิลปินสาขา{d} แนวคิดของงาน ผลงานที่ขายอยู่ และช่องทางสนับสนุนหรือสั่งทำงาน',
   fold_spot:'อ่านบทสัมภาษณ์ 3 ข้อ', fold_foot:'เมนู โซเชียล และจดหมายข่าว',
@@ -219,7 +219,7 @@ en: {
   cw_est:'Est. {y}', cw_back:'← Back to the city', cw_hint:'▼ The building cut open, floor by floor. Click a work for full details', cw_section:'SECTION A–A · NO LIFT, STAIRS ONLY',
   mus_name:"{a}'s museum", mus_aria:"{a}'s picture hall", mus_prev:'← Previous', mus_next:'Walk on →', mus_more:'Details & concept', mus_map:'Floor plan', mus_hint:'▼ Walk the hall one work at a time. Use the ← → keys. Click the lit work for full details',
   pf_h:"{a}'s profile", pf_open:'Taking commissions', pf_until:'· slot open in {m}', pf_cn:"{a}'s concept", pf_nw:'works in the museum', pf_ns:'sold', pf_ny:'making art since', pf_tl:'The road so far',
-  pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', pf_soon:'Coming soon',
+  pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', search_ph:'Search artists…', search_aria:'Search artists by name, discipline or city', fnote_q:'{n} building(s) match your search', fnote_q0:'No artist matches your search', calm_off:'Pause motion', calm_on:'Resume motion', share_btn:'Share', share_copied:'Link copied', sup_hint:'On a phone: save the QR image, then open your bank app (for example BCEL One) and scan it from your gallery.', sup_save:'Save QR image', pf_soon:'Coming soon',
   pf_walk:'Walk into the museum →', pf_ask:'Ask the artist', pf_ig:'Instagram', pf_share:'Share profile ↗', pf_copy:'Copy link', pf_copied:'Link copied', pf_marq:'ART NOT SORRY ★ CIRCLES NEVER END ★ CIRCLES ★ WALK INTO THE MUSEUM ★ ',
   mus_prof:'View artist profile', title_pf:"{a}'s profile — circles", desc_pf:"Meet {a}, {d} artist: the ideas behind the work, the pieces on sale, and ways to support or commission.",
   fold_spot:'Read the 3-question interview', fold_foot:'Menu, social & newsletter',
@@ -458,6 +458,16 @@ lo: {
   sup_copied: "ສຳເນົາແລ້ວ",   // DRAFT lo: needs native review
   sup_direct: "ເງິນເຂົ້າບັນຊີຂອງ {a} ໂດຍກົງ circles ບໍ່ໄດ້ຮັບເງິນແທນ",   // DRAFT lo: needs native review
   sup_sample: "ຂໍ້ມູນຕົວຢ່າງເທົ່ານັ້ນ ຢ່າໂອນເງິນ",   // DRAFT lo: needs native review
+  search_ph: "ຄົ້ນຫາສິລະປິນ…",   // DRAFT lo: needs native review
+  search_aria: "ຄົ້ນຫາສິລະປິນຈາກຊື່ ສາຂາ ຫຼືເມືອງ",   // DRAFT lo: needs native review
+  fnote_q: "ພົບ {n} ຕຶກທີ່ກົງກັບຄຳຄົ້ນຫາ",   // DRAFT lo: needs native review
+  fnote_q0: "ບໍ່ພົບສິລະປິນທີ່ກົງກັບຄຳຄົ້ນຫາ",   // DRAFT lo: needs native review
+  calm_off: "ຢຸດການເຄື່ອນໄຫວ",   // DRAFT lo: needs native review
+  calm_on: "ເປີດການເຄື່ອນໄຫວ",   // DRAFT lo: needs native review
+  share_btn: "ແຊຣ໌",   // DRAFT lo: needs native review
+  share_copied: "ສຳເນົາລິ້ງແລ້ວ",   // DRAFT lo: needs native review
+  sup_hint: "ເທິງມືຖື: ບັນທຶກຮູບ QR ແລ້ວເປີດແອັບທະນາຄານຂອງທ່ານ (ເຊັ່ນ BCEL One) ເລືອກສະແກນຈາກຮູບໃນເຄື່ອງ",   // DRAFT lo: needs native review
+  sup_save: "ບັນທຶກຮູບ QR",   // DRAFT lo: needs native review
   pf_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
   pf_share: "ແຊໂປຣໄຟລ໌ ↗",   // DRAFT lo: needs native review
   pf_copy: "ສຳເນົາລິ້ງ",   // DRAFT lo: needs native review
@@ -866,3 +876,48 @@ function coinSwap(svg, opts) {
   document.readyState === 'loading' ? addEventListener('DOMContentLoaded', go) : go();
 })();
 /* ===== lite:end ===== */
+
+
+/* ---------- ease of use: skip link, "pause motion", floating Share / Support buttons ---------- */
+(function ux() {
+  const calmGet = () => { try { return localStorage.getItem('circles-calm') === '1'; } catch (e) { return false; } };
+  const setCalm = on => { document.documentElement.toggleAttribute('data-calm', on); if (on) document.documentElement.setAttribute('data-calm', '1'); try { localStorage.setItem('circles-calm', on ? '1' : '0'); } catch (e) {} };
+  if (calmGet()) document.documentElement.setAttribute('data-calm', '1');
+  const pageArtist = () => {
+    const m = document.querySelector('[data-studio],[data-profile]');
+    const id = m ? (m.dataset.studio || m.dataset.profile) : (/cutaway\.html$/i.test(location.pathname) ? new URLSearchParams(location.search).get('id') : '');
+    return id && typeof ARTISTS !== 'undefined' ? ARTISTS.find(a => a.id === id) : null;
+  };
+  async function shareHere() {
+    const url = location.href.split('#')[0];
+    try { if (navigator.share) { await navigator.share({title: document.title, url}); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url); toast(t('share_copied')); } catch (e) {}
+  }
+  function mount() {
+    const main = document.getElementById('main');
+    if (main && !document.querySelector('.skip')) {
+      const a = document.createElement('a'); a.className = 'skip'; a.href = '#main'; a.dataset.t = 'skip_main'; a.textContent = t('skip_main');
+      if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+      document.body.prepend(a);
+    }
+    if (!document.querySelector('.calm')) {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'calm';
+      const paint = () => { const on = document.documentElement.getAttribute('data-calm') === '1', lab = t(on ? 'calm_on' : 'calm_off'); b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', lab); b.title = lab; b.innerHTML = `<span aria-hidden="true">${on ? '▶' : '❚❚'}</span><span class="calm-t"> ${esc(lab)}</span>`; };
+      b.addEventListener('click', () => { setCalm(document.documentElement.getAttribute('data-calm') !== '1'); paint(); });
+      paint(); onLang(paint); document.body.appendChild(b);
+    }
+    const A = pageArtist();
+    if (A && !document.querySelector('.fab-wrap')) {
+      const w = document.createElement('div'); w.className = 'fab-wrap';
+      const sh = document.createElement('button'); sh.type = 'button'; sh.className = 'btn ghost fab-s fab-share'; sh.addEventListener('click', shareHere);
+      const su = document.createElement('button'); su.type = 'button'; su.className = 'btn pk fab-s fab-sup'; su.dataset.support = A.id;
+      const paint = () => { sh.textContent = '↗ ' + t('share_btn'); su.textContent = t('pf_supb', {a: nameL(A)}); su.hidden = !supOf(A); };
+      paint(); onLang(paint); w.append(sh, su); document.body.appendChild(w);
+      let raf = 0;   // hide the floating Support button while the page's own Support button is on screen
+      const check = () => { raf = 0; const vh = innerHeight; su.classList.toggle('away', [...document.querySelectorAll('[data-support]:not(.fab-s)')].some(el => { const r = el.getBoundingClientRect(); return r.width && r.bottom > 0 && r.top < vh; })); };
+      const queue = () => { if (!raf) raf = requestAnimationFrame(check); };
+      addEventListener('scroll', queue, {passive: true}); addEventListener('resize', queue); setTimeout(queue, 800); setInterval(queue, 2000);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
+})();

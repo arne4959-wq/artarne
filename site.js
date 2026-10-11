@@ -326,7 +326,7 @@ function mapSpans(n) {
   if (rest === 1) { s.push(3); p = 3; } else if (rest === 2) { s.push(2, 2); p = 2; }
   return {s, p};
 }
-let curD = '';
+let curD = '', curQ = '';
 function renderMap() {
   const L = mapSpans(ARTISTS.length), n = ARTISTS.length;
   $('#map-grid').innerHTML = ARTISTS.map((a, i) => `<button class="dist d${i % 6}${i === 0 || (i === n - 1 && n % 2 === 0) ? ' wide' : ''}" style="grid-column:span ${L.s[i]}" data-id="${a.id}" data-d="${esc(a.disc)}" data-w="${a.wave ? 1 : 0}" data-cur="ENTER"><span class="dn">NO.${String(i + 1).padStart(2, '0')} · ${esc(t('district'))}</span><span class="dd">${esc(discL(a))}</span><span class="da">${esc(nameL(a))} · ${esc(cityL(a))}</span><svg viewBox="0 0 120 80" aria-hidden="true">${PLAN[a.kind]}</svg></button>`).join('')
@@ -338,26 +338,34 @@ function syncFilter(scrollStrip) {
   const d = curD;
   $('#map-grid').classList.toggle('f', !!d);
   const wave = d === '*wave';
-  document.querySelectorAll('.dist').forEach(el => { const on = wave ? el.dataset.w === '1' : el.dataset.d === d; el.classList.toggle('on', on); });
+  const q = curQ, nameHit = a => !q || [a.name, a.nameEn, a.nameLo, a.disc, discL(a), a.city, cityL(a)].some(x => x && String(x).toLowerCase().includes(q)), ok = a => (!d || (wave ? !!a.wave : a.disc === d)) && nameHit(a);
+  document.querySelectorAll('.dist').forEach(el => { const A = ARTISTS.find(x => x.id === el.dataset.id), on = !!A && (d || q) && ok(A); el.classList.toggle('on', on); });
+  $('#map-grid').classList.toggle('f', !!(d || q));
   document.querySelectorAll('.fbtn[data-d]').forEach(b => { if (b.id === 'all-btn') return; const on = b.dataset.d === d; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
   let first = null, n = 0, only = null;
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
-    const hit = !d || (wave ? !!ARTISTS[i].wave : ARTISTS[i].disc === d);
+    const hit = ok(ARTISTS[i]), act = !!(d || q);
     bd.style.transitionDelay = '0s';
-    bd.classList.toggle('lit', !!d && hit); bd.classList.toggle('dim', !!d && !hit);
-    if (d && hit) { n++; only = ARTISTS[i]; if (!first) first = bd; }
+    bd.classList.toggle('lit', act && hit); bd.classList.toggle('dim', act && !hit);
+    if (act && hit) { n++; only = ARTISTS[i]; if (!first) first = bd; }
   });
   if (scrollStrip && first) strip.scrollTo({left: Math.max(0, first.offsetLeft - 80), behavior: reduce ? 'auto' : 'smooth'});
   /* the strip sits far above the map, so say so in a bar that follows the reader down the map */
   const note = $('#fnote'), go = $('#fnote-in');
-  if (d) $('#fnote-t').textContent = wave ? t('fnote_wave', {n}) : t('fnote', {n, d: discL(ARTISTS.find(a => a.disc === d))});
-  note.classList.toggle('off', !d); note.toggleAttribute('inert', !d);
-  go.hidden = !(d && n === 1); if (!go.hidden) { go.dataset.id = only.id; go.href = 'studio-' + only.id + '.html'; }
+  const act = !!(d || q);
+  if (act) $('#fnote-t').textContent = !n ? t('fnote_q0') : q ? t('fnote_q', {n}) : wave ? t('fnote_wave', {n}) : t('fnote', {n, d: discL(ARTISTS.find(a => a.disc === d))});
+  note.classList.toggle('off', !act); note.toggleAttribute('inert', !act);
+  go.hidden = !(act && n === 1); if (!go.hidden) { go.dataset.id = only.id; go.href = 'studio-' + only.id + '.html'; }
 }
 function setFilter(d) { curD = d; syncFilter(true); }
 $('#filters').addEventListener('click', e => { const b = e.target.closest('.fbtn[data-d]'); if (b) setFilter(b.dataset.d); });
 $('#map-grid').addEventListener('click', e => { const b = e.target.closest('.dist'); if (b) openStudio(b.dataset.id); });   // a district on the map = that artist's building
-$('#fnote-x').addEventListener('click', () => setFilter(''));
+$('#fnote-x').addEventListener('click', () => { const i = $('#city-q'); if (i) i.value = ''; curQ = ''; setFilter(''); });
+(function () {   // search by name, discipline or city
+  const i = $('#city-q'); if (!i) return; let timer = 0;
+  i.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { curQ = i.value.trim().toLowerCase(); syncFilter(true); }, 150); });
+  i.addEventListener('keydown', e => { if (e.key === 'Escape') { i.value = ''; curQ = ''; syncFilter(false); } });
+})();
 $('#fnote-in').addEventListener('click', e => { e.preventDefault(); openStudio(e.currentTarget.dataset.id); });
 
 /* spotlight */

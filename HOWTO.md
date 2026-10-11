@@ -424,3 +424,18 @@ const CONFIG = { endpoint: 'https://formspree.io/f/abcdwxyz', contact: 'อี�
 | `news_consent` | สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ | **TODO** (uses Thai for now) - newsletter consent (privacy wording): needs a proper translation, not a guess |
 | `jd_subject` | ขอมีตึกใน circles — {n} | **TODO** (uses Thai for now) - subject line of the join-request email that reaches the site owner: left in Thai so the owner can read it |
 <!-- lo:end -->
+
+## 13. โหมดโชว์ผลงาน และ QR สนับสนุน (ในลาว: BCEL / LDB)
+
+- **สวิตช์เดียว** `CONFIG.shop` ใน `circles.js`: `false` = ไม่ขาย (ปุ่มซื้อกลายเป็น "สนับสนุน{ศิลปิน}" และลิงก์หน้า buy พาไปหน้าสตูดิโอของศิลปิน) / `true` = เปิดขายเหมือนเดิม โค้ดซื้อไม่ได้ถูกลบ
+- **ปุ่มสนับสนุนศิลปิน** เปิดหน้าต่าง QR ธนาคารของศิลปินคนนั้น ใส่ที่ `artists.js` ต่อศิลปินแบบนี้ (เงินเข้าบัญชีเขาโดยตรง):
+  `support:{bank:'BCEL', name:'ชื่อบัญชี', no:'เลขบัญชี', qr:'art/qr/<id>.png'}`
+  ศิลปินจริงจาก Supabase: เขากรอกในหน้า `manage.html` แล้วรัน `npm run pull` (ดึงบัญชี/QR มาด้วย) จากนั้น build ใหม่
+- **ปุ่มสนับสนุนเว็บ** ใช้ `CONFIG.support` ใน `circles.js` (รูปแบบเดียวกัน) **ตอนนี้เป็นข้อมูลตัวอย่าง `sample: true` ต้องแทนด้วยบัญชีจริงแล้วลบ `sample: true`** ทั้งใน `CONFIG.support` และของศิลปินมะลิใน `artists.js`
+- ถ้ายังไม่มี `support` ปุ่มจะกดไม่ได้และขึ้น "เร็วๆ นี้"
+- ศิลปินสมัครผ่านฟอร์ม "ขอมีตึก" (`join.html`) พร้อมระบุธนาคาร/เลขบัญชีได้ (ไม่บังคับ) รูป QR ให้เขาส่งตอบกลับอีเมล
+
+## 14. ใช้ง่ายขึ้น
+
+- ช่องค้นหาศิลปินในหน้าแรก (ชื่อ สาขา เมือง), ปุ่ม "แชร์" และปุ่ม "สนับสนุน" ลอยในหน้าศิลปิน, ลิงก์ข้ามไปเนื้อหา, ปุ่มหยุดการเคลื่อนไหว (จำค่าไว้), ขอบโฟกัสสองสี
+- โค้ดอยู่ท้าย `circles.js` (ฟังก์ชัน `ux`) และ `circles.css` ส่วน "ease of use"; เวอร์ชัน React อยู่ใน `app/src/components/Ux.jsx`
