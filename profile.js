@@ -86,6 +86,8 @@
     const url = () => new URL(`profile-${A.id}.html`, location.href).href;
     const say = m => { live.textContent = ''; setTimeout(() => { live.textContent = m; }, 30); clearTimeout(say._t); say._t = setTimeout(() => { live.textContent = ''; }, 3000); };
     sec.addEventListener('click', async e => {
+      const pick = e.target.closest('.pf-pk');
+      if (pick && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button)) { e.preventDefault(); openQuick(A.id, +new URL(pick.href).searchParams.get('work'), A.pieces.map((_, i) => [A.id, i])); return; }
       if (e.target.closest('[data-pf-ask]')) { const k = A.pieces.findIndex(p => !workStatus(p)); openInquiry(A.id, k < 0 ? 0 : k, ''); return; }
       if (e.target.closest('[data-pf-copy]')) { const ok = await copy(url()); say(t(ok ? 'pf_copied' : 'copy_fail')); return; }
       if (e.target.closest('[data-pf-share]')) {

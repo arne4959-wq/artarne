@@ -343,7 +343,8 @@ function renderFeatured(mode) {
 }
 $('#masonry').addEventListener('click', e => {
   if (e.target.closest('[data-sf-reset]')) return resetBar();
-  const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(b.dataset.id, +b.dataset.k);
+  const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault();
+  openQuick(b.dataset.id, +b.dataset.k, [...document.querySelectorAll('#masonry .card')].map(c => [c.dataset.id, +c.dataset.k]));   // the arrows walk the works now on the wall
 });
 $('#sort').addEventListener('change', e => { sortBy = e.target.value; renderFeatured('pop'); });
 $('#sf').addEventListener('click', e => {

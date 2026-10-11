@@ -61,7 +61,7 @@ th: {
   s3_h:'ซื้อตรงจากศิลปิน', s3_p:'เจอชิ้นที่ตามไปถึงในฝัน ก็คุยกับคนทำโดยตรง จ่ายตามราคาที่เขาตั้ง เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน',
   feat_i:'Featured', feat_h:'ผลงานเด่นสัปดาห์นี้', feat_h_all:'ผลงานทั้งหมดในเมือง',
   sort_label:'เรียงตาม', sort_cur:'คัดมาให้', sort_low:'ราคาต่ำ → สูง', sort_high:'ราคาสูง → ต่ำ', sort_new:'ใหม่ล่าสุด',
-  all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', q_ph:'ค้นหาชื่องาน ชื่อศิลปิน (ไทย · English · ລາວ)', q_aria:'ค้นหาผลงานตามชื่องานหรือชื่อศิลปิน', q_none:'ไม่พบผลงานที่ตรงกับ “{q}” ลองคำอื่น หรือล้างตัวกรอง', sf_group:'ตัวกรองด่วน', sf_status:'สถานะ', sf_all:'ทั้งหมด', sf_avail:'ยังว่างอยู่', sf_price:'ราคา', sf_p1:'ต่ำกว่า $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'ล้างตัวกรอง', sf_none:'ไม่มีผลงานในช่วงนี้ ลองตัวกรองอื่น', sf_count:'แสดง {n} จาก {t} ชิ้น', z_open:'ขยายดูภาพ', z_in:'ขยาย', z_out:'ย่อ', z_fit:'พอดีจอ', z_hint:'เลื่อนลูกกลิ้ง ดับเบิลคลิก หรือกด + − เพื่อซูม ลากเพื่อเลื่อนภาพ กด Esc เพื่อปิด', z_hint_t:'แตะสองครั้งหรือใช้สองนิ้วเพื่อซูม ลากเพื่อเลื่อนภาพ', card_aria:'{t} โดย{a} {p}',
+  all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', q_ph:'ค้นหาชื่องาน ชื่อศิลปิน (ไทย · English · ລາວ)', q_aria:'ค้นหาผลงานตามชื่องานหรือชื่อศิลปิน', q_none:'ไม่พบผลงานที่ตรงกับ “{q}” ลองคำอื่น หรือล้างตัวกรอง', sf_group:'ตัวกรองด่วน', sf_status:'สถานะ', sf_all:'ทั้งหมด', sf_avail:'ยังว่างอยู่', sf_price:'ราคา', sf_p1:'ต่ำกว่า $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'ล้างตัวกรอง', sf_none:'ไม่มีผลงานในช่วงนี้ ลองตัวกรองอื่น', sf_count:'แสดง {n} จาก {t} ชิ้น', z_open:'ขยายดูภาพ', z_in:'ขยาย', z_out:'ย่อ', z_fit:'พอดีจอ', z_hint:'เลื่อนลูกกลิ้ง ดับเบิลคลิก หรือกด + − เพื่อซูม ลากเพื่อเลื่อนภาพ กด Esc เพื่อปิด', z_hint_t:'แตะสองครั้งหรือใช้สองนิ้วเพื่อซูม ลากเพื่อเลื่อนภาพ', qv_free:'พร้อมขาย', qv_ask:'ทักศิลปิน', qv_walk:'เดินชมตึกของศิลปิน →', qv_prev:'ชิ้นก่อนหน้า', qv_next:'ชิ้นถัดไป', qv_thb:'ประมาณ', card_aria:'{t} โดย{a} {p}',
   map_i:'The', map_h:'แผนที่เมือง', map_p:'มองจากข้างบน เมืองแบ่งเป็นย่านตามสาขา กดย่านหรือปุ่มกรอง แล้วตึกในแถบเมืองด้านบนจะสว่างขึ้นให้',
   filters_aria:'กรองตามสาขา', f_all:'ทั้งหมด', district:'ย่าน', plaza:'PLAZA · จัตุรัสกลางเมือง',
   fnote:'ไฮไลต์ {n} ตึกสาขา{d}ในแถบเมืองแล้ว', fnote_go:'ดูตึกในแถบเมือง ↑', fnote_in:'เข้าไปในตึก →', fnote_x:'ล้างตัวกรอง ✕',
@@ -132,7 +132,7 @@ en: {
   s3_h:'Buy direct from the artist', s3_p:'Found the piece that follows you home? Talk to the maker directly and pay the price they set. Every cent goes to the artist, nobody skims first.',
   feat_i:'Featured', feat_h:"This week's picks", feat_h_all:'Every work in the city',
   sort_label:'Sort by', sort_cur:'Curated', sort_low:'Price: low → high', sort_high:'Price: high → low', sort_new:'Newest',
-  all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', q_ph:'Search a title or an artist (Thai · English · ລາວ)', q_aria:'Search works by title or artist', q_none:'No works match “{q}”. Try another word, or clear the filters.', sf_group:'Quick filters', sf_status:'Status', sf_all:'All', sf_avail:'Available', sf_price:'Price', sf_p1:'Under $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'Clear filters', sf_none:'No works in this range. Try another filter.', sf_count:'Showing {n} of {t} works', z_open:'Zoom into the picture', z_in:'Zoom in', z_out:'Zoom out', z_fit:'Fit to screen', z_hint:'Scroll, double-click or press + − to zoom. Drag to move. Esc closes.', z_hint_t:'Double-tap or pinch to zoom. Drag to move.', card_aria:'{t} by {a}, {p}',
+  all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', q_ph:'Search a title or an artist (Thai · English · ລາວ)', q_aria:'Search works by title or artist', q_none:'No works match “{q}”. Try another word, or clear the filters.', sf_group:'Quick filters', sf_status:'Status', sf_all:'All', sf_avail:'Available', sf_price:'Price', sf_p1:'Under $300', sf_p2:'$300–600', sf_p3:'$600+', sf_reset:'Clear filters', sf_none:'No works in this range. Try another filter.', sf_count:'Showing {n} of {t} works', z_open:'Zoom into the picture', z_in:'Zoom in', z_out:'Zoom out', z_fit:'Fit to screen', z_hint:'Scroll, double-click or press + − to zoom. Drag to move. Esc closes.', z_hint_t:'Double-tap or pinch to zoom. Drag to move.', qv_free:'Available', qv_ask:'Message the artist', qv_walk:'Walk through the artist\'s building →', qv_prev:'Previous work', qv_next:'Next work', qv_thb:'about', card_aria:'{t} by {a}, {p}',
   map_i:'The', map_h:'City map', map_p:'From above, the city splits into districts by discipline. Tap a district or a filter and the matching buildings light up in the strip above.',
   filters_aria:'Filter by discipline', f_all:'All', district:'DISTRICT', plaza:'PLAZA · CITY SQUARE',
   fnote:'Highlighted {n} building(s) in the {d} district', fnote_go:'See buildings in the strip ↑', fnote_in:'Enter building →', fnote_x:'Clear filter ✕',
@@ -363,6 +363,59 @@ document.addEventListener('click', e => {
   if (!e.target.closest('[data-zoom]') && e.target.tagName !== 'IMG') return;
   e.preventDefault(); openZoom(host.querySelector('img'));
 });
+
+/* ---------- artwork quick view (lightbox): a picture opens full screen with its details, price in USD and THB, status and the buy / message buttons.
+   openQuick(artistId, workIndex, list) — list = [[artistId, workIndex], ...] is what the arrows and ← → walk through (default: that artist's works).
+   Closes with the X, Esc, or a click on the empty space around the picture; a click on the picture itself zooms it (openZoom). ---------- */
+const thbOf = usdN => RATES.thb > 0 ? '฿' + NF.format(Math.round(usdN * RATES.thb)) : '';
+let quickRedraw = null;
+function openQuick(id, k, list) {
+  const first = artistById(id); if (!first || !first.pieces[k]) return;
+  const seq = (list && list.length ? list : first.pieces.map((_, i) => [id, i])).filter(([i, n]) => { const a = artistById(i); return a && a.pieces[n]; });
+  let pos = Math.max(0, seq.findIndex(([i, n]) => i === id && n === k));
+  const d = mountDialog('quick'); d.classList.add('qv'); d.setAttribute('data-lenis-prevent', ''); d.setAttribute('aria-labelledby', 'qv-t');
+  let phaseT = 0;
+  const phase = (ph, ms) => { d.dataset.phase = ph; clearTimeout(phaseT); if (ms) phaseT = setTimeout(() => { d.dataset.phase = 'idle'; }, ms); };   // in = the opening slam, step = a jolt between works
+  const draw = () => {
+    const [cid, ck] = seq[pos], a = artistById(cid), p = a.pieces[ck], sta = workStatus(p), pay = sta ? '' : payLink(p), nm = nameL(a);
+    const [rw, rh] = String(p.ar || '1/1').split('/').map(Number), arn = rw > 0 && rh > 0 ? rw / rh : 1;
+    const buyTxt = sta === 'sold' ? t('b_sold', {a: nm}) : sta === 'reserved' ? t('b_res') : t('buy', {a: nm});
+    const thb = thbOf(p.p);
+    const nav = (dir, on) => seq.length > 1 ? `<button type="button" class="qv-nav qv-${dir}" data-qv-go="${dir === 'prev' ? -1 : 1}" aria-label="${esc(t(dir === 'prev' ? 'qv_prev' : 'qv_next'))}"${on ? '' : ' disabled'}>${dir === 'prev' ? '←' : '→'}</button>` : '';
+    d.innerHTML = `<div class="qv-stage" data-qv-stage>${nav('prev', pos > 0)}
+  <div class="qv-frame" data-zoomable style="--ar:${esc(p.ar || '1/1')};--arn:${arn};--art:${artBg(a.works, ck)}">${artImg(a, ck)}${stampHtml(p)}${p.img ? zoomBtn() : ''}</div>${nav('next', pos < seq.length - 1)}</div>
+<aside class="qv-info">
+  <div class="qv-meta"><span class="qv-st ${sta || 'free'}">${esc(sta === 'sold' ? t('st_sold') : sta === 'reserved' ? t('st_res') : t('qv_free'))}</span>${seq.length > 1 ? `<span class="qv-cnt" aria-hidden="true">${pos + 1} / ${seq.length}</span>` : ''}</div>
+  <h2 class="qv-t" id="qv-t">${esc(pk(p, 't'))}</h2>
+  <p class="qv-by">${t('d_by', {a: `<a href="profile-${esc(a.id)}.html">${esc(nm)}</a>`, d: esc(discL(a)), c: esc(cityL(a))})}</p>
+  ${p.q ? `<p class="qv-q">“${esc(pk(p, 'q'))}”</p>` : ''}
+  <dl class="qv-dl"><div><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div><dt>${esc(t('lb_year'))}</dt><dd>${esc(p.y)}</dd></div></dl>
+  <div class="qv-price"><b class="${sta === 'sold' ? 'qv-strike' : ''}">${esc(usd(p.p))}</b>${thb ? `<span class="qv-thb">≈ ${esc(thb)}</span>` : isDraft() ? '<span class="qv-thb">≈ ฿<i class="qv-todo">[__]</i></span>' : ''}</div>
+  <div class="qv-cta">${pay ? `<a class="qv-btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="qv-btn ${pay ? '' : 'pk'}" href="buy-${esc(a.id)}-${ck}.html">${esc(buyTxt)}</a><button type="button" class="qv-btn" data-qv-ask>${esc(t('qv_ask'))}</button></div>
+  <a class="qv-walk" href="studio-${esc(a.id)}.html?work=${ck}">${esc(t('qv_walk'))}</a>
+</aside>
+<button type="button" class="qv-x" data-close aria-label="${esc(t('close'))}">✕</button>`;
+  };
+  const go = dir => {
+    const to = pos + dir; if (to < 0 || to >= seq.length) return;
+    pos = to; phase('step', 500); draw();
+    (d.querySelector(`.qv-${dir < 0 ? 'prev' : 'next'}:not([disabled])`) || d.querySelector('.qv-x')).focus();
+  };
+  d.onclick = e => {
+    if (e.target.closest('[data-close]') || e.target === d || e.target.matches('[data-qv-stage]')) { d.close(); return; }   // X, or the empty space around the picture
+    const g = e.target.closest('[data-qv-go]'); if (g) return go(+g.dataset.qvGo);
+    if (e.target.closest('[data-qv-ask]')) { const [cid, ck] = seq[pos], sta = workStatus(artistById(cid).pieces[ck]); openInquiry(cid, ck, sta === 'sold' ? 'id_pre_sold' : sta === 'reserved' ? 'id_pre_res' : ''); }
+  };
+  d.onkeydown = e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); } else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+  };
+  quickRedraw = () => { if (d.open) draw(); };
+  phase('in', 1300); draw();
+  d.showModal();
+  d.querySelector('.qv-x').focus();
+}
+onLang(() => { if (quickRedraw) quickRedraw(); });
 
 function dlgShell(title, inner) {
   return `<div class="cdlg-h"><h2>${title}</h2><button type="button" class="cdlg-x" data-close aria-label="${esc(t('close'))}">✕</button></div>${inner}`;
