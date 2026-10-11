@@ -5,6 +5,17 @@ import {Ransom} from '../../components/art.jsx';
 import {isEmail} from '../../lib/manage.js';
 import {supabase, supabaseReady} from '../../lib/supabase.js';
 
+/* floating shapes behind the door: [shape, left %, top %, size px, colour token, tilt deg, float seconds, delay seconds] */
+const BITS = [
+  ['star', 6, 14, 30, 'pink', 12, 7, 0], ['dot', 14, 64, 18, 'gold', 0, 6, 1.2], ['ring', 4, 40, 34, 'paper', 0, 9, .4], ['plus', 22, 86, 24, 'tartan-red', 15, 8, 2],
+  ['tri', 11, 24, 26, 'gold', -14, 8, 1.6], ['dot', 27, 8, 14, 'tartan-red', 0, 7, .8], ['sq', 17, 48, 16, 'pink', 25, 6.5, 2.4], ['star', 30, 70, 20, 'paper', -10, 9, 3],
+  ['star', 93, 18, 26, 'gold', -8, 8, .6], ['ring', 88, 56, 30, 'pink', 0, 7, 1.8], ['dot', 95, 78, 20, 'paper', 0, 6, .2], ['plus', 80, 10, 22, 'pink', 20, 9, 2.2],
+  ['tri', 84, 82, 28, 'tartan-red', 16, 7.5, 1], ['sq', 90, 36, 14, 'gold', -20, 6.5, 2.8], ['dot', 73, 28, 16, 'pink', 0, 8, 3.4], ['plus', 76, 66, 18, 'gold', -12, 7, 1.4],
+];
+const Bits = () => <div className="mg-conf" aria-hidden="true">
+  {BITS.map(([k, x, y, z, c, r, d, w], i) => <i key={i} className={'b-' + k} style={{left: x + '%', top: y + '%', '--z': z + 'px', '--c': `var(--${c})`, '--r': r + 'deg', '--t': d + 's', '--w': w + 's'}}/>)}
+</div>;
+
 export default function Login({linkBad = false}) {
   const mt = useMt();
   const [email, setEmail] = useState(''), [phase, setPhase] = useState('idle'), [err, setErr] = useState(linkBad ? 'lg_link_bad' : '');
@@ -23,6 +34,7 @@ export default function Login({linkBad = false}) {
 
   return <main id="main" className="mg-wall">
     <div className="mg-tag" aria-hidden="true">CIRCLES</div>
+    <Bits/>
     <section className="mg-door in" aria-labelledby="mg-title">
       <div className="mg-hazard" aria-hidden="true"></div>
       <span className="mg-bolt a" aria-hidden="true"></span><span className="mg-bolt b" aria-hidden="true"></span>

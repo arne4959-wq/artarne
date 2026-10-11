@@ -17,8 +17,20 @@ const manage = `
 .mg-wall::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;
   background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);}
 
+/* floating shapes: small, a few colours, drifting slowly. Only transform moves. They sit at the sides, the door covers the middle. */
+.mg-conf{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.mg-conf i{position:absolute;display:block;width:var(--z);height:var(--z);background:var(--c);opacity:.9;transform:rotate(var(--r));animation:mgFloat var(--t) ease-in-out var(--w) infinite alternate;}
+.mg-conf .b-dot{border-radius:50%;}
+.mg-conf .b-ring{border-radius:50%;background:none;border:5px solid var(--c);}
+.mg-conf .b-sq{border:2px solid var(--black);}
+.mg-conf .b-star{clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
+.mg-conf .b-plus{clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);}
+.mg-conf .b-tri{clip-path:polygon(50% 4%,98% 92%,2% 92%);}
+@keyframes mgFloat{from{transform:translateY(0) rotate(var(--r));}to{transform:translateY(-16px) rotate(calc(var(--r) + 14deg));}}
+@media(max-width:860px){.mg-conf i:nth-child(n+11){display:none;}}
+
 /* ───────── the door ───────── */
-.mg-door{position:relative;width:min(560px,100%);background:var(--grain),var(--bone);border:6px solid var(--black);box-shadow:14px 14px 0 var(--black);
+.mg-door{position:relative;z-index:1;width:min(560px,100%);background:var(--grain),var(--bone);border:6px solid var(--black);box-shadow:14px 14px 0 var(--black);
   padding:4.4rem 2.2rem 2.2rem;transform-origin:50% 0;}
 .mg-door.in{animation:mgSlam .55s var(--ease) both;}
 @keyframes mgSlam{0%{opacity:0;transform:translateY(-46px) rotate(-2.4deg);}70%{opacity:1;transform:translateY(5px) rotate(.4deg);}100%{opacity:1;transform:none;}}
@@ -122,7 +134,7 @@ html[lang="th"] .mg-tab,html[lang="lo"] .mg-tab{font-family:"Chonburi",var(--tha
   .mg-stamp{position:static;display:table;margin:.6rem 0 .5rem auto;font-size:.85rem;}
   .mg-tab{flex:1 1 auto;text-align:center;}
 }
-@media(prefers-reduced-motion:reduce){.mg-door.in,.mg-door.in .mg-stamp{animation:none;opacity:1;}.mg-door.in .mg-stamp{transform:rotate(9deg);}}
+@media(prefers-reduced-motion:reduce){.mg-conf i{animation:none;}.mg-door.in,.mg-door.in .mg-stamp{animation:none;opacity:1;}.mg-door.in .mg-stamp{transform:rotate(9deg);}}
 `;
 
 export default [c, join, manage];
