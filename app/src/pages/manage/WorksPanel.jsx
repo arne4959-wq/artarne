@@ -1,0 +1,127 @@
+/* WorksPanel.jsx — the artist's works: a card each (quick sale status, edit, delete) and one form to add or change a work. */
+import {useCallback, useEffect, useState} from 'react';
+import {useLang} from '../../lib/i18n.jsx';
+import {useMt} from '../../lib/manageStrings.js';
+import {supabase} from '../../lib/supabase.js';
+import {emptyWork, workToForm, formToWork, nextPosition} from '../../lib/manage.js';
+import {Field, SaveState} from './Field.jsx';
+import ImagePick from './ImagePick.jsx';
+
+const MAX_WORKS = 40;
+const STATUS = [['', 'w_on', ''], ['reserved', 'w_res', 'res'], ['sold', 'w_sold', 'sold']];
+
+export default function WorksPanel({artist}) {
+  const mt = useMt(), {lang} = useLang();
+  const [works, setWorks] = useState(null), [fail, setFail] = useState(false), [editing, setEditing] = useState(null), [sure, setSure] = useState(''), [msg, setMsg] = useState('');
+  const load = useCallback(async () => {
+    setFail(false);
+    const {data, error} = await supabase().from('works').select('*').eq('artist_id', artist.id).order('position');
+    if (error) setFail(true); else setWorks(data);
+  }, [artist.id]);
+  useEffect(() => { load(); }, [load]);
+
+  async function setStatus(w, status) {
+    if (w.status === status) return;
+    const before = works; setMsg('');
+    setWorks(ws => ws.map(x => (x.id === w.id ? {...x, status} : x)));   // shows at once, undone if the database says no
+    const {error} = await supabase().from('works').update({status}).eq('id', w.id);
+    if (error) { setWorks(before); setMsg('retry'); }
+  }
+  async function remove(w) {
+    if (sure !== w.id) { setSure(w.id); return; }
+    const {error} = await supabase().from('works').delete().eq('id', w.id);
+    setSure('');
+    if (error) setMsg('retry'); else setWorks(ws => ws.filter(x => x.id !== w.id));
+  }
+
+  if (fail) return <div className="mg-bad" role="alert">{mt('load_fail')} <button type="button" className="mg-mini" style={{width: 'auto', marginLeft: '.6rem'}} onClick={load}>{mt('reload')}</button></div>;
+  if (!works) return <p role="status" className="mg-status">{mt('loading')}</p>;
+  if (editing) return <WorkForm artist={artist} work={editing === 'new' ? null : editing} nextPos={nextPosition(works)}
+    onCancel={() => setEditing(null)} onSaved={() => { setEditing(null); load(); }}/>;
+
+  const title = w => (lang === 'en' && w.title_en) || (lang === 'lo' && w.title_lo) || w.title;
+  return <>
+    <div className="mg-bar" style={{marginTop: 0, marginBottom: '1.6rem'}}>
+      <button type="button" className="btn" disabled={works.length >= MAX_WORKS} onClick={() => setEditing('new')}>{mt('w_add')}</button>
+      {works.length >= MAX_WORKS && <span className="mg-ok bad">{mt('w_limit')}</span>}
+      {msg && <span className="mg-ok bad" role="alert">{mt(msg)}</span>}
+    </div>
+    {works.length === 0 ? <p className="mg-empty">{mt('w_none')}</p> :
+      <ul className="mg-works" style={{listStyle: 'none'}}>
+        {works.map(w => <li key={w.id} className="mg-work">
+          <div className="mg-pic" style={{'--ar': w.ar}}>{w.img ? <img src={w.img} alt={title(w)} loading="lazy"/> : <span>{mt('img_none')}</span>}</div>
+          <div className="mg-wbody">
+            <b>{title(w)}</b>
+            <span className="meta">${Number(w.price_usd).toLocaleString('en-US')}{w.price_lak ? ` · ${Number(w.price_lak).toLocaleString('en-US')} ₭` : ''} · {w.edition ? mt('w_ed', {n: w.edition}) : mt('w_one')}</span>
+            <div className="mg-seg" role="group" aria-label={mt('f_status')}>
+              {STATUS.map(([v, k, cls]) => <button key={v} type="button" className={cls} aria-pressed={w.status === v} onClick={() => setStatus(w, v)}>{mt(k)}</button>)}
+            </div>
+            <div className="mg-acts">
+              <button type="button" className="mg-mini" onClick={() => setEditing(w)}>{mt('w_edit')}</button>
+              <button type="button" className="mg-mini del" data-sure={sure === w.id ? '' : undefined} onClick={() => remove(w)} onBlur={() => setSure('')}>{sure === w.id ? mt('w_del_sure') : mt('w_del')}</button>
+            </div>
+          </div>
+        </li>)}
+      </ul>}
+  </>;
+}
+
+function WorkForm({artist, work, nextPos, onCancel, onSaved}) {
+  const mt = useMt();
+  const [form, setForm] = useState(() => (work ? workToForm(work) : emptyWork())), [errors, setErrors] = useState({}), [state, setState] = useState('');
+  const set = (k, v) => { setForm(f => ({...f, [k]: v})); setState(''); };
+  const props = {form, set, errors};
+
+  async function save(e) {
+    e.preventDefault();
+    const r = formToWork(form);
+    if (r.errors) { setErrors(r.errors); setState('fix'); return; }
+    setErrors({}); setState('saving');
+    const q = supabase().from('works');
+    const {error} = work ? await q.update(r.row).eq('id', work.id) : await q.insert({...r.row, artist_id: artist.id, position: nextPos});
+    if (error) { setState('fail'); return; }
+    onSaved();
+  }
+
+  return <form className="mg-panel" onSubmit={save} noValidate>
+    <h2>{work ? mt('w_editing') : mt('w_new')}</h2>
+    <ImagePick src={form.img} ar={form.ar} bucket="art" artistId={artist.id} onDone={({url, ratio}) => { set('img', url); set('ar', ratio); }}/>
+    <h3 className="mg-h3">{mt('h_wbasic')}</h3>
+    <div className="mg-grid">
+      <Field label={mt('f_title')} name="title" maxLength={120} {...props}/>
+      <Field label={mt('f_title_en')} name="title_en" maxLength={120} {...props}/>
+      <Field label={mt('f_title_lo')} name="title_lo" maxLength={120} {...props}/>
+      <Field label={mt('f_year')} name="year" inputMode="numeric" maxLength={4} {...props}/>
+      <Field label={mt('f_medium')} name="medium" maxLength={120} {...props}/>
+      <Field label={mt('f_medium_en')} name="medium_en" maxLength={120} {...props}/>
+      <Field label={mt('f_medium_lo')} name="medium_lo" maxLength={120} {...props}/>
+      <Field label={mt('f_size')} name="size" maxLength={60} {...props}/>
+      <Field label={mt('f_size_lo')} name="size_lo" maxLength={60} {...props}/>
+      <Field label={mt('f_ar')} name="ar" maxLength={7} {...props}/>
+    </div>
+    <h3 className="mg-h3">{mt('h_wsell')}</h3>
+    <div className="mg-grid">
+      <Field label={mt('f_usd')} name="price_usd" inputMode="decimal" {...props}/>
+      <Field label={mt('f_lak')} name="price_lak" inputMode="numeric" {...props}/>
+      <Field label={mt('f_status')} name="status" as="select" {...props}>
+        <option value="">{mt('w_on')}</option><option value="reserved">{mt('w_res')}</option><option value="sold">{mt('w_sold')}</option></Field>
+      <Field label={mt('f_edition')} name="edition" inputMode="numeric" {...props}/>
+      <Field label={mt('f_pay')} name="pay" type="url" inputMode="url" placeholder="https://…" wide {...props}/>
+    </div>
+    <h3 className="mg-h3">{mt('h_wtext')}</h3>
+    <div className="mg-grid">
+      <Field label={mt('f_quote')} name="quote" maxLength={300} {...props}/>
+      <Field label={mt('f_quote_en')} name="quote_en" maxLength={300} {...props}/>
+      <Field label={mt('f_quote_lo')} name="quote_lo" maxLength={300} {...props}/>
+      <span className="wide"></span>
+      <Field label={mt('f_story')} name="story" as="textarea" wide maxLength={3000} {...props}/>
+      <Field label={mt('f_story_en')} name="story_en" as="textarea" wide maxLength={3000} {...props}/>
+      <Field label={mt('f_story_lo')} name="story_lo" as="textarea" wide maxLength={3000} {...props}/>
+    </div>
+    <div className="mg-bar">
+      <button type="submit" className="btn" disabled={state === 'saving'}>{mt('save')}</button>
+      <button type="button" className="btn ghost" onClick={onCancel}>{mt('w_cancel')}</button>
+      <SaveState state={state}/>
+    </div>
+  </form>;
+}

@@ -9,7 +9,7 @@ Database for artists who manage their own works (step 1 of the plan). Nothing in
 1. Create a project at supabase.com. Region: closest to your artists and buyers.
 2. SQL editor → paste `migrations/001_init.sql` → Run.
 3. Authentication → Providers → Email: keep it on. Turn **off** "Allow new users to sign up". Artists are invited, nobody signs up by themselves.
-4. Authentication → URL configuration: set the Site URL to the site's address (and `http://localhost:5173` as a redirect for development).
+4. Authentication → URL configuration: set the Site URL to the site's address, and add every address of `manage.html` under **Redirect URLs** (for example `http://localhost:5173/manage.html` while developing, and the real address later). The sign-in link in the e-mail only works for addresses on this list.
 5. Project settings → API: copy the **Project URL** and the **anon public** key. These two go into the site's `CONFIG` later; they are safe in the browser because of the access rules. **Never** commit the `service_role` key. Edge Functions get it from the platform, not from this repo.
 
 ## Make yourself the admin
