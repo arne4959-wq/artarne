@@ -42,6 +42,7 @@ export async function launch({gpu = false, throttle = 0} = {}) {
     dir = fs.mkdtempSync(path.join(os.tmpdir(), 'circles-chrome-'));
     const args = ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${dir}`, '--no-first-run', '--no-default-browser-check', 'about:blank'];
     if (!gpu) args.unshift('--disable-gpu');
+    if (process.env.CI || process.getuid?.() === 0) args.push('--no-sandbox');   // Chrome will not start as root, and CI runners often block its sandbox; it only ever opens this project's own pages
     chrome = spawn(findChrome(), args, {stdio: 'ignore'});
     for (let i = 0; i < 40 && !tabs; i++) {
       await sleep(250);
