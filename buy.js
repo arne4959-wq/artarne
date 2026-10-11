@@ -109,13 +109,24 @@
 
     const wire = () => wireForm(box, async f => {
       const res = await deliver('inquiry', A.email, t('id_subject', {t: pk(p, 't')}), {artist: nameL(A), work: pk(p, 't'), price: usd(p.p), name: f.name, email: f.email, ship_to: f.ship_to, message: f.message, captcha: f['cf-turnstile-response']});
+      if (res.mode === 'fail') return failed(res);           // keep the form and what was typed; never replace it with a result
       done(res);
     });
+    const failed = res => {
+      const form = box.querySelector('form'); let e = form.querySelector('.by-err');
+      if (!e) { e = document.createElement('div'); e.className = 'by-err'; e.setAttribute('role', 'alert'); e.tabIndex = -1; form.querySelector('.act').before(e); }
+      const mail = 'mailto:' + CONFIG.contact + '?subject=' + encodeURIComponent(t('id_subject', {t: pk(p, 't')})) + '&body=' + encodeURIComponent(res.body);
+      e.innerHTML = '<b>' + esc(t('by_err')) + '</b><div class="act"><a class="by-btn by-ghost" href="' + esc(mail) + '">' + esc(t('by_err_mail')) + '</a><button type="button" class="by-btn by-ghost" data-by-copy>' + esc(t('copy_msg')) + '</button></div>';
+      e.querySelector('[data-by-copy]').addEventListener('click', async () => { try { await navigator.clipboard.writeText(res.body); toast(t('copied')); } catch (x) { toast(t('copy_fail')); } });
+      e.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'}); e.focus({preventScroll: true});
+    };
     const done = res => {
-      const ok = res.mode === 'sent', fail = res.mode === 'fail';
-      box.innerHTML = `<div class="by-done" role="status"><b>${esc(t(ok ? 'done_sent' : fail ? 'news_fail' : 'done_mail'))}</b><p>${esc(t(ok ? 'done_sent_p' : fail ? 'news_fail' : 'done_mail_p'))}</p>`
+      const ok = res.mode === 'sent', fail = false;
+      box.innerHTML = `<div class="by-done" role="status"><b>${esc(t(ok ? 'done_sent' : 'done_mail'))}</b><p>${esc(t(ok ? 'done_sent_p' : 'done_mail_p'))}</p>`
         + (ok || fail ? '' : `<pre id="by-pre">${esc(res.body)}</pre><button type="button" class="by-btn by-ghost" data-by-copy>${esc(t('copy_msg'))}</button>`)
         + `<button type="button" class="by-btn by-ghost" data-by-again>${esc(t('by_again'))}</button></div>`;
+      const head = box.querySelector('.by-done b'); head.tabIndex = -1;           // a result below the fold must be seen and announced
+      box.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'}); head.focus({preventScroll: true});
       box.querySelector('[data-by-again]').addEventListener('click', () => { box.innerHTML = formHtml(A, k, pre); wire(); });
       box.querySelector('[data-by-copy]')?.addEventListener('click', async () => {
         try { await navigator.clipboard.writeText(box.querySelector('#by-pre').textContent); toast(t('copied')); } catch (e) { toast(t('copy_fail')); }

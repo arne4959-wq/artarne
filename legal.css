@@ -5,7 +5,10 @@ html[lang="th"] .en{display:none;}
 .legal header{display:grid;gap:1rem;justify-items:start;margin-bottom:2.4rem;}
 .legal h1{font:400 clamp(2.2rem,6vw,3.6rem)/1.25 "Chonburi",var(--thai);}
 .legal .upd{font:400 .85rem var(--type);letter-spacing:.12em;color:var(--tartan-red);}
-.legal .draft{background:var(--gold);border:var(--line) solid var(--black);padding:.8rem 1rem;font:400 .9rem/1.7 var(--type);}
+/* template notices and [placeholders]: shown only on the owner's own computer (isDraft() adds html.is-draft), never on the live site */
+.legal .draft,.legal .ph{display:none;}
+.is-draft .legal .draft{display:block;background:var(--gold);border:var(--line) solid var(--black);padding:.8rem 1rem;font:400 .9rem/1.7 var(--type);}
+.is-draft .legal .ph{display:inline;background:var(--gold);}
 .legal h2{font:400 1.45rem/1.4 "Chonburi",var(--thai);margin:2.2rem 0 .6rem;border-left:6px solid var(--pink);padding-left:.8rem;}
 .legal p,.legal li{font:300 1.02rem/1.9 var(--thai);}
 .legal ul{padding-left:1.4rem;display:grid;gap:.3rem;margin:.4rem 0 .8rem;}

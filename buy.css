@@ -100,6 +100,9 @@
 .by-after{display:grid;gap:.5rem;padding:1.4rem;font:400 .85rem/1.7 var(--type);letter-spacing:.04em;transform:rotate(2deg);}
 .by-after b{font-weight:400;font-size:.95rem;}
 .by-done{display:grid;gap:.6rem;}
+.by-err{border:var(--line,3px) solid var(--by-ink,#0E0D0C);background:var(--by-yel,#E8B730);box-shadow:5px 5px 0 var(--by-ink,#0E0D0C);padding:1rem 1.1rem;display:grid;gap:.7rem;font:400 .95rem/1.7 var(--thai);}
+.by-err .act{margin:0;}
+.by-err a.by-btn{text-decoration:none;}
 .by-done>b{font:400 1.5rem "Chonburi",var(--thai);}
 .by-done p{margin:0;font:400 1rem/1.7 var(--thai);}
 .by-done pre{white-space:pre-wrap;word-break:break-word;background:var(--by-ink);color:var(--by-paper);padding:.9rem;font:400 .85rem/1.6 var(--type);}

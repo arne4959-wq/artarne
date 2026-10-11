@@ -55,7 +55,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
   </header>
 
   <h2>1. ใครเป็นผู้ดูแลข้อมูล</h2>
-  <p>circles (“เรา”) เป็นผู้ควบคุมข้อมูลส่วนบุคคลที่เก็บผ่านเว็บไซต์นี้ ติดต่อเราได้ที่ <a href="mailto:hello@circles.example">hello@circles.example</a> [ใส่ชื่อนิติบุคคลและที่อยู่ที่นี่]</p>
+  <p>circles (“เรา”) เป็นผู้ควบคุมข้อมูลส่วนบุคคลที่เก็บผ่านเว็บไซต์นี้ ติดต่อเราได้ที่ <a href="mailto:hello@circles.example">hello@circles.example</a> <span class="ph">[ใส่ชื่อนิติบุคคลและที่อยู่ที่นี่]</span></p>
 
   <h2>2. ข้อมูลที่เราเก็บ</h2>
   <table>
@@ -69,7 +69,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 
   <h2>3. เราใช้ข้อมูลเพื่ออะไร</h2>
   <ul>
-    <li>ส่งข้อความของคุณถึงศิลปินที่คุณระบุ เพื่อให้ศิลปินตอบกลับและตกลงซื้อขายกับคุณโดยตรง</li>
+    <li>รับข้อความของคุณที่ทีม circles แล้วส่งต่อถึงศิลปินที่คุณระบุ เพื่อให้ศิลปินตอบกลับและตกลงซื้อขายกับคุณโดยตรง</li>
     <li>พิจารณาและตอบคำขอมีตึกของคุณ</li>
     <li>ส่งข่าวจากเมืองให้คุณ เฉพาะเมื่อคุณสมัครรับข่าวเอง</li>
     <li>รักษาความปลอดภัยของเว็บไซต์ และป้องกันสแปม</li>
@@ -79,7 +79,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
   <h2>4. เราเปิดเผยข้อมูลให้ใคร</h2>
   <ul>
     <li><strong>ศิลปินที่คุณติดต่อ</strong> จะเห็นชื่อ อีเมล และข้อความที่คุณส่งถึงเขา ศิลปินดูแลข้อมูลนั้นต่อตามวิธีของตนเอง</li>
-    <li><strong>ผู้ให้บริการรับฟอร์ม/ส่งอีเมล</strong> (ถ้าตั้งค่าไว้) ในฐานะผู้ประมวลผลข้อมูลแทนเรา</li>
+    <li><strong>ทีม circles</strong> เห็นข้อความทุกฉบับก่อนส่งต่อให้ศิลปิน</li>
+    <li><strong>ผู้ให้บริการรับฟอร์ม/ส่งอีเมล</strong> ในฐานะผู้ประมวลผลข้อมูลแทนเรา ปัจจุบันใช้ Formspree ซึ่งอาจเก็บข้อมูลนอกประเทศของคุณ (เช่น สหรัฐอเมริกา)</li>
     <li>หน่วยงานรัฐ เมื่อกฎหมายกำหนด</li>
   </ul>
   <p>เราไม่ขายข้อมูลของคุณ และไม่ใช้ข้อมูลของคุณเพื่อโฆษณา</p>
@@ -104,7 +105,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
   </header>
 
   <h2>1. Who is responsible for your data</h2>
-  <p>circles ("we") is the controller of personal data collected through this website. Contact: <a href="mailto:hello@circles.example">hello@circles.example</a> [add legal entity and address here]</p>
+  <p>circles ("we") is the controller of personal data collected through this website. Contact: <a href="mailto:hello@circles.example">hello@circles.example</a> <span class="ph">[add legal entity and address here]</span></p>
 
   <h2>2. What we collect</h2>
   <table>
@@ -118,7 +119,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 
   <h2>3. Why we use it</h2>
   <ul>
-    <li>To pass your message to the artist you named, so they can reply and agree a sale with you directly</li>
+    <li>To receive your message at the circles team and pass it on to the artist you named, so they can reply and agree a sale with you directly</li>
     <li>To review and answer your building request</li>
     <li>To send news from the city, only if you subscribed</li>
     <li>To keep the site secure and stop spam</li>
@@ -128,7 +129,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
   <h2>4. Who we share it with</h2>
   <ul>
     <li><strong>The artist you contact</strong> sees the name, email and message you send them. They look after it in their own way afterwards.</li>
-    <li><strong>A form or email service provider</strong> (if one is configured) acting as our processor.</li>
+    <li><strong>The circles team</strong> sees every message before passing it on to the artist.</li>
+    <li><strong>A form or email service provider</strong> acting as our processor. Currently Formspree, which may store data outside your country (for example the United States).</li>
     <li>Authorities, where the law requires it.</li>
   </ul>
   <p>We do not sell your data and do not use it for advertising.</p>
@@ -150,6 +152,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 <script src="circles.js"></script>
 <script>
 function legalTitle() { const th = LANG === 'th'; setMeta((th ? 'นโยบายความเป็นส่วนตัว' : 'Privacy policy') + ' — circles', th ? 'circles เก็บข้อมูลอะไร ใช้ทำอะไร ส่งให้ใคร และสิทธิของคุณ' : 'What circles collects, why, who sees it, and your rights'); }
+if (isDraft()) document.documentElement.classList.add('is-draft');
 onLang(legalTitle); wireNav(); applyLang();
 </script>
 </body>

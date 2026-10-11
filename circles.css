@@ -247,6 +247,7 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
   /* things that sit at the foot of the screen move up to clear the bar */
   html.has-bnav .toast{bottom:calc(var(--bn-h) + env(safe-area-inset-bottom,0px) + 1rem);}
   html.has-bnav .by-cta{bottom:calc(var(--bn-h) + env(safe-area-inset-bottom,0px));}
+  html.bn-kbd .by-cta{display:none;}                       /* the buy bar must not cover the message field while typing (the bottom bar is hidden then too) */
   html.has-bnav .by-wrap{padding-bottom:calc(9.5rem + var(--bn-h));}
 }
 @media (prefers-reduced-motion:reduce){.bn{transition:none;}}
