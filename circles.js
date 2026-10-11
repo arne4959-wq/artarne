@@ -8,9 +8,12 @@
    lakPerUsd: how many Lao kip one US dollar is worth. Only the Lao (lo) pages use it: they show prices in kip, rounded to a tidy figure
               (under 1,000,000 to the nearest 10,000, from 1,000,000 up to the nearest 100,000: "12,100,000 ₭"). A work's own priceLak (artists.js) wins over it.
               Thai and English always show US dollars. 0 = Lao pages show dollars too. Prices in artists.js stay in US dollars.
+   supabaseUrl, supabaseKey: the Supabase project URL and its publishable (anon) key. Nothing reads them yet; the artist dashboard will.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
 const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
-  lakPerUsd: 22400 };   // lakPerUsd: approximate rate, October 2026. It does NOT update itself: change it by hand when the kip moves.
+  lakPerUsd: 22400,
+  supabaseUrl: 'https://lgkqvfmnqdpajddishio.supabase.co', supabaseKey: 'sb_publishable_vDPIYxQA0JiZCumJ_qMuhg_BxFSfuXp' };   // supabase*: the artists' database (supabase/README.md). The publishable key is meant to be public: the access rules in the database protect the data, never put a secret / service_role key here.
+// lakPerUsd: approximate rate, October 2026. It does NOT update itself: change it by hand when the kip moves.
 // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
 /* ---------- buy page data (buy.js): fill these in. While one is empty the page shows a yellow [__] there; nothing is invented ----------
    SHIPPING.regions     where pieces ship to            SHIPPING.fee          shipping fee
