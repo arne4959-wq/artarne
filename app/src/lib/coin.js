@@ -9,7 +9,8 @@ export function coinInner({front = '#orb', back = '#orb-s', depth = 7, n = 13} =
     `<span class="c3-face" style="transform:translateZ(${depth}px)"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="${front}"/></svg></span>` +
     `<span class="c3-face" style="transform:rotateY(180deg) translateZ(${depth}px)"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="${back}"/></svg></span></span></span>`;
 }
-export const coinClass = (mode, extra) => ['c3', mode ? 'c3-m' + mode : '', extra || ''].filter(Boolean).join(' ');
+/* `lead` = a class the old logo <svg> already had: it stays in front, as coinSwap() left it ('loader-orb c3 c3-mhop') */
+export const coinClass = (mode, extra, lead) => [lead || '', 'c3', mode ? 'c3-m' + mode : '', extra || ''].filter(Boolean).join(' ');
 
 /* one animation (c3-once: spin with a bounce, c3-settle: fast spin that slows and settles) */
 export function coinPlay(host, cls) {

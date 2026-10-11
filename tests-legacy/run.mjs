@@ -6,13 +6,13 @@ import {fileURLToPath} from 'node:url';
 import {startServer} from '../tools/browser.mjs';
 import {makeChecker} from './check.mjs';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const root = process.env.CIRCLES_ROOT ? path.resolve(process.env.CIRCLES_ROOT) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');   // CIRCLES_ROOT=app/dist runs a suite against the React build
 const want = process.argv[2] || 'default';
 const names = want === 'all' ? ['build', 'smoke', 'flow', 'hd2d', 'layout', 'newwave', 'perf'] : want === 'default' ? ['build', 'smoke', 'flow', 'hd2d', 'layout', 'newwave'] : [want];
 /* The real circles.js has the live form endpoint and a Turnstile key, and Turnstile refuses 127.0.0.1. The tests drive the email-app path,
    so they get a copy with both emptied (the real file is not touched). */
-const circles = fs.readFileSync(path.join(root, 'circles.js'), 'utf8').replace(/endpoint: '[^']*'/, "endpoint: ''").replace(/turnstileSiteKey: '[^']*'/, "turnstileSiteKey: ''");
-const server = await startServer(root, {'/circles.js': () => ({type: 'text/javascript; charset=utf-8', body: circles})});
+const circles = !fs.existsSync(path.join(root, 'circles.js')) ? '' : fs.readFileSync(path.join(root, 'circles.js'), 'utf8').replace(/endpoint: '[^']*'/, "endpoint: ''").replace(/turnstileSiteKey: '[^']*'/, "turnstileSiteKey: ''");
+const server = await startServer(root, circles ? {'/circles.js': () => ({type: 'text/javascript; charset=utf-8', body: circles})} : {});
 let failures = [], passed = 0;
 try {
   for (const n of names) {

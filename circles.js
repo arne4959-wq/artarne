@@ -490,7 +490,7 @@ const pk = (o, k) => (LANG === 'en' && o[k + 'En'] != null) ? o[k + 'En'] : (LAN
 const nameL = a => pk(a, 'name'), discL = a => LANG === 'en' ? (DISC_EN[a.disc] || a.disc) : LANG === 'lo' ? (DISC_LO[a.disc] || a.disc) : a.disc, cityL = a => LANG === 'en' ? (CITY_EN[a.city] || a.city) : LANG === 'lo' ? (CITY_LO[a.city] || a.city) : a.city;
 const titleL = p => (LANG === 'lo' && p.titleLo != null) ? p.titleLo : pk(p, 't');   // a work's title; Lao uses titleLo (Lao-script spelling), missing = the Thai title
 const bldgL = a => LANG === 'en' ? `${nameL(a)}'s building` : LANG === 'lo' ? 'ຕຶກຂອງ' + nameL(a) : 'ตึกของ' + a.name;   // "NO.04 · ตึกของ…" and the building's aria-label
-const fmtSize = p => LANG === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : (LANG === 'lo' && p.sLo != null) ? p.sLo : p.s;
+const fmtSize = p => p.s == null ? (LANG === 'lo' && p.sLo != null ? p.sLo : '') : LANG === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : (LANG === 'lo' && p.sLo != null) ? p.sLo : p.s;   // a work may have no size
 /* the language button cycles TH -> EN -> ລາວ -> TH; it shows the language it will switch to */
 const LANG_NEXT = {th: 'en', en: 'lo', lo: 'th'}, LANG_BTN = {th: 'TH', en: 'EN', lo: 'ລາວ'}, LANG_NAME = {th: 'ภาษาไทย', en: 'English', lo: 'ພາສາລາວ'};
 const langHooks = [];

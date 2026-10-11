@@ -36,7 +36,7 @@ export function makeLang(lang) {
   const cityL = a => lang === 'en' ? (CITY_EN[a.city] || a.city) : lang === 'lo' ? (CITY_LO[a.city] || a.city) : a.city;
   const titleL = p => (lang === 'lo' && p.titleLo != null) ? p.titleLo : pk(p, 't');   // a work's title; Lao uses titleLo, missing = the Thai title
   const bldgL = a => lang === 'en' ? `${nameL(a)}'s building` : lang === 'lo' ? 'ຕຶກຂອງ' + nameL(a) : 'ตึกของ' + a.name;
-  const fmtSize = p => lang === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : (lang === 'lo' && p.sLo != null) ? p.sLo : p.s;
+  const fmtSize = p => p.s == null ? (lang === 'lo' && p.sLo != null ? p.sLo : '') : lang === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : (lang === 'lo' && p.sLo != null) ? p.sLo : p.s;   // a work from the database may have no size
   /* prices: dollars in artists.js. Lao pages (with CONFIG.lakPerUsd set) show kip, a work's own priceLak first */
   const lakOn = lang === 'lo' && +CONFIG.lakPerUsd > 0;
   const lak = (n, w) => NF.format(w && +w.priceLak > 0 ? +w.priceLak : lakRound(n * CONFIG.lakPerUsd)) + ' ₭';

@@ -8,5 +8,5 @@ export default function Pixel({frames, dur = 1, className = ''}) {
   useLayoutEffect(() => {
     ref.current.replaceChildren(...frames.map((rows, i) => { const c = canvasOf(rows); c.style.setProperty('--i', i); c.setAttribute('aria-hidden', 'true'); return c; }));
   }, [frames]);
-  return <div ref={ref} className={`spr n${frames.length} ${className}`} style={{'--n': frames.length, '--dur': dur + 's'}} aria-hidden="true"/>;
+  return <div ref={ref} className={`spr n${frames.length} ${className}`} style={{'--n': frames.length, '--dur': dur + 's'}}/>;
 }

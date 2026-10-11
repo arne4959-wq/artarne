@@ -169,6 +169,135 @@ const SCENARIOS = {
     await b.go(`${base}/buy-napha-1.html?lang=en`, 1800);
     return ev(`({btns: [...document.querySelectorAll('.by-cta a')].map(a => a.className + ' ' + a.getAttribute('href') + ' ' + (a.target||'') + ' ' + a.textContent), steps: [...document.querySelectorAll('.by-step')].map(x => x.textContent), paynote: document.querySelector('.by-safe').innerText})`);
   }},
+  /* ---------- the home page ---------- */
+  'home: loader counts and lifts, html.pre is removed': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 0); await sleep(500);
+    const r = {atStart: await ev(`({loader: !!document.getElementById('loader'), pre: document.documentElement.classList.contains('pre'), count: /^\d{3}$/.test(document.getElementById('loader-count')?.textContent || '')})`)};
+    await sleep(3200);
+    r.after = await ev(`({loader: !!document.getElementById('loader'), pre: document.documentElement.classList.contains('pre'), seen: sessionStorage.getItem('circles-seen')})`);
+    await b.go(`${base}/index.html?lang=en`, 1500);
+    r.again = await ev(`({loader: !!document.getElementById('loader'), pre: document.documentElement.classList.contains('pre')})`);
+    return r;
+  },
+  'home: drag scrolls the city, a drag does not open a studio, a click does': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    await ev("document.getElementById('strip').scrollIntoView({block:'center'});0"); await sleep(1800);
+    const at = id => ev(`(()=>{const e=document.querySelector('.bd[data-id=${id}] .mon').getBoundingClientRect();return {x:Math.round(e.left+e.width/2),y:Math.round(e.top+e.height*.55)}})()`);
+    const pt = await at('napha'), r = {};
+    await b.send('Input.dispatchMouseEvent', {type: 'mouseMoved', x: pt.x, y: pt.y}); await sleep(400);
+    r.cursor = await ev("document.getElementById('cursor-label').textContent");
+    const before = await ev("document.getElementById('strip').scrollLeft");
+    await b.send('Input.dispatchMouseEvent', {type: 'mousePressed', x: pt.x, y: pt.y, button: 'left', clickCount: 1});
+    for (let i = 1; i <= 25; i++) { await b.send('Input.dispatchMouseEvent', {type: 'mouseMoved', x: pt.x - i * 12, y: pt.y, button: 'left'}); await sleep(14); }
+    r.dragging = await ev("document.getElementById('strip').classList.contains('drag')");
+    await b.send('Input.dispatchMouseEvent', {type: 'mouseReleased', x: pt.x - 300, y: pt.y, button: 'left', clickCount: 1}); await sleep(900);
+    r.scrolled = (await ev("document.getElementById('strip').scrollLeft")) > before + 100; r.stayed = (await ev('location.pathname')).endsWith('index.html'); r.dragEnded = !(await ev("document.getElementById('strip').classList.contains('drag')"));
+    await ev("document.getElementById('strip').scrollLeft=0;0"); await sleep(600);
+    const p2 = await at('napha');
+    await b.send('Input.dispatchMouseEvent', {type: 'mouseMoved', x: p2.x, y: p2.y}); await sleep(200);
+    await b.send('Input.dispatchMouseEvent', {type: 'mousePressed', x: p2.x, y: p2.y, button: 'left', clickCount: 1});
+    await b.send('Input.dispatchMouseEvent', {type: 'mouseReleased', x: p2.x, y: p2.y, button: 'left', clickCount: 1}); await sleep(2800);
+    r.clicked = (await ev('location.pathname')).split('/').pop();
+    return r;
+  },
+  'home: arrow keys and the pager scroll the strip, the progress bar follows': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    await ev("document.getElementById('strip').scrollIntoView({block:'center'});0"); await sleep(1500);
+    const r = {start: await ev("document.getElementById('strip').scrollLeft")};
+    await ev("document.getElementById('strip').focus()");
+    await b.key('ArrowRight', 'ArrowRight', 39); await sleep(1400);
+    r.right = Math.round(await ev("document.getElementById('strip').scrollLeft") / 10);
+    await b.key('ArrowLeft', 'ArrowLeft', 37); await sleep(1400);
+    r.left = await ev("document.getElementById('strip').scrollLeft");
+    await ev("document.querySelector('.pager button:last-child').click()"); await sleep(1400);
+    r.pager = Math.round(await ev("document.getElementById('strip').scrollLeft") / 10);
+    r.progress = await ev("document.getElementById('progress-i').style.transform.startsWith('translateX(')");
+    r.parallax = await ev("[...document.querySelectorAll('#strip-in .far,#strip-in .mid,#strip-in .sky,#strip-in .sun')].every(e => e.style.getPropertyValue('--sx') !== '')");
+    return r;
+  },
+  'home: filters light buildings and districts, the note follows, wave filter, clear': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    const st = () => ev(`({lit: [...document.querySelectorAll('.bd.lit')].map(e => e.dataset.id).join(), dim: document.querySelectorAll('.bd.dim').length, on: [...document.querySelectorAll('.fbtn.on')].map(e => e.dataset.d), pressed: document.querySelectorAll('.fbtn[aria-pressed=true]').length,
+      dists: [...document.querySelectorAll('.dist.on')].map(e => e.dataset.id).join(), mapF: document.getElementById('map-grid').classList.contains('f'), note: document.getElementById('fnote').className, inert: document.getElementById('fnote').hasAttribute('inert'),
+      txt: document.getElementById('fnote').classList.contains('off') ? '' : document.getElementById('fnote-t').textContent,   /* the old page leaves the last sentence in the hidden note */ enter: document.getElementById('fnote-in').hidden ? '' : document.getElementById('fnote-in').getAttribute('href'), delay: document.querySelector('.bd').style.transitionDelay})`);
+    const r = {start: await st()};
+    await ev(`document.querySelector('.fbtn[data-d="เซรามิก"]').click()`); await sleep(1500); r.discipline = await st(); r.scrolled = (await ev("document.getElementById('strip').scrollLeft")) > 0;
+    await ev(`document.querySelector('.fbtn[data-d="*wave"]').click()`); await sleep(1200); r.wave = await st();
+    await ev("document.getElementById('fnote-x').click()"); await sleep(600); r.cleared = await st();
+    return r;
+  },
+  'home: buildings or map, "#map" opens the map, a district opens its studio': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    const st = () => ev(`({map: !document.getElementById('map').hidden, strip: !document.getElementById('strip').hidden, progress: !document.getElementById('progress').hidden, pager: !document.querySelector('.city .pager').hidden, on: [...document.querySelectorAll('.vt.on')].map(e => e.dataset.v).join(), pressed: [...document.querySelectorAll('.vt')].map(e => e.getAttribute('aria-pressed')).join()})`);
+    const r = {start: await st()};
+    await ev("document.querySelector('.vt[data-v=map]').click()"); await sleep(300); r.map = await st();
+    await ev("document.querySelector('.vt[data-v=city]').click()"); await sleep(300); r.city = await st();
+    await b.go(`${base}/index.html?lang=en#map`, 4500); r.hash = await st();
+    r.top = await ev("Math.abs(document.querySelector('.city-tools').getBoundingClientRect().top - 96) < 40");
+    await ev("document.querySelector('.dist[data-id=kwan]').click()"); await sleep(2800);
+    r.district = (await ev('location.pathname')).split('/').pop();
+    return r;
+  },
+  'home: featured works — sort, show all, sold last, headings and counts': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    const st = () => ev(`({h: document.getElementById('feat-h').textContent, count: document.getElementById('feat-count').textContent, btn: document.getElementById('all-btn').textContent, pressed: document.getElementById('all-btn').getAttribute('aria-pressed'),
+      titles: [...document.querySelectorAll('.card .pn')].map(e => e.textContent).join('|'), classes: [...new Set([...document.querySelectorAll('#masonry > div')].map(e => e.className.replace(/ in\b/, '')))].join(), strike: document.querySelectorAll('.card .pp.strike').length, stamps: document.querySelectorAll('.card .stamp').length})`);
+    const r = {start: await st()};
+    const sort = v => ev(`(()=>{const s=document.getElementById('sort');s.value='${v}';s.dispatchEvent(new Event('change',{bubbles:true}))})()`);
+    await sort('low'); await sleep(700); r.low = await st();
+    await sort('high'); await sleep(700); r.high = await st();
+    await sort('new'); await sleep(700); r.new = await st();
+    await sort('cur'); await ev("document.getElementById('all-btn').click()"); await sleep(900); r.all = await st();
+    await ev("document.getElementById('all-btn').click()"); await sleep(700); r.back = await st();
+    await ev("document.querySelector('.card[data-id=thara]').click()"); await sleep(2800);
+    r.card = (await ev('location.pathname')).split('/').pop() + (await ev('location.search'));
+    return r;
+  },
+  'home: the numbers count up to the data when scrolled into view': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    const r = {before: await ev("[...document.querySelectorAll('[data-count]')].map(e => e.textContent).join()"), data: await ev("[...document.querySelectorAll('[data-count]')].map(e => e.dataset.count).join()")};
+    await ev("document.getElementById('stats').scrollIntoView({block:'center'});0"); await sleep(2600);
+    r.after = await ev("[...document.querySelectorAll('[data-count]')].map(e => e.textContent).join()");
+    return r;
+  },
+  'home: language switch re-renders everything with words': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=th`, 4500);
+    const st = () => ev(`({lang: document.documentElement.lang, title: document.title, hero: [...document.querySelectorAll('.hl')].map(e => e.textContent).join('|'), mq: document.querySelector('#mq span').textContent, filters: [...document.querySelectorAll('.fbtn')].slice(0, 4).map(e => e.textContent).join('|'),
+      card: document.querySelector('.card .pn').textContent, name: document.querySelector('.bd .nm').getAttribute('aria-label'), mon: document.querySelector('.bd .mon').getAttribute('aria-label'), spot: document.getElementById('spot-meta').textContent, cta: document.querySelector('.spot-qa .btn').textContent,
+      classes: [...new Set([...document.querySelectorAll('#masonry > div')].map(e => e.className))].join()})`);
+    const r = [await st()];
+    for (let i = 0; i < 3; i++) { await ev("document.getElementById('lang').click()"); await sleep(700); r.push(await st()); }
+    return r;
+  },
+  'home: newsletter — honeypot, fetch answered in the page': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    await ev("window.__sent = []; window.fetch = async (u, o) => { window.__sent.push(JSON.parse(o.body)); return {ok: true}; }");
+    await ev("document.querySelector('.fold-foot').open = true");
+    const sub = () => ev("document.querySelector('.news').requestSubmit()");
+    await ev("document.querySelector('.hp-n').value='bot';document.getElementById('news-em').value='spam@example.com'"); await sub(); await sleep(500);
+    const r = {honeypot: await ev('window.__sent.length')};
+    await ev("document.querySelector('.hp-n').value='';document.getElementById('news-em').value='me@example.com'"); await sub(); await sleep(700);
+    r.sent = await ev('window.__sent'); r.toast = await ev("document.getElementById('toast')?.textContent || ''"); r.reset = await ev("document.getElementById('news-em').value");
+    return r;
+  },
+  'home: lite mode has fewer walkers and birds; people stand at every door': async ({b, base, ev}) => {
+    const r = {};
+    for (const q of ['full', 'lite']) {
+      await b.go(`${base}/index.html?lang=en&${q}`, 3500);
+      r[q] = await ev("({walkers: document.querySelectorAll('.walker').length, birds: document.querySelectorAll('.bird').length, stand: document.querySelectorAll('.bd .stand').length, bd: document.querySelectorAll('.bd').length, lite: document.documentElement.classList.contains('lite'), spr: document.querySelectorAll('.spr canvas').length})");
+    }
+    return r;
+  },
+  'home: hero coin spins on click and by itself, mobile menu anchors scroll': async ({b, base, ev}) => {
+    await b.go(`${base}/index.html?lang=en`, 4500);
+    const r = {role: await ev("(()=>{const c=document.querySelector('#arch-par .c3');return c.getAttribute('role') + c.tabIndex + c.getAttribute('aria-hidden')})()"), auto: await ev("document.querySelector('#arch-par .c3-coin').classList.contains('c3-settle')")};
+    await sleep(2500);
+    await ev("document.querySelector('#arch-par .c3').click()"); await sleep(100);
+    r.click = await ev("document.querySelector('#arch-par .c3-coin').classList.contains('c3-settle')");
+    await ev("document.querySelector('.hero .btn').click()"); await sleep(2800);
+    r.anchor = await ev("Math.abs(document.getElementById('city').getBoundingClientRect().top - 70) < 60");
+    return r;
+  },
   'unknown address shows the 404 page': async ({b, base, ev}) => {
     await b.go(`${base}/no-such-page.html`, 1500);
     return ev(`({h1: document.querySelector('h1').textContent, btn: document.getElementById('b').getAttribute('href'), title: document.title})`);
@@ -188,7 +317,7 @@ try {
     const run = async base => {
       const b = await launch(); await b.view(1280, 900); await b.lang?.('en');
       await b.send('Network.setBlockedURLs', {urls: ['*challenges.cloudflare.com*']});
-      try { const out = JSON.parse(JSON.stringify(await fn({b, base, ev: b.ev}) ?? null).split(base).join('BASE')); return {out, logs: b.logs.filter(l => !/cloudflare|ERR_BLOCKED_BY_CLIENT|404 .*no-such-page/.test(l))}; } finally { b.close(); }
+      try { const out = JSON.parse(JSON.stringify(await fn({b, base, ev: b.ev}) ?? null).split(base).join('BASE')); return {out, logs: b.logs.filter(l => !/cloudflare|ERR_BLOCKED_BY_CLIENT|404 .*no-such-page|ViewTransition opt-in disabled/.test(l))}; } finally { b.close(); }
     };
     const o = await run(oURL), n = await run(nURL);
     const same = JSON.stringify(o.out) === JSON.stringify(n.out);

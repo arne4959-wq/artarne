@@ -5,7 +5,7 @@
 //   · the DOM: every element with its attributes and text, in order (data-t*, onclick, the sprite and scripts are ignored)
 //   · a screenshot: share of pixels that differ
 //   · console errors / failed requests and horizontal overflow on the React page
-// Extra states: "join.html#dialog" also opens the Join dialog and compares it.
+// Extra states: "join.html#dialog" also opens the Join dialog and compares it; "index.html#map" the map view, "index.html#filter" the new-wave filter.
 // --fixture: both sides use the test data of tests/fixture.mjs (pay link, commission, shipping, no endpoint …).
 // Exit code 1 when a DOM differs or more than 0.5 % of pixels differ. Screenshots of failures go to tests/out/.
 import fs from 'node:fs';
@@ -28,7 +28,7 @@ const SNAPSHOT = `(() => {
   // data-t stays compared: circles.css styles [data-t] in Lao. data-t-aria / -ph / -html were only read by the old script.
   // The old ransom() chips carry junk attributes from a quote bug (font-family:"Special Elite" ends style="…"):
   // special="" and elite";font-weight:400"="" — see OLD_QUOTE_BUG in src/components/art.jsx
-  const SKIP_ATTR = (a, el) => /^data-t-(aria|ph)$/.test(a) || a === 'onclick' || a.includes('"') || (a === 'special' && [...el.attributes].some(x => x.name.includes('"')));
+  const SKIP_ATTR = (a, el) => /^data-t-(aria|ph)$/.test(a) || /^on[a-z]+$/.test(a) || a.includes('"') || (a === 'special' && [...el.attributes].some(x => x.name.includes('"')));
   const out = [];
   const walk = (el, depth) => {
     let text = '', shown = false;                      // neighbouring text nodes count as one (JSX splits "{a} · {b}" into several)
@@ -87,6 +87,8 @@ try {
         const snap = async base => {
           await b.ev(`try{localStorage.clear();sessionStorage.clear()}catch(e){}`);
           await b.go(`${base}/${page}${page.includes("?") ? "&" : "?"}lang=${lang}`, WAIT);
+          if (state === 'map') { await b.ev(`document.querySelector('.vt[data-v=map]').click()`); await sleep(500); }                                   // the home page's map view
+          if (state === 'filter') { await b.ev(`document.querySelector('.fbtn[data-d="*wave"]').click()`); await sleep(1500); }                      // the home page with the new-wave filter on
           if (state === 'dialog') { await b.ev(`(document.querySelector('.jn-cta .btn')||document.querySelector('nav .join')).click()`); await sleep(500); }
           await b.ev('document.fonts.ready.then(()=>1)');
           const s = await b.ev(SNAPSHOT);

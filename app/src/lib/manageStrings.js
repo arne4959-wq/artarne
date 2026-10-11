@@ -21,6 +21,7 @@ export const MS = {
     lp_e_not_found: 'ไม่พบงานนี้', lp_e_bad_field: 'ข้อมูลไม่ครบหรือไม่ถูกต้อง', lp_e_net: 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', lp_e_slip: 'ไฟล์สลิปใช้ไม่ได้ (ใช้ JPG, PNG, WebP)',
     tab_orders: 'แจ้งโอน', o_h: 'แจ้งโอนจากผู้ซื้อ', o_none: 'ยังไม่มีใครแจ้งโอน', o_note: 'ตรวจยอดในแอปธนาคารก่อนกด "ได้รับเงินแล้ว" งานจะเปลี่ยนเป็นขายแล้ว', o_buyer: 'ผู้ซื้อ', o_ship: 'ส่งไปที่', o_msg: 'ข้อความ',
     o_paid: 'ได้รับเงินแล้ว', o_reject: 'ไม่ได้รับเงิน', o_reject_sure: 'ยืนยัน? กดอีกครั้ง', o_slip: 'ดูสลิป', o_new: 'รอตรวจ', o_confirmed: 'ได้รับเงินแล้ว', o_rejected: 'ปฏิเสธ', o_slip_fail: 'เปิดสลิปไม่สำเร็จ',
+    sp_cta: 'เข้าไปในตึกของ{a} →',
     out: 'ออกจากระบบ', dash_hi: 'ตึกของ {a}', dash_kick: 'ห้องควบคุม',
     nb_h: 'ยังไม่มีตึกผูกกับอีเมลนี้', nb_p: 'คุณเข้าสู่ระบบได้แล้ว แต่เจ้าของเว็บยังไม่ได้ผูกตึกให้อีเมล {e} ติดต่อเจ้าของเว็บ แล้วกลับมาใหม่',
     hidden: 'ตึกของคุณยังไม่เปิดให้คนทั่วไปเห็น รอเจ้าของเว็บอนุมัติ', demo: 'ตึกตัวอย่าง',
@@ -63,6 +64,7 @@ export const MS = {
     lp_e_not_found: 'This work was not found', lp_e_bad_field: 'Some details are missing or wrong', lp_e_net: 'Could not send. Try again.', lp_e_slip: 'The slip file cannot be used (JPG, PNG or WebP)',
     tab_orders: 'Payments', o_h: 'Payment notices from buyers', o_none: 'No one has told you they paid yet', o_note: 'Check the amount in your bank app before you press “Money received”. The work then becomes sold.', o_buyer: 'Buyer', o_ship: 'Ship to', o_msg: 'Message',
     o_paid: 'Money received', o_reject: 'Not received', o_reject_sure: 'Sure? Press again', o_slip: 'See slip', o_new: 'To check', o_confirmed: 'Received', o_rejected: 'Rejected', o_slip_fail: 'Could not open the slip',
+    sp_cta: "Enter {a}'s building →",
     out: 'Sign out', dash_hi: "{a}'s building", dash_kick: 'CONTROL ROOM',
     nb_h: 'No building is linked to this e-mail', nb_p: 'You are signed in, but the site owner has not linked a building to {e} yet. Contact the owner, then come back.',
     hidden: 'Your building is hidden from visitors until the site owner approves it.', demo: 'Sample building',
@@ -93,6 +95,7 @@ export const MS = {
     lg_email: 'ອີເມວ', lg_btn: 'ສົ່ງກະແຈມາ →', lg_sending: 'ກຳລັງສົ່ງ…', lg_stamp: 'ຫ້າມສະໝັກເອງ',
     lg_sent_h: 'ສົ່ງກະແຈແລ້ວ', lg_again: 'ໃຊ້ອີເມວອື່ນ', lg_nokey: 'ຍັງບໍ່ໄດ້ຮັບເຊີນ?', lg_join: 'ຂໍມີຕຶກ →',
     lp_h: 'ຈ່າຍຜ່ານ LAO QR', lp_amount: 'ຍອດທີ່ຕ້ອງໂອນ', lp_bank: 'ທະນາຄານ', lp_name: 'ຊື່ບັນຊີ', lp_no: 'ເລກບັນຊີ', lp_send: 'ແຈ້ງວ່າໂອນແລ້ວ', lp_done_h: 'ສົ່ງແຈ້ງໂອນແລ້ວ',
+    sp_cta: 'ເຂົ້າໄປໃນຕຶກຂອງ{a} →',
     out: 'ອອກຈາກລະບົບ', save: 'ບັນທຶກ', saved: 'ບັນທຶກແລ້ວ',
   },
 };

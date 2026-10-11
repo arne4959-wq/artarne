@@ -8,6 +8,7 @@ import {DialogsProvider} from './components/Dialogs.jsx';
 
 /* one module per page, loaded on demand: a page brings only its own code and CSS */
 const PAGES = {
+  home: lazy(() => import('./pages/Home.jsx')),
   join: lazy(() => import('./pages/Join.jsx')),
   privacy: lazy(() => import('./pages/Legal.jsx').then(m => ({default: () => <m.default which="privacy"/>}))),
   terms: lazy(() => import('./pages/Legal.jsx').then(m => ({default: () => <m.default which="terms"/>}))),

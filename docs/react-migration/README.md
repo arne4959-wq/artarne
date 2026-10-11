@@ -10,7 +10,7 @@ When every page is done, the root files are removed and `app/` becomes the site.
 | 3. Simple pages: 404, privacy, terms, join | done: same DOM and look as the old pages (30/30), same behaviour (7/7) |
 | 4. buy, profile | done: see below |
 | 5. studio / museum | next |
-| 6. home (city strip, hd2d, loader) | |
+| 6. home (city strip, hd2d, loader) | done: same DOM and look as the old page (`compare.mjs index.html`, 3 languages x 2 sizes, also #map and #filter), 11 behaviour scenarios, old hd2d / layout / perf suites pass on `app/dist` (`CIRCLES_ROOT=app/dist node tests-legacy/run.mjs hd2d`) |
 | 7. pre-render, og images, sitemap, tests | |
 
 ## Commands (from the project root)
