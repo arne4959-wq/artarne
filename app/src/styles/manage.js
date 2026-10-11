@@ -3,17 +3,21 @@
 import c from 'virtual:circles/css/circles';
 import join from 'virtual:circles/page-css/join';
 
+/* a tartan with one repeat `w` px wide: weft and warp bands over a red ground (crossings come out darker, like woven cloth), plus a 45° twill */
+const tartan = w => {
+  const k = w / 192, px = n => (n * k).toFixed(1) + 'px';
+  const bands = [[0, 48, 'rgba(14,13,12,.72)'], [48, 54, 'transparent'], [54, 58, 'rgba(232,183,48,.92)'], [58, 112, 'transparent'], [112, 115, 'rgba(244,241,232,.88)'],
+    [115, 136, 'transparent'], [136, 160, 'rgba(14,13,12,.55)'], [160, 192, 'transparent']];
+  const stops = bands.map(([a, b, c]) => `${c} ${px(a)} ${px(b)}`).join(',');
+  return `repeating-linear-gradient(90deg,${stops}),repeating-linear-gradient(0deg,${stops}),repeating-linear-gradient(45deg,rgba(14,13,12,.14) 0 1px,transparent 1px 3px),var(--tartan-red)`;
+};
+
 const manage = `
-/* ───────── the wall: poured concrete with form seams and tie holes ───────── */
+/* ───────── the wall: a big tartan (the colours of the site: red ground, black bands, gold and paper hairlines), a twill weave, a dark vignette ───────── */
 .mg-wall,main.mg-wall{max-width:none;margin:0;position:relative;min-height:calc(100vh - 70px);display:grid;place-items:center;padding:3.4rem 1rem 5rem;overflow:hidden;
-  background:var(--grain),
-    radial-gradient(circle at 12.5% 50%,var(--black) 0 5px,transparent 6px) 0 0/25% 220px,
-    repeating-linear-gradient(90deg,transparent 0 calc(25% - 3px),rgba(14,13,12,.42) calc(25% - 3px) 25%),
-    var(--concrete);}
+  background:var(--grain),${tartan(192)};}
 .mg-wall::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(14,13,12,.38),transparent 22%,transparent 70%,rgba(14,13,12,.5));}
-.mg-tag{position:absolute;left:4%;bottom:7%;font:400 clamp(3rem,11vw,9rem)/.9 var(--anton);letter-spacing:.06em;color:transparent;-webkit-text-stroke:3px rgba(14,13,12,.28);
-  transform:rotate(-7deg);pointer-events:none;user-select:none;}
+  background:radial-gradient(ellipse at 50% 45%,transparent 38%,rgba(14,13,12,.55) 100%);}
 .mg-wall::after{content:"";position:absolute;left:0;right:0;bottom:0;height:22px;
   background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--gold) 16px 32px);}
 
@@ -26,7 +30,7 @@ const manage = `
 .mg-lay.far{--d:-.3;opacity:.62;}
 .mg-lay.mid{--d:.25;}
 .mg-lay.near{--d:1;z-index:3;}
-.sp{position:absolute;width:var(--z);height:var(--z);transform:rotate(var(--r));}
+.sp{position:absolute;width:var(--z);height:calc(var(--z) * var(--a,1));transform:rotate(var(--r));}
 .sp>span,.fl,.sn,.bl{position:absolute;inset:0;display:block;}
 .fl{animation:mgFloat var(--t) ease-in-out var(--w) infinite alternate;will-change:transform;}
 .sn{animation:mgSpin 11s linear infinite;animation-play-state:paused;}
@@ -35,31 +39,24 @@ const manage = `
 .sh,.fg{position:absolute;inset:0;display:block;}
 .sh{background:var(--black);transform:translate(calc(var(--z) * .11),calc(var(--z) * .11));}
 .fg{background:var(--c);}
-.b-dot{border-radius:50%;}
-.b-ring{background:none;border-radius:50%;}
-.fg.b-ring{border:calc(var(--z) * .17) solid var(--c);}
-.sh.b-ring{background:none;border:calc(var(--z) * .17) solid var(--black);}
-.fg.b-sq{border:2px solid var(--black);}
-.b-star{clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
-.b-plus{clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);}
-.b-tri{clip-path:polygon(50% 4%,98% 92%,2% 92%);}
+.b-stud{border-radius:50%;}
+.fg.b-stud{background:radial-gradient(circle at 34% 30%,var(--paper) 0 14%,var(--concrete) 16% 58%,var(--black) 60%);border:2px solid var(--black);}
+.b-tape{clip-path:polygon(0 0,5% 18%,0 36%,5% 54%,0 72%,5% 90%,0 100%,100% 100%,95% 82%,100% 64%,95% 46%,100% 28%,95% 10%,100% 0);}
+.fg.b-tape{background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(14,13,12,.16) 9px 11px),var(--c);}
+.fg.b-patch{background:${tartan(46)};border:2px dashed var(--paper);outline:2px solid var(--black);outline-offset:-2px;}
+svg.sh,svg.fg{background:none;width:100%;height:100%;overflow:visible;}
 .peel{clip-path:polygon(0 0,100% 0,100% 62%,62% 100%,0 100%);}
 .fold{position:absolute;right:0;bottom:0;width:38%;height:38%;background:var(--paper);clip-path:polygon(0 0,100% 0,0 100%);transform:translate(calc(var(--z) * .06),calc(var(--z) * .06));}
 @keyframes mgFloat{from{transform:translate3d(0,0,0) rotate(0deg);}to{transform:translate3d(0,calc(var(--amp,14px) * -1),0) rotate(9deg);}}
 @keyframes mgSpin{to{transform:rotate(360deg);}}
 
-/* light and dust (the look of the city strip on the home page): below the door so the text on it stays clear */
+/* light (the look of the city strip on the home page): below the door so the text on it stays clear */
 .mg-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;}
 .mg-ray{position:absolute;top:-12%;height:126%;left:var(--x);width:var(--w);transform:skewX(22deg);transform-origin:0 0;
   background:linear-gradient(90deg,transparent,rgba(232,183,48,.22) 28%,rgba(244,241,232,.16) 50%,rgba(232,183,48,.22) 72%,transparent);
   -webkit-mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.55) 45%,transparent 84%);
   opacity:.35;animation:mgRay var(--T) ease-in-out infinite;animation-delay:var(--o);will-change:transform,opacity;}
 @keyframes mgRay{50%{opacity:1;transform:skewX(22deg) translate3d(18px,0,0);}}
-.mg-dust{position:absolute;left:-480px;right:-480px;top:-360px;bottom:-360px;background-size:480px 360px;background-repeat:repeat;will-change:transform;}
-.mg-dust.a{animation:mgDustA 90s linear infinite;}
-.mg-dust.b{animation:mgDustB 140s linear infinite;opacity:.8;}
-@keyframes mgDustA{to{transform:translate3d(-480px,360px,0);}}
-@keyframes mgDustB{to{transform:translate3d(480px,360px,0);}}
 
 /* people on the kerb (pixel art, lib/pixel.js). The wall is a size container, so cqw = a percent of its width. */
 .spr{position:relative;width:calc(16px * var(--px,3));height:calc(16px * var(--px,3));}
@@ -68,6 +65,7 @@ const manage = `
 @keyframes fr4{0%{opacity:1;}25%{opacity:0;}}
 @keyframes fr2{0%{opacity:1;}50%{opacity:0;}}
 .mg-folk{position:absolute;left:0;right:0;bottom:18px;height:0;z-index:1;pointer-events:none;--px:3;}
+.mg-folk::before{content:"";position:absolute;left:0;right:0;bottom:4px;height:110px;background:linear-gradient(0deg,rgba(244,241,232,.62),rgba(244,241,232,.22) 55%,transparent);}   /* a pale pavement, so the people read against the dark tartan */
 .mg-w{position:absolute;left:0;bottom:0;will-change:transform;}
 .mg-w .flip.rev{transform:scaleX(-1);}
 .mg-w .st{position:absolute;left:0;top:0;opacity:0;}
@@ -132,6 +130,7 @@ const manage = `
   background:repeating-linear-gradient(135deg,var(--black) 0 14px,var(--gold) 14px 28px);}
 .mg-kick{position:absolute;left:1.4rem;top:1.7rem;background:var(--pink);color:var(--black);border:var(--line) solid var(--black);padding:.3rem .8rem;z-index:1;
   font:400 .95rem var(--anton);letter-spacing:.14em;transform:rotate(-2.5deg);box-shadow:4px 4px 0 var(--black);}
+.mg-pin{position:absolute;left:4px;top:1.1rem;width:62px;z-index:3;transform:rotate(-28deg);overflow:visible;pointer-events:none;}
 .mg-stamp{position:absolute;right:1.2rem;top:3.3rem;padding:.25rem .7rem;border:4px solid var(--tartan-red);color:var(--tartan-red);background:var(--paper);
   font:400 1.05rem var(--anton);letter-spacing:.12em;transform:rotate(9deg);mix-blend-mode:multiply;}
 .mg-door.in .mg-stamp{animation:mgThump .38s .5s var(--ease) both;}
@@ -226,9 +225,9 @@ html[lang="th"] .mg-tab,html[lang="lo"] .mg-tab{font-family:"Chonburi",var(--tha
   .mg-tab{flex:1 1 auto;text-align:center;}
 }
 @media(prefers-reduced-motion:reduce){
-  .mg-door.in,.mg-door.in .mg-stamp,.fl,.sn,.mg-ray,.mg-dust,.mg-bolt.re,.mg-stamp.re,.mg-door.opening{animation:none;}
+  .mg-door.in,.mg-door.in .mg-stamp,.fl,.sn,.mg-ray,.mg-bolt.re,.mg-stamp.re,.mg-door.opening{animation:none;}
   .mg-door.in,.mg-door.in .mg-stamp{opacity:1;}.mg-door.in .mg-stamp,.mg-stamp.re{transform:rotate(9deg);opacity:1;}
-  .mg-ray{opacity:.7;}.mg-dust{display:none;}
+  .mg-ray{opacity:.7;}
   .mg-w{animation:none!important;transform:translate3d(var(--rx),0,0);}.mg-w .wk{animation:none!important;opacity:1;}.mg-w .st{animation:none!important;opacity:0;}
   .mg-bird{animation:none;transform:translate3d(0,0,0);}.mg-bird .fly{animation:none;opacity:0;}.mg-bird .perch{animation:none;opacity:1;}
   .spr canvas{animation:none!important;}.spr canvas:first-child{opacity:1;}

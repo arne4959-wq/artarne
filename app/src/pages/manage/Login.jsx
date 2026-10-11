@@ -31,12 +31,14 @@ export default function Login({linkBad = false}) {
 
   const busy = phase === 'sending' || phase === 'opening';
   return <main id="main" ref={wall} className={'mg-wall' + (focus ? ' focus' : '')}>
-    <div className="mg-tag" aria-hidden="true">CIRCLES</div>
     <Wall/>
     <section className={'mg-door in' + (phase === 'opening' ? ' opening' : '')} aria-labelledby="mg-title">
       <div className="mg-hazard" aria-hidden="true"></div>
       {['a', 'b', 'c', 'd'].map(k => <span key={k + bump} className={'mg-bolt ' + k + (bump ? ' re' : '')} aria-hidden="true"></span>)}
       <div className="mg-kick">{mt('lg_kick')}</div>
+      <svg className="mg-pin" viewBox="0 0 64 28" fill="none" strokeWidth="4" strokeLinecap="round" aria-hidden="true">
+        <g stroke="var(--black)" transform="translate(3 3)"><path d="M14 8H50"/><path d="M14 20H46Q61 20 61 13.5Q61 8 50 8"/><circle cx="9" cy="14" r="6"/></g>
+        <g stroke="var(--paper)"><path d="M14 8H50"/><path d="M14 20H46Q61 20 61 13.5Q61 8 50 8"/><circle cx="9" cy="14" r="6"/><rect x="44" y="3" width="14" height="10" rx="4" fill="var(--paper)" stroke="none"/></g></svg>
       <div key={'st' + bump} className={'mg-stamp' + (bump ? ' re' : '')} aria-hidden="true">{mt('lg_stamp')}</div>
       <Bird/>
       <KeyBurst open={phase === 'opening'}/>
