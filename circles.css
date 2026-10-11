@@ -28,7 +28,7 @@
 .cdlg-h h2 em{font-style:normal;color:var(--pink);}
 .cdlg-x{flex:none;width:44px;height:44px;border:var(--line) solid var(--paper);background:var(--gold);color:var(--black);font:400 1.1rem var(--anton);cursor:pointer;}
 .cdlg form,.cdlg .cdlg-done{padding:1.4rem 1.6rem 1.7rem;display:grid;gap:1rem;}
-.cdlg p.intro{font:300 1rem/1.8 var(--thai);}
+.cdlg p.intro{font:400 1rem/1.8 var(--thai);}
 .cdlg label{display:grid;gap:.35rem;font:400 .78rem var(--type);letter-spacing:.12em;color:var(--tartan-red);text-transform:uppercase;}
 .cdlg input,.cdlg select,.cdlg textarea{font:400 1rem/1.5 var(--thai);color:var(--black);background:var(--bone);border:var(--line) solid var(--black);padding:.65rem .8rem;width:100%;border-radius:0;}
 .cdlg textarea{min-height:120px;resize:vertical;}
@@ -37,7 +37,7 @@
 .cdlg .act{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;}
 .cdlg .btn.ghost{background:var(--paper);color:var(--black);box-shadow:6px 6px 0 var(--black);}
 .cdlg .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
-.cdlg .note{font:400 .8rem/1.7 var(--type);color:#6E685C;}
+.cdlg .note{font:400 .8rem/1.7 var(--type);color:#5C574C;}
 .cdlg .note a{color:var(--black);text-decoration:none;border-bottom:2px solid var(--pink);}
 .cdlg-done h3{font:400 1.6rem/1.4 "Chonburi",var(--thai);}
 .cdlg-done pre{font:400 .85rem/1.7 var(--type);background:var(--bone);border:2px dashed var(--black);padding:.8rem 1rem;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow:auto;}
@@ -162,3 +162,50 @@ html[data-calm="1"] *,html[data-calm="1"] *::before,html[data-calm="1"] *::after
 @media(max-width:600px){.fab-wrap{right:.5rem;bottom:.5rem;max-width:calc(100vw - 4rem);}.fab-wrap .btn{padding:.45rem .75rem;font-size:.8rem;letter-spacing:.06em;}}
 .sup-q{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
 .city-search{flex:1 1 220px;min-width:0;min-height:44px;padding:.5rem .9rem;border:var(--line,3px) solid var(--black);background:var(--paper);color:var(--black);font:400 1rem var(--sans,inherit);}
+
+/* sample payment mode (tip dialog, buy page): small helpers on top of the Support dialog styles */
+.sm-pay{padding-bottom:.4rem;}
+.sm-act{padding-top:0;}
+.sm-amt{margin:0;font:400 1.5rem "Chonburi",var(--thai);}
+.sm-qr{display:block;}
+.cdlg .sm-form p.sm-err,.sm-form p.sm-err{background:var(--black);color:var(--paper);padding:.3rem .7rem;margin:0;font-weight:700;}
+.sm-err[hidden]{display:none;}
+
+/* artwork: fullscreen zoom button + viewer */
+.zoom-host{position:relative;}
+.zoom-btn{position:absolute;right:10px;bottom:10px;z-index:3;width:48px;height:48px;display:grid;place-items:center;background:var(--paper);color:var(--black);border:3px solid var(--black);box-shadow:3px 3px 0 var(--black);cursor:pointer;padding:0;border-radius:0;}
+.zoom-btn:hover{background:var(--gold);}
+.zoomdlg{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;padding:0;border:0;background:#0E0D0C;color:var(--paper);box-shadow:none;overflow:hidden;}
+.zoomdlg[open]{display:flex;flex-direction:column;animation:none;}
+.zoomdlg::backdrop{background:#0E0D0C;}
+.zm-bar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:.6rem .8rem;background:#0E0D0C;border-bottom:2px solid rgba(244,241,232,.25);}
+.zm-hint{font:400 .85rem/1.5 var(--thai);color:#D9D6CC;}
+.zm-tools{display:flex;gap:.5rem;flex:none;}
+.zm-tools button{width:48px;height:48px;font:400 1.3rem var(--anton);background:var(--paper);color:var(--black);border:3px solid var(--paper);cursor:pointer;border-radius:0;}
+.zm-tools button:hover{background:var(--gold);}
+.zm-stage{flex:1;min-height:0;position:relative;overflow:hidden;display:grid;place-items:center;touch-action:none;cursor:zoom-in;outline-offset:-4px;}
+.zm-stage.zm-in{cursor:grab;}
+.zm-img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-select:none;will-change:transform;}
+@media(max-width:560px){.zm-hint{font-size:.75rem;}}
+@media(prefers-reduced-motion:reduce){.zm-img{transition:none;}}
+
+/* breadcrumb (profile and buy pages) */
+.bc{font:400 .85rem/1.4 var(--type);}
+.bc ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .1rem;}
+.bc li{display:inline-flex;align-items:center;min-height:44px;}
+.bc li+li::before{content:"›";margin:0 .55rem;opacity:.7;}
+.bc a{color:inherit;text-decoration:none;border-bottom:2px solid currentColor;padding:.5rem 0;}
+.bc a:hover{background:var(--gold);color:var(--black);}
+.bc [aria-current]{font-weight:700;max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bc-dark{color:var(--paper);}
+
+#all-artists{scroll-margin-top:96px;}
+
+/* Thai / Lao: letters carry stacked tone marks and vowels, so a ransom tile gets room above and below (nothing is clipped), and Lao has system fallbacks (no heavy webfont) */
+:root{--lao:"Noto Sans Lao","Noto Sans Lao UI","Phetsarath OT","Lao Sangam MN","Saysettha OT","Leelawadee UI",sans-serif;}
+html[lang=lo]{--thai:"IBM Plex Sans Thai","Noto Sans Lao","Noto Sans Lao UI","Phetsarath OT","Lao Sangam MN","Saysettha OT","Leelawadee UI",system-ui,sans-serif;
+  --type:"Special Elite","IBM Plex Sans Thai","Noto Sans Lao","Phetsarath OT","Lao Sangam MN",monospace;--anton:"Anton","Chonburi","Noto Sans Lao","Phetsarath OT","Lao Sangam MN",Impact,sans-serif;}
+.rn span.tl{line-height:1.3;padding:.3em .13em .24em;}
+.pf-ltr,.cut-name span{line-height:1.45;}
+/* phones: text of at least 17px and not hairline thin */
+@media(max-width:600px){html{font-size:106.25%;}}

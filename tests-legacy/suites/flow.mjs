@@ -99,10 +99,9 @@ export async function run({url, check}) {
   await ev("document.getElementById('dlg-buy').click()"); await sleep(1500);
   check('the buy button takes you to this work\'s buy page', (await ev('location.pathname')).endsWith('buy-thara-1.html'));
 
-  // the buy page: the message form (the email-app path) goes with the work's details
+  // the buy page (sample artists: QR + "I have paid" demo, see the sample suite)
   await b.go(`${url}/buy-thara-1.html`, 3000);
-  await ev("(()=>{const f=document.querySelector('.by-form');f.name.value='Test Buyer';f.email.value='buyer@example.com';f.message.value='Is it still here?';f.requestSubmit()})()"); await sleep(900);
-  check('buy page: sending the message shows the copyable text with the buyer and the work', (await ev("document.getElementById('by-pre')?.textContent||''")).includes('name: Test Buyer') && (await ev("document.getElementById('by-pre')?.textContent||''")).includes('The Waiting'));
+  check('buy page: loads with the work and its payment box (this work is on hold, so no QR)', (await ev("!!document.querySelector('.by-title') && !!document.querySelector('.by-box') && !document.querySelector('.by-form')")));
 
   await b.go(`${url}/studio-dao.html?work=2`, 4000);
   check('deep link ?work=2 opens "The Letter"', (await ev("document.getElementById('dlg').open")) && (await ev("document.getElementById('dlg-t').textContent")) === 'The Letter');

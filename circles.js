@@ -23,8 +23,17 @@ const CONFIG = { shop: false, support: {bank: 'BCEL', name: 'SAMPLE', no: '000 0
    SHIPPING.days        days until it arrives           SHIPPING.returnDays   days to send back a piece that broke in transit
    SHIPPING.replyDays   how fast artists reply          SHIPPING.certificate  what comes with a piece (certificate, signature ...)
    RATES.thb            how many THB one US dollar is worth (0 = not set, the "≈ THB" line stays hidden). Kip: see CONFIG.lakPerUsd. */
-const SHIPPING = {regions: '', fee: '', days: '', returnDays: '', replyDays: '', certificate: ''};
-const RATES = {thb: 0};
+/* SAMPLE VALUES: replace every line below with the real terms before launch. regions / fee / certificate may be a plain string or {th, en} (Lao shows the English). */
+const SHIPPING = {
+  regions: {th: 'ลาว ไทย และเวียดนาม (ประเทศอื่นถามศิลปิน)', en: 'Laos, Thailand and Vietnam (other countries: ask the artist)'},
+  fee: {th: '$8 ในลาว · $15 ต่างประเทศ', en: '$8 in Laos · $15 abroad'},
+  days: '5–10', returnDays: '7', replyDays: '2', shipsIn: '3',   // shipsIn: days until the artist posts it after the money arrives
+ 
+  certificate: {th: 'ใบรับรองลายเซ็นศิลปิน + เลขชิ้นงาน', en: "Artist's signed certificate + piece number"}};
+const RATES = {thb: 36};   // SAMPLE rate (THB per US dollar): update by hand before launch
+/* breadcrumb: items = [[label, href]...], the last one (no href) is the page you are on. cls 'bc-dark' on dark pages */
+const breadcrumbHtml = (items, cls = '') => `<div class="bc ${cls}" role="navigation" aria-label="${esc(t('bc_aria'))}"><ol>${items.map((x, i) => i === items.length - 1 || !x[1] ? `<li aria-current="page"><span>${esc(x[0])}</span></li>` : `<li><a href="${esc(x[1])}">${esc(x[0])}</a></li>`).join('')}</ol></div>`;
+const shipV = v => v && typeof v === 'object' ? (LANG === 'th' ? v.th : v.en) : v;   // a SHIPPING value in the visitor's language
 
 /* ---------- shop switch (CONFIG.shop) ----------
    false = showcase mode. Used by museum.js (the cards in the museum), the work dialog in cutaway.html / studio-*.html and the buy pages.
@@ -71,6 +80,147 @@ document.addEventListener('click', e => {   // any [data-support] button: "site"
   if (info) openSupport(info, id === 'site' ? 'Circles' : nameL(A));
 });
 
+/* ---------- SAMPLE payment mode (tips on profile pages, the buy page) ----------
+   While there is no real payment data (no Supabase URL / key in CONFIG, or the artist is sample data: no `live` flag) every payment screen is a DEMO:
+   a generated QR clearly marked SAMPLE, a "I have paid" notice form, and a fake success. Nothing is sent over the network and no file is read.
+   The only trace is localStorage (circles-sample-v1: which works are on hold, which tips were "sent" in this browser). Real artists with real payment details are not touched. */
+const sampleMode = A => !(CONFIG.supabaseUrl && CONFIG.supabaseKey) || !A || !A.live;
+const SM_KEY = 'circles-sample-v1'; let smMem = {};
+const smGet = () => { try { const o = JSON.parse(localStorage.getItem(SM_KEY)); if (o && typeof o === 'object') return o; } catch (e) {} return smMem; };
+const smPut = o => { smMem = o; try { localStorage.setItem(SM_KEY, JSON.stringify(o)); } catch (e) {} };
+const smHeld = (id, k) => (smGet().held || []).includes(id + '-' + k);
+const smHold = (id, k) => { const o = smGet(), h = new Set(o.held || []); h.add(id + '-' + k); smPut({...o, held: [...h]}); };
+const smTip = (id, usd) => { const o = smGet(); smPut({...o, tips: [...(o.tips || []), {a: id, u: usd, at: Date.now()}].slice(-20)}); };
+const smClear = () => smPut({});
+function sampleQrSvg(seed, cap) {   // a made-up QR-looking picture (random pattern, three finder squares) with a SAMPLE label over the middle. It is not a valid code on purpose.
+  let h = 1779033703 ^ String(seed).length; for (const c of String(seed)) { h = Math.imul(h ^ c.charCodeAt(0), 3432918353); h = h << 13 | h >>> 19; }
+  const rnd = () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
+  const N = 29, Q = 4, U = 6, W = (N + Q * 2) * U, finder = (x, y) => (x < 8 && y < 8) || (x >= N - 8 && y < 8) || (x < 8 && y >= N - 8);
+  let r = '';
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (!finder(x, y) && rnd() < .5) r += `<rect x="${(x + Q) * U}" y="${(y + Q) * U}" width="${U}" height="${U}"/>`;
+  for (const [fx, fy] of [[0, 0], [N - 7, 0], [0, N - 7]]) {
+    const X = (fx + Q) * U, Y = (fy + Q) * U;
+    r += `<rect x="${X}" y="${Y}" width="${7 * U}" height="${7 * U}"/><rect x="${X + U}" y="${Y + U}" width="${5 * U}" height="${5 * U}" fill="#fff"/><rect x="${X + 2 * U}" y="${Y + 2 * U}" width="${3 * U}" height="${3 * U}"/>`;
+  }
+  const c = W / 2;
+  r += `<g transform="rotate(-12 ${c} ${c})"><rect x="${c - 78}" y="${c - 26}" width="156" height="52" fill="#FFD21F" stroke="#0E0D0C" stroke-width="4"/><text x="${c}" y="${c + 4}" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="26" letter-spacing="3" fill="#0E0D0C" stroke="none">SAMPLE</text><text x="${c}" y="${c + 20}" text-anchor="middle" font-family="IBM Plex Sans Thai,sans-serif" font-size="13" font-weight="700" fill="#0E0D0C" stroke="none">ตัวอย่าง</text></g>`;
+  return `<svg class="sup-qr sm-qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${W}" role="img" aria-label="${esc(cap)}"><rect width="${W}" height="${W}" fill="#fff"/><g fill="#0E0D0C">${r}</g></svg>`;
+}
+function samplePayHtml(A, usd, who) {   // banner + QR + account block + amount, shared by the tip dialog and the buy page
+  const info = supOf(A) || CONFIG.support || {}, real = !sampleMode(A) && supOf(A) && !info.sample, row = (k, v) => v ? `<div><dt>${esc(t(k))}</dt><dd>${esc(v)}</dd></div>` : '';
+  return `<div class="sup-dlg sm-pay">`
+    + (real ? '' : `<p class="sup-sample" role="note">${esc(t('sm_banner'))}</p>`)
+    + (usd > 0 ? `<p class="sm-amt">${esc(t('tip_amt', {m: money(usd)}))}</p>` : '')
+    + (real && info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sup_qr_t', {a: who}))}" width="240" height="240">` : sampleQrSvg(A.id + ':' + usd, t('sm_qr_alt')))
+    + `<dl class="sup-dl">${row('sup_bank', info.bank)}${row('sup_acc_name', real ? info.name : 'SAMPLE')}${row('sup_acc_no', real ? info.no : '000 000 000 000')}</dl>`
+    + `<p class="note">${esc(t('sup_direct', {a: who}))}</p></div>`;
+}
+const SM_MAX = 2 * 1024 * 1024;
+function sampleNoticeHtml(by, back) {   // the "I have paid" form: name, e-mail, optional slip image (max 2 MB). by = buy-page styling. No CAPTCHA in sample mode.
+  const f = by ? 'by-fld' : '', two = by ? 'by-two' : 'row', note = by ? 'by-note' : 'note';
+  return `<form class="sm-form" novalidate>
+    <p class="${note}" role="note">${esc(t('sm_banner'))}</p>
+    <div class="${two}"><label class="${f}">${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label class="${f}">${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
+    <label class="${f}">${esc(t('pay_slip'))}<input name="slip" type="file" accept="image/*"></label>
+    <p class="sm-err ${note}" role="alert" hidden></p>
+    <div class="${by ? '' : 'act'}"><button class="${by ? 'by-btn by-pay' : 'btn pk'}" type="submit">${by ? `<span class="bl-t">${esc(t('pay_submit'))}</span>` : esc(t('pay_submit'))}</button>${back ? `<button type="button" class="${by ? 'by-btn by-ghost' : 'btn ghost'}" data-sm-back>${by ? `<span class="bl-t">${esc(t('pay_back'))}</span>` : esc(t('pay_back'))}</button>` : ''}</div></form>`;
+}
+function sampleNoticeWire(root, onOk, onBack) {   // validates by hand (name, e-mail, slip type / size), waits a moment like a real send would, then calls onOk. No fetch, the file is never read.
+  const form = root.querySelector('.sm-form'), err = form.querySelector('.sm-err'), slip = form.elements.slip;
+  const fail = k => { err.textContent = t(k); err.hidden = false; };
+  const slipBad = () => { const f = slip.files && slip.files[0]; return !f ? '' : !/^image\//.test(f.type) ? 'pay_slip_type' : f.size > SM_MAX ? 'pay_slip_big' : ''; };
+  slip.addEventListener('change', () => { const k = slipBad(); if (k) fail(k); else err.hidden = true; });
+  form.addEventListener('submit', e => {
+    e.preventDefault(); err.hidden = true;
+    const n = form.elements.name, m = form.elements.email;
+    if (!n.value.trim()) { fail('pay_need_name'); n.focus(); return; }
+    if (!/^\S+@\S+\.\S+$/.test(m.value.trim())) { fail('pay_need_email'); m.focus(); return; }
+    const k = slipBad(); if (k) { fail(k); slip.focus(); return; }
+    const b = form.querySelector('[type=submit]'); b.disabled = true; b.setAttribute('aria-busy', 'true'); (b.querySelector('.bl-t') || b).textContent = t('pay_sending');
+    setTimeout(onOk, reduce ? 0 : 700);
+  });
+  form.querySelector('[data-sm-back]')?.addEventListener('click', onBack);
+}
+function openTip(A, usd) {   // the tip dialog: pay panel -> "I've sent a tip" -> notice form -> fake thank-you
+  const d = mountDialog('dlg-tip'), who = nameL(A), title = () => esc(t('pf_supb', {a: who}));
+  const close = '<button type="button" class="btn ghost" data-close>' + esc(t('close')) + '</button>';
+  const step1 = () => {
+    d.innerHTML = dlgShell(title(), samplePayHtml(A, usd, who) + `<div class="sup-dlg sm-act"><div class="act"><button type="button" class="btn pk" data-sm-sent>${esc(t('tip_sent'))}</button>${close}</div></div>`);
+    d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
+    d.querySelector('[data-sm-sent]').onclick = step2;
+  };
+  const step2 = () => {
+    d.innerHTML = dlgShell(esc(t('pay_notice_h')), sampleNoticeHtml(false, true));
+    d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
+    sampleNoticeWire(d, step3, step1); d.querySelector('input[name=name]').focus();
+  };
+  const step3 = () => {
+    smTip(A.id, usd);
+    d.innerHTML = dlgShell(esc(t('pay_done_h')), `<div class="cdlg-done" role="status"><p class="intro">${esc(t('pay_done_tip', {a: who, m: money(usd)}))}</p><p class="sup-sample">${esc(t('sm_banner'))}</p><div class="act">${close}</div></div>`);
+    d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
+    d.querySelector('[data-close]').focus();
+  };
+  step1(); if (!d.open) d.showModal();
+}
+/* ---------- fullscreen zoom of an artwork ----------
+   zoomBtnHtml() is the button (put it inside the element that holds the picture, with class .zoom-host on that element); a click on any [data-zoom] opens that host's <img> in openZoom().
+   Wheel / pinch zooms, drag pans, double-click or double-tap toggles, + - 0 and the arrow keys work, Esc / the close button / a tap outside the picture close it. Only transform changes. */
+const zoomBtnHtml = () => `<button type="button" class="zoom-btn" data-zoom aria-label="${esc(t('zoom_btn'))}" title="${esc(t('zoom_btn'))}"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg></button>`;
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-zoom]'); if (!b) return;
+  const img = (b.closest('.zoom-host') || document).querySelector('img'); if (img && (img.currentSrc || img.src)) openZoom(img.currentSrc || img.src, img.alt);
+});
+function openZoom(src, alt) {
+  const d = mountDialog('dlg-zoom'); d.classList.add('zoomdlg');
+  d.innerHTML = `<div class="zm-bar"><span class="zm-hint">${esc(t('zoom_hint'))}</span><div class="zm-tools">`
+    + `<button type="button" data-zi aria-label="${esc(t('zoom_in'))}">+</button><button type="button" data-zo aria-label="${esc(t('zoom_out'))}">−</button><button type="button" data-zr aria-label="${esc(t('zoom_reset'))}">1×</button>`
+    + `<button type="button" data-close aria-label="${esc(t('close'))}">✕</button></div></div>`
+    + `<div class="zm-stage" tabindex="0" role="group" aria-label="${esc(alt || t('zoom_btn'))}"><img class="zm-img" src="${esc(src)}" alt="${esc(alt || '')}" draggable="false"></div>`;
+  const st = d.querySelector('.zm-stage'), im = d.querySelector('.zm-img'), MAX = 8;
+  let sc = 1, x = 0, y = 0;
+  const clamp = () => {   // the picture cannot be dragged away: along an axis it may only move while it is larger than the stage
+    const w = im.offsetWidth * sc, h = im.offsetHeight * sc, mx = Math.max(0, (w - st.clientWidth) / 2), my = Math.max(0, (h - st.clientHeight) / 2);
+    x = Math.min(mx, Math.max(-mx, x)); y = Math.min(my, Math.max(-my, y));
+  };
+  const paint = () => { clamp(); im.style.transform = `translate(${x}px,${y}px) scale(${sc})`; st.classList.toggle('zm-in', sc > 1.01); };
+  const zoomAt = (cx, cy, ns) => {   // keep the point under (cx, cy) (client coordinates) where it is
+    ns = Math.min(MAX, Math.max(1, ns)); const r = st.getBoundingClientRect(), px = cx - (r.left + r.width / 2), py = cy - (r.top + r.height / 2);
+    x = px - (px - x) * (ns / sc); y = py - (py - y) * (ns / sc); sc = ns; paint();
+  };
+  const mid = () => { const r = st.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+  st.addEventListener('wheel', e => { e.preventDefault(); zoomAt(e.clientX, e.clientY, sc * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0018))); }, {passive: false});
+  const ptr = new Map(); let moved = 0, pinch = 0, last = 0;
+  st.addEventListener('pointerdown', e => { st.setPointerCapture(e.pointerId); ptr.set(e.pointerId, [e.clientX, e.clientY]); moved = 0; if (ptr.size === 2) { const [a, b] = [...ptr.values()]; pinch = Math.hypot(a[0] - b[0], a[1] - b[1]); } });
+  st.addEventListener('pointermove', e => {
+    const p = ptr.get(e.pointerId); if (!p) return;
+    if (ptr.size === 2) {
+      ptr.set(e.pointerId, [e.clientX, e.clientY]); const [a, b] = [...ptr.values()], dist = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      if (pinch > 0) zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, sc * dist / pinch); pinch = dist; moved = 99; return;
+    }
+    const dx = e.clientX - p[0], dy = e.clientY - p[1]; ptr.set(e.pointerId, [e.clientX, e.clientY]); moved += Math.abs(dx) + Math.abs(dy);
+    if (sc > 1.01) { x += dx; y += dy; paint(); }
+  });
+  const up = e => {
+    const had = ptr.delete(e.pointerId); if (!had) return;
+    if (ptr.size === 0 && moved < 6 && e.type === 'pointerup') {
+      if (e.target === st) { d.close(); return; }                                    // a tap outside the picture closes
+      const now = Date.now(); if (now - last < 320) { zoomAt(e.clientX, e.clientY, sc > 1.5 ? 1 : 3); last = 0; } else last = now;   // double tap / click
+    }
+  };
+  st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
+  const step = f => { const [cx, cy] = mid(); zoomAt(cx, cy, sc * f); };
+  d.querySelector('[data-zi]').onclick = () => step(1.5); d.querySelector('[data-zo]').onclick = () => step(1 / 1.5);
+  d.querySelector('[data-zr]').onclick = () => { sc = 1; x = 0; y = 0; paint(); };
+  d.querySelector('[data-close]').onclick = () => d.close();
+  st.addEventListener('keydown', e => {
+    const k = e.key, mv = {ArrowLeft: [60, 0], ArrowRight: [-60, 0], ArrowUp: [0, 60], ArrowDown: [0, -60]}[k];
+    if (k === '+' || k === '=') step(1.5); else if (k === '-' || k === '_') step(1 / 1.5); else if (k === '0') { sc = 1; x = 0; y = 0; paint(); }
+    else if (mv && sc > 1.01) { x += mv[0]; y += mv[1]; paint(); } else return;
+    e.preventDefault();
+  });
+  d.addEventListener('close', () => { d.classList.remove('zoomdlg'); d.innerHTML = ''; }, {once: true});
+  d.showModal(); st.focus({preventScroll: true});
+}
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* ===== lite:decide ===== phones, very weak devices (2 cores or 2 GB) and data-saver get fewer moving things. ?lite or ?full in the address forces it. */
 const LITE = (() => { try {
@@ -150,7 +300,7 @@ th: {
   cw_est:'ก่อตั้ง {y}', cw_back:'← กลับไปเดินเมือง', cw_hint:'▼ ภาพตัดตึกทีละชั้น กดที่ผลงานเพื่อดูรายละเอียดเต็ม', cw_section:'SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น',
   mus_name:'พิพิธภัณฑ์ของ{a}', mus_aria:'โถงแสดงภาพของ{a}', mus_prev:'← ภาพก่อน', mus_next:'เดินต่อ →', mus_more:'รายละเอียดและแนวคิด', mus_map:'ผังตึก', mus_hint:'▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม',
   pf_h:'โปรไฟล์ของ{a}', pf_open:'รับงานสั่งทำ', pf_until:'· คิวว่างเดือน {m}', pf_cn:'แนวคิดของงาน{a}', pf_nw:'ผลงานในพิพิธภัณฑ์', pf_ns:'ขายแล้ว', pf_ny:'เริ่มทำงานศิลปะ', pf_tl:'เส้นทางที่ผ่านมา',
-  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', search_ph:'ค้นหาศิลปิน…', search_aria:'ค้นหาศิลปินจากชื่อ สาขา หรือเมือง', fnote_q:'พบ {n} ตึกที่ตรงกับคำค้น', fnote_q0:'ไม่พบศิลปินที่ตรงกับคำค้น', calm_off:'หยุดการเคลื่อนไหว', calm_on:'เปิดการเคลื่อนไหว', share_btn:'แชร์', share_copied:'คัดลอกลิงก์แล้ว', sup_hint:'บนมือถือ: บันทึกรูป QR แล้วเปิดแอปธนาคารของคุณ (เช่น BCEL One) เลือกสแกนจากรูปในเครื่อง', sup_save:'บันทึกรูป QR', pf_soon:'เร็วๆ นี้',
+  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', search_ph:'ค้นหาศิลปิน…', search_aria:'ค้นหาศิลปินจากชื่อ สาขา หรือเมือง', fnote_q:'พบ {n} ตึกที่ตรงกับคำค้น', fnote_q0:'ไม่พบศิลปินที่ตรงกับคำค้น', calm_off:'หยุดการเคลื่อนไหว', calm_on:'เปิดการเคลื่อนไหว', share_btn:'แชร์', share_copied:'คัดลอกลิงก์แล้ว', sup_hint:'บนมือถือ: บันทึกรูป QR แล้วเปิดแอปธนาคารของคุณ (เช่น BCEL One) เลือกสแกนจากรูปในเครื่อง', sup_save:'บันทึกรูป QR', pf_soon:'เร็วๆ นี้', sm_tag:'ตัวอย่าง / SAMPLE', sm_banner:'ตัวอย่าง (SAMPLE) · นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไป ห้ามโอนเงินจริง', sm_qr_alt:'QR ตัวอย่าง ไม่ใช่ของจริง', tip_h:'เลือกจำนวนที่อยากสนับสนุน', tip_other:'จำนวนอื่น (USD)', tip_go:'ต่อไป', tip_bad:'ใส่จำนวนเต็ม 1–1000 ดอลลาร์', tip_amt:'ยอดสนับสนุน {m}', tip_sent:'ฉันโอนแล้ว', pay_notice_h:'แจ้งว่าโอนแล้ว', pay_slip:'สลิปโอนเงิน (ไม่บังคับ รูปภาพไม่เกิน 2 MB)', pay_slip_big:'ไฟล์ใหญ่เกิน 2 MB', pay_slip_type:'ต้องเป็นไฟล์รูปภาพ', pay_need_name:'กรอกชื่อ', pay_need_email:'กรอกอีเมลให้ถูกต้อง', pay_submit:'ส่งแจ้งโอน', pay_sending:'กำลังส่ง…', pay_back:'ย้อนกลับ', pay_done_h:'ขอบคุณ (สาธิต)', pay_done_tip:'บันทึกการสนับสนุน {m} ให้ {a} แบบจำลองแล้ว นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไปและไม่มีเงินเคลื่อนไหว', by_payqr:'จ่ายด้วย LAO QR', by_pay_h:'จ่ายด้วย LAO QR', by_pay_p:'สแกน QR ด้วยแอปธนาคาร (เช่น BCEL One) แล้วกด “ฉันโอนแล้ว” เพื่อแจ้งศิลปิน', by_paid:'ฉันโอนแล้ว', by_hold_h:'ON HOLD · ผลงานพักไว้ให้คุณ', by_hold_p:'นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไป ผลงานถูกพักไว้ในเบราว์เซอร์นี้เท่านั้น', by_hold_clear:'ล้างสถานะสาธิต', by_t1:'จ่ายผ่าน LAO QR ในแอปธนาคาร แล้วกด “ฉันโอนแล้ว”', by_t1m:'ทักศิลปิน ตกลงราคาและการส่ง แล้วจ่ายตรงให้ศิลปิน', by_t2:'ศิลปินส่งภายใน {d} วันหลังได้รับเงิน', by_t3:'เงินเข้าบัญชีศิลปินโดยตรง circles ไม่ถือเงินของคุณ', by_share:'แชร์ผลงานนี้', by_follow:'ติดตาม{a}', by_tipl:'ให้ทิป{a}แทน', zoom_btn:'ขยายภาพเต็มจอ', zoom_in:'ซูมเข้า', zoom_out:'ซูมออก', zoom_reset:'ขนาดพอดี', zoom_hint:'เลื่อนล้อเมาส์หรือหยิกนิ้วเพื่อซูม ลากเพื่อเลื่อน กด Esc เพื่อปิด', hint_swipe:'▼ ปัดซ้าย-ขวาเพื่อเดินดูภาพ แตะที่ภาพเพื่อดูรายละเอียดเต็ม', nav_all:'ศิลปินทั้งหมด', bc_aria:'เส้นทางหน้า', bc_city:'เมือง', bc_artists:'ศิลปิน', bc_work:'ผลงาน', by_s1:'สแกน LAO QR ด้วยแอปธนาคาร', by_s2:'กด “ฉันโอนแล้ว” แจ้งศิลปิน', by_s3:'ศิลปินทักกลับเรื่องการจัดส่ง',
   pf_walk:'เดินเข้าพิพิธภัณฑ์ →', pf_ask:'ถามศิลปิน', pf_ig:'Instagram', pf_share:'แชร์โปรไฟล์ ↗', pf_copy:'คัดลอกลิงก์', pf_copied:'คัดลอกลิงก์แล้ว', pf_marq:'ART NOT SORRY ★ วงกลมไม่มีวันจบ ★ CIRCLES ★ เดินเข้าพิพิธภัณฑ์ ★ ',
   mus_prof:'ดูโปรไฟล์ศิลปิน', title_pf:'โปรไฟล์ของ{a} — circles', desc_pf:'รู้จัก{a} ศิลปินสาขา{d} แนวคิดของงาน ผลงานที่ขายอยู่ และช่องทางสนับสนุนหรือสั่งทำงาน',
   fold_spot:'อ่านบทสัมภาษณ์ 3 ข้อ', fold_foot:'เมนู โซเชียล และจดหมายข่าว',
@@ -219,7 +369,7 @@ en: {
   cw_est:'Est. {y}', cw_back:'← Back to the city', cw_hint:'▼ The building cut open, floor by floor. Click a work for full details', cw_section:'SECTION A–A · NO LIFT, STAIRS ONLY',
   mus_name:"{a}'s museum", mus_aria:"{a}'s picture hall", mus_prev:'← Previous', mus_next:'Walk on →', mus_more:'Details & concept', mus_map:'Floor plan', mus_hint:'▼ Walk the hall one work at a time. Use the ← → keys. Click the lit work for full details',
   pf_h:"{a}'s profile", pf_open:'Taking commissions', pf_until:'· slot open in {m}', pf_cn:"{a}'s concept", pf_nw:'works in the museum', pf_ns:'sold', pf_ny:'making art since', pf_tl:'The road so far',
-  pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', search_ph:'Search artists…', search_aria:'Search artists by name, discipline or city', fnote_q:'{n} building(s) match your search', fnote_q0:'No artist matches your search', calm_off:'Pause motion', calm_on:'Resume motion', share_btn:'Share', share_copied:'Link copied', sup_hint:'On a phone: save the QR image, then open your bank app (for example BCEL One) and scan it from your gallery.', sup_save:'Save QR image', pf_soon:'Coming soon',
+  pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', search_ph:'Search artists…', search_aria:'Search artists by name, discipline or city', fnote_q:'{n} building(s) match your search', fnote_q0:'No artist matches your search', calm_off:'Pause motion', calm_on:'Resume motion', share_btn:'Share', share_copied:'Link copied', sup_hint:'On a phone: save the QR image, then open your bank app (for example BCEL One) and scan it from your gallery.', sup_save:'Save QR image', pf_soon:'Coming soon', sm_tag:'SAMPLE', sm_banner:'SAMPLE · this is a demo. Nothing is sent. Do not transfer real money.', sm_qr_alt:'Sample QR, not real', tip_h:'Choose an amount to give', tip_other:'Other amount (USD)', tip_go:'Continue', tip_bad:'Enter a whole number from 1 to 1000 dollars', tip_amt:'Tip: {m}', tip_sent:"I've sent a tip", pay_notice_h:'I have paid', pay_slip:'Transfer slip (optional, image up to 2 MB)', pay_slip_big:'The file is larger than 2 MB', pay_slip_type:'It must be an image file', pay_need_name:'Please enter your name', pay_need_email:'Please enter a valid e-mail', pay_submit:'Send notice', pay_sending:'Sending…', pay_back:'Back', pay_done_h:'Thank you (demo)', pay_done_tip:'A pretend tip of {m} to {a} was recorded. This is a demo: nothing was sent and no money moved.', by_payqr:'Pay with LAO QR', by_pay_h:'Pay with LAO QR', by_pay_p:'Scan the QR with your bank app (for example BCEL One), then press “I have paid” to tell the artist.', by_paid:'I have paid', by_hold_h:'ON HOLD · kept for you', by_hold_p:'This is a demo: nothing was sent. The work is held in this browser only.', by_hold_clear:'Clear the demo state', by_t1:'Pay with a LAO QR in your bank app, then press “I have paid”', by_t1m:'Message the artist, agree price and shipping, then pay them directly', by_t2:'The artist ships within {d} days of getting your payment', by_t3:'Your money goes straight to the artist. circles never holds it', by_share:'Share this work', by_follow:'Follow {a}', by_tipl:'Tip {a} instead', zoom_btn:'View the artwork fullscreen', zoom_in:'Zoom in', zoom_out:'Zoom out', zoom_reset:'Fit to screen', zoom_hint:'Scroll or pinch to zoom, drag to move, Esc to close', hint_swipe:'▼ Swipe left and right to walk the hall. Tap a work for full details', nav_all:'All artists', bc_aria:'Breadcrumb', bc_city:'City', bc_artists:'Artists', bc_work:'Work', by_s1:'Scan the LAO QR with your bank app', by_s2:'Press “I have paid” to tell the artist', by_s3:'The artist gets in touch about delivery',
   pf_walk:'Walk into the museum →', pf_ask:'Ask the artist', pf_ig:'Instagram', pf_share:'Share profile ↗', pf_copy:'Copy link', pf_copied:'Link copied', pf_marq:'ART NOT SORRY ★ CIRCLES NEVER END ★ CIRCLES ★ WALK INTO THE MUSEUM ★ ',
   mus_prof:'View artist profile', title_pf:"{a}'s profile — circles", desc_pf:"Meet {a}, {d} artist: the ideas behind the work, the pieces on sale, and ways to support or commission.",
   fold_spot:'Read the 3-question interview', fold_foot:'Menu, social & newsletter',
@@ -595,8 +745,9 @@ const SEG = window.Intl && Intl.Segmenter ? new Intl.Segmenter('th', {granularit
 function graphemes(s) { return SEG ? Array.from(SEG.segment(s), x => x.segment) : Array.from(s); }
 function ransom(el, text, seed = 0, wrap = false) {
   const chip = (c, i) => {
-    const st = RS[(i + seed) % RS.length], k = (i * 3 + seed) % ROT.length;
-    return `<span${/^\s+$/.test(c) ? ' class="sp"' : ''} style="--r:${ROT[k]}deg;--y:${YOFF[k]}px;--k:${i};background:${st.bg};color:${st.fg};font-family:${st.ff};font-weight:${st.w || 400}">${esc(c)}</span>`;
+    const st = RS[(i + seed) % RS.length], k = (i * 3 + seed) % ROT.length, tl = /[\u0E00-\u0EFF]/.test(c);   // tl: a Thai or Lao letter: it carries stacked marks, so its tile is taller (.tl) and uses the font that places them best
+    const ff = tl ? (st.ff === 'Chonburi' ? '"Chonburi","IBM Plex Sans Thai",var(--lao)' : '"IBM Plex Sans Thai",var(--lao)') : st.ff, fw = tl && st.ff !== 'Chonburi' ? 700 : st.w || 400;
+    return `<span${/^\s+$/.test(c) ? ' class="sp"' : tl ? ' class="tl"' : ''} style="--r:${ROT[k]}deg;--y:${YOFF[k]}px;--k:${i};background:${st.bg};color:${st.fg};font-family:${ff};font-weight:${fw}">${esc(c)}</span>`;
   };
   if (!wrap) { el.innerHTML = graphemes(text).map(chip).join(''); return; }
   /* wrap mode: every WORD is one unbreakable unit (.rw is nowrap), so a line may only break between words.
@@ -765,6 +916,10 @@ function wireDonate() {
 
 function wireNav() {
   wireDonate();
+  document.querySelectorAll('.links, #mnav').forEach(nav => {   // "All artists": next to "City" in the top bar and the phone menu, on every page (it goes to the search + filter row on the home page)
+    const city = nav.querySelector('a[href$="#city"]'); if (!city || nav.querySelector('[data-all]')) return;
+    const a = document.createElement('a'); a.href = city.getAttribute('href').replace(/#city$/, '#all-artists'); a.dataset.t = 'nav_all'; a.dataset.all = ''; a.textContent = t('nav_all'); city.after(a);
+  });
   const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(LANG_NEXT[LANG]));
   const mb = $('#menu-btn'), mn = $('#mnav'); if (!mb || !mn) return;
   const set = open => { mb.setAttribute('aria-expanded', open); mn.classList.toggle('open', open); mn.toggleAttribute('inert', !open); };

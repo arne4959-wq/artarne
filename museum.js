@@ -16,7 +16,9 @@
 
   const on = a => !!a && a.pieces && a.pieces.length > 0 && !new URLSearchParams(location.search).has('floors');   // ?floors shows the old tower
 
-  /* ---------------- pixel visitors: the site's palette, drawn once from text grids ---------------- */
+  /* ---------------- pixel visitors: the site's palette, drawn from text grids ----------------
+     The page does NOT draw these any more: it points at the shared PNGs in people/ (cached across pages, nothing baked into the HTML).
+     The drawing code stays here as the single source of the pixel art: tools/make-sprites.mjs runs it to write people/*.png. */
   const C = {k: '#0E0D0C', w: '#F4F1E8', p: '#FF2E88', g: '#E8B730', r: '#A3182C', o: '#6B6B3A', b: '#7A4A40', c: '#8F8C85', n: '#1E1C1B', u: '#4A6080'};
   const HEAD = ['................', '................', '................', '.....FFFFF......', '....FFFFFFF.....', '....FFFFFEF.....', '....FFFFFFF.....', '.....FFFFFF.....', '......FFF.......'];
   const TORSO = ['....JJJJJJJ.....', '...JJDJJJDJJ....', '...JJJTTTJJJ....', '...JJJTTTJJJ....', '...JJJTTTJJJ....', '...NJJJJJJJN....', '....JJJJJJJ.....'];
@@ -35,9 +37,8 @@
     sitB:  {F: '#E8B996', hair: 'bob', H: 'k', J: 'p', T: 'k', P: 'n'},
   };
   const colour = (f, x, y) => f === 'tartan' ? ((x % 4 === 1 || y % 4 === 1) ? ((x % 4 === 1 && y % 4 === 1) ? C.g : C.k) : C.r) : (C[f] || f);
-  const sprites = {};
-  function sprite(id, legs) {
-    if (sprites[id]) return sprites[id];
+  const SPRITE_FILE = {stand: 'people/stand.png', sitA: 'people/sit-a.png', sitB: 'people/sit-b.png'};
+  function drawSprite(id, legs) {                          // -> a 20x28 canvas (only used by tools/make-sprites.mjs)
     const L = LOOKS[id], ov = HAIR[L.hair];
     const rows = [...HEAD, ...TORSO, ...LEGS[legs], '................'].map((r, y) => [...r].map((ch, x) => { const o = ov[y] && ov[y][x]; return o && o !== '.' ? o : ch; }).join(''));
     const cv = document.createElement('canvas'); cv.width = 20; cv.height = 28;
@@ -50,7 +51,7 @@
     const d = g.getImageData(0, 0, 20, 28).data, has = (x, y) => x >= 0 && y >= 0 && x < 20 && y < 28 && d[(y * 20 + x) * 4 + 3] > 0;
     g.fillStyle = C.k;
     for (let y = 0; y < 28; y++) for (let x = 0; x < 20; x++) if (!has(x, y) && (has(x - 1, y) || has(x + 1, y) || has(x, y - 1) || has(x, y + 1))) g.fillRect(x, y, 1, 1);   // black outline
-    return (sprites[id] = cv.toDataURL());
+    return cv;
   }
 
   /* ---------------- geometry: where every picture hangs, where the camera stops ---------------- */
@@ -87,7 +88,7 @@
     return `<button type="button" class="mus-art" data-k="${k}" style="left:${px(left)};top:${px(top)};width:${px(s.w)};height:${px(s.h)}" aria-label="${esc(titleL(p) + ' · ' + money(p.p, p))}">`
       + `<i class="mus-wash"></i><i class="mus-lamp"></i><img src="${esc(p.img)}" alt="${esc(titleL(p))}" width="${s.w}" height="${s.h}" decoding="async" draggable="false"><i class="mus-dim"></i></button>`;
   }
-  const person = (id, legs, x, d, flip, bob) => `<div class="mus-ppl${legs === 'sit' ? ' sit' : ''}" data-d="${d}" style="transform:translate3d(${x - 90}px,${H / 2 - 252}px,${-d}px)"><span style="${flip ? 'transform:scaleX(-1)' : ''}"><img class="${bob ? 'mus-bob' : ''}" style="animation-delay:${(bob * -0.7).toFixed(1)}s" src="${sprite(id, legs)}" alt="" width="180" height="252" draggable="false"></span></div>`;
+  const person = (id, legs, x, d, flip, bob) => `<div class="mus-ppl${legs === 'sit' ? ' sit' : ''}" data-d="${d}" style="transform:translate3d(${x - 90}px,${H / 2 - 252}px,${-d}px)"><span style="${flip ? 'transform:scaleX(-1)' : ''}"><img class="${bob ? 'mus-bob' : ''}" style="animation-delay:${(bob * -0.7).toFixed(1)}s" src="${SPRITE_FILE[id]}" alt="" width="180" height="252" draggable="false"></span></div>`;
 
   function mapSvg() {
     const mx = 28, mw = 70, my = 8, mh = 96, y = d => my + mh - d / G.L * mh;
@@ -169,18 +170,26 @@
     vp.style.transform = `translate(-50%,-50%) scale(${sc})`;
   }
 
+  /* the hint says how to walk the hall: arrow keys on a desktop, swiping on a phone or touch screen (data-t keeps the language switch working) */
+  const touchMq = window.matchMedia ? matchMedia('(max-width:700px),(pointer:coarse)') : {matches: false};
+  function setHint() {
+    const h = document.querySelector('.hint'); if (!h) return;
+    const key = touchMq.matches ? 'hint_swipe' : 'mus_hint';
+    h.setAttribute('data-t', key); h.textContent = t(key);
+  }
   function mount(main, a) {
     A = a; G = geometry(a); if (cur >= G.n) cur = 0;
     const wrap = main.querySelector('.tower-wrap'), tower = main.querySelector('#tower');
     if (!wrap || !tower) return;
     tower.outerHTML = build();
     wrap.classList.add('mus-on');
-    const hint = main.querySelector('.hint'); if (hint) hint.textContent = t('mus_hint');
+    setHint();
     update(); fitKey = ''; fit();
     if (ro) ro.disconnect();
     if ('ResizeObserver' in window) { ro = new ResizeObserver(fit); ro.observe(document.getElementById('mus')); }   // the parent box: our own stage height changes do not re-trigger it into a loop
     if (wired) return; wired = true;
     window.addEventListener('resize', fit);
+    if (touchMq.addEventListener) touchMq.addEventListener('change', setHint);
     main.addEventListener('click', e => {
       if (e.target.closest('#mus-prev')) return go(cur - 1);
       if (e.target.closest('#mus-next')) return go(cur + 1);
@@ -202,5 +211,5 @@
     if (typeof ow === 'function') window.openWork = function (k) { go(k); return ow.apply(this, arguments); };
   }
 
-  window.MUS = {on, mount};
+  window.MUS = {on, mount, drawSprite, spriteFiles: SPRITE_FILE, spriteKeys: [['stand', 'stand'], ['sitA', 'sit'], ['sitB', 'sit']]};
 })();

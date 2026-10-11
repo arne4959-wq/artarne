@@ -22,7 +22,11 @@ const arg = n => { const i = process.argv.indexOf(n); return i > -1 ? process.ar
 const SITE = (arg('--site') || '').replace(/\/+$/, '');
 const abs = p => SITE ? `${SITE}/${p}` : p;
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
-const write = (f, s) => { fs.mkdirSync(path.dirname(path.join(ROOT, f)), {recursive: true}); fs.writeFileSync(path.join(ROOT, f), s); };
+/* a page that runs draws things on canvases (toDataURL) and the build saves the rendered DOM: never let that become a big base64 picture in a saved page. Pictures are files (the hall's visitors: people/*.png, tools/make-sprites.mjs). tests-legacy/suites/inline.mjs checks the same. */
+const noBigData = (f, s) => { for (const m of s.matchAll(/(?:(?<=url\()data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,][^)"\s]*|(?<!url\()data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,][^"\s]*)/g)) if (m[0].length > (/^(svg|gif)/.test(m[1] || m[2]) ? 2048 : 300)) throw new Error(`${f} would inline a ${m[0].length}-byte data:image/${m[1] || m[2]} URI: serve it as a file instead`); };
+/* every template carries the same 19 KB logo as an inline data: favicon; saved pages link favicon.svg instead (one cached file, ~850 KB less across the site) */
+const FAVICON = /<link rel="icon" href="data:image\/svg\+xml,[^"]*"[^>]*>/;
+const write = (f, s) => { if (f.endsWith('.html')) { s = s.replace(FAVICON, '<link rel="icon" href="favicon.svg" type="image/svg+xml">'); noBigData(f, s); } fs.mkdirSync(path.dirname(path.join(ROOT, f)), {recursive: true}); fs.writeFileSync(path.join(ROOT, f), s); };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const { ARTISTS, DISC_EN, CITY_EN } = new Function(read('artists.js') + '\n;return {ARTISTS, DISC_EN, CITY_EN};')();
 
@@ -50,7 +54,9 @@ const ogCard = id => {
 <div class="s">${esc(a.pieces.length)} works · from $${Math.min(...a.pieces.map(x => x.p)).toLocaleString('en-US')}</div><div class="tp"></div>`;
 };
 
-const server = await startServer(ROOT, Object.fromEntries(ARTISTS.map(a => [`/__og/${a.id}`, () => ogCard(a.id)])));
+/* showcase mode (CONFIG.shop false) sends a buy page's visitor away, which would leave nothing to bake: the build is served a copy of circles.js with the shop open. The real file is not touched. */
+const shopOpen = () => ({type: 'text/javascript; charset=utf-8', body: read('circles.js').replace(/shop: false/, 'shop: true')});
+const server = await startServer(ROOT, {...Object.fromEntries(ARTISTS.map(a => [`/__og/${a.id}`, () => ogCard(a.id)])), '/circles.js': shopOpen});
 const b = await launch();
 try {
   await b.lang('th');
@@ -121,7 +127,7 @@ try {
       await b.go(`${server.url}/buy.html?id=${a.id}&k=${k}`, 1800);
       const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
       got.main = got.main.replace(/<div class="cf-holder">[\s\S]*?<\/div><\/div>(?=<div class="act">)/, '');   // the CAPTCHA widget is mounted again when the page runs, never bake its leftovers
-      if (!got.main || !/class="[^"]*\bby-title\b/.test(got.main) || !got.main.includes('class="by-form"')) throw new Error(`render of buy page ${a.id}-${k} produced no buy page`);
+      if (!got.main || !/class="[^"]*\bby-title\b/.test(got.main) || !got.main.includes('class="by-box"')) throw new Error(`render of buy page ${a.id}-${k} produced no buy page`);
       if (/^ซื้อผลงาน — circles$/.test(got.title)) throw new Error(`buy page ${a.id}-${k} kept the generic title`);
       const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
       if (noAlt.length) throw new Error(`buy page ${a.id}-${k} has ${noAlt.length} <img> without alt`);

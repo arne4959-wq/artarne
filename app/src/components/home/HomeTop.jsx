@@ -6,11 +6,12 @@ import {reduce} from '../../lib/env.js';
 import Coin from '../Coin.jsx';
 
 const seen = () => { try { return sessionStorage.getItem('circles-seen') === '1'; } catch (e) { return false; } };
+const small = () => matchMedia('(pointer:coarse)').matches || innerWidth < 768;   // phones and small screens skip the count-up
 
 /* html.pre holds the hero's entrance animations back until the loader is done; Home adds it, this removes it */
 export function Loader() {
   const {t} = useLang();
-  const [gone, setGone] = useState(() => reduce || seen()), ref = useRef(null), count = useRef(null);
+  const [gone, setGone] = useState(() => reduce || seen() || small()), ref = useRef(null), count = useRef(null);
   useEffect(() => {
     const root = document.documentElement, boot = () => root.classList.remove('pre');
     if (gone) { boot(); return; }

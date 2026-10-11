@@ -48,6 +48,8 @@ The coloured placeholder behind each image comes from the artist's own colours (
 
 ## Build step (crawlers, link previews, no-JavaScript visitors)
 
+**Edit the template (`cutaway.html`, `profile.html`, `buy.html`) or `artists.js`, then run `npm run build`** — that one command regenerates every `studio-`, `profile-` and `buy-` page, `og/` images and the home-page blocks. Never edit the generated pages by hand; the tests fail when they are out of date.
+
 Search engines and link previews do not run the page's JavaScript reliably. So the content is also written into plain HTML:
 
 ```bash
@@ -150,3 +152,12 @@ The CSS is the blocks marked `noir + art deco` in `cutaway.html` and `spotlight:
 - The loader's 1.7 s count-up (first visit of a session) is part of the design, and it is why a first-visit Lighthouse LCP is ~4 s on throttled mobile.
 - `prefers-reduced-motion` is respected everywhere. Tested at 375 px wide.
 
+
+## Sample mode, tips and search
+
+- **Sample mode.** While there is no real payment data (no `supabaseUrl`/`supabaseKey` in `CONFIG`, or the artist is sample data: no `live` flag) every payment screen is a demo: a generated QR labelled SAMPLE / ตัวอย่าง, a "I have paid" notice form (name, e-mail, optional slip image up to 2 MB, no CAPTCHA), and a fake success. Nothing is sent and the slip is never read. The only trace is `localStorage` key `circles-sample-v1` (works put ON HOLD, tips "sent" in this browser). The code is the `sample*` helpers in `circles.js`. Real (`live`) artists keep the normal inquiry form. The buy pages are still closed while `CONFIG.shop` is `false` (showcase mode); the tests serve a copy with the shop open.
+- **Shipping and rates** (`SHIPPING`, `RATES` in `circles.js`) hold SAMPLE values: replace them before launch.
+- **Tip block** on every profile page: presets $3 / $5 / $10 and a custom amount (1-1000 USD) open a dialog with the QR and an "I've sent a tip" confirmation (same notice form).
+- **Search** on the home page (`#city-q`) filters artists by name, discipline and city in Thai, English and Lao, together with the filter buttons and the map; `Esc` clears it.
+- **Fullscreen zoom** (`zoomBtnHtml()` / `openZoom()` in `circles.js`) on the buy-page artwork and the open work of a studio.
+- Phones and small screens skip the first-visit loader. Shared pixel-people PNGs live in `people/` (`node tools/make-sprites.mjs` regenerates them); `favicon.svg` is shared.

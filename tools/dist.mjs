@@ -5,8 +5,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..'), out = path.join(root, 'dist');
-const DIRS = ['art', 'fonts', 'og', 'vendor'];
-const FILES = ['.nojekyll', 'robots.txt', 'og.png'];
+const DIRS = ['art', 'fonts', 'og', 'people', 'vendor'];   // people/ = the pixel visitors of the studio hall (tools/make-sprites.mjs)
+const FILES = ['.nojekyll', 'robots.txt', 'og.png', 'favicon.svg'];
 const skip = n => n === '.DS_Store';
 
 fs.rmSync(out, {recursive: true, force: true}); fs.mkdirSync(out);

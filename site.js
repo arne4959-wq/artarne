@@ -411,7 +411,8 @@ wireNav(); applyLang(); langInit = true;
   const root = document.documentElement, loader = document.getElementById('loader'), countEl = document.getElementById('loader-count');
   const boot = () => root.classList.remove('pre');
   let seen = false; try { seen = sessionStorage.getItem('circles-seen') === '1'; } catch (e) {}
-  if (reduce || seen) { loader.remove(); boot(); return; }
+  const small = matchMedia('(pointer:coarse)').matches || innerWidth < 768;   // phones and small screens: no 1.7 s count-up, the content shows at once (the loader stays on desktop)
+  if (reduce || seen || small) { loader.remove(); boot(); return; }
   const DUR = 1700, t0 = performance.now();
   const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
   const counted = new Promise(res => (function tick(now) {
