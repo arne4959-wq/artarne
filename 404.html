@@ -39,6 +39,8 @@ p{font:300 1.05rem/1.9 "IBM Plex Sans Thai",sans-serif;max-width:520px}
 <script>
 /* a studio page that has not been generated yet (build step not re-run) still opens through the dynamic page */
 (function () { var m = location.pathname.match(/studio-([a-z0-9-]+)\.html$/i); if (m) location.replace('cutaway.html?id=' + m[1] + (location.search ? '&' + location.search.slice(1) : '')); })();
+/* buying was removed: an old buy-<id>-<k>.html or buy.html?id= address lands on the artist's donation block */
+(function () { var b = location.pathname.match(/buy-([a-z0-9-]+?)-\d+\.html$/i) || (/buy\.html$/i.test(location.pathname) && (location.search.match(/[?&]id=([a-z0-9-]+)/i) || [])); if (b && b[1]) location.replace('profile-' + b[1] + '.html#pf-tips'); else if (/buy\.html$/i.test(location.pathname)) location.replace('index.html'); })();
 if (!String(navigator.language || 'th').toLowerCase().startsWith('th')) {
   document.documentElement.lang = 'en'; document.title = '404 — circles';
   document.getElementById('h').textContent = "This building doesn't exist yet";

@@ -284,17 +284,15 @@ let showAll = false, sortBy = 'cur';
 const allWorks = () => ARTISTS.flatMap(a => a.pieces.map((p, k) => ({a, p, k})));
 function worksList() {
   let l = showAll ? allWorks() : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
-  if (sortBy === 'low') l = [...l].sort((x, y) => x.p.p - y.p.p);
-  else if (sortBy === 'high') l = [...l].sort((x, y) => y.p.p - x.p.p);
-  else if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y || y.p.p - x.p.p);
-  return [...l.filter(x => workStatus(x.p) !== 'sold'), ...l.filter(x => workStatus(x.p) === 'sold')];   // sold works go last
+  if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y);
+  return l;
 }
 /* mode: 'init' = revealed on scroll, 'pop' = animated re-sort, 'still' = language switch (no animation) */
 function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
-    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: titleL(p), a: nameL(a), p: money(p.p, p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(titleL(p))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${moneyHtml(p.p, p)}</span>${statusChip(p)}</span></a></div>`;
+    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: titleL(p), a: nameL(a)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}</span><span class="plate"><span class="pn">${esc(titleL(p))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp">${esc(p.y)}</span></span></a></div>`;
   }).join('');
   $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('feat_count', {n: list.length});
@@ -374,7 +372,7 @@ function renderSpot() {
   $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
   if (p.img && !im.getAttribute('src')) im.src = p.img;
   im.alt = titleL(p);
-  $('#afr-cap').innerHTML = `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y} · ${moneyHtml(p.p, p)}</span>`;
+  $('#afr-cap').innerHTML = `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y}</span>`;
   $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
 }
 

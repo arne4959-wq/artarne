@@ -1,6 +1,6 @@
 # circles — Brutalist Punk
 
-A city of artists: one concrete building = one artist, the work is set into the building, you buy straight from the maker.
+A city of artists: one concrete building = one artist, the work is set into the building, you support the maker directly. Nothing is for sale: the site shows work and takes donations.
 Plain HTML / CSS / JS. No framework, no bundler. Thai + English. Nothing is loaded from other websites (fonts and the scroll library are in this folder).
 
 ## Run it locally
@@ -23,7 +23,7 @@ Stop with `Ctrl+C`. Edit a file, refresh the browser.
 | `studio-<id>.html` | one page per artist, **generated** by `tools/build.mjs` (full content in the HTML, meta tags, JSON-LD) |
 | `cutaway.html` | the template those pages come from. It also works on its own as `cutaway.html?id=napha`, which is the fallback for a studio you have not built yet. `?work=1` opens a piece |
 | `cutaway-napha.html` | old address → redirects to `studio-napha.html` |
-| `artists.js` | **all artists, buildings and artworks** (names, bios, prices, sizes, image paths, EN texts) |
+| `artists.js` | **all artists, buildings and artworks** (names, bios, sizes, image paths, EN texts; `p:`/`status:` are old selling data that no page shows any more) |
 | `circles.js`, `circles.css` | shared: TH/EN strings, language switch, forms, toast, ransom type, mobile menu, dialogs |
 | `privacy.html`, `terms.html`, `legal.css` | privacy policy and terms of use (TH + EN) — **templates, see "Before you go live"** |
 | `art/*.svg` | 30 generated artworks (placeholders for real photos). `python3 tools/genart.py` regenerates them |
@@ -35,7 +35,7 @@ Stop with `Ctrl+C`. Edit a file, refresh the browser.
 
 ## Common edits
 
-**Change a price, text, or add a piece** → `artists.js`, then run `node tools/build.mjs` (it refreshes the generated pages).
+**Change a text, or add a piece** → `artists.js`, then run `node tools/build.mjs` (it refreshes the generated pages).
 
 **Use real photos instead of the generated art** → put the files in `art/` and change each piece's `img:` in `artists.js`.
 Keep `ar:` (width/height, e.g. `'4/3'`) in step with the photo. `.jpg`, `.webp`, `.png`, `.svg` all work.
@@ -48,7 +48,7 @@ The coloured placeholder behind each image comes from the artist's own colours (
 
 ## Build step (crawlers, link previews, no-JavaScript visitors)
 
-**Edit the template (`cutaway.html`, `profile.html`, `buy.html`) or `artists.js`, then run `npm run build`** — that one command regenerates every `studio-`, `profile-` and `buy-` page, `og/` images and the home-page blocks. Never edit the generated pages by hand; the tests fail when they are out of date.
+**Edit the template (`cutaway.html`, `profile.html`) or `artists.js`, then run `npm run build`** — that one command regenerates every `studio-` and `profile-` page, `og/` images and the home-page blocks. Never edit the generated pages by hand; the tests fail when they are out of date.
 
 Search engines and link previews do not run the page's JavaScript reliably. So the content is also written into plain HTML:
 
@@ -77,7 +77,7 @@ No packages to install (it drives Chrome directly).
 
 Right now nothing is sent to a server (there isn't one):
 
-- **Buy / inquiry** and **Join** open the visitor's email app (`mailto:`) with the message filled in, plus a copy-to-clipboard fallback.
+- **Join** open the visitor's email app (`mailto:`) with the message filled in, plus a copy-to-clipboard fallback.
 - **Newsletter** is saved in the visitor's own browser only (`localStorage`).
 - Artist emails in `artists.js` and `contact` in `circles.js` use the reserved `*.example` domain, so no real mailbox can receive them by accident.
 
@@ -92,7 +92,7 @@ With an endpoint set, the dialogs say "sent" instead of opening the email app.
 `turnstileSiteKey` is optional: a free Cloudflare Turnstile key adds a CAPTCHA to the Join and inquiry forms (it loads Cloudflare's script only then). Your endpoint must verify the `captcha` token on the server.
 Every form also has a hidden honeypot field against simple bots.
 
-**All names, prices, visitor numbers, social handles and emails in this prototype are sample data.**
+**All names, visitor numbers, social handles and emails in this prototype are sample data.**
 
 ## Before you go live
 
@@ -153,11 +153,11 @@ The CSS is the blocks marked `noir + art deco` in `cutaway.html` and `spotlight:
 - `prefers-reduced-motion` is respected everywhere. Tested at 375 px wide.
 
 
-## Sample mode, tips and search
+## Donation-only, sample mode and search
 
-- **Sample mode.** While there is no real payment data (no `supabaseUrl`/`supabaseKey` in `CONFIG`, or the artist is sample data: no `live` flag) every payment screen is a demo: a generated QR labelled SAMPLE / ตัวอย่าง, a "I have paid" notice form (name, e-mail, optional slip image up to 2 MB, no CAPTCHA), and a fake success. Nothing is sent and the slip is never read. The only trace is `localStorage` key `circles-sample-v1` (works put ON HOLD, tips "sent" in this browser). The code is the `sample*` helpers in `circles.js`. Real (`live`) artists keep the normal inquiry form. The buy pages are still closed while `CONFIG.shop` is `false` (showcase mode); the tests serve a copy with the shop open.
-- **Shipping and rates** (`SHIPPING`, `RATES` in `circles.js`) hold SAMPLE values: replace them before launch.
-- **Tip block** on every profile page: presets $3 / $5 / $10 and a custom amount (1-1000 USD) open a dialog with the QR and an "I've sent a tip" confirmation (same notice form).
+- **No selling.** There are no prices, buy buttons, sold / reserved labels, shipping terms or buy pages. Old `buy-<id>-<k>.html` and `buy.html?id=` addresses are caught by `404.html` and land on the artist's donation block (`profile-<id>.html#pf-tips`). `CONFIG.shop` stays `false`.
+- **Donating.** Every "Support <artist>" button (profile block, the open work in a studio, the label in the museum hall) opens one dialog, `openDonate()` in `circles.js`: amount ($3 / $5 / $10 or 1-1000 custom) → QR and account, how to donate, "money goes straight to the artist, no fee for now" → "I've donated" notice (name, e-mail, optional image slip up to 2 MB) → thank-you. From an open work the dialog names the work that inspired it; the money still goes to the artist. The site's own "Support Circles" button uses `CONFIG.support`.
+- **Sample mode.** While there is no real payment data (no `supabaseUrl`/`supabaseKey` in `CONFIG`, or the artist has no `live` flag) the QR is generated and labelled SAMPLE / ตัวอย่าง, the notice form is a demo, and nothing is sent or read (the only trace is `localStorage` key `circles-sample-v1`, the donations "sent" in this browser). Real artists need `support:{bank,name,no,qr}` in `artists.js` (without `sample:true`).
 - **Search** on the home page (`#city-q`) filters artists by name, discipline and city in Thai, English and Lao, together with the filter buttons and the map; `Esc` clears it.
-- **Fullscreen zoom** (`zoomBtnHtml()` / `openZoom()` in `circles.js`) on the buy-page artwork and the open work of a studio.
+- **Fullscreen zoom** (`zoomBtnHtml()` / `openZoom()` in `circles.js`) on the open work of a studio.
 - Phones and small screens skip the first-visit loader. Shared pixel-people PNGs live in `people/` (`node tools/make-sprites.mjs` regenerates them); `favicon.svg` is shared.

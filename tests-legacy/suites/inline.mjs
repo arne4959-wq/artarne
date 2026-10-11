@@ -9,8 +9,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.
 const LIMIT = {'svg+xml': 2048, gif: 2048, png: 300, jpeg: 300, jpg: 300, webp: 300};   // bytes of the URI text. Vector icons (the favicon, the grain) may be small; a raster picture of any size must be a file
 const SPRITES = ['people/stand.png', 'people/sit-a.png', 'people/sit-b.png'];
 export async function run({check}) {
-  const pages = fs.readdirSync(root).filter(f => /^(index|studio-[\w-]+|profile-[\w-]+|buy-[\w-]+)\.html$/.test(f)).sort();
-  check('there are generated pages to check', pages.length >= 30, pages.length);
+  const pages = fs.readdirSync(root).filter(f => /^(index|studio-[\w-]+|profile-[\w-]+)\.html$/.test(f)).sort();
+  check('there are generated pages to check', pages.length >= 20, pages.length);
   const bad = [];
   for (const f of pages) {
     const txt = fs.readFileSync(path.join(root, f), 'utf8');
@@ -19,7 +19,7 @@ export async function run({check}) {
       if (m[0].length > max) bad.push(`${f}: a data:image/${kind} URI of ${m[0].length} bytes (limit ${max}) — make it a file and link it`);
     }
   }
-  check('no generated page inlines a big data:image URI (index, studio-*, profile-*, buy-*)', bad.length === 0, bad.slice(0, 12).concat(bad.length > 12 ? [`… and ${bad.length - 12} more`] : []));
+  check('no generated page inlines a big data:image URI (index, studio-*, profile-*)', bad.length === 0, bad.slice(0, 12).concat(bad.length > 12 ? [`… and ${bad.length - 12} more`] : []));
 
   /* the shared sprites exist, are 20x28 RGBA PNGs, and the studio template links them (not data:) */
   const png = f => { try { return fs.readFileSync(path.join(root, f)); } catch (e) { return null; } };

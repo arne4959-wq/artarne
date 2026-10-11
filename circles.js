@@ -6,8 +6,7 @@
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
    support  : the site's own bank QR, shown by the Support button: {bank, name, no, qr}. Replace the SAMPLE values (and delete `sample: true`) with your real account. Empty = "Coming soon".
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
-   shop     : false = SHOWCASE mode: the site only shows work. The Buy buttons and the buy pages are closed (a buy page sends the visitor to the artist's museum)
-              and each Buy button becomes "Support <artist>". true = buying is open again. Nothing is deleted: this one line is the whole switch.
+   shop     : false. The site is DONATION-ONLY: nothing is sold, there are no prices, buy buttons or buy pages. Every "Support <artist>" button opens the donation dialog (sample QR until real bank data is in artists.js).
    lakPerUsd: how many Lao kip one US dollar is worth. Only the Lao (lo) pages use it: they show prices in kip, rounded to a tidy figure
               (under 1,000,000 to the nearest 10,000, from 1,000,000 up to the nearest 100,000: "12,100,000 ₭"). A work's own priceLak (artists.js) wins over it.
               Thai and English always show US dollars. 0 = Lao pages show dollars too. Prices in artists.js stay in US dollars.
@@ -18,44 +17,20 @@ const CONFIG = { shop: false, support: {bank: 'BCEL', name: 'SAMPLE', no: '000 0
   supabaseUrl: 'https://lgkqvfmnqdpajddishio.supabase.co', supabaseKey: 'sb_publishable_vDPIYxQA0JiZCumJ_qMuhg_BxFSfuXp' };   // supabase*: the artists' database (supabase/README.md). The publishable key is meant to be public: the access rules in the database protect the data, never put a secret / service_role key here.
 // lakPerUsd: approximate rate, October 2026. It does NOT update itself: change it by hand when the kip moves.
 // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
-/* ---------- buy page data (buy.js): fill these in. While one is empty the page shows a yellow [__] there; nothing is invented ----------
-   SHIPPING.regions     where pieces ship to            SHIPPING.fee          shipping fee
-   SHIPPING.days        days until it arrives           SHIPPING.returnDays   days to send back a piece that broke in transit
-   SHIPPING.replyDays   how fast artists reply          SHIPPING.certificate  what comes with a piece (certificate, signature ...)
-   RATES.thb            how many THB one US dollar is worth (0 = not set, the "≈ THB" line stays hidden). Kip: see CONFIG.lakPerUsd. */
-/* SAMPLE VALUES: replace every line below with the real terms before launch. regions / fee / certificate may be a plain string or {th, en} (Lao shows the English). */
-const SHIPPING = {
-  regions: {th: 'ลาว ไทย และเวียดนาม (ประเทศอื่นถามศิลปิน)', en: 'Laos, Thailand and Vietnam (other countries: ask the artist)'},
-  fee: {th: '$8 ในลาว · $15 ต่างประเทศ', en: '$8 in Laos · $15 abroad'},
-  days: '5–10', returnDays: '7', replyDays: '2', shipsIn: '3',   // shipsIn: days until the artist posts it after the money arrives
- 
-  certificate: {th: 'ใบรับรองลายเซ็นศิลปิน + เลขชิ้นงาน', en: "Artist's signed certificate + piece number"}};
-const RATES = {thb: 36};   // SAMPLE rate (THB per US dollar): update by hand before launch
 /* breadcrumb: items = [[label, href]...], the last one (no href) is the page you are on. cls 'bc-dark' on dark pages */
 const breadcrumbHtml = (items, cls = '') => `<div class="bc ${cls}" role="navigation" aria-label="${esc(t('bc_aria'))}"><ol>${items.map((x, i) => i === items.length - 1 || !x[1] ? `<li aria-current="page"><span>${esc(x[0])}</span></li>` : `<li><a href="${esc(x[1])}">${esc(x[0])}</a></li>`).join('')}</ol></div>`;
-const shipV = v => v && typeof v === 'object' ? (LANG === 'th' ? v.th : v.en) : v;   // a SHIPPING value in the visitor's language
 
-/* ---------- shop switch (CONFIG.shop) ----------
-   false = showcase mode. Used by museum.js (the cards in the museum), the work dialog in cutaway.html / studio-*.html and the buy pages.
-   donateOk() / supportHtml() / supportBtn(): the "Support <artist>" button that takes the place of the Buy button. It is a real link only
-   when the artist's own `pay` is an https:// address, otherwise a disabled "Coming soon" button (never a dead link), the same rule as the other Support buttons. */
-const SHOP = CONFIG.shop !== false;
-document.documentElement.dataset.shop = SHOP ? 'on' : 'off';
-if (!SHOP) {   // a buy page was opened by a link or a bookmark: go to the artist's museum instead
-  const bm = location.pathname.match(/buy-([a-z0-9-]+?)-\d+\.html$/i), bq = new URLSearchParams(location.search).get('id');
-  if (bm) location.replace('studio-' + bm[1] + '.html');
-  else if (/buy\.html$/i.test(location.pathname)) location.replace(bq ? 'cutaway.html?id=' + encodeURIComponent(bq) : 'index.html');
-}
 const httpsUrl = u => { try { return new URL(u).protocol === 'https:' ? u : ''; } catch (e) { return ''; } };
 const donateOk = () => !!httpsUrl(CONFIG.donate);
 /* Laos: support is a bank QR (BCEL OnePay / LAO QR), not a card link. artists.js: support:{bank, name, no, qr, sample}. CONFIG.support is the same for the site itself.
    Money goes straight to that account; circles never holds it. No account filled in = a disabled "Coming soon" button, never a dead link. */
 const supOf = A => { const s = A && A.support; return s && (s.qr || s.no) ? s : null; };
-const supportHtml = A => supOf(A)
+const canDonate = A => !!A && (sampleMode(A) || !!supOf(A));   // sample artists always can (generated SAMPLE QR); a real artist needs bank details
+const supportHtml = A => canDonate(A)
   ? `<button type="button" class="btn pk" data-support="${esc(A.id)}">${esc(t('pf_supb', {a: nameL(A)}))}</button>`
   : `<button type="button" class="btn pk soon" disabled aria-disabled="true" title="${esc(t('don_soon'))}">${esc(t('pf_supb', {a: nameL(A)}))}</button>`;
 function supportBtn(el, A) {   // turn an existing button into the support-the-artist button (the click is handled by the page)
-  const ok = !!supOf(A);
+  const ok = canDonate(A);
   el.textContent = t('pf_supb', {a: nameL(A)});
   el.classList.remove('ghost'); el.classList.toggle('soon', !ok);
   el.disabled = !ok; el.setAttribute('aria-disabled', String(!ok));
@@ -76,8 +51,9 @@ function openSupport(info, who) {
 }
 document.addEventListener('click', e => {   // any [data-support] button: "site" = CONFIG.support, otherwise an artist id
   const b = e.target.closest && e.target.closest('[data-support]'); if (!b || b.disabled) return;
-  const id = b.dataset.support, A = id === 'site' ? null : ARTISTS.find(x => x.id === id), info = id === 'site' ? CONFIG.support : A && A.support;
-  if (info) openSupport(info, id === 'site' ? 'Circles' : nameL(A));
+  const id = b.dataset.support, A = id === 'site' ? null : ARTISTS.find(x => x.id === id);
+  if (id === 'site') { if (CONFIG.support) openSupport(CONFIG.support, 'Circles'); }
+  else if (A && canDonate(A)) openDonate(A, 0, b.dataset.for || '');   // data-for: the work that inspired the donation (the money still goes to the artist)
 });
 
 /* ---------- SAMPLE payment mode (tips on profile pages, the buy page) ----------
@@ -88,10 +64,7 @@ const sampleMode = A => !(CONFIG.supabaseUrl && CONFIG.supabaseKey) || !A || !A.
 const SM_KEY = 'circles-sample-v1'; let smMem = {};
 const smGet = () => { try { const o = JSON.parse(localStorage.getItem(SM_KEY)); if (o && typeof o === 'object') return o; } catch (e) {} return smMem; };
 const smPut = o => { smMem = o; try { localStorage.setItem(SM_KEY, JSON.stringify(o)); } catch (e) {} };
-const smHeld = (id, k) => (smGet().held || []).includes(id + '-' + k);
-const smHold = (id, k) => { const o = smGet(), h = new Set(o.held || []); h.add(id + '-' + k); smPut({...o, held: [...h]}); };
 const smTip = (id, usd) => { const o = smGet(); smPut({...o, tips: [...(o.tips || []), {a: id, u: usd, at: Date.now()}].slice(-20)}); };
-const smClear = () => smPut({});
 function sampleQrSvg(seed, cap) {   // a made-up QR-looking picture (random pattern, three finder squares) with a SAMPLE label over the middle. It is not a valid code on purpose.
   let h = 1779033703 ^ String(seed).length; for (const c of String(seed)) { h = Math.imul(h ^ c.charCodeAt(0), 3432918353); h = h << 13 | h >>> 19; }
   const rnd = () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
@@ -116,14 +89,13 @@ function samplePayHtml(A, usd, who) {   // banner + QR + account block + amount,
     + `<p class="note">${esc(t('sup_direct', {a: who}))}</p></div>`;
 }
 const SM_MAX = 2 * 1024 * 1024;
-function sampleNoticeHtml(by, back) {   // the "I have paid" form: name, e-mail, optional slip image (max 2 MB). by = buy-page styling. No CAPTCHA in sample mode.
-  const f = by ? 'by-fld' : '', two = by ? 'by-two' : 'row', note = by ? 'by-note' : 'note';
+function sampleNoticeHtml() {   // the "I've donated" notice: name, e-mail, optional slip image (max 2 MB). No CAPTCHA in sample mode.
   return `<form class="sm-form" novalidate>
-    <p class="${note}" role="note">${esc(t('sm_banner'))}</p>
-    <div class="${two}"><label class="${f}">${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label class="${f}">${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
-    <label class="${f}">${esc(t('pay_slip'))}<input name="slip" type="file" accept="image/*"></label>
-    <p class="sm-err ${note}" role="alert" hidden></p>
-    <div class="${by ? '' : 'act'}"><button class="${by ? 'by-btn by-pay' : 'btn pk'}" type="submit">${by ? `<span class="bl-t">${esc(t('pay_submit'))}</span>` : esc(t('pay_submit'))}</button>${back ? `<button type="button" class="${by ? 'by-btn by-ghost' : 'btn ghost'}" data-sm-back>${by ? `<span class="bl-t">${esc(t('pay_back'))}</span>` : esc(t('pay_back'))}</button>` : ''}</div></form>`;
+    <p class="note" role="note">${esc(t('sm_banner'))}</p>
+    <div class="row"><label>${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label>${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
+    <label>${esc(t('pay_slip'))}<input name="slip" type="file" accept="image/*"></label>
+    <p class="sm-err note" role="alert" hidden></p>
+    <div class="act"><button class="btn pk" type="submit">${esc(t('pay_submit'))}</button><button type="button" class="btn ghost" data-sm-back>${esc(t('pay_back'))}</button></div></form>`;
 }
 function sampleNoticeWire(root, onOk, onBack) {   // validates by hand (name, e-mail, slip type / size), waits a moment like a real send would, then calls onOk. No fetch, the file is never read.
   const form = root.querySelector('.sm-form'), err = form.querySelector('.sm-err'), slip = form.elements.slip;
@@ -141,26 +113,39 @@ function sampleNoticeWire(root, onOk, onBack) {   // validates by hand (name, e-
   });
   form.querySelector('[data-sm-back]')?.addEventListener('click', onBack);
 }
-function openTip(A, usd) {   // the tip dialog: pay panel -> "I've sent a tip" -> notice form -> fake thank-you
+/* The donation dialog (every "Support <artist>" button): 0) pick an amount (skipped when one is given) -> 1) QR + account, how to donate -> 2) "I've donated" notice -> 3) fake thank-you.
+   forTitle = the work that inspired the gift (shown only as a note, the money goes to the artist). Sample mode: nothing is sent, see the block above. */
+const DON_AMOUNTS = [3, 5, 10];   // preset donations in US dollars
+function openDonate(A, usd, forTitle) {
   const d = mountDialog('dlg-tip'), who = nameL(A), title = () => esc(t('pf_supb', {a: who}));
-  const close = '<button type="button" class="btn ghost" data-close>' + esc(t('close')) + '</button>';
+  const close = '<button type="button" class="btn ghost" data-close>' + esc(t('close')) + '</button>', wireClose = () => d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
+  const forNote = forTitle ? `<p class="sm-for">${esc(t('don_for', {t: forTitle}))}</p>` : '';
+  const step0 = () => {
+    d.innerHTML = dlgShell(title(), `<div class="sup-dlg">${forNote}<p class="sm-amt">${esc(t('tip_h'))}</p><div class="pf-tips-r">${DON_AMOUNTS.map(n => `<button type="button" class="pf-amt" data-amt="${n}">${esc(money(n))}</button>`).join('')}</div>
+      <form class="pf-tipf" novalidate><label for="don-n">${esc(t('tip_other'))}</label><input id="don-n" name="n" type="number" inputmode="numeric" min="1" max="1000" step="1" placeholder="12"><button type="submit" class="btn pk">${esc(t('tip_go'))}</button></form>
+      <p class="pf-tiperr" role="alert" hidden>${esc(t('tip_bad'))}</p><div class="act">${close}</div></div>`);
+    wireClose();
+    d.querySelectorAll('[data-amt]').forEach(b => b.onclick = () => { usd = +b.dataset.amt; step1(); });
+    const f = d.querySelector('.pf-tipf'), inp = f.elements.n, err = d.querySelector('.pf-tiperr');
+    f.addEventListener('submit', e => { e.preventDefault(); const v = inp.value.trim(); if (!/^\d{1,4}$/.test(v) || +v < 1 || +v > 1000) { err.hidden = false; inp.focus(); return; } usd = +v; step1(); });
+    inp.addEventListener('input', () => { err.hidden = true; });
+  };
   const step1 = () => {
-    d.innerHTML = dlgShell(title(), samplePayHtml(A, usd, who) + `<div class="sup-dlg sm-act"><div class="act"><button type="button" class="btn pk" data-sm-sent>${esc(t('tip_sent'))}</button>${close}</div></div>`);
-    d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
-    d.querySelector('[data-sm-sent]').onclick = step2;
+    d.innerHTML = dlgShell(title(), samplePayHtml(A, usd, who).replace('<dl class="sup-dl">', `${forNote}<p class="note">${esc(t('don_how'))}</p><dl class="sup-dl">`)
+      + `<div class="sup-dlg sm-act"><div class="act"><button type="button" class="btn pk" data-sm-sent>${esc(t('tip_sent'))}</button>${close}</div></div>`);
+    wireClose(); d.querySelector('[data-sm-sent]').onclick = step2;
   };
   const step2 = () => {
-    d.innerHTML = dlgShell(esc(t('pay_notice_h')), sampleNoticeHtml(false, true));
-    d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
+    d.innerHTML = dlgShell(esc(t('pay_notice_h')), sampleNoticeHtml()); wireClose();
     sampleNoticeWire(d, step3, step1); d.querySelector('input[name=name]').focus();
   };
   const step3 = () => {
     smTip(A.id, usd);
     d.innerHTML = dlgShell(esc(t('pay_done_h')), `<div class="cdlg-done" role="status"><p class="intro">${esc(t('pay_done_tip', {a: who, m: money(usd)}))}</p><p class="sup-sample">${esc(t('sm_banner'))}</p><div class="act">${close}</div></div>`);
-    d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
-    d.querySelector('[data-close]').focus();
+    wireClose(); d.querySelector('[data-close]').focus();
   };
-  step1(); if (!d.open) d.showModal();
+  if (usd > 0) step1(); else step0();
+  if (!d.open) d.showModal();
 }
 /* ---------- fullscreen zoom of an artwork ----------
    zoomBtnHtml() is the button (put it inside the element that holds the picture, with class .zoom-host on that element); a click on any [data-zoom] opens that host's <img> in openZoom().
@@ -243,7 +228,6 @@ const lakOn = () => LANG === 'lo' && +CONFIG.lakPerUsd > 0;
 const lakRound = k => { const step = k < 1e6 ? 1e4 : 1e5; return Math.round(k / step) * step; };
 const lak = (n, w) => NF.format(w && +w.priceLak > 0 ? +w.priceLak : lakRound(n * CONFIG.lakPerUsd)) + ' ₭';
 const money = (n, w) => lakOn() ? lak(n, w) : usd(n);
-const moneyHtml = (n, w) => lakOn() ? `${esc(lak(n, w))}<small class="mny-s">${esc(usd(n))}</small>` : esc(usd(n));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
 /* ---------- strings ---------- */
@@ -259,15 +243,15 @@ th: {
   hero_lead:'ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วสนับสนุนตรงถึง\u2060คน\u2060ทำ', hero_cta:'เข้าชมเมือง →',
   city_h:'เมือง', city_p:'ลากหรือเลื่อนไปทางขวาเพื่อเดินผ่านเมือง ตึกแต่ละหลังคือสตูดิโอของศิลปินหนึ่งคน ภาพที่ฝังอยู่ในคอนกรีตคือผลงานจริง',
   pager_l:'เลื่อนซ้าย', pager_r:'เลื่อนขวา', strip_aria:'เมืองของศิลปิน เลื่อนซ้ายขวา', bd_aria:'เข้าตึกของ{a} {d}', works_n:'{n} WORKS',
-  mani_k:'Manifesto', mani1:'ไม่มี\u200bหอศิลป์', mani2:'ไม่มี\u200bคนกลาง', mani3:'ไม่มี\u200bค่าหัวคิว', mani4:'มีแค่คนทำ กับคนซื้อ',
-  mani_aria:'ไม่มีหอศิลป์ ไม่มีคนกลาง ไม่มีค่าหัวคิว มีแค่คนทำกับคนซื้อ',
-  mani_note:'ที่นี่ศิลปินตั้งราคาเอง รับเงินเอง และคุยกับคนซื้อเอง ไม่มีใครมานั่งขวางระหว่างเรากับงาน เพราะงานศิลปะควรเดินจากมือคนทำไปถึงมือคนรัก ไม่ใช่แวะจ่ายค่าผ่านทางก่อน',
+  mani_k:'Manifesto', mani1:'ไม่มี\u200bหอศิลป์', mani2:'ไม่มี\u200bคนกลาง', mani3:'ไม่มี\u200bค่าหัวคิว', mani4:'มีแค่คนทำ กับคนดู',
+  mani_aria:'ไม่มีหอศิลป์ ไม่มีคนกลาง ไม่มีค่าหัวคิว มีแค่คนทำกับคนดู',
+  mani_note:'ที่นี่ศิลปินรับการสนับสนุนตรงจากคนที่รักงาน และคุยกับคนดูเอง ไม่มีใครมานั่งขวางระหว่างเรากับงาน เพราะงานศิลปะควรเดินจากมือคนทำไปถึงมือคนรัก ไม่ใช่แวะจ่ายค่าผ่านทางก่อน',
   how_i:'3 steps', how_h:'วิธีใช้งาน',
   s1_h:'เลือกตึก', s1_p:'ลากเดินผ่านเมือง ตึกหนึ่งหลังคือศิลปินหนึ่งคน เห็นรูปทรงแล้วถูกใจหลังไหน ก็ชี้หลังนั้น ไม่ต้องมีใครแนะนำ',
   s2_h:'เดินเข้าไปดูงาน', s2_p:'เปิดประตูตึก ไล่ดูทีละชั้น ทีละห้อง ผลงานแขวนอยู่บนผนังคอนกรีตจริง ๆ จับไม่ได้ แต่ดูได้นานเท่าที่อยากดู',
   s3_h:'สนับสนุนตรงถึงศิลปิน', s3_p:'เจอชิ้นที่ตามไปถึงในฝัน ก็ขอบคุณคนทำโดยตรง สนับสนุนเท่าที่อยากให้ เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน',
   feat_i:'Featured', feat_h:'ผลงานเด่นสัปดาห์นี้', feat_h_all:'ผลงานทั้งหมดในเมือง',
-  sort_label:'เรียงตาม', sort_cur:'คัดมาให้', sort_low:'ราคาต่ำ → สูง', sort_high:'ราคาสูง → ต่ำ', sort_new:'ใหม่ล่าสุด',
+  sort_label:'เรียงตาม', sort_cur:'คัดมาให้',   sort_new:'ใหม่ล่าสุด',
   all_btn:'ดูทั้งหมด {n} ชิ้น', less_btn:'ดูเฉพาะชิ้นเด่น', feat_count:'แสดง {n} ชิ้น', card_aria:'{t} โดย{a} {p}',
   map_i:'The', map_h:'แผนที่เมือง', map_p:'มองจากข้างบน เมืองแบ่งเป็นย่านตามสาขา กดย่านหรือปุ่มกรอง แล้วตึกในแถบเมืองด้านบนจะสว่างขึ้นให้',
   filters_aria:'กรองตามสาขา', f_all:'ทั้งหมด', district:'ย่าน', plaza:'PLAZA · จัตุรัสกลางเมือง',
@@ -275,14 +259,14 @@ th: {
   spot_i:'Artist of the week', spot_h:'นภา',
   q1:'ทำไมถึงเลิกส่งงานเข้าหอศิลป์?', a1:'ส่งไปสิบสองรอบ ได้คำตอบว่า "น่าสนใจ แต่ยังไม่ใช่ตอนนี้" ครบสิบสองรอบ สุดท้ายก็เข้าใจว่า "ตอนนี้" ของพวกเขาไม่เคยมาถึง เลยเลิกรอ',
   q2:'ทำไมต้องห้องว่างกับหมอก?', a2:'เพราะที่ว่างคือที่เดียวที่ไม่มีใครมาบอกว่าต้องรู้สึกยังไง ห้องว่างหนึ่งห้อง คนดูร้อยคน ได้ร้อยเรื่อง ไม่ต้องมีคิวเรเตอร์แปลให้',
-  q3:'ถ้าคนเดินเข้ามาแล้วไม่ซื้อล่ะ?', a3:'ก็ไม่เป็นไร เดินดูฟรี นั่งเถียงกับภาพได้ ถ้าวันไหนงานตามไปหลอนถึงบ้าน ค่อยกลับมาคุยราคากับคนวาดตรง ๆ ไม่มีใครเก็บค่าแนะนำ',
+  q3:'ถ้าคนเดินเข้ามาแล้วไม่สนับสนุนล่ะ?', a3:'ก็ไม่เป็นไร เดินดูฟรี นั่งเถียงกับภาพได้ ถ้าวันไหนงานตามไปหลอนถึงบ้าน ค่อยกลับมาสนับสนุนคนวาดตรง ๆ ไม่มีใครเก็บค่าแนะนำ',
   spot_cta:'เข้าไปในตึกนภา →', spot_meta:'NO.01 · {d} · ตั้งแต่ {y} · {c}',
   stats_aria:'ตัวเลขของเมือง', st1:'ศิลปินในเมือง', st2:'ผลงานในตึก', st3:'สาขาศิลปะ', st4:'เงินที่ถึงมือศิลปิน',
   join_k:'Get a building', join_i:'Your', join_h:'อยากมีตึกของตัวเอง?',
   p1_h:'ตึกเป็นของคุณ', p1_p:'จัดห้อง วางงาน เปลี่ยนชั้นได้ตามใจ ตึกหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีใครมาแชร์ผนังด้วย',
-  p2_h:'เงินเข้าคุณ 100%', p2_p:'ตั้งราคาเอง รับเงินเอง ไม่มีค่าคอมมิชชัน ไม่มีค่าฝากขาย ไม่มีใครหักก่อนถึงมือ',
+  p2_h:'เงินเข้าคุณ 100%', p2_p:'รับเงินสนับสนุนตรงถึงมือ ไม่มีค่าคอมมิชชัน ไม่มีค่าฝากขาย ไม่มีใครหักก่อนถึงมือ',
   p3_h:'ไม่มีใครคัดงาน', p3_p:'ไม่มีคณะกรรมการ ไม่มีธีมประจำปี ไม่ถามว่าจบจากไหน ทำมาแล้วอยากให้คนเห็น ก็สร้างตึกได้เลย',
-  join_btn:'Join — ขอมีตึก →', jn_kick:'สำหรับศิลปิน', jn_cta:'เล่าให้เราฟังสั้น ๆ ว่าคุณทำงานแบบไหน แนบลิงก์ผลงาน แล้วเราจะติดต่อกลับทางอีเมล', jb_p:'ตั้งราคาเอง รับเงินเอง ไม่มีใครคัดงาน', jb_btn:'ดูรายละเอียด →', skip_main:'ข้ามไปที่เนื้อหา',
+  join_btn:'Join — ขอมีตึก →', jn_kick:'สำหรับศิลปิน', jn_cta:'เล่าให้เราฟังสั้น ๆ ว่าคุณทำงานแบบไหน แนบลิงก์ผลงาน แล้วเราจะติดต่อกลับทางอีเมล', jb_p:'รับการสนับสนุนตรง ไม่มีใครคัดงาน', jb_btn:'ดูรายละเอียด →', skip_main:'ข้ามไปที่เนื้อหา',
   foot_h:'ศิลปะ<em>ไม่รอ</em>ใคร', foot_p:'อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง', foot_btn:'ขอเข้าร่วม →',
   foot_menu:'เมนู', foot_social:'โซเชียล', foot_manifesto:'Manifesto', foot_how:'วิธีใช้งาน', foot_feat:'ผลงานเด่น', foot_map:'แผนที่เมือง', foot_join:'ขอมีตึก',
   news_label:'ข่าวจากเมือง ตึกใหม่ งานใหม่ ส่งตรงถึงกล่องอีเมล ไม่สแปม ไม่ขายต่อ', news_btn:'สมัคร →', foot_copy:'© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.',
@@ -290,8 +274,8 @@ th: {
   /* dialogs + feedback */
   close:'ปิด', jd_title:'ขอมี<em>ตึก</em>ในเมืองนี้', jd_intro:'เล่าให้ฟังสั้น ๆ ว่าคุณทำอะไร ไม่ต้องมีประวัติยาว ไม่ต้องมีใครรับรอง เราดูที่งาน',
   jd_name:'ชื่อ / นามปากกา', jd_email:'อีเมล', jd_disc:'สาขา', jd_other:'อื่น ๆ', jd_link:'ลิงก์ผลงาน (เว็บ / Instagram / Drive)', jd_msg:'เล่าเกี่ยวกับงานของคุณ', jd_pay_h:'ช่องทางรับการสนับสนุน (ไม่บังคับ)', jd_pay_note:'ใส่ธนาคารและเลขบัญชีที่อยากให้คนสนับสนุนโอนเข้า เมื่อเราตอบอีเมล จะขอรูป QR รับเงินจากแอปธนาคารของคุณ เงินเข้าบัญชีคุณโดยตรง', jd_bank:'ธนาคาร', jd_send:'ส่งคำขอ →', jd_cancel:'ยกเลิก',
-  jd_subject:'ขอมีตึกใน circles — {n}', id_title:'คุยกับ<em>{a}</em>ตรง ๆ', id_intro:'ข้อความนี้ไปถึงศิลปินโดยตรง ไม่ผ่านใครคนกลาง', id_name:'ชื่อของคุณ', id_email:'อีเมลของคุณ', id_msg:'ข้อความ', id_send:'ส่งถึงศิลปิน →',
-  id_prefill:'สวัสดี สนใจผลงาน “{t}” ({p}) อยากคุยเรื่องราคาและการจัดส่ง ขอบคุณ', id_subject:'สนใจผลงาน “{t}” — circles',
+  jd_subject:'ขอมีตึกใน circles — {n}',   id_name:'ชื่อของคุณ', id_email:'อีเมลของคุณ',  
+   
   done_mail:'เปิดแอปอีเมลของคุณแล้ว', done_mail_p:'กดส่งในแอปอีเมลเพื่อให้ข้อความถึงปลายทาง ถ้าไม่มีอะไรเปิดขึ้น ให้คัดลอกข้อความด้านล่างแล้วส่งเอง', done_sent:'ส่งเรียบร้อย', done_sent_p:'ขอบคุณ ข้อความถึงปลายทางแล้ว',
   copy_msg:'คัดลอกข้อความ', copied:'คัดลอกแล้ว', copy_fail:'คัดลอกไม่ได้ ลองเลือกข้อความแล้วคัดลอกเอง', to_label:'ถึง',
   news_saved:'บันทึกอีเมลไว้ในเครื่องนี้แล้ว (ยังไม่ได้เชื่อมระบบส่งจดหมาย)', news_sent:'สมัครรับข่าวเรียบร้อย', news_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
@@ -299,25 +283,25 @@ th: {
   /* cutaway */
   cw_est:'ก่อตั้ง {y}', cw_back:'← กลับไปเดินเมือง', cw_hint:'▼ ภาพตัดตึกทีละชั้น กดที่ผลงานเพื่อดูรายละเอียดเต็ม', cw_section:'SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น',
   mus_name:'พิพิธภัณฑ์ของ{a}', mus_aria:'โถงแสดงภาพของ{a}', mus_prev:'← ภาพก่อน', mus_next:'เดินต่อ →', mus_more:'รายละเอียดและแนวคิด', mus_map:'ผังตึก', mus_hint:'▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม',
-  pf_h:'โปรไฟล์ของ{a}', pf_open:'รับงานสั่งทำ', pf_until:'· คิวว่างเดือน {m}', pf_cn:'แนวคิดของงาน{a}', pf_nw:'ผลงานในพิพิธภัณฑ์', pf_ns:'ขายแล้ว', pf_ny:'เริ่มทำงานศิลปะ', pf_tl:'เส้นทางที่ผ่านมา',
-  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', search_ph:'ค้นหาศิลปิน…', search_aria:'ค้นหาศิลปินจากชื่อ สาขา หรือเมือง', fnote_q:'พบ {n} ตึกที่ตรงกับคำค้น', fnote_q0:'ไม่พบศิลปินที่ตรงกับคำค้น', calm_off:'หยุดการเคลื่อนไหว', calm_on:'เปิดการเคลื่อนไหว', share_btn:'แชร์', share_copied:'คัดลอกลิงก์แล้ว', sup_hint:'บนมือถือ: บันทึกรูป QR แล้วเปิดแอปธนาคารของคุณ (เช่น BCEL One) เลือกสแกนจากรูปในเครื่อง', sup_save:'บันทึกรูป QR', pf_soon:'เร็วๆ นี้', sm_tag:'ตัวอย่าง / SAMPLE', sm_banner:'ตัวอย่าง (SAMPLE) · นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไป ห้ามโอนเงินจริง', sm_qr_alt:'QR ตัวอย่าง ไม่ใช่ของจริง', tip_h:'เลือกจำนวนที่อยากสนับสนุน', tip_other:'จำนวนอื่น (USD)', tip_go:'ต่อไป', tip_bad:'ใส่จำนวนเต็ม 1–1000 ดอลลาร์', tip_amt:'ยอดสนับสนุน {m}', tip_sent:'ฉันโอนแล้ว', pay_notice_h:'แจ้งว่าโอนแล้ว', pay_slip:'สลิปโอนเงิน (ไม่บังคับ รูปภาพไม่เกิน 2 MB)', pay_slip_big:'ไฟล์ใหญ่เกิน 2 MB', pay_slip_type:'ต้องเป็นไฟล์รูปภาพ', pay_need_name:'กรอกชื่อ', pay_need_email:'กรอกอีเมลให้ถูกต้อง', pay_submit:'ส่งแจ้งโอน', pay_sending:'กำลังส่ง…', pay_back:'ย้อนกลับ', pay_done_h:'ขอบคุณ (สาธิต)', pay_done_tip:'บันทึกการสนับสนุน {m} ให้ {a} แบบจำลองแล้ว นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไปและไม่มีเงินเคลื่อนไหว', by_payqr:'จ่ายด้วย LAO QR', by_pay_h:'จ่ายด้วย LAO QR', by_pay_p:'สแกน QR ด้วยแอปธนาคาร (เช่น BCEL One) แล้วกด “ฉันโอนแล้ว” เพื่อแจ้งศิลปิน', by_paid:'ฉันโอนแล้ว', by_hold_h:'ON HOLD · ผลงานพักไว้ให้คุณ', by_hold_p:'นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไป ผลงานถูกพักไว้ในเบราว์เซอร์นี้เท่านั้น', by_hold_clear:'ล้างสถานะสาธิต', by_t1:'จ่ายผ่าน LAO QR ในแอปธนาคาร แล้วกด “ฉันโอนแล้ว”', by_t1m:'ทักศิลปิน ตกลงราคาและการส่ง แล้วจ่ายตรงให้ศิลปิน', by_t2:'ศิลปินส่งภายใน {d} วันหลังได้รับเงิน', by_t3:'เงินเข้าบัญชีศิลปินโดยตรง circles ไม่ถือเงินของคุณ', by_share:'แชร์ผลงานนี้', by_follow:'ติดตาม{a}', by_tipl:'ให้ทิป{a}แทน', zoom_btn:'ขยายภาพเต็มจอ', zoom_in:'ซูมเข้า', zoom_out:'ซูมออก', zoom_reset:'ขนาดพอดี', zoom_hint:'เลื่อนล้อเมาส์หรือหยิกนิ้วเพื่อซูม ลากเพื่อเลื่อน กด Esc เพื่อปิด', hint_swipe:'▼ ปัดซ้าย-ขวาเพื่อเดินดูภาพ แตะที่ภาพเพื่อดูรายละเอียดเต็ม', nav_all:'ศิลปินทั้งหมด', bc_aria:'เส้นทางหน้า', bc_city:'เมือง', bc_artists:'ศิลปิน', bc_work:'ผลงาน', by_s1:'สแกน LAO QR ด้วยแอปธนาคาร', by_s2:'กด “ฉันโอนแล้ว” แจ้งศิลปิน', by_s3:'ศิลปินทักกลับเรื่องการจัดส่ง',
+  pf_h:'โปรไฟล์ของ{a}',   pf_cn:'แนวคิดของงาน{a}', pf_nw:'ผลงานในพิพิธภัณฑ์',  pf_ny:'เริ่มทำงานศิลปะ', pf_tl:'เส้นทางที่ผ่านมา',
+  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูผลงาน', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', search_ph:'ค้นหาศิลปิน…', search_aria:'ค้นหาศิลปินจากชื่อ สาขา หรือเมือง', fnote_q:'พบ {n} ตึกที่ตรงกับคำค้น', fnote_q0:'ไม่พบศิลปินที่ตรงกับคำค้น', calm_off:'หยุดการเคลื่อนไหว', calm_on:'เปิดการเคลื่อนไหว', share_btn:'แชร์', share_copied:'คัดลอกลิงก์แล้ว', sup_hint:'บนมือถือ: บันทึกรูป QR แล้วเปิดแอปธนาคารของคุณ (เช่น BCEL One) เลือกสแกนจากรูปในเครื่อง', sup_save:'บันทึกรูป QR', pf_soon:'เร็วๆ นี้', sm_tag:'ตัวอย่าง / SAMPLE', sm_banner:'ตัวอย่าง (SAMPLE) · นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไป ห้ามโอนเงินจริง', sm_qr_alt:'QR ตัวอย่าง ไม่ใช่ของจริง', tip_h:'เลือกจำนวนที่อยากสนับสนุน', tip_other:'จำนวนอื่น (USD)', tip_go:'ต่อไป', tip_bad:'ใส่จำนวนเต็ม 1–1000 ดอลลาร์', tip_amt:'ยอดสนับสนุน {m}', tip_sent:'ฉันโอนแล้ว', pay_notice_h:'แจ้งว่าโอนแล้ว', pay_slip:'สลิปโอนเงิน (ไม่บังคับ รูปภาพไม่เกิน 2 MB)', pay_slip_big:'ไฟล์ใหญ่เกิน 2 MB', pay_slip_type:'ต้องเป็นไฟล์รูปภาพ', pay_need_name:'กรอกชื่อ', pay_need_email:'กรอกอีเมลให้ถูกต้อง', pay_submit:'ส่งแจ้งโอน', pay_sending:'กำลังส่ง…', pay_back:'ย้อนกลับ', pay_done_h:'ขอบคุณ (สาธิต)', pay_done_tip:'บันทึกการสนับสนุน {m} ให้ {a} แบบจำลองแล้ว นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไปและไม่มีเงินเคลื่อนไหว',        dlg_supn:'เงินเข้าบัญชีศิลปินโดยตรง ตอนนี้ circles ไม่หักค่าธรรมเนียม', don_for:'เพื่อผลงาน “{t}”', don_how:'สแกน QR ด้วยแอปธนาคาร (เช่น BCEL One) หรือโอนเข้าบัญชีด้านล่าง แล้วกด “ฉันโอนแล้ว” เงินเข้าศิลปินโดยตรง ตอนนี้ circles ไม่หักค่าธรรมเนียม',        zoom_btn:'ขยายภาพเต็มจอ', zoom_in:'ซูมเข้า', zoom_out:'ซูมออก', zoom_reset:'ขนาดพอดี', zoom_hint:'เลื่อนล้อเมาส์หรือหยิกนิ้วเพื่อซูม ลากเพื่อเลื่อน กด Esc เพื่อปิด', hint_swipe:'▼ ปัดซ้าย-ขวาเพื่อเดินดูภาพ แตะที่ภาพเพื่อดูรายละเอียดเต็ม', nav_all:'ศิลปินทั้งหมด', bc_aria:'เส้นทางหน้า', bc_city:'เมือง', bc_artists:'ศิลปิน', bc_work:'ผลงาน',   
   pf_walk:'เดินเข้าพิพิธภัณฑ์ →', pf_ask:'ถามศิลปิน', pf_ig:'Instagram', pf_share:'แชร์โปรไฟล์ ↗', pf_copy:'คัดลอกลิงก์', pf_copied:'คัดลอกลิงก์แล้ว', pf_marq:'ART NOT SORRY ★ วงกลมไม่มีวันจบ ★ CIRCLES ★ เดินเข้าพิพิธภัณฑ์ ★ ',
-  mus_prof:'ดูโปรไฟล์ศิลปิน', title_pf:'โปรไฟล์ของ{a} — circles', desc_pf:'รู้จัก{a} ศิลปินสาขา{d} แนวคิดของงาน ผลงานที่ขายอยู่ และช่องทางสนับสนุนหรือสั่งทำงาน',
+  mus_prof:'ดูโปรไฟล์ศิลปิน', title_pf:'โปรไฟล์ของ{a} — circles', desc_pf:'รู้จัก{a} ศิลปินสาขา{d} แนวคิดของงาน ผลงานในพิพิธภัณฑ์ และช่องทางสนับสนุน',
   fold_spot:'อ่านบทสัมภาษณ์ 3 ข้อ', fold_foot:'เมนู โซเชียล และจดหมายข่าว',
-  by_back:'← กลับพิพิธภัณฑ์ของ{a}', by_marq:'ART NOT SORRY ★ ไม่มีคนกลาง ★ สนับสนุนตรงถึงศิลปิน ★ CIRCLES NEVER END ★ ', by_one:'ชิ้นเดียวในโลก', by_free:'ยังว่าง', by_reply:'ตอบเร็วสุดภายใน {d} วัน', by_lak:'กีบ', by_thb:'บาท',
-  by_detail:'รายละเอียดงาน', by_cert:'ใบรับรอง', by_how:'ซื้อยังไง', by_ship:'การส่งของ', by_to:'ส่งได้ที่', by_fee:'ค่าส่ง', by_days:'ถึงมือภายใน', by_dayu:'{d} วัน', by_break:'ถ้าแตกระหว่างทาง', by_ret:'คืนได้ {d} วัน',
-  by_safe:'ปลอดภัยไหม?', by_safe_p:'เงินไปที่ศิลปินโดยตรง circles ไม่ได้รับเงินแทน ถ้ามีปัญหา ติดต่อ', by_since:'ทำงานศิลปะตั้งแต่ {y}', by_soldn:'ขายไปแล้ว {n} ชิ้น',
-  by_ask_h:'ทัก{a} (ไม่ต้องออกจากหน้านี้)', by_country:'ส่งไปที่ไหน (ประเทศ / เมือง)', by_after:'ส่งแล้วจะเห็นข้อความ:', by_after_p:'“ส่งถึง{a}แล้ว จะตอบไปที่อีเมลของคุณภายใน {d} วัน”', by_again:'ส่งอีกข้อความ',
-  title_by:'{t} โดย{a} — circles', desc_by:'ชม “{t}” ผลงาน{d}ของ{a} ราคา {p} สนับสนุนตรงถึงศิลปิน ไม่มีคนกลาง',
+        
+           
+     
+      
+   
   cw_meta:'{d} · ตั้งแต่ {y} · {c}', cw_view:'ดูรายละเอียด {t}', cw_prev:'← ตึกก่อนหน้า', cw_next:'ตึกถัดไป →', cw_roof:'{n} · STUDIO',
-  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด', buy:'ซื้อตรงจาก{a} →', w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →', st_sold:"ขายแล้ว", st_res:"จองแล้ว", cw_look_sold:"ดูรายละเอียด →", d_sold:"ชิ้นนี้มีเจ้าของแล้ว", d_res:"มีคนจองไว้แล้ว ถ้าหลุดจอง ศิลปินจะแจ้งคนที่ต่อคิว", b_sold:"ถาม{a}เรื่องงานแบบนี้ →", b_res:"ขอต่อคิวชิ้นนี้ →", b_pay:"จ่ายเลย →", b_ask:"มีคำถาม? ทัก{a}ก่อน", p_how1:"กดจ่ายผ่านลิงก์ของศิลปิน", p_how2:"ศิลปินทักกลับเรื่องการจัดส่ง", p_how3:"เงินเข้าบัญชีศิลปินโดยตรง", d_paynote:"ลิงก์จ่ายเงินเป็นของศิลปินเอง circles ไม่ได้รับเงินแทน", id_pre_sold:"สวัสดี เห็นผลงาน “{t}” ที่ขายไปแล้ว ชอบมาก มีงานแบบนี้อีกไหม หรือรับทำงานใหม่ไหม ขอบคุณ", id_pre_res:"สวัสดี สนใจผลงาน “{t}” ({p}) ถ้าคนที่จองไว้ไม่ซื้อ ขอต่อคิวด้วย ขอบคุณ", v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด →', d_by:'โดย <b>{a}</b> · {d} · {c}', d_note:'ราคาที่ศิลปินตั้งเอง ไม่มีค่าคอมมิชชัน', d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
-  cy_h:'วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน', cy_p:'ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ งานที่ถูกซื้อไปไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ', cy_1:'วาด', cy_2:'โชว์ในตึก', cy_3:'มีคนสนับสนุน', cy_4:'วาดต่อ', cy_aria:'วงจร 4 ขั้น: วาด โชว์ในตึก มีคนสนับสนุน แล้ววนกลับไปวาดต่อ',
-  sup_h:'สนับสนุน Circles', sup_p:'ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า', sup_where:'เงินสนับสนุนไปไหน', sup_r1:'ค่าเซิร์ฟเวอร์และโดเมน', sup_r2:'การดูแลและพัฒนาเว็บ', sup_r3:'กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน', sup_note:'ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง', don_btn:'สนับสนุน →', don_soon:'เร็วๆ นี้', d_how1:'ส่งข้อความถึงศิลปิน', d_how2:'คุยเรื่องราคาและการจัดส่ง', d_how3:'จ่ายเงินให้ศิลปินโดยตรง',
+  lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด',  w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →',                v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด →', d_by:'โดย <b>{a}</b> · {d} · {c}',  d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
+  cy_h:'วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน', cy_p:'ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ การสนับสนุนจากคนดูไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ', cy_1:'วาด', cy_2:'โชว์ในตึก', cy_3:'มีคนสนับสนุน', cy_4:'วาดต่อ', cy_aria:'วงจร 4 ขั้น: วาด โชว์ในตึก มีคนสนับสนุน แล้ววนกลับไปวาดต่อ',
+  sup_h:'สนับสนุน Circles', sup_p:'ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า', sup_where:'เงินสนับสนุนไปไหน', sup_r1:'ค่าเซิร์ฟเวอร์และโดเมน', sup_r2:'การดูแลและพัฒนาเว็บ', sup_r3:'กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน', sup_note:'ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง', don_btn:'สนับสนุน →', don_soon:'เร็วๆ นี้',   
   title_idx:'circles — เมืองของศิลปิน สนับสนุนตรงถึงคนทำ', title_cw:'ตึกของ{a} — circles',
   desc_idx:'circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วสนับสนุนตรงถึง\u2060คน\u2060ทำ',
   desc_cw:'เดินเข้าไปในตึกของ{a} ศิลปินสาขา{d} ดูผลงานทีละชั้น แล้วสนับสนุนตรงถึงศิลปิน',
   nf_h:'ตึกนี้ยังไม่ได้สร้าง', nf_p:'ไม่มีศิลปินคนนี้ในเมือง กลับไปเดินดูตึกที่มีอยู่',
-  mq:['ศิลปินไม่มีกฎ','BUY ART','สนับสนุนตรงถึงคนทำ','NO MIDDLEMAN','เมืองของศิลปิน','ART NOT SORRY'],
+  mq:['ศิลปินไม่มีกฎ','SUPPORT ART','สนับสนุนตรงถึงคนทำ','NO MIDDLEMAN','เมืองของศิลปิน','ART NOT SORRY'],
 },
 en: {
   nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', menu_aria:'Menu', lang_aria:'Switch language',
@@ -330,15 +314,15 @@ en: {
   hero_lead:'One concrete building, one artist. No gallery, no middleman. Walk in, look at the work, then support the person who made it, directly.', hero_cta:'Enter the city →',
   city_h:'City', city_p:"Drag or scroll right to walk through the city. Each building is one artist's studio, and the pictures set into the concrete are real works.",
   pager_l:'Scroll left', pager_r:'Scroll right', strip_aria:'City of artists, scroll left and right', bd_aria:"Enter {a}'s building, {d}", works_n:'{n} WORKS',
-  mani_k:'Manifesto', mani1:'NO GALLERY', mani2:'NO MIDDLEMAN', mani3:'NO CUT TAKEN', mani4:'JUST MAKER + BUYER',
-  mani_aria:'No gallery. No middleman. No cut taken. Just the maker and the buyer.',
-  mani_note:"Here artists set their own prices, get paid directly and talk to buyers themselves. Nobody sits between us and the work, because art should travel from the maker's hand to the lover's hand, not stop to pay a toll first.",
+  mani_k:'Manifesto', mani1:'NO GALLERY', mani2:'NO MIDDLEMAN', mani3:'NO CUT TAKEN', mani4:'JUST MAKER + VIEWER',
+  mani_aria:'No gallery. No middleman. No cut taken. Just the maker and the viewer.',
+  mani_note:"Here artists are supported directly by the people who love their work, and talk to them themselves. Nobody sits between us and the work, because art should travel from the maker's hand to the lover's hand, not stop to pay a toll first.",
   how_i:'3 steps', how_h:'How to use it',
   s1_h:'Pick a building', s1_p:"Drag through the city. One building is one artist. See a shape you like, point at it. Nobody needs to recommend anything.",
   s2_h:'Walk in and look', s2_p:"Open the door and go floor by floor, room by room. The work hangs on real concrete walls. You can't touch it, but you can look as long as you like.",
   s3_h:'Support the artist directly', s3_p:'Found the piece that follows you home? Thank the maker directly and support them as much as you like. Every cent goes to the artist, nobody skims first.',
   feat_i:'Featured', feat_h:"This week's picks", feat_h_all:'Every work in the city',
-  sort_label:'Sort by', sort_cur:'Curated', sort_low:'Price: low → high', sort_high:'Price: high → low', sort_new:'Newest',
+  sort_label:'Sort by', sort_cur:'Curated',   sort_new:'Newest',
   all_btn:'Show all {n} works', less_btn:'Featured only', feat_count:'Showing {n} works', card_aria:'{t} by {a}, {p}',
   map_i:'The', map_h:'City map', map_p:'From above, the city splits into districts by discipline. Tap a district or a filter and the matching buildings light up in the strip above.',
   filters_aria:'Filter by discipline', f_all:'All', district:'DISTRICT', plaza:'PLAZA · CITY SQUARE',
@@ -346,47 +330,47 @@ en: {
   spot_i:'Artist of the week', spot_h:'Napha',
   q1:'Why did you stop sending work to galleries?', a1:"Twelve submissions, and twelve times the answer was 'interesting, but not right now'. In the end I understood their 'now' never arrives, so I stopped waiting.",
   q2:'Why empty rooms and fog?', a2:'Because empty space is the only place nobody tells you how to feel. One empty room, a hundred viewers, a hundred stories. No curator needed to translate.',
-  q3:"What if people walk in and don't buy?", a3:"That's fine. Looking is free, argue with the painting as long as you like. If a piece haunts you all the way home, come back and talk price with the painter directly. Nobody charges a finder's fee.",
+  q3:"What if people walk in and don't donate?", a3:"That's fine. Looking is free, argue with the painting as long as you like. If a piece haunts you all the way home, come back and support the painter directly. Nobody charges a finder's fee.",
   spot_cta:"Enter Napha's building →", spot_meta:'NO.01 · {d} · since {y} · {c}',
   stats_aria:'The city in numbers', st1:'Artists in the city', st2:'Works inside the buildings', st3:'Art forms', st4:'Of the money reaches the artist',
   join_k:'Get a building', join_i:'Your', join_h:'Want a building of your own?',
   p1_h:'The building is yours', p1_p:"Arrange rooms, hang work, change floors however you like. One building, one artist. Nobody shares your walls.",
-  p2_h:'You keep 100%', p2_p:'Set your own price and get paid directly. No commission, no consignment fee, nobody skims before it reaches you.',
+  p2_h:'You keep 100%', p2_p:'Get supported directly. No commission, no consignment fee, nobody skims before it reaches you.',
   p3_h:'No one judges the work', p3_p:"No committee, no yearly theme, nobody asks where you graduated. Made something you want people to see? You can build.",
-  join_btn:'Join — get a building →', jn_kick:'For artists', jn_cta:'Tell us briefly what you make and add a link to your work. We will get back to you by email.', jb_p:'Set your own prices, get paid directly, no jury.', jb_btn:'See how it works →', skip_main:'Skip to content',
+  join_btn:'Join — get a building →', jn_kick:'For artists', jn_cta:'Tell us briefly what you make and add a link to your work. We will get back to you by email.', jb_p:'Get supported directly, no jury.', jb_btn:'See how it works →', skip_main:'Skip to content',
   foot_h:'Art <em>waits</em> for no one', foot_p:"Want a building in this city? Send us your work. We won't ask who you are, only what your work is like.", foot_btn:'Request to join →',
   foot_menu:'Menu', foot_social:'Social', foot_manifesto:'Manifesto', foot_how:'How it works', foot_feat:'Featured', foot_map:'City map', foot_join:'Get a building',
   news_label:'News from the city: new buildings, new work, straight to your inbox. No spam, never resold.', news_btn:'Subscribe →', foot_copy:'© 2026 CIRCLES · prototype · artists and works shown are examples · NO GALLERY. NO MIDDLEMAN.',
   social_soon:'Social links open when the site goes live',
   close:'Close', jd_title:'Request a <em>building</em> in this city', jd_intro:"Tell us briefly what you make. No long CV, no references. We look at the work.",
   jd_name:'Name / pen name', jd_email:'Email', jd_disc:'Discipline', jd_other:'Other', jd_link:'Link to your work (site / Instagram / Drive)', jd_msg:'Tell us about your work', jd_pay_h:'How people can support you (optional)', jd_pay_note:'Add the bank and account you want supporters to pay into. When we reply by email we will ask for the receive-money QR from your bank app. The money goes straight to you.', jd_bank:'Bank', jd_send:'Send request →', jd_cancel:'Cancel',
-  jd_subject:'Building request for circles — {n}', id_title:'Talk to <em>{a}</em> directly', id_intro:'This message goes straight to the artist. Nobody in between.', id_name:'Your name', id_email:'Your email', id_msg:'Message', id_send:'Send to the artist →',
-  id_prefill:"Hi, I'm interested in “{t}” ({p}). Could we talk about price and shipping? Thanks.", id_subject:'Interested in “{t}” — circles',
+  jd_subject:'Building request for circles — {n}',   id_name:'Your name', id_email:'Your email',  
+   
   done_mail:'Your email app is opening', done_mail_p:"Press send in your email app so the message reaches its destination. If nothing opened, copy the text below and send it yourself.", done_sent:'Sent', done_sent_p:'Thank you. The message has been delivered.',
   copy_msg:'Copy message', copied:'Copied', copy_fail:"Couldn't copy. Select the text and copy it yourself.", to_label:'To',
   news_saved:'Email saved in this browser only (no mailing system is connected yet)', news_sent:"You're subscribed", news_fail:"Couldn't send. Please try again.",
   captcha_wait:'Please wait for the verification to finish', note_mailto:'For now this form works through your email app', demo_note:'Artist details and emails on this site are sample data',
   cw_est:'Est. {y}', cw_back:'← Back to the city', cw_hint:'▼ The building cut open, floor by floor. Click a work for full details', cw_section:'SECTION A–A · NO LIFT, STAIRS ONLY',
   mus_name:"{a}'s museum", mus_aria:"{a}'s picture hall", mus_prev:'← Previous', mus_next:'Walk on →', mus_more:'Details & concept', mus_map:'Floor plan', mus_hint:'▼ Walk the hall one work at a time. Use the ← → keys. Click the lit work for full details',
-  pf_h:"{a}'s profile", pf_open:'Taking commissions', pf_until:'· slot open in {m}', pf_cn:"{a}'s concept", pf_nw:'works in the museum', pf_ns:'sold', pf_ny:'making art since', pf_tl:'The road so far',
-  pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', search_ph:'Search artists…', search_aria:'Search artists by name, discipline or city', fnote_q:'{n} building(s) match your search', fnote_q0:'No artist matches your search', calm_off:'Pause motion', calm_on:'Resume motion', share_btn:'Share', share_copied:'Link copied', sup_hint:'On a phone: save the QR image, then open your bank app (for example BCEL One) and scan it from your gallery.', sup_save:'Save QR image', pf_soon:'Coming soon', sm_tag:'SAMPLE', sm_banner:'SAMPLE · this is a demo. Nothing is sent. Do not transfer real money.', sm_qr_alt:'Sample QR, not real', tip_h:'Choose an amount to give', tip_other:'Other amount (USD)', tip_go:'Continue', tip_bad:'Enter a whole number from 1 to 1000 dollars', tip_amt:'Tip: {m}', tip_sent:"I've sent a tip", pay_notice_h:'I have paid', pay_slip:'Transfer slip (optional, image up to 2 MB)', pay_slip_big:'The file is larger than 2 MB', pay_slip_type:'It must be an image file', pay_need_name:'Please enter your name', pay_need_email:'Please enter a valid e-mail', pay_submit:'Send notice', pay_sending:'Sending…', pay_back:'Back', pay_done_h:'Thank you (demo)', pay_done_tip:'A pretend tip of {m} to {a} was recorded. This is a demo: nothing was sent and no money moved.', by_payqr:'Pay with LAO QR', by_pay_h:'Pay with LAO QR', by_pay_p:'Scan the QR with your bank app (for example BCEL One), then press “I have paid” to tell the artist.', by_paid:'I have paid', by_hold_h:'ON HOLD · kept for you', by_hold_p:'This is a demo: nothing was sent. The work is held in this browser only.', by_hold_clear:'Clear the demo state', by_t1:'Pay with a LAO QR in your bank app, then press “I have paid”', by_t1m:'Message the artist, agree price and shipping, then pay them directly', by_t2:'The artist ships within {d} days of getting your payment', by_t3:'Your money goes straight to the artist. circles never holds it', by_share:'Share this work', by_follow:'Follow {a}', by_tipl:'Tip {a} instead', zoom_btn:'View the artwork fullscreen', zoom_in:'Zoom in', zoom_out:'Zoom out', zoom_reset:'Fit to screen', zoom_hint:'Scroll or pinch to zoom, drag to move, Esc to close', hint_swipe:'▼ Swipe left and right to walk the hall. Tap a work for full details', nav_all:'All artists', bc_aria:'Breadcrumb', bc_city:'City', bc_artists:'Artists', bc_work:'Work', by_s1:'Scan the LAO QR with your bank app', by_s2:'Press “I have paid” to tell the artist', by_s3:'The artist gets in touch about delivery',
+  pf_h:"{a}'s profile",   pf_cn:"{a}'s concept", pf_nw:'works in the museum',  pf_ny:'making art since', pf_tl:'The road so far',
+  pf_wh:'Works in the museum', pf_hover:'Point at a picture to see the work', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', search_ph:'Search artists…', search_aria:'Search artists by name, discipline or city', fnote_q:'{n} building(s) match your search', fnote_q0:'No artist matches your search', calm_off:'Pause motion', calm_on:'Resume motion', share_btn:'Share', share_copied:'Link copied', sup_hint:'On a phone: save the QR image, then open your bank app (for example BCEL One) and scan it from your gallery.', sup_save:'Save QR image', pf_soon:'Coming soon', sm_tag:'SAMPLE', sm_banner:'SAMPLE · this is a demo. Nothing is sent. Do not transfer real money.', sm_qr_alt:'Sample QR, not real', tip_h:'Choose an amount to give', tip_other:'Other amount (USD)', tip_go:'Continue', tip_bad:'Enter a whole number from 1 to 1000 dollars', tip_amt:'Donation: {m}', tip_sent:"I've donated", pay_notice_h:'I\'ve donated', pay_slip:'Transfer slip (optional, image up to 2 MB)', pay_slip_big:'The file is larger than 2 MB', pay_slip_type:'It must be an image file', pay_need_name:'Please enter your name', pay_need_email:'Please enter a valid e-mail', pay_submit:'Send notice', pay_sending:'Sending…', pay_back:'Back', pay_done_h:'Thank you (demo)', pay_done_tip:'A pretend donation of {m} to {a} was recorded. This is a demo: nothing was sent and no money moved.',        dlg_supn:'The money goes straight to the artist. For now circles takes no fee.', don_for:'For the work “{t}”', don_how:'Scan the QR with your bank app (for example BCEL One) or transfer to the account below, then press “I have donated”. The money goes straight to the artist. For now circles takes no fee.',        zoom_btn:'View the artwork fullscreen', zoom_in:'Zoom in', zoom_out:'Zoom out', zoom_reset:'Fit to screen', zoom_hint:'Scroll or pinch to zoom, drag to move, Esc to close', hint_swipe:'▼ Swipe left and right to walk the hall. Tap a work for full details', nav_all:'All artists', bc_aria:'Breadcrumb', bc_city:'City', bc_artists:'Artists', bc_work:'Work',   
   pf_walk:'Walk into the museum →', pf_ask:'Ask the artist', pf_ig:'Instagram', pf_share:'Share profile ↗', pf_copy:'Copy link', pf_copied:'Link copied', pf_marq:'ART NOT SORRY ★ CIRCLES NEVER END ★ CIRCLES ★ WALK INTO THE MUSEUM ★ ',
-  mus_prof:'View artist profile', title_pf:"{a}'s profile — circles", desc_pf:"Meet {a}, {d} artist: the ideas behind the work, the pieces on sale, and ways to support or commission.",
+  mus_prof:'View artist profile', title_pf:"{a}'s profile — circles", desc_pf:"Meet {a}, {d} artist: the ideas behind the work, the works in the museum, and a way to support them.",
   fold_spot:'Read the 3-question interview', fold_foot:'Menu, social & newsletter',
-  by_back:"← Back to {a}'s museum", by_marq:'ART NOT SORRY ★ NO MIDDLEMAN ★ SUPPORT THE ARTIST DIRECTLY ★ CIRCLES NEVER END ★ ', by_one:'ONE OF A KIND', by_free:'Available', by_reply:'Usually replies within {d} days', by_lak:'LAK', by_thb:'THB',
-  by_detail:'Details', by_cert:'Certificate', by_how:'How to buy', by_ship:'Shipping', by_to:'Ships to', by_fee:'Shipping fee', by_days:'Arrives within', by_dayu:'{d} days', by_break:'If it breaks in transit', by_ret:'returnable within {d} days',
-  by_safe:'Is it safe?', by_safe_p:'The money goes straight to the artist; circles never holds it. If something goes wrong, contact', by_since:'Making art since {y}', by_soldn:'{n} sold',
-  by_ask_h:'Message {a} (without leaving this page)', by_country:'Ship to (country / city)', by_after:'Once you send, you will see:', by_after_p:'“Sent to {a}. A reply will reach your email within {d} days.”', by_again:'Send another message',
-  title_by:'{t} by {a} — circles', desc_by:'See “{t}”, a {d} work by {a}. Support the artist directly, no middleman.',
+        
+           
+     
+      
+   
   cw_meta:'{d} · since {y} · {c}', cw_view:'View details of {t}', cw_prev:'← Previous building', cw_next:'Next building →', cw_roof:'{n} · STUDIO',
-  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size', buy:'Buy direct from {a} →', w_prev:'← Previous work', w_next:'Next work →', st_sold:"SOLD", st_res:"ON HOLD", cw_look_sold:"View details →", d_sold:"This one has found a home.", d_res:"Someone has reserved it. If that falls through, the artist will tell whoever is next in line.", b_sold:"Ask {a} about similar work →", b_res:"Join the queue →", b_pay:"Pay now →", b_ask:"Questions? Message {a} first", p_how1:"Pay through the artist's own link", p_how2:"The artist gets in touch about delivery", p_how3:"The money goes straight to the artist", d_paynote:"The payment link belongs to the artist. circles never holds the money.", id_pre_sold:"Hi, I saw “{t}” has sold and I love it. Do you have similar work, or take commissions? Thanks.", id_pre_res:"Hi, I'm interested in “{t}” ({p}). If the reservation falls through, could I be next in line? Thanks.", v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View details →', d_by:'by <b>{a}</b> · {d} · {c}', d_note:'Price set by the artist. No commission.', d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
-  cy_h:'A circle has no end. Neither does art.', cy_p:'The name Circles comes from the belief that art is never finished. When an artist completes one piece, the next is already waiting. A sale is not an ending. It is what lets the artist keep going, and the city keeps turning that way.', cy_1:'Draw', cy_2:'Show in the building', cy_3:'Someone supports', cy_4:'Draw again', cy_aria:'A loop of 4 steps: draw, show in the building, someone supports, then back to drawing again',
-  sup_h:'Support Circles', sup_p:'Right now artists keep the full amount, with no fees. The site runs on support. If we ever add a fee, we will tell you in advance.', sup_where:'Where the support goes', sup_r1:'Servers and domain', sup_r2:'Running and improving the site', sup_r3:'Events and new space for artists', sup_note:'Sample: the categories and shares are not final. [__]% marks a number we do not know yet and will fill in once we have real data.', don_btn:'Support →', don_soon:'Coming soon', d_how1:'Message the artist', d_how2:'Agree on price and shipping', d_how3:'Pay the artist directly',
+  lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size',  w_prev:'← Previous work', w_next:'Next work →',                v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View details →', d_by:'by <b>{a}</b> · {d} · {c}',  d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
+  cy_h:'A circle has no end. Neither does art.', cy_p:'The name Circles comes from the belief that art is never finished. When an artist completes one piece, the next is already waiting. Support is not an ending. It is what lets the artist keep going, and the city keeps turning that way.', cy_1:'Draw', cy_2:'Show in the building', cy_3:'Someone supports', cy_4:'Draw again', cy_aria:'A loop of 4 steps: draw, show in the building, someone supports, then back to drawing again',
+  sup_h:'Support Circles', sup_p:'Right now artists keep the full amount, with no fees. The site runs on support. If we ever add a fee, we will tell you in advance.', sup_where:'Where the support goes', sup_r1:'Servers and domain', sup_r2:'Running and improving the site', sup_r3:'Events and new space for artists', sup_note:'Sample: the categories and shares are not final. [__]% marks a number we do not know yet and will fill in once we have real data.', don_btn:'Support →', don_soon:'Coming soon',   
   title_idx:'circles — a city of artists. Support the maker directly', title_cw:"{a}'s building — circles",
   desc_idx:'circles is a city of artists. One concrete building is one artist. No gallery, no middleman. Walk in, look at the work, support the maker directly.',
   desc_cw:"Walk into {a}'s building. {d} artist. See the work floor by floor, then support the artist directly.",
   nf_h:"This building doesn't exist yet", nf_p:'No artist by that name lives here. Go back and walk the buildings that do.',
-  mq:['NO RULES FOR ARTISTS','BUY ART','BUY FROM THE MAKER','NO MIDDLEMAN','CITY OF ARTISTS','ART NOT SORRY'],
+  mq:['NO RULES FOR ARTISTS','SUPPORT ART','SUPPORT THE MAKER','NO MIDDLEMAN','CITY OF ARTISTS','ART NOT SORRY'],
 },
 /* lo:begin */
 // DRAFT lo: every line below needs native review (written by Claude, not a native speaker). Keys not listed fall back to Thai.
@@ -408,15 +392,15 @@ lo: {
   news_fail: "ສົ່ງບໍ່ສຳເລັດ ລອງໃໝ່ອີກຄັ້ງ",   // DRAFT lo: needs native review
   captcha_wait: "ລໍຖ້າການກວດສອບສຳເລັດກ່ອນສົ່ງ",   // DRAFT lo: needs native review
   cw_back: "← ກັບໄປຍ່າງເບິ່ງເມືອງ",   // DRAFT lo: needs native review
-  buy: "ຊື້ກົງຈາກ{a} →",   // DRAFT lo: needs native review
-  b_pay: "ຈ່າຍເລີຍ →",   // DRAFT lo: needs native review
-  b_ask: "ມີຄຳຖາມ? ທັກ{a}ກ່ອນ",   // DRAFT lo: needs native review
-  b_sold: "ຖາມ{a}ກ່ຽວກັບຜົນງານແບບນີ້ →",   // DRAFT lo: needs native review
-  b_res: "ຂໍຕໍ່ຄິວຊິ້ນນີ້ →",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   w_prev: "← ຊິ້ນກ່ອນ",   // DRAFT lo: needs native review
   w_next: "ຊິ້ນຕໍ່ໄປ →",   // DRAFT lo: needs native review
-  st_sold: "ຂາຍແລ້ວ",   // DRAFT lo: needs native review
-  st_res: "ຈອງແລ້ວ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   cw_view: "ເບິ່ງລາຍລະອຽດ {t}",   // DRAFT lo: needs native review
   mus_name: "ພິພິທະພັນຂອງ{a}",   // DRAFT lo: needs native review
   mus_aria: "ຫ້ອງສະແດງພາບຂອງ{a}",   // DRAFT lo: needs native review
@@ -432,9 +416,9 @@ lo: {
   lb_year: "ປີ",   // DRAFT lo: needs native review
   lb_medium: "ວັດສະດຸ",   // DRAFT lo: needs native review
   lb_size: "ຂະໜາດ",   // DRAFT lo: needs native review
-  d_sold: "ຊິ້ນນີ້ມີເຈົ້າຂອງແລ້ວ",   // DRAFT lo: needs native review
-  d_res: "ມີຄົນຈອງໄວ້ແລ້ວ ຖ້າຫຼຸດຈອງ ສິລະປິນຈະແຈ້ງຄົນທີ່ຕໍ່ຄິວ",   // DRAFT lo: needs native review
-  d_note: "ລາຄາທີ່ສິລະປິນຕັ້ງເອງ ບໍ່ມີຄ່ານາຍໜ້າ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   d_story: "ທີ່ມາຂອງຜົນງານຊິ້ນນີ້",   // DRAFT lo: needs native review
   d_by: "ໂດຍ <b>{a}</b> · {d} · {c}",   // DRAFT lo: needs native review
   cc_h: "ແນວຄິດຂອງຜົນງານ",   // DRAFT lo: needs native review
@@ -442,26 +426,26 @@ lo: {
   cc_mat: "ວັດສະດຸ",   // DRAFT lo: needs native review
   cc_steps: "ຂັ້ນຕອນການເຮັດ",   // DRAFT lo: needs native review
   cc_step: "ຂັ້ນທີ {n}",   // DRAFT lo: needs native review
-  d_how1: "ສົ່ງຂໍ້ຄວາມຫາສິລະປິນ",   // DRAFT lo: needs native review
-  d_how2: "ລົມກັນເລື່ອງລາຄາ ແລະ ການຈັດສົ່ງ",   // DRAFT lo: needs native review
-  d_how3: "ຈ່າຍເງິນໃຫ້ສິລະປິນໂດຍກົງ",   // DRAFT lo: needs native review
-  p_how1: "ກົດຈ່າຍຜ່ານລິ້ງຂອງສິລະປິນ",   // DRAFT lo: needs native review
-  p_how2: "ສິລະປິນຕິດຕໍ່ກັບເລື່ອງການຈັດສົ່ງ",   // DRAFT lo: needs native review
-  p_how3: "ເງິນເຂົ້າບັນຊີສິລະປິນໂດຍກົງ",   // DRAFT lo: needs native review
-  d_paynote: "ລິ້ງຈ່າຍເງິນເປັນຂອງສິລະປິນເອງ circles ບໍ່ໄດ້ຮັບເງິນແທນ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   nf_h: "ຕຶກນີ້ຍັງບໍ່ໄດ້ສ້າງ",   // DRAFT lo: needs native review
   nf_p: "ບໍ່ມີສິລະປິນຄົນນີ້ໃນເມືອງ ກັບໄປຍ່າງເບິ່ງຕຶກທີ່ມີຢູ່",   // DRAFT lo: needs native review
   consent_form: "ການສົ່ງຂໍ້ຄວາມນີ້ ໝາຍຄວາມວ່າທ່ານຮັບຊາບ<a href=\"privacy.html\">ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ</a> ຂໍ້ມູນຂອງທ່ານຈະຖືກສົ່ງເຖິງຜູ້ຮັບທີ່ລະບຸເທົ່ານັ້ນ",   // DRAFT lo: needs native review
-  id_title: "ລົມກັບ<em>{a}</em>ໂດຍກົງ",   // DRAFT lo: needs native review
-  id_intro: "ຂໍ້ຄວາມນີ້ໄປຫາສິລະປິນໂດຍກົງ ບໍ່ຜ່ານຄົນກາງ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   id_name: "ຊື່ຂອງທ່ານ",   // DRAFT lo: needs native review
   id_email: "ອີເມວຂອງທ່ານ",   // DRAFT lo: needs native review
-  id_msg: "ຂໍ້ຄວາມ",   // DRAFT lo: needs native review
-  id_send: "ສົ່ງຫາສິລະປິນ →",   // DRAFT lo: needs native review
-  id_prefill: "ສະບາຍດີ ສົນໃຈຜົນງານ “{t}” ({p}) ຢາກສອບຖາມເລື່ອງລາຄາ ແລະ ການຈັດສົ່ງ ຂອບໃຈ",   // DRAFT lo: needs native review
-  id_pre_sold: "ສະບາຍດີ ເຫັນຜົນງານ “{t}” ທີ່ຂາຍໄປແລ້ວ ມັກຫຼາຍ ມີຜົນງານແບບນີ້ອີກບໍ ຫຼື ຮັບເຮັດວຽກໃໝ່ບໍ ຂອບໃຈ",   // DRAFT lo: needs native review
-  id_pre_res: "ສະບາຍດີ ສົນໃຈຜົນງານ “{t}” ({p}) ຖ້າຄົນທີ່ຈອງໄວ້ບໍ່ຊື້ ຂໍຕໍ່ຄິວດ້ວຍ ຂອບໃຈ",   // DRAFT lo: needs native review
-  id_subject: "ສົນໃຈຜົນງານ “{t}” — circles",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   done_sent: "ສົ່ງສຳເລັດແລ້ວ",   // DRAFT lo: needs native review
   done_sent_p: "ຂອບໃຈ ຂໍ້ຄວາມເຖິງປາຍທາງແລ້ວ",   // DRAFT lo: needs native review
   done_mail: "ກຳລັງເປີດແອັບອີເມວຂອງທ່ານ",   // DRAFT lo: needs native review
@@ -469,34 +453,34 @@ lo: {
   note_mailto: "ຕອນນີ້ຟອມນີ້ເຮັດວຽກຜ່ານແອັບອີເມວຂອງທ່ານ",   // DRAFT lo: needs native review
   jd_cancel: "ຍົກເລີກ",   // DRAFT lo: needs native review
   jd_send: "ສົ່ງຄຳຂໍ →",   // DRAFT lo: needs native review
-  by_back: "← ກັບໄປພິພິທະພັນຂອງ{a}",   // DRAFT lo: needs native review
-  by_marq: "ART NOT SORRY ★ ບໍ່ມີຄົນກາງ ★ ສະໜັບສະໜູນກົງເຖິງສິລະປິນ ★ CIRCLES NEVER END ★ ",   // DRAFT lo: needs native review
-  by_one: "ຊິ້ນດຽວໃນໂລກ",   // DRAFT lo: needs native review
-  by_free: "ຍັງວ່າງ",   // DRAFT lo: needs native review
-  by_reply: "ຕອບໄວສຸດພາຍໃນ {d} ວັນ",   // DRAFT lo: needs native review
-  by_lak: "ກີບ",   // DRAFT lo: needs native review
-  by_thb: "ບາດ",   // DRAFT lo: needs native review
-  by_detail: "ລາຍລະອຽດຂອງຜົນງານ",   // DRAFT lo: needs native review
-  by_cert: "ໃບຢັ້ງຢືນ",   // DRAFT lo: needs native review
-  by_how: "ຊື້ແນວໃດ",   // DRAFT lo: needs native review
-  by_ship: "ການສົ່ງເຄື່ອງ",   // DRAFT lo: needs native review
-  by_to: "ສົ່ງໄດ້ທີ່",   // DRAFT lo: needs native review
-  by_fee: "ຄ່າສົ່ງ",   // DRAFT lo: needs native review
-  by_days: "ຮອດມືພາຍໃນ",   // DRAFT lo: needs native review
-  by_dayu: "{d} ວັນ",   // DRAFT lo: needs native review
-  by_break: "ຖ້າແຕກລະຫວ່າງທາງ",   // DRAFT lo: needs native review
-  by_ret: "ສົ່ງຄືນໄດ້ {d} ວັນ",   // DRAFT lo: needs native review
-  by_safe: "ປອດໄພບໍ?",   // DRAFT lo: needs native review
-  by_safe_p: "ເງິນໄປຫາສິລະປິນໂດຍກົງ circles ບໍ່ໄດ້ຮັບເງິນແທນ ຖ້າມີບັນຫາ ຕິດຕໍ່",   // DRAFT lo: needs native review
-  by_since: "ເຮັດວຽກສິລະປະມາແຕ່ {y}",   // DRAFT lo: needs native review
-  by_soldn: "ຂາຍໄປແລ້ວ {n} ຊິ້ນ",   // DRAFT lo: needs native review
-  by_ask_h: "ທັກ{a} (ບໍ່ຕ້ອງອອກຈາກໜ້ານີ້)",   // DRAFT lo: needs native review
-  by_country: "ສົ່ງໄປບ່ອນໃດ (ປະເທດ / ເມືອງ)",   // DRAFT lo: needs native review
-  by_after: "ເມື່ອສົ່ງແລ້ວຈະເຫັນຂໍ້ຄວາມ:",   // DRAFT lo: needs native review
-  by_after_p: "“ສົ່ງຫາ{a}ແລ້ວ ຈະຕອບໄປທີ່ອີເມວຂອງທ່ານພາຍໃນ {d} ວັນ”",   // DRAFT lo: needs native review
-  by_again: "ສົ່ງຂໍ້ຄວາມອີກ",   // DRAFT lo: needs native review
-  title_by: "{t} ໂດຍ{a} — circles",   // DRAFT lo: needs native review
-  desc_by: "ເບິ່ງ “{t}” ຜົນງານ{d}ຂອງ{a} ລາຄາ {p} ສະໜັບສະໜູນກົງເຖິງສິລະປິນ ບໍ່ມີຄົນກາງ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   f_wave: "★ ຄື້ນລູກໃໝ່",   // DRAFT lo: needs native review
   legal_privacy: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",   // DRAFT lo: needs native review
   legal_terms: "ເງື່ອນໄຂການນຳໃຊ້",   // DRAFT lo: needs native review
@@ -510,9 +494,9 @@ lo: {
   mani1: "ບໍ່ມີ​ຫໍສິລະປະ",   // DRAFT lo: needs native review
   mani2: "ບໍ່ມີ​ຄົນກາງ",   // DRAFT lo: needs native review
   mani3: "ບໍ່ມີ​ຄ່ານາຍໜ້າ",   // DRAFT lo: needs native review
-  mani4: "ມີແຕ່ຄົນເຮັດ ກັບຄົນຊື້",   // DRAFT lo: needs native review
-  mani_aria: "ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ບໍ່ມີຄ່ານາຍໜ້າ ມີແຕ່ຄົນເຮັດກັບຄົນຊື້",   // DRAFT lo: needs native review
-  mani_note: "ທີ່ນີ້ສິລະປິນຕັ້ງລາຄາເອງ ຮັບເງິນເອງ ແລະ ລົມກັບຄົນຊື້ເອງ ບໍ່ມີໃຜມານັ່ງຂັ້ນລະຫວ່າງພວກເຮົາກັບຜົນງານ ເພາະງານສິລະປະຄວນເດີນທາງຈາກມືຄົນເຮັດໄປເຖິງມືຄົນຮັກ ບໍ່ແມ່ນແວະຈ່າຍຄ່າຜ່ານທາງກ່ອນ",   // DRAFT lo: needs native review
+  mani4: "ມີແຕ່ຄົນເຮັດ ກັບຄົນເບິ່ງ",   // DRAFT lo: needs native review
+  mani_aria: "ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ບໍ່ມີຄ່ານາຍໜ້າ ມີແຕ່ຄົນເຮັດກັບຄົນເບິ່ງ",   // DRAFT lo: needs native review
+  mani_note: "ທີ່ນີ້ສິລະປິນໄດ້ຮັບການສະໜັບສະໜູນໂດຍກົງຈາກຄົນທີ່ຮັກງານ ແລະ ລົມກັບຄົນເບິ່ງເອງ ບໍ່ມີໃຜມານັ່ງຂັ້ນລະຫວ່າງພວກເຮົາກັບຜົນງານ ເພາະງານສິລະປະຄວນເດີນທາງຈາກມືຄົນເຮັດໄປເຖິງມືຄົນຮັກ ບໍ່ແມ່ນແວະຈ່າຍຄ່າຜ່ານທາງກ່ອນ",   // DRAFT lo: needs native review
   how_h: "ວິທີໃຊ້ງານ",   // DRAFT lo: needs native review
   s1_h: "ເລືອກຕຶກ",   // DRAFT lo: needs native review
   s1_p: "ລາກຍ່າງຜ່ານເມືອງ ຕຶກໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ເຫັນຮູບຮ່າງແລ້ວຖືກໃຈຫຼັງໃດ ກໍຊີ້ຫຼັງນັ້ນ ບໍ່ຕ້ອງມີໃຜແນະນຳ",   // DRAFT lo: needs native review
@@ -524,8 +508,8 @@ lo: {
   feat_h_all: "ຜົນງານທັງໝົດໃນເມືອງ",   // DRAFT lo: needs native review
   sort_label: "ຈັດຮຽງຕາມ",   // DRAFT lo: needs native review
   sort_cur: "ຄັດມາໃຫ້",   // DRAFT lo: needs native review
-  sort_low: "ລາຄາຕ່ຳ → ສູງ",   // DRAFT lo: needs native review
-  sort_high: "ລາຄາສູງ → ຕ່ຳ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   sort_new: "ໃໝ່ລ່າສຸດ",   // DRAFT lo: needs native review
   all_btn: "ເບິ່ງທັງໝົດ {n} ຊິ້ນ",   // DRAFT lo: needs native review
   feat_count: "ສະແດງ {n} ຊິ້ນ",   // DRAFT lo: needs native review
@@ -539,8 +523,8 @@ lo: {
   a1: "ສົ່ງໄປສິບສອງຮອບ ໄດ້ຄຳຕອບວ່າ \"ໜ້າສົນໃຈ ແຕ່ຍັງບໍ່ແມ່ນຕອນນີ້\" ຄົບສິບສອງຮອບ ສຸດທ້າຍກໍເຂົ້າໃຈວ່າ \"ຕອນນີ້\" ຂອງພວກເຂົາບໍ່ເຄີຍມາເຖິງ ເລີຍເລີກລໍຖ້າ",   // DRAFT lo: needs native review
   q2: "ເປັນຫຍັງຕ້ອງຫ້ອງວ່າງກັບໝອກ?",   // DRAFT lo: needs native review
   a2: "ເພາະທີ່ວ່າງແມ່ນບ່ອນດຽວທີ່ບໍ່ມີໃຜມາບອກວ່າຕ້ອງຮູ້ສຶກແນວໃດ ຫ້ອງວ່າງໜຶ່ງຫ້ອງ ຄົນເບິ່ງຮ້ອຍຄົນ ໄດ້ຮ້ອຍເລື່ອງ ບໍ່ຕ້ອງມີຄີວເຣເຕີແປໃຫ້",   // DRAFT lo: needs native review
-  q3: "ຖ້າຄົນເຂົ້າມາແລ້ວບໍ່ຊື້ເດ?",   // DRAFT lo: needs native review
-  a3: "ກໍບໍ່ເປັນຫຍັງ ເບິ່ງຟຣີ ນັ່ງຖຽງກັບພາບໄດ້ ຖ້າມື້ໃດຜົນງານຕິດຕາມໄປຫຼອນເຖິງເຮືອນ ຄ່ອຍກັບມາລົມລາຄາກັບຄົນແຕ້ມໂດຍກົງ ບໍ່ມີໃຜເກັບຄ່າແນະນຳ",   // DRAFT lo: needs native review
+  q3: "ຖ້າຄົນເຂົ້າມາແລ້ວບໍ່ສະໜັບສະໜູນເດ?",   // DRAFT lo: needs native review
+  a3: "ກໍບໍ່ເປັນຫຍັງ ເບິ່ງຟຣີ ນັ່ງຖຽງກັບພາບໄດ້ ຖ້າມື້ໃດຜົນງານຕິດຕາມໄປຫຼອນເຖິງເຮືອນ ຄ່ອຍກັບມາສະໜັບສະໜູນຄົນແຕ້ມໂດຍກົງ ບໍ່ມີໃຜເກັບຄ່າແນະນຳ",   // DRAFT lo: needs native review
   spot_cta: "ເຂົ້າໄປໃນຕຶກນະພາ →",   // DRAFT lo: needs native review
   spot_meta: "NO.01 · {d} · ຕັ້ງແຕ່ {y} · {c}",   // DRAFT lo: needs native review
   stats_aria: "ຕົວເລກຂອງເມືອງ",   // DRAFT lo: needs native review
@@ -557,7 +541,7 @@ lo: {
   news_saved: "ບັນທຶກອີເມວໄວ້ໃນເຄື່ອງນີ້ແລ້ວ (ຍັງບໍ່ໄດ້ເຊື່ອມລະບົບສົ່ງຈົດໝາຍ)",   // DRAFT lo: needs native review
   news_sent: "ສະໝັກຮັບຂ່າວສຳເລັດແລ້ວ",   // DRAFT lo: needs native review
   cy_h: "ວົງມົນບໍ່ມີປາຍທາງ ສິລະປະກໍຄືກັນ",   // DRAFT lo: needs native review
-  cy_p: "ຊື່ Circles ມາຈາກຄວາມເຊື່ອວ່າງານສິລະປະບໍ່ມີມື້ຈົບ ສິລະປິນເຮັດຊິ້ນໜຶ່ງສຳເລັດ ກໍມີຊິ້ນຕໍ່ໄປລໍຖ້າຢູ່ສະເໝີ ງານທີ່ຖືກຊື້ໄປບໍ່ແມ່ນຈຸດຈົບ ແຕ່ເປັນແຮງໃຫ້ເຮັດຕໍ່ ແລະ ເມືອງນີ້ກໍວົນໄປແບບນັ້ນເລື້ອຍໆ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   cy_1: "ແຕ້ມ",   // DRAFT lo: needs native review
   cy_2: "ສະແດງໃນຕຶກ",   // DRAFT lo: needs native review
   cy_3: "ມີຄົນສະໜັບສະໜູນ",   // DRAFT lo: needs native review
@@ -572,7 +556,7 @@ lo: {
   sup_note: "ຕົວຢ່າງ: ໝວດ ແລະ ສັດສ່ວນຍັງບໍ່ຕົກລົງ [__]% ແມ່ນຕົວເລກທີ່ຍັງບໍ່ຮູ້ ຈະໃສ່ເມື່ອມີຂໍ້ມູນຈິງ",   // DRAFT lo: needs native review
   don_btn: "ສະໜັບສະໜູນ →",   // DRAFT lo: needs native review
   don_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
-  mq: ["ສິລະປິນບໍ່ມີກົດ", "BUY ART", "ສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ", "NO MIDDLEMAN", "ເມືອງຂອງສິລະປິນ", "ART NOT SORRY"],   // DRAFT lo: needs native review
+  mq: ["ສິລະປິນບໍ່ມີກົດ", "SUPPORT ART", "ສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ", "NO MIDDLEMAN", "ເມືອງຂອງສິລະປິນ", "ART NOT SORRY"],   // DRAFT lo: needs native review
   nav_join: "Join",   // DRAFT lo: needs native review
   mani_k: "Manifesto",   // DRAFT lo: needs native review
   how_i: "3 steps",   // DRAFT lo: needs native review
@@ -586,15 +570,15 @@ lo: {
   fold_spot: "ອ່ານບົດສຳພາດ 3 ຂໍ້",   // DRAFT lo: needs native review
   fold_foot: "ເມນູ ໂຊຊຽວ ແລະ ຈົດໝາຍຂ່າວ",   // DRAFT lo: needs native review
   pf_h: "ໂປຣໄຟລ໌ຂອງ{a}",   // DRAFT lo: needs native review
-  pf_open: "ຮັບງານສັ່ງເຮັດ",   // DRAFT lo: needs native review
-  pf_until: "· ຄິວວ່າງເດືອນ {m}",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   pf_cn: "ແນວຄິດຂອງຜົນງານ{a}",   // DRAFT lo: needs native review
   pf_nw: "ຜົນງານໃນພິພິທະພັນ",   // DRAFT lo: needs native review
-  pf_ns: "ຂາຍແລ້ວ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   pf_ny: "ເລີ່ມເຮັດງານສິລະປະ",   // DRAFT lo: needs native review
   pf_tl: "ເສັ້ນທາງທີ່ຜ່ານມາ",   // DRAFT lo: needs native review
   pf_wh: "ຜົນງານໃນພິພິທະພັນ",   // DRAFT lo: needs native review
-  pf_hover: "ຊີ້ທີ່ພາບເພື່ອເບິ່ງລາຄາ",   // DRAFT lo: needs native review
+  pf_hover: "ຊີ້ທີ່ພາບເພື່ອເບິ່ງຜົນງານ",   // DRAFT lo: needs native review
   pf_all: "ຍ່າງເຂົ້າໄປເບິ່ງທັງໝົດ →",   // DRAFT lo: needs native review
   pf_sup1: "ມັກຜົນງານຂອງ{a}ບໍ?",   // DRAFT lo: needs native review
   pf_sup2: "ຊ່ວຍໃຫ້ສ້າງງານຕໍ່",   // DRAFT lo: needs native review
@@ -631,11 +615,11 @@ lo: {
   cw_prev: "← ຕຶກກ່ອນໜ້າ",   // DRAFT lo: needs native review
   cw_next: "ຕຶກຖັດໄປ →",   // DRAFT lo: needs native review
   cw_roof: "{n} · STUDIO",   // DRAFT lo: needs native review
-  cw_look_sold: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   cw_look: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
   jn_kick: "ສຳລັບສິລະປິນ",   // DRAFT lo: needs native review
   jn_cta: "ເລົ່າໃຫ້ພວກເຮົາຟັງສັ້ນໆວ່າທ່ານເຮັດງານແບບໃດ ແນບລິ້ງຜົນງານ ແລ້ວພວກເຮົາຈະຕິດຕໍ່ກັບທາງອີເມວ",   // DRAFT lo: needs native review
-  jb_p: "ຕັ້ງລາຄາເອງ ຮັບເງິນເອງ ບໍ່ມີໃຜຄັດງານ",   // DRAFT lo: needs native review
+  jb_p: "ຮັບການສະໜັບສະໜູນໂດຍກົງ ບໍ່ມີໃຜຄັດງານ",   // DRAFT lo: needs native review
   jb_btn: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
   jd_title: "ຂໍມີ<em>ຕຶກ</em>ໃນເມືອງນີ້",   // DRAFT lo: needs native review
   jd_intro: "ເລົ່າໃຫ້ຟັງສັ້ນໆວ່າທ່ານເຮັດຫຍັງ ບໍ່ຕ້ອງມີປະຫວັດຍາວ ບໍ່ຕ້ອງມີໃຜຮັບຮອງ ພວກເຮົາເບິ່ງທີ່ຜົນງານ",   // DRAFT lo: needs native review
@@ -649,7 +633,7 @@ lo: {
   jd_pay_note: "ໃສ່ທະນາຄານ ແລະເລກບັນຊີທີ່ຢາກໃຫ້ຜູ້ສະໜັບສະໜູນໂອນເຂົ້າ ເມື່ອເຮົາຕອບອີເມລ ຈະຂໍຮູບ QR ຮັບເງິນຈາກແອັບທະນາຄານຂອງທ່ານ ເງິນເຂົ້າບັນຊີຂອງທ່ານໂດຍກົງ",   // DRAFT lo: needs native review
   jd_bank: "ທະນາຄານ",   // DRAFT lo: needs native review
   title_pf: "ໂປຣໄຟລ໌ຂອງ{a} — circles",   // DRAFT lo: needs native review
-  desc_pf: "ຮູ້ຈັກ{a} ສິລະປິນສາຂາ{d} ແນວຄິດຂອງຜົນງານ ຜົນງານທີ່ຂາຍຢູ່ ແລະ ຊ່ອງທາງສະໜັບສະໜູນ ຫຼື ສັ່ງເຮັດງານ",   // DRAFT lo: needs native review
+     // DRAFT lo: needs native review
   title_idx: "circles — ເມືອງຂອງສິລະປິນ ສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ",   // DRAFT lo: needs native review
   title_cw: "ຕຶກຂອງ{a} — circles",   // DRAFT lo: needs native review
   desc_idx: "circles ເມືອງຂອງສິລະປິນ ຕຶກຄອນກຣີດໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ບໍ່ມີຫໍສິລະປະ ບໍ່ມີຄົນກາງ ຍ່າງເຂົ້າໄປເບິ່ງຜົນງານແລ້ວສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ",   // DRAFT lo: needs native review
@@ -675,7 +659,7 @@ lo: {
   p1_h: "ຕຶກເປັນຂອງທ່ານ",   // DRAFT lo: needs native review
   p1_p: "ຈັດຫ້ອງ ວາງຜົນງານ ປ່ຽນຊັ້ນໄດ້ຕາມໃຈ ຕຶກໜຶ່ງຫຼັງແມ່ນສິລະປິນໜຶ່ງຄົນ ບໍ່ມີໃຜມາແບ່ງຝາດ້ວຍ",   // DRAFT lo: needs native review
   p2_h: "ເງິນເຂົ້າທ່ານ 100%",   // DRAFT lo: needs native review
-  p2_p: "ຕັ້ງລາຄາເອງ ຮັບເງິນເອງ ບໍ່ມີຄ່ານາຍໜ້າ ບໍ່ມີຄ່າຝາກຂາຍ ບໍ່ມີໃຜຫັກກ່ອນຮອດມື",   // DRAFT lo: needs native review
+  p2_p: "ຮັບເງິນສະໜັບສະໜູນຕົງເຖິງມື ບໍ່ມີຄ່ານາຍໜ້າ ບໍ່ມີຄ່າຝາກຂາຍ ບໍ່ມີໃຜຫັກກ່ອນຮອດມື",   // DRAFT lo: needs native review
   p3_h: "ບໍ່ມີໃຜຄັດງານ",   // DRAFT lo: needs native review
   p3_p: "ບໍ່ມີຄະນະກຳມະການ ບໍ່ມີຫົວຂໍ້ປະຈຳປີ ບໍ່ຖາມວ່າຮຽນຈົບຈາກໃສ ເຮັດມາແລ້ວຢາກໃຫ້ຄົນເຫັນ ກໍສ້າງຕຶກໄດ້ເລີຍ",   // DRAFT lo: needs native review
   skip_main: "ຂ້າມໄປທີ່ເນື້ອຫາ",   // DRAFT lo: needs native review
@@ -773,11 +757,7 @@ function artBg(c, k) {
 }
 /* artwork markup: real/generated image over the colour placeholder */
 /* sale status of a work: '' (for sale), 'sold' or 'reserved'; and the artist's own payment link (https only) */
-const workStatus = p => (p && (p.status === 'sold' || p.status === 'reserved')) ? p.status : '';
 const httpsHost = u => { try { const x = new URL(u); return x.protocol === 'https:' && x.hostname.includes('.'); } catch (e) { return false; } };
-const payLink = p => (p && typeof p.pay === 'string' && /^https:\/\/\S+$/.test(p.pay) && httpsHost(p.pay)) ? p.pay : '';   // a payment link must be https and have a real host name (https://x is refused)
-const stampHtml = p => { const s = workStatus(p); return s ? `<i class="stamp ${s}">${esc(t(s === 'sold' ? 'st_sold' : 'st_res'))}</i>` : ''; };
-const statusChip = p => { const s = workStatus(p); return s ? `<span class="chip ${s}">${esc(t(s === 'sold' ? 'st_sold' : 'st_res'))}</span>` : ''; };
 const artImg = (a, k) => { const p = a.pieces[k]; return p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''; };
 const artistById = id => ARTISTS.find(a => a.id === id);
 
@@ -870,24 +850,6 @@ function openJoin() {
   if (!d.open) d.showModal();
 }
 
-/* "สนับสนุนตรงถึงศิลปิน" — inquiry about one piece */
-function openInquiry(id, k, pre) {
-  const a = artistById(id); if (!a) return;
-  const p = a.pieces[k], d = mountDialog('dlg-inquiry');
-  d.innerHTML = dlgShell(t('id_title', {a: esc(nameL(a))}),
-    `<form><p class="intro">${esc(t('id_intro'))}</p>
-      <div class="row"><label>${esc(t('id_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label>${esc(t('id_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
-      <label>${esc(t('id_msg'))}<textarea name="message" required maxlength="1500">${esc(t(pre || 'id_prefill', {t: titleL(p), p: money(p.p, p)}))}</textarea></label>
-      <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-      <p class="note">${t('consent_form')}</p>
-      <div class="act"><button class="btn pk" type="submit">${esc(t('id_send'))}</button><button class="btn ghost" type="button" data-close>${esc(t('jd_cancel'))}</button></div>
-      ${CONFIG.endpoint ? '' : `<p class="note">${esc(t('note_mailto'))}</p>`}</form>`);
-  wireForm(d, async f => {
-    const res = await deliver('inquiry', a.email, t('id_subject', {t: titleL(p)}), {artist: nameL(a), work: titleL(p), price: money(p.p, p), name: f.name, email: f.email, message: f.message, captcha: f['cf-turnstile-response']});
-    showDone(d, res, a.email);
-  });
-  if (!d.open) d.showModal();
-}
 
 /* newsletter */
 async function subscribeNews(form) {

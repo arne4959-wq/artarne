@@ -1,7 +1,7 @@
 /* profile.js — the artist profile page body (profile.html / profile-<id>.html); the picture hall lives on studio-<id>.html.
    Look: design/profile-reference.html (reference only). Styles: profile.css, every rule starts with .pf-.
-   Data: artists.js. Optional fields (tagline, concept, sold, since, timeline[], commission{open,until}, instagram) - an empty one hides its whole slot.
-   Uses from the page: t, esc, pk, usd, money, breadcrumbHtml, sampleMode, openTip, nameL, discL, cityL, workStatus, openInquiry, CONFIG.
+   Data: artists.js. Optional fields (tagline, concept, since, timeline[], instagram) - an empty one hides its whole slot.
+   Uses from the page: t, esc, pk, money, breadcrumbHtml, canDonate, openDonate, DON_AMOUNTS, nameL, discL, cityL, CONFIG.
    Exposes window.PF = {mount}. */
 (function () {
   const https = u => { try { const x = new URL(u); return x.protocol === 'https:' && x.hostname.includes('.'); } catch (e) { return false; } };
@@ -12,16 +12,14 @@
     [86, 62, 150, .28, 22, 14, 'turn', -20], [6, 80, 110, .24, -20, 10, 'turnr', 22], [46, 92, 190, .2, 4, 26, 'turn', 24]];
 
   function stats(A) {
-    const sold = A.pieces.filter(p => workStatus(p) === 'sold').length + (+A.sold > 0 ? +A.sold : 0);
     return [
-      [A.pieces.length, 'pf_nw', 'ink', -3], [sold, 'pf_ns', 'pink', 2], [+A.since > 0 ? A.since : 0, 'pf_ny', 'gold', -1.5]]
+      [A.pieces.length, 'pf_nw', 'ink', -3], [+A.since > 0 ? A.since : 0, 'pf_ny', 'gold', -1.5]]
       .filter(s => s[0] > 0);
   }
-  const TIPS = [3, 5, 10];   // preset tip amounts in US dollars
+  const TIPS = DON_AMOUNTS;   // preset donation amounts in US dollars (circles.js)
   function html(A) {
     const name = nameL(A), n = A.pieces.length;
     const tagline = pk(A, 'tagline'), bio = pk(A, 'bio'), concept = pk(A, 'concept');
-    const com = A.commission && A.commission.open ? A.commission : null, until = com && pk(com, 'until');
     const tl = Array.isArray(A.timeline) ? A.timeline.filter(x => x && x.y && (x.t || x.tEn)) : [];
     const ig = A.instagram && https(A.instagram) ? A.instagram : '';
     let d = 0; const delay = () => `style="--pf-d:${(d += .12).toFixed(2)}s"`;   // entrance order: each next element lands a little later
@@ -29,15 +27,12 @@
     const tags = [[discL(A), 'paper', -2], [cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>
       `<li class="pf-tag pf-in pf-pop pf-t-${x[1]}" style="--r:${x[2]}deg;--pf-d:${1 + i * .1}s">${esc(x[0])}</li>`).join('');
     const picks = A.pieces.slice(0, 4).map((p, k) => {
-      const sta = workStatus(p), price = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : money(p.p, p);
-      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(titleL(p) + ' · ' + price)}">
+      return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(titleL(p) + ' · ' + p.y)}">
         <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''}
-        <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp${sta === 'sold' ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
+        <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp">${esc(p.y)}</span></span></a></li>`;
     }).join('');
-    const can = !!supOf(A), smp = sampleMode(A), tips = can || smp;   // sample artists always get the tip block (a generated SAMPLE QR); a real one only with payment details
-    const supBtn = smp
-      ? `<button type="button" class="pf-sbtn" data-pf-tip="${TIPS[1]}">${esc(t('pf_supb', {a: name}))}</button>`
-      : can
+    const can = canDonate(A), tips = can;   // sample artists always get the donation block (a generated SAMPLE QR); a real one only with payment details
+    const supBtn = can
       ? `<button type="button" class="pf-sbtn" data-support="${esc(A.id)}">${esc(t('pf_supb', {a: name}))}</button>`
       : `<button type="button" class="pf-sbtn" disabled aria-disabled="true">${esc(t('pf_supb', {a: name}))}</button><span class="pf-soon" aria-hidden="true">${esc(t('pf_soon'))}</span>`;
     return `<section class="pf" id="pf" aria-labelledby="pf-name">
@@ -48,7 +43,6 @@
     <div class="pf-port pf-in pf-pop" style="--r:0deg;--pf-d:.1s" aria-hidden="true"><span class="pf-pic">${esc(chars(name)[0] || '')}</span><span class="pf-tp pf-tp-gold pf-tp-top"></span></div>
     <h2 class="pf-name" id="pf-name"><span class="pf-sr">${esc(name)}</span>${letters}</h2>
     <ul class="pf-tags" aria-label="${esc(t('lb_artist'))}">${tags}</ul>
-    ${com ? `<p class="pf-open pf-in pf-pop" style="--r:-1.5deg;--pf-d:1.2s"><i class="pf-dot" aria-hidden="true"></i><b>${esc(t('pf_open'))}</b>${until ? ` <span>${esc(t('pf_until', {m: until}))}</span>` : ''}</p>` : ''}
     ${tagline || bio ? `<div class="pf-note pf-in pf-rise" style="--r:-.8deg;--pf-d:1.3s"><i class="pf-tp pf-tp-pink pf-tp-l"></i><i class="pf-tp pf-tp-pink pf-tp-r"></i>${tagline ? `<p class="pf-tag1">“${esc(tagline)}”</p>` : ''}${bio ? `<p class="pf-bio">${esc(bio)}</p>` : ''}</div>` : ''}
     ${concept ? `<div class="pf-cc pf-in pf-rise" style="--r:.8deg;--pf-d:1.6s"><span class="pf-cv" aria-hidden="true">CONCEPT</span><div><small>${esc(t('pf_cn', {a: name}))}</small><p>${esc(concept)}</p></div><i class="pf-tp pf-tp-gold pf-tp-c"></i></div>` : ''}
     <ul class="pf-stats">${stats(A).map((s, i) => `<li class="pf-st pf-st-${s[2]} pf-in pf-pop" style="--r:${s[3]}deg;--pf-d:${(1.6 + i * .08).toFixed(2)}s"><b>${s[0]}</b><span>${esc(t(s[1]))}</span></li>`).join('')}</ul>
@@ -63,7 +57,7 @@
       <div class="pf-stx"><h3 class="bl bl-y bl-dk"><span class="bl-t">${esc(t('pf_sup1', {a: name}))} ${esc(t('pf_sup2'))}</span></h3><p>${esc(t('pf_supn'))}</p></div>
       <div class="pf-sb">${supBtn}</div></div><i class="pf-tp pf-tp-gold pf-tp-s"></i>
       ${tips ? `<div class="pf-tips" id="pf-tips" role="group" aria-labelledby="pf-tips-h">
-        <p class="pf-tips-h" id="pf-tips-h">${esc(t('tip_h'))}${smp ? ` <span class="pf-tips-s">${esc(t('sm_tag'))}</span>` : ''}</p>
+        <p class="pf-tips-h" id="pf-tips-h">${esc(t('tip_h'))}${sampleMode(A) ? ` <span class="pf-tips-s">${esc(t('sm_tag'))}</span>` : ''}</p>
         <div class="pf-tips-r">${TIPS.map(n => `<button type="button" class="pf-amt" data-pf-tip="${n}" aria-label="${esc(t('pf_supb', {a: name}) + ' ' + money(n))}">${esc(money(n))}</button>`).join('')}</div>
         <form class="pf-tipf" novalidate><label for="pf-tip-n">${esc(t('tip_other'))}</label>
           <input id="pf-tip-n" name="n" type="number" inputmode="numeric" min="1" max="1000" step="1" placeholder="12">
@@ -71,7 +65,6 @@
         <p class="pf-tiperr" role="alert" hidden>${esc(t('tip_bad'))}</p></div>` : ''}</div>
     <div class="pf-cta pf-in pf-rise" style="--r:0deg;--pf-d:2.2s">
       <a class="pf-go bl bl-y bl-dk" href="studio-${esc(A.id)}.html"><span class="bl-t">${esc(t('pf_walk'))}</span></a>
-      <button type="button" class="pf-lk" data-pf-ask>${esc(t('pf_ask'))}</button>
       ${ig ? `<a class="pf-lk" href="${esc(ig)}" target="_blank" rel="noopener">${esc(t('pf_ig'))}</a>` : ''}
       <button type="button" class="pf-bt pf-bt-gold" data-pf-share>${esc(t('pf_share'))}</button>
       <button type="button" class="pf-bt" data-pf-copy>${esc(t('pf_copy'))}</button>
@@ -100,12 +93,11 @@
     sec.querySelector('.pf-tipf')?.addEventListener('submit', e => {   // a custom amount: a whole number of dollars, 1 to 1000
       e.preventDefault(); const v = tipIn.value.trim(), n = +v;
       if (!/^\d{1,4}$/.test(v) || n < 1 || n > 1000) { tipErr.hidden = false; tipIn.setAttribute('aria-invalid', 'true'); tipIn.focus(); return; }
-      tipErr.hidden = true; tipIn.removeAttribute('aria-invalid'); openTip(A, n);
+      tipErr.hidden = true; tipIn.removeAttribute('aria-invalid'); openDonate(A, n);
     });
     tipIn?.addEventListener('input', () => { tipErr.hidden = true; tipIn.removeAttribute('aria-invalid'); });
     sec.addEventListener('click', async e => {
-      const tp = e.target.closest('[data-pf-tip]'); if (tp) { openTip(A, +tp.dataset.pfTip); return; }
-      if (e.target.closest('[data-pf-ask]')) { const k = A.pieces.findIndex(p => !workStatus(p)); openInquiry(A.id, k < 0 ? 0 : k, ''); return; }
+      const tp = e.target.closest('[data-pf-tip]'); if (tp) { openDonate(A, +tp.dataset.pfTip); return; }
       if (e.target.closest('[data-pf-copy]')) { const ok = await copy(url()); say(t(ok ? 'pf_copied' : 'copy_fail')); return; }
       if (e.target.closest('[data-pf-share]')) {
         if (navigator.share) { try { await navigator.share({title: document.title, url: url()}); } catch (err) { /* cancelled */ } return; }

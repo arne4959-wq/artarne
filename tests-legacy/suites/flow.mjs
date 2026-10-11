@@ -32,9 +32,10 @@ export async function run({url, check}) {
   // featured: sort + show all
   await ev("document.getElementById('all-btn').click()"); await sleep(800);
   check(`"Show all" lists all ${WORKS} works`, (await ev("document.querySelectorAll('.card').length")) === WORKS);
-  await ev("(()=>{const s=document.getElementById('sort');s.value='low';s.dispatchEvent(new Event('change'))})()"); await sleep(700);
-  const prices = await ev("[...document.querySelectorAll('.card .pp:not(.strike)')].map(e=>+e.textContent.replace(/\\D/g,''))");
-  check('sort low → high is ascending', prices.every((p, i) => i === 0 || p >= prices[i - 1]), prices.join());
+  check('no price sort any more: only "curated" and "newest"', (await ev("[...document.querySelectorAll('#sort option')].map(o=>o.value).join()")) === 'cur,new');
+  await ev("(()=>{const s=document.getElementById('sort');s.value='new';s.dispatchEvent(new Event('change'))})()"); await sleep(700);
+  const years = await ev("[...document.querySelectorAll('.card .pp')].map(e=>+e.textContent.replace(/\\D/g,''))");
+  check('sort newest first is descending by year', years.length === WORKS && years.every((y, i) => i === 0 || y <= years[i - 1]), years.join());
   await ev("document.getElementById('sort').value='cur';document.getElementById('sort').dispatchEvent(new Event('change'));document.getElementById('all-btn').click()"); await sleep(500);
 
   // map filter bar
@@ -96,12 +97,9 @@ export async function run({url, check}) {
   await b.key('Escape', 'Escape', 27); await sleep(300);
   check('Esc closes it and clears ?work', (await ev("!document.getElementById('dlg').open")) && (await ev('location.search')) === '');
   await ev("document.querySelector('.mus-art[data-k=\"1\"]').click()"); await sleep(900);
-  await ev("document.getElementById('dlg-buy').click()"); await sleep(1500);
-  check('the buy button takes you to this work\'s buy page', (await ev('location.pathname')).endsWith('buy-thara-1.html'));
-
-  // the buy page (sample artists: QR + "I have paid" demo, see the sample suite)
-  await b.go(`${url}/buy-thara-1.html`, 3000);
-  check('buy page: loads with the work and its payment box (this work is on hold, so no QR)', (await ev("!!document.querySelector('.by-title') && !!document.querySelector('.by-box') && !document.querySelector('.by-form')")));
+  await ev("document.getElementById('dlg-sup').click()"); await sleep(700);
+  check('the Support button in the open work opens the donation dialog, naming the work', (await ev("document.getElementById('dlg-tip')?.open")) && (await ev("document.getElementById('dlg-tip').textContent")).includes('The Waiting') && (await ev("!!document.querySelector('#dlg-tip .pf-amt')")));
+  await ev("document.getElementById('dlg-tip').close()");
 
   await b.go(`${url}/studio-dao.html?work=2`, 4000);
   check('deep link ?work=2 opens "The Letter"', (await ev("document.getElementById('dlg').open")) && (await ev("document.getElementById('dlg-t').textContent")) === 'The Letter');

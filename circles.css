@@ -209,3 +209,17 @@ html[lang=lo]{--thai:"IBM Plex Sans Thai","Noto Sans Lao","Noto Sans Lao UI","Ph
 .pf-ltr,.cut-name span{line-height:1.45;}
 /* phones: text of at least 17px and not hairline thin */
 @media(max-width:600px){html{font-size:106.25%;}}
+
+/* donation amounts (the donation dialog and the profile block) */
+.pf-tips-r{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;}
+.pf-amt{min-width:92px;min-height:52px;font:400 1.4rem var(--anton);letter-spacing:.08em;background:var(--pink);color:var(--black);border:4px solid var(--black);box-shadow:5px 5px 0 var(--black);padding:.4rem 1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.pf-amt:hover{background:var(--gold);transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--black);}
+.pf-tipf{display:flex;flex-wrap:wrap;gap:.6rem .8rem;align-items:center;justify-content:center;}
+.pf-tipf label{font:400 .95rem var(--thai);}
+.pf-tipf input{width:7.5rem;min-height:48px;font:400 1.1rem var(--thai);border:4px solid var(--black);background:#fff;color:var(--black);padding:.4rem .7rem;border-radius:0;}
+.pf-tipf input[aria-invalid=true]{border-color:var(--tartan-red,#C8102E);}
+.pf-tiperr{margin:0;background:var(--black);color:var(--paper);padding:.2rem .8rem;font:400 .95rem var(--thai);}
+.pf-tiperr[hidden]{display:none;}
+.cdlg .pf-tips-r{justify-content:center;}
+.cdlg .pf-tipf input{width:7.5rem;}
+.sm-for{margin:0;font:700 .95rem var(--thai);}
