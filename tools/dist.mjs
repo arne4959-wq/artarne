@@ -18,6 +18,13 @@ const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isF
 for (const n of [...top, ...FILES]) if (fs.existsSync(path.join(root, n))) copy(path.join(root, n), path.join(out, n));
 for (const d of DIRS) if (fs.existsSync(path.join(root, d))) copy(path.join(root, d), path.join(out, d));
 
+// the templates (cutaway.html, profile.html, buy.html) show Napha by default, a copy of studio/profile/buy-napha: keep them out of search results
+for (const n of ['cutaway.html', 'profile.html', 'buy.html']) {
+  const f = path.join(out, n); if (!fs.existsSync(f)) continue;
+  const html = fs.readFileSync(f, 'utf8');
+  if (!/name="robots"/.test(html)) fs.writeFileSync(f, html.replace(/<meta name="viewport"[^>]*>/, m => `${m}\n<meta name="robots" content="noindex">`));
+}
+
 // every local file the pages point at must exist in dist/
 const missing = new Set();
 for (const n of fs.readdirSync(out).filter(n => n.endsWith('.html') || n.endsWith('.css'))) {

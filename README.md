@@ -118,7 +118,7 @@ Every form also has a hidden honeypot field against simple bots.
 It is a static site, any static host works. Do **not** upload the project folder as is: it also holds dev files (tests, tools, notes, snapshots). Run `npm run dist` (= `node tools/dist.mjs`) first; it copies only the public site into `dist/` and warns about any file the pages point at that is missing. Publish `dist/`.
 
 - **Netlify / Cloudflare Pages**: build command `node tools/dist.mjs`, publish directory = `dist`. Or drag the `dist/` folder in.
-- **GitHub Pages**: Pages can only serve the repo root or `/docs`, so either copy `dist/` into `docs/` and choose `/docs` in Settings → Pages (`.nojekyll` is included), or publish `dist/` with a GitHub Actions workflow. Do not serve the repo root.
+- **GitHub Pages** (set up): `.github/workflows/pages.yml` builds with `--site`, runs `dist.mjs` and publishes `dist/` on every push to `main`. One-time setup: Settings → Pages → Source: **GitHub Actions**. The site is then at `https://arne4959-wq.github.io/artarne/`. Because it lives under `/artarne/`, Google does not read its `robots.txt` (only the one at the domain root): add the site in Google Search Console and submit `sitemap.xml` there.
 
 After you have a domain, run `node tools/build.mjs --site https://your-domain` once (absolute share-image URLs, canonical links, sitemap), then check a share preview with the platforms' debuggers.
 `404.html` also opens a studio that has not been built yet through `cutaway.html?id=`, so a new artist works the moment you add it to `artists.js`, before you re-run the build.

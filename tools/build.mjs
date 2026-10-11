@@ -164,7 +164,9 @@ try {
   let idx = read('index.html');
   const fill = (name, content) => { const re = new RegExp(`<!--pre:${name}-->[\\s\\S]*?<!--/pre:${name}-->`); if (!re.test(idx)) throw new Error('marker missing: ' + name); idx = idx.replace(re, () => `<!--pre:${name}-->${content}<!--/pre:${name}-->`); };
   fill('masonry', clean(frag.masonry)); fill('filters', clean(frag.filters)); fill('map', clean(frag.map)); fill('strip', list);
-  if (SITE) idx = idx.replace(/(<meta property="og:image" content=")[^"]*(")/, (m, pre, post) => pre + abs('og.png') + post).replace(/(<meta name="twitter:image" content=")[^"]*(")/, (m, pre, post) => pre + abs('og.png') + post);
+  idx = idx.replace(/<link rel="canonical"[^>]*>\n|<meta property="og:url"[^>]*>\n/g, '');      // index.html is its own source: drop what an earlier --site build added
+  if (SITE) idx = idx.replace(/(<meta property="og:image" content=")[^"]*(")/, (m, pre, post) => pre + abs('og.png') + post).replace(/(<meta name="twitter:image" content=")[^"]*(")/, (m, pre, post) => pre + abs('og.png') + post)
+    .replace(/(<meta property="og:type"[^>]*>\n)/, (m, tag) => `<link rel="canonical" href="${abs('')}">\n<meta property="og:url" content="${abs('')}">\n${tag}`);
   write('index.html', idx);
   console.log('  updated index.html (pre-rendered blocks)');
 
