@@ -29,6 +29,23 @@ function Head({title, html = false}) {
     <button type="button" className="cdlg-x" data-close="" aria-label={t('close')} onClick={close}>✕</button></div>;
 }
 
+/* Support dialog: the bank QR of an artist (or of the site). Money goes straight to that account. */
+function SupportDialog({info, who}) {
+  const {t} = useLang(), [copied, setCopied] = useState(false);
+  const row = (k, v) => v ? <div><dt>{t(k)}</dt><dd>{v}</dd></div> : null;
+  return <><Head title={t('sup_qr_t', {a: who})}/>
+    <div className="sup-dlg">
+      {info.sample && <p className="sup-sample" role="note">{t('sup_sample')}</p>}
+      {info.qr && <img className="sup-qr" src={info.qr} alt={t('sup_qr_t', {a: who})} width="240" height="240"/>}
+      <dl className="sup-dl">{row('sup_bank', info.bank)}{row('sup_acc_name', info.name)}{row('sup_acc_no', info.no)}</dl>
+      <p className="note">{t('sup_direct', {a: who})}</p>
+      <div className="act">
+        {info.no && <button type="button" className="btn" onClick={async () => { try { await navigator.clipboard.writeText(info.no); setCopied(true); } catch (e) {} }}>{t(copied ? 'sup_copied' : 'sup_copy')}</button>}
+        <button type="button" className="btn ghost" onClick={close}>{t('close')}</button>
+      </div>
+    </div></>;
+}
+
 /* optional CAPTCHA (Cloudflare Turnstile): its script loads only when a site key is configured */
 export function Turnstile() {
   const ref = useRef(null);
@@ -97,7 +114,7 @@ function JoinForm() {
   const L = useLang(), {t} = L;
   const discs = [...new Set(ARTISTS.map(a => a.disc))];
   return <FormBody title={t('jd_title')} sendKey="jd_send" onSubmit={async (f, form) => {
-    const res = await deliver('join', CONFIG.contact, t('jd_subject', {n: f.name}), {name: f.name, email: f.email, discipline: form.querySelector('select').selectedOptions[0].textContent, link: f.link, message: f.message, captcha: f['cf-turnstile-response']});
+    const res = await deliver('join', CONFIG.contact, t('jd_subject', {n: f.name}), {name: f.name, email: f.email, discipline: form.querySelector('select[name=discipline]').selectedOptions[0].textContent, link: f.link, message: f.message, bank: f.bank, account_name: f.account_name, account_no: f.account_no, captcha: f['cf-turnstile-response']});
     return {res, to: CONFIG.contact};
   }}>
     <p className="intro">{t('jd_intro')}</p>
@@ -105,6 +122,9 @@ function JoinForm() {
     <label>{t('jd_disc')}<select name="discipline">{discs.map(x => <option key={x} value={x}>{L.discL({disc: x})}</option>)}<option value="other">{t('jd_other')}</option></select></label>
     <label>{t('jd_link')}<input name="link" type="url" placeholder="https://" maxLength={200}/></label>
     <label>{t('jd_msg')}<textarea name="message" required maxLength={1500}/></label>
+    <fieldset className="jd-pay"><legend>{t('jd_pay_h')}</legend><p className="note">{t('jd_pay_note')}</p>
+      <div className="row"><label>{t('jd_bank')}<select name="bank"><option value="">—</option><option value="BCEL">BCEL</option><option value="LDB">LDB</option><option value="other">{t('jd_other')}</option></select></label><label>{t('sup_acc_name')}<input name="account_name" maxLength={80}/></label></div>
+      <label>{t('sup_acc_no')}<input name="account_no" inputMode="numeric" maxLength={40}/></label></fieldset>
   </FormBody>;
 }
 
@@ -123,12 +143,14 @@ function InquiryForm({id, k, pre}) {
 
 export function DialogsProvider({children}) {
   // each open bumps a counter: the dialog is rebuilt (key) with a fresh form, like the old innerHTML rewrite
-  const [join, setJoin] = useState(0), [inq, setInq] = useState(null);
+  const [join, setJoin] = useState(0), [inq, setInq] = useState(null), [sup, setSup] = useState(null);
   const openJoin = useCallback(() => setJoin(n => n + 1), []);
   const openInquiry = useCallback((id, k, pre) => { if (artistById(id)) setInq(o => ({id, k, pre, seq: (o ? o.seq : 0) + 1})); }, []);
-  return <DialogsCtx.Provider value={{openJoin, openInquiry}}>
+  const openSupport = useCallback((info, who) => { if (info) setSup(o => ({info, who, seq: (o ? o.seq : 0) + 1})); }, []);
+  return <DialogsCtx.Provider value={{openJoin, openInquiry, openSupport}}>
     {children}
     {join > 0 && <Dialog id="dlg-join" seq={join}><JoinForm key={join}/></Dialog>}
     {inq && <Dialog id="dlg-inquiry" seq={inq.seq}><InquiryForm key={inq.seq} {...inq}/></Dialog>}
+    {sup && <Dialog id="dlg-support" seq={sup.seq}><SupportDialog key={sup.seq} info={sup.info} who={sup.who}/></Dialog>}
   </DialogsCtx.Provider>;
 }

@@ -34,13 +34,13 @@ async function copy(text) {
 }
 
 function ProfileBody({A}) {
-  const L = useLang(), {t} = L, {openInquiry} = useDialogs(), live = useRef(null), timers = useRef({});
+  const L = useLang(), {t} = L, {openInquiry, openSupport} = useDialogs(), live = useRef(null), timers = useRef({});
   const name = L.nameL(A);
   const tagline = L.pk(A, 'tagline'), bio = L.pk(A, 'bio'), concept = L.pk(A, 'concept');
   const com = A.commission && A.commission.open ? A.commission : null, until = com && L.pk(com, 'until');
   const tl = Array.isArray(A.timeline) ? A.timeline.filter(x => x && x.y && (x.t || x.tEn)) : [];
   const ig = A.instagram && https(A.instagram) ? A.instagram : '';
-  const can = https(CONFIG.donate);
+  const can = !!(A.support && (A.support.qr || A.support.no));
   const url = () => new URL(`profile-${A.id}.html`, location.href).href;
   // the status line is emptied first, so a screen reader announces the same message twice in a row
   const say = m => {
@@ -81,7 +81,7 @@ function ProfileBody({A}) {
         <span className="pf-heart" aria-hidden="true">♥</span>
         <div className="pf-stx"><h3 className="bl bl-y bl-dk"><span className="bl-t">{t('pf_sup1', {a: name})} {t('pf_sup2')}</span></h3><p>{t('pf_supn')}</p></div>
         <div className="pf-sb">{can
-          ? <a className="pf-sbtn" href={CONFIG.donate} target="_blank" rel="noopener">{t('pf_supb', {a: name})}</a>
+          ? <button type="button" className="pf-sbtn" onClick={() => openSupport(A.support, name)}>{t('pf_supb', {a: name})}</button>
           : <><button type="button" className="pf-sbtn" disabled aria-disabled="true">{t('pf_supb', {a: name})}</button><span className="pf-soon" aria-hidden="true">{t('pf_soon')}</span></>}</div></div><i className="pf-tp pf-tp-gold pf-tp-s"></i></div>
       <div className="pf-cta pf-in pf-rise" style={{'--r': '0deg', '--pf-d': '2.2s'}}>
         <a className="pf-go bl bl-y bl-dk" href={`studio-${A.id}.html`}><span className="bl-t">{t('pf_walk')}</span></a>

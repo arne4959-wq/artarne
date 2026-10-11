@@ -17,6 +17,13 @@ import {useToast} from '../components/Toast.jsx';
 import sprite from 'virtual:circles/sprite/buy';
 import styles from '../styles/buy.js';
 
+/* showcase mode (CONFIG.shop === false): the buy pages are closed, the visitor goes to the artist's museum */
+if (CONFIG.shop === false && typeof location !== 'undefined') {
+  const bm = location.pathname.match(/buy-([a-z0-9-]+?)-\d+\.html$/i), bq = new URLSearchParams(location.search).get('id');
+  if (bm) location.replace('studio-' + bm[1] + '.html');
+  else if (/buy\.html$/i.test(location.pathname)) location.replace(bq ? 'cutaway.html?id=' + encodeURIComponent(bq) : 'index.html');
+}
+
 const LOGOS = [[-6, 14, 300, 26, 'turn'], [64, 46, 260, 22, 'turnr'], [-4, 72, 280, 30, 'turn'], [80, 2, 170, 18, 'turnr']];   // left%, top%, size px, seconds, direction
 const Todo = ({v}) => v ? v : <span className="by-todo">[__]</span>;
 const Money = ({cls, p}) => { const {moneyHtml} = useLang(); return <span className={cls} dangerouslySetInnerHTML={{__html: moneyHtml(p.p, p)}}/>; };

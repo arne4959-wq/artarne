@@ -605,6 +605,7 @@ function fillDlg(k) {
   $('#dlg-how').hidden = !!sta;
   $('#dlg-how').innerHTML = (pay ? ['p_how1', 'p_how2', 'p_how3'] : ['d_how1', 'd_how2', 'd_how3']).map(x => `<li>${esc(t(x))}</li>`).join('');
   $('#dlg-paynote').hidden = !pay; $('#dlg-paynote').textContent = pay ? t('d_paynote') : '';
+  if (!SHOP) { payA.hidden = true; $('#dlg-how').hidden = true; $('#dlg-paynote').hidden = true; supportBtn(buy, A); }   // showcase mode (CONFIG.shop = false): no buying, the only action is supporting the artist
   const pv = $('#dlg-prev'), nx = $('#dlg-next'), n = A.pieces.length;
   pv.setAttribute('aria-label', t('w_prev')); nx.setAttribute('aria-label', t('w_next')); pv.disabled = k === 0; nx.disabled = k === n - 1;
   $('#dlg-th').innerHTML = A.pieces.map((q, j) => `<button type="button" class="th${j === k ? ' on' : ''}" data-th="${j}" style="--art:${artBg(A.works, j)}" aria-label="${esc(titleL(q))}"${j === k ? ' aria-current="true"' : ''}>${artImg(A, j)}</button>`).join('');
@@ -618,7 +619,7 @@ function closeWork() { if (dlg.open) dlg.close(); }
 dlg.addEventListener('close', () => { openK = null; try { const u = new URL(location.href); u.searchParams.delete('work'); history.replaceState(null, '', u); } catch (e) {} });
 dlg.addEventListener('click', e => { if (e.target === dlg) closeWork(); });
 $('#dlg-x').addEventListener('click', closeWork);
-$('#dlg-buy').addEventListener('click', () => { location.href = `buy-${A.id}-${openK}.html`; });      // the buy page of this work (it has the message form, the sold / reserved wording and the pay link)
+$('#dlg-buy').addEventListener('click', () => { if (!SHOP) { if (supOf(A)) openSupport(supOf(A), nameL(A)); return; } location.href = `buy-${A.id}-${openK}.html`; });      // the buy page of this work (it has the message form, the sold / reserved wording and the pay link)
 $('#dlg-prev').addEventListener('click', () => { if (openK > 0) openWork(openK - 1); });
 $('#dlg-next').addEventListener('click', () => { if (openK < A.pieces.length - 1) openWork(openK + 1); });
 $('#dlg-th').addEventListener('click', e => { const b = e.target.closest('[data-th]'); if (b) openWork(+b.dataset.th); });

@@ -145,14 +145,15 @@ export function JoinBand() {
 
 /* the Support button is a real link only when CONFIG.donate is an https:// address, otherwise a disabled "Coming soon" (never a dead link) */
 export function Support() {
-  const {t} = useLang();
+  const {t} = useLang(), {openSupport} = useDialogs(), qr = !!(CONFIG.support && (CONFIG.support.qr || CONFIG.support.no));
   let ok = false; try { ok = new URL(CONFIG.donate).protocol === 'https:'; } catch (e) {}
   return <section className="sec sup" id="support">
     <div>
       <div className="sec-k reveal">Support</div>
       <h2 className="sec-t reveal"><span data-t="sup_h">{t('sup_h')}</span></h2>
       <p className="sec-p reveal" data-t="sup_p">{t('sup_p')}</p>
-      {ok ? <a className="btn pk" id="donate-btn" href={CONFIG.donate} target="_blank" rel="noopener" data-t="don_btn">{t('don_btn')}</a>
+      {qr ? <button type="button" className="btn pk" id="donate-btn" onClick={() => openSupport(CONFIG.support, 'Circles')} data-t="don_btn">{t('don_btn')}</button>
+        : ok ? <a className="btn pk" id="donate-btn" href={CONFIG.donate} target="_blank" rel="noopener" data-t="don_btn">{t('don_btn')}</a>
         : <button type="button" className="btn pk soon" id="donate-btn" disabled data-t="don_soon">{t('don_soon')}</button>}
     </div>
     <div className="sup-w reveal" style={{'--i': 1}}>

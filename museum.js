@@ -138,7 +138,7 @@
     const buy = sta === 'sold' ? t('b_sold', {a: nameL(A)}) : sta === 'reserved' ? t('b_res') : pay ? t('b_ask', {a: nameL(A)}) : t('buy', {a: nameL(A)});
     return `<i class="mus-tape"></i><small>${p.y} · ${esc(fmtSize(p))}</small><b>${esc(titleL(p))}</b>${p.q ? `<i class="mus-q">“${esc(pk(p, 'q'))}”</i>` : ''}`
       + `<span class="mus-prow"><span class="mus-pr${sta ? ' strike' : ''}">${moneyHtml(p.p, p)}</span>${statusChip(p)}</span>`
-      + `<span class="mus-acts">${pay ? `<a class="btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="btn ${pay ? 'ghost' : 'pk'}" href="buy-${esc(A.id)}-${k}.html" data-mus="buy">${esc(buy)}</a><button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
+      + `<span class="mus-acts">${!SHOP ? supportHtml(A) : `${pay ? `<a class="btn pk" href="${esc(pay)}" target="_blank" rel="noopener">${esc(t('b_pay'))}</a>` : ''}<a class="btn ${pay ? 'ghost' : 'pk'}" href="buy-${esc(A.id)}-${k}.html" data-mus="buy">${esc(buy)}</a>`}<button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
   }
   function update() {
     const w = document.getElementById('mus-world'); if (!w) return;

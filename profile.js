@@ -33,9 +33,9 @@
         <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''}
         <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp${sta === 'sold' ? ' pf-strike' : ''}">${esc(price)}</span></span></a></li>`;
     }).join('');
-    const can = https(CONFIG.donate);
+    const can = !!supOf(A);
     const supBtn = can
-      ? `<a class="pf-sbtn" href="${esc(CONFIG.donate)}" target="_blank" rel="noopener">${esc(t('pf_supb', {a: name}))}</a>`
+      ? `<button type="button" class="pf-sbtn" data-support="${esc(A.id)}">${esc(t('pf_supb', {a: name}))}</button>`
       : `<button type="button" class="pf-sbtn" disabled aria-disabled="true">${esc(t('pf_supb', {a: name}))}</button><span class="pf-soon" aria-hidden="true">${esc(t('pf_soon'))}</span>`;
     return `<section class="pf" id="pf" aria-labelledby="pf-name">
   <div class="pf-bg" aria-hidden="true">${['a', 'b', 'c', 'd'].map((c, i) => `<i class="pf-ring pf-ring-${c}" style="--pf-d:${i * 1.6}s"></i>`).join('')}<i class="pf-star"></i><i class="pf-dotb"></i>

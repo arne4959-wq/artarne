@@ -9,6 +9,7 @@
    Concept, per work (optional): concept:{origin,originEn, material,materialEn, quote,quoteEn, steps:[{h,hEn,d,dEn} x3]}
                          Shows the "Concept of the work" block under the picture in the work dialog. No concept = no block. 
    Lao (optional, all DRAFT: needs native review): bioLo, and per piece mLo, sLo, qLo; DISC_LO / CITY_LO below. Per artist nameLo and per piece titleLo (Lao-script spelling of the Thai name / title, not a translation). Per piece priceLak (optional, none set yet): a real kip price, used as is instead of converting the dollars. A missing Lo field falls back to the Thai one.
+   Support (per artist, optional): support:{bank:'BCEL', name:'...', no:'...', qr:'art/qr/<id>.png'}  the artist's bank QR. The Support button opens it. Money goes straight to them.
    Profile section (profile.js), per artist, all optional - an empty field hides its whole slot:
      tagline,taglineEn   one line above the bio          sold:N   works sold outside the site (added to the sold count)
      concept,conceptEn   the CONCEPT strip               commission:{open:true,until:'ต.ค.',untilEn:'Oct'}   the "taking commissions" badge
@@ -81,6 +82,7 @@ const ARTISTS = [
   /* ---- NEW WAVE: styles that are only now finding their audience. `wave:true` puts the "new wave" label on the building. ---- */
   { id:'mali', name:'มะลิ', nameEn:'Mali', disc:'ริโซกราฟ', wave:true, scale:1.0, kind:'stack', works:['#E8584F','#3F6FA8','#F0C14B'], titles:['ซ้อนทับ','ซีนหน้าเดียว','ตลาดสี'],
     nameLo:"ມະລິ",   // DRAFT lo: needs native review
+    support:{bank:'BCEL', name:'SAMPLE', no:'000 000 000 000', qr:'art/qr-sample.svg', sample:true},   // SAMPLE support QR: replace with the artist's real BCEL / LAO QR
     since:2021, city:'เชียงราย', email:'mali@circles.example',
     bio:'มะลิพิมพ์ภาพทีละสีด้วยเครื่องริโซกราฟมือสองที่ได้มาจากโรงเรียนที่ปิดตัว สีเหลื่อมกันนิดหน่อยทุกใบ และมะลิบอกว่านั่นแหละคือลายเซ็นของเครื่อง',
     bioEn:"Mali prints one colour at a time on a second-hand risograph rescued from a school that closed. The colours never line up perfectly, and Mali calls that the machine's signature.",

@@ -4,13 +4,16 @@
 /* ---------- CONFIG: change these lines to go live ----------
    endpoint : a form-backend URL (Formspree, Getform, your own API). It receives JSON via POST.
               While it is empty, forms fall back to opening the visitor's email app (mailto:) and the newsletter is kept in this browser only.
+   support  : the site's own bank QR, shown by the Support button: {bank, name, no, qr}. Replace the SAMPLE values (and delete `sample: true`) with your real account. Empty = "Coming soon".
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
+   shop     : false = SHOWCASE mode: the site only shows work. The Buy buttons and the buy pages are closed (a buy page sends the visitor to the artist's museum)
+              and each Buy button becomes "Support <artist>". true = buying is open again. Nothing is deleted: this one line is the whole switch.
    lakPerUsd: how many Lao kip one US dollar is worth. Only the Lao (lo) pages use it: they show prices in kip, rounded to a tidy figure
               (under 1,000,000 to the nearest 10,000, from 1,000,000 up to the nearest 100,000: "12,100,000 ₭"). A work's own priceLak (artists.js) wins over it.
               Thai and English always show US dollars. 0 = Lao pages show dollars too. Prices in artists.js stay in US dollars.
    supabaseUrl, supabaseKey: the Supabase project URL and its publishable (anon) key. Nothing reads them yet; the artist dashboard will.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
+const CONFIG = { shop: false, support: {bank: 'BCEL', name: 'SAMPLE', no: '000 000 000 000', qr: 'art/qr-sample.svg', sample: true}, endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
   lakPerUsd: 22400,
   supabaseUrl: 'https://lgkqvfmnqdpajddishio.supabase.co', supabaseKey: 'sb_publishable_vDPIYxQA0JiZCumJ_qMuhg_BxFSfuXp' };   // supabase*: the artists' database (supabase/README.md). The publishable key is meant to be public: the access rules in the database protect the data, never put a secret / service_role key here.
 // lakPerUsd: approximate rate, October 2026. It does NOT update itself: change it by hand when the kip moves.
@@ -22,6 +25,51 @@ const CONFIG = { endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contac
    RATES.thb            how many THB one US dollar is worth (0 = not set, the "≈ THB" line stays hidden). Kip: see CONFIG.lakPerUsd. */
 const SHIPPING = {regions: '', fee: '', days: '', returnDays: '', replyDays: '', certificate: ''};
 const RATES = {thb: 0};
+
+/* ---------- shop switch (CONFIG.shop) ----------
+   false = showcase mode. Used by museum.js (the cards in the museum), the work dialog in cutaway.html / studio-*.html and the buy pages.
+   donateOk() / supportHtml() / supportBtn(): the "Support <artist>" button that takes the place of the Buy button. It is a real link only
+   when the artist's own `pay` is an https:// address, otherwise a disabled "Coming soon" button (never a dead link), the same rule as the other Support buttons. */
+const SHOP = CONFIG.shop !== false;
+document.documentElement.dataset.shop = SHOP ? 'on' : 'off';
+if (!SHOP) {   // a buy page was opened by a link or a bookmark: go to the artist's museum instead
+  const bm = location.pathname.match(/buy-([a-z0-9-]+?)-\d+\.html$/i), bq = new URLSearchParams(location.search).get('id');
+  if (bm) location.replace('studio-' + bm[1] + '.html');
+  else if (/buy\.html$/i.test(location.pathname)) location.replace(bq ? 'cutaway.html?id=' + encodeURIComponent(bq) : 'index.html');
+}
+const httpsUrl = u => { try { return new URL(u).protocol === 'https:' ? u : ''; } catch (e) { return ''; } };
+const donateOk = () => !!httpsUrl(CONFIG.donate);
+/* Laos: support is a bank QR (BCEL OnePay / LAO QR), not a card link. artists.js: support:{bank, name, no, qr, sample}. CONFIG.support is the same for the site itself.
+   Money goes straight to that account; circles never holds it. No account filled in = a disabled "Coming soon" button, never a dead link. */
+const supOf = A => { const s = A && A.support; return s && (s.qr || s.no) ? s : null; };
+const supportHtml = A => supOf(A)
+  ? `<button type="button" class="btn pk" data-support="${esc(A.id)}">${esc(t('pf_supb', {a: nameL(A)}))}</button>`
+  : `<button type="button" class="btn pk soon" disabled aria-disabled="true" title="${esc(t('don_soon'))}">${esc(t('pf_supb', {a: nameL(A)}))}</button>`;
+function supportBtn(el, A) {   // turn an existing button into the support-the-artist button (the click is handled by the page)
+  const ok = !!supOf(A);
+  el.textContent = t('pf_supb', {a: nameL(A)});
+  el.classList.remove('ghost'); el.classList.toggle('soon', !ok);
+  el.disabled = !ok; el.setAttribute('aria-disabled', String(!ok));
+  if (ok) el.removeAttribute('title'); else el.title = t('don_soon');
+}
+function openSupport(info, who) {
+  const d = mountDialog('dlg-support'), row = (k, v) => v ? `<div><dt>${esc(t(k))}</dt><dd>${esc(v)}</dd></div>` : '';
+  d.innerHTML = dlgShell(esc(t('sup_qr_t', {a: who})), `<div class="sup-dlg">`
+    + (info.sample ? `<p class="sup-sample" role="note">${esc(t('sup_sample'))}</p>` : '')
+    + (info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sup_qr_t', {a: who}))}" width="240" height="240">` : '')
+    + `<dl class="sup-dl">${row('sup_bank', info.bank)}${row('sup_acc_name', info.name)}${row('sup_acc_no', info.no)}</dl>`
+    + `<p class="note">${esc(t('sup_direct', {a: who}))}</p>`
+    + `<div class="act">${info.no ? `<button type="button" class="btn" data-copy-acc>${esc(t('sup_copy'))}</button>` : ''}<button type="button" class="btn ghost" data-close>${esc(t('close'))}</button></div></div>`);
+  d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
+  const cp = d.querySelector('[data-copy-acc]');
+  if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(info.no); toast(t('sup_copied')); } catch (e) {} };
+  d.showModal();
+}
+document.addEventListener('click', e => {   // any [data-support] button: "site" = CONFIG.support, otherwise an artist id
+  const b = e.target.closest && e.target.closest('[data-support]'); if (!b || b.disabled) return;
+  const id = b.dataset.support, A = id === 'site' ? null : ARTISTS.find(x => x.id === id), info = id === 'site' ? CONFIG.support : A && A.support;
+  if (info) openSupport(info, id === 'site' ? 'Circles' : nameL(A));
+});
 
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* ===== lite:decide ===== phones, very weak devices (2 cores or 2 GB) and data-saver get fewer moving things. ?lite or ?full in the address forces it. */
@@ -91,7 +139,7 @@ th: {
   social_soon:'ลิงก์โซเชียลจะเปิดตอนเว็บขึ้นออนไลน์',
   /* dialogs + feedback */
   close:'ปิด', jd_title:'ขอมี<em>ตึก</em>ในเมืองนี้', jd_intro:'เล่าให้ฟังสั้น ๆ ว่าคุณทำอะไร ไม่ต้องมีประวัติยาว ไม่ต้องมีใครรับรอง เราดูที่งาน',
-  jd_name:'ชื่อ / นามปากกา', jd_email:'อีเมล', jd_disc:'สาขา', jd_other:'อื่น ๆ', jd_link:'ลิงก์ผลงาน (เว็บ / Instagram / Drive)', jd_msg:'เล่าเกี่ยวกับงานของคุณ', jd_send:'ส่งคำขอ →', jd_cancel:'ยกเลิก',
+  jd_name:'ชื่อ / นามปากกา', jd_email:'อีเมล', jd_disc:'สาขา', jd_other:'อื่น ๆ', jd_link:'ลิงก์ผลงาน (เว็บ / Instagram / Drive)', jd_msg:'เล่าเกี่ยวกับงานของคุณ', jd_pay_h:'ช่องทางรับการสนับสนุน (ไม่บังคับ)', jd_pay_note:'ใส่ธนาคารและเลขบัญชีที่อยากให้คนสนับสนุนโอนเข้า เมื่อเราตอบอีเมล จะขอรูป QR รับเงินจากแอปธนาคารของคุณ เงินเข้าบัญชีคุณโดยตรง', jd_bank:'ธนาคาร', jd_send:'ส่งคำขอ →', jd_cancel:'ยกเลิก',
   jd_subject:'ขอมีตึกใน circles — {n}', id_title:'คุยกับ<em>{a}</em>ตรง ๆ', id_intro:'ข้อความนี้ไปถึงศิลปินโดยตรง ไม่ผ่านใครคนกลาง', id_name:'ชื่อของคุณ', id_email:'อีเมลของคุณ', id_msg:'ข้อความ', id_send:'ส่งถึงศิลปิน →',
   id_prefill:'สวัสดี สนใจผลงาน “{t}” ({p}) อยากคุยเรื่องราคาและการจัดส่ง ขอบคุณ', id_subject:'สนใจผลงาน “{t}” — circles',
   done_mail:'เปิดแอปอีเมลของคุณแล้ว', done_mail_p:'กดส่งในแอปอีเมลเพื่อให้ข้อความถึงปลายทาง ถ้าไม่มีอะไรเปิดขึ้น ให้คัดลอกข้อความด้านล่างแล้วส่งเอง', done_sent:'ส่งเรียบร้อย', done_sent_p:'ขอบคุณ ข้อความถึงปลายทางแล้ว',
@@ -102,7 +150,7 @@ th: {
   cw_est:'ก่อตั้ง {y}', cw_back:'← กลับไปเดินเมือง', cw_hint:'▼ ภาพตัดตึกทีละชั้น กดที่ผลงานเพื่อดูรายละเอียดเต็ม', cw_section:'SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น',
   mus_name:'พิพิธภัณฑ์ของ{a}', mus_aria:'โถงแสดงภาพของ{a}', mus_prev:'← ภาพก่อน', mus_next:'เดินต่อ →', mus_more:'รายละเอียดและแนวคิด', mus_map:'ผังตึก', mus_hint:'▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม',
   pf_h:'โปรไฟล์ของ{a}', pf_open:'รับงานสั่งทำ', pf_until:'· คิวว่างเดือน {m}', pf_cn:'แนวคิดของงาน{a}', pf_nw:'ผลงานในพิพิธภัณฑ์', pf_ns:'ขายแล้ว', pf_ny:'เริ่มทำงานศิลปะ', pf_tl:'เส้นทางที่ผ่านมา',
-  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}', pf_soon:'เร็วๆ นี้',
+  pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'ชี้ที่ภาพเพื่อดูราคา', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'สนับสนุน{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', pf_soon:'เร็วๆ นี้',
   pf_walk:'เดินเข้าพิพิธภัณฑ์ →', pf_ask:'ถามศิลปิน', pf_ig:'Instagram', pf_share:'แชร์โปรไฟล์ ↗', pf_copy:'คัดลอกลิงก์', pf_copied:'คัดลอกลิงก์แล้ว', pf_marq:'ART NOT SORRY ★ วงกลมไม่มีวันจบ ★ CIRCLES ★ เดินเข้าพิพิธภัณฑ์ ★ ',
   mus_prof:'ดูโปรไฟล์ศิลปิน', title_pf:'โปรไฟล์ของ{a} — circles', desc_pf:'รู้จัก{a} ศิลปินสาขา{d} แนวคิดของงาน ผลงานที่ขายอยู่ และช่องทางสนับสนุนหรือสั่งทำงาน',
   fold_spot:'อ่านบทสัมภาษณ์ 3 ข้อ', fold_foot:'เมนู โซเชียล และจดหมายข่าว',
@@ -161,7 +209,7 @@ en: {
   news_label:'News from the city: new buildings, new work, straight to your inbox. No spam, never resold.', news_btn:'Subscribe →', foot_copy:'© 2026 CIRCLES · prototype · artists and works shown are examples · NO GALLERY. NO MIDDLEMAN.',
   social_soon:'Social links open when the site goes live',
   close:'Close', jd_title:'Request a <em>building</em> in this city', jd_intro:"Tell us briefly what you make. No long CV, no references. We look at the work.",
-  jd_name:'Name / pen name', jd_email:'Email', jd_disc:'Discipline', jd_other:'Other', jd_link:'Link to your work (site / Instagram / Drive)', jd_msg:'Tell us about your work', jd_send:'Send request →', jd_cancel:'Cancel',
+  jd_name:'Name / pen name', jd_email:'Email', jd_disc:'Discipline', jd_other:'Other', jd_link:'Link to your work (site / Instagram / Drive)', jd_msg:'Tell us about your work', jd_pay_h:'How people can support you (optional)', jd_pay_note:'Add the bank and account you want supporters to pay into. When we reply by email we will ask for the receive-money QR from your bank app. The money goes straight to you.', jd_bank:'Bank', jd_send:'Send request →', jd_cancel:'Cancel',
   jd_subject:'Building request for circles — {n}', id_title:'Talk to <em>{a}</em> directly', id_intro:'This message goes straight to the artist. Nobody in between.', id_name:'Your name', id_email:'Your email', id_msg:'Message', id_send:'Send to the artist →',
   id_prefill:"Hi, I'm interested in “{t}” ({p}). Could we talk about price and shipping? Thanks.", id_subject:'Interested in “{t}” — circles',
   done_mail:'Your email app is opening', done_mail_p:"Press send in your email app so the message reaches its destination. If nothing opened, copy the text below and send it yourself.", done_sent:'Sent', done_sent_p:'Thank you. The message has been delivered.',
@@ -171,7 +219,7 @@ en: {
   cw_est:'Est. {y}', cw_back:'← Back to the city', cw_hint:'▼ The building cut open, floor by floor. Click a work for full details', cw_section:'SECTION A–A · NO LIFT, STAIRS ONLY',
   mus_name:"{a}'s museum", mus_aria:"{a}'s picture hall", mus_prev:'← Previous', mus_next:'Walk on →', mus_more:'Details & concept', mus_map:'Floor plan', mus_hint:'▼ Walk the hall one work at a time. Use the ← → keys. Click the lit work for full details',
   pf_h:"{a}'s profile", pf_open:'Taking commissions', pf_until:'· slot open in {m}', pf_cn:"{a}'s concept", pf_nw:'works in the museum', pf_ns:'sold', pf_ny:'making art since', pf_tl:'The road so far',
-  pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}', pf_soon:'Coming soon',
+  pf_wh:'Works in the museum', pf_hover:'Point at a picture for the price', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Support {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', pf_soon:'Coming soon',
   pf_walk:'Walk into the museum →', pf_ask:'Ask the artist', pf_ig:'Instagram', pf_share:'Share profile ↗', pf_copy:'Copy link', pf_copied:'Link copied', pf_marq:'ART NOT SORRY ★ CIRCLES NEVER END ★ CIRCLES ★ WALK INTO THE MUSEUM ★ ',
   mus_prof:'View artist profile', title_pf:"{a}'s profile — circles", desc_pf:"Meet {a}, {d} artist: the ideas behind the work, the pieces on sale, and ways to support or commission.",
   fold_spot:'Read the 3-question interview', fold_foot:'Menu, social & newsletter',
@@ -402,6 +450,14 @@ lo: {
   pf_sup2: "ຊ່ວຍໃຫ້ສ້າງງານຕໍ່",   // DRAFT lo: needs native review
   pf_supn: "ທຸກການສະໜັບສະໜູນໄປເຖິງສິລະປິນໂດຍກົງ ໃນຊ່ວງເລີ່ມຕົ້ນນີ້ Circles ຍັງບໍ່ຫັກຄ່າທຳນຽມຈາກສິລະປິນ",   // DRAFT lo: needs native review
   pf_supb: "ສະໜັບສະໜູນ{a}",   // DRAFT lo: needs native review
+  sup_qr_t: "ສະແກນເພື່ອສະໜັບສະໜູນ{a}",   // DRAFT lo: needs native review
+  sup_bank: "ທະນາຄານ",   // DRAFT lo: needs native review
+  sup_acc_name: "ຊື່ບັນຊີ",   // DRAFT lo: needs native review
+  sup_acc_no: "ເລກບັນຊີ",   // DRAFT lo: needs native review
+  sup_copy: "ສຳເນົາເລກບັນຊີ",   // DRAFT lo: needs native review
+  sup_copied: "ສຳເນົາແລ້ວ",   // DRAFT lo: needs native review
+  sup_direct: "ເງິນເຂົ້າບັນຊີຂອງ {a} ໂດຍກົງ circles ບໍ່ໄດ້ຮັບເງິນແທນ",   // DRAFT lo: needs native review
+  sup_sample: "ຂໍ້ມູນຕົວຢ່າງເທົ່ານັ້ນ ຢ່າໂອນເງິນ",   // DRAFT lo: needs native review
   pf_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
   pf_share: "ແຊໂປຣໄຟລ໌ ↗",   // DRAFT lo: needs native review
   pf_copy: "ສຳເນົາລິ້ງ",   // DRAFT lo: needs native review
@@ -429,6 +485,9 @@ lo: {
   jd_other: "ອື່ນໆ",   // DRAFT lo: needs native review
   jd_link: "ລິ້ງຜົນງານ (ເວັບ / Instagram / Drive)",   // DRAFT lo: needs native review
   jd_msg: "ເລົ່າກ່ຽວກັບຜົນງານຂອງທ່ານ",   // DRAFT lo: needs native review
+  jd_pay_h: "ຊ່ອງທາງຮັບການສະໜັບສະໜູນ (ບໍ່ບັງຄັບ)",   // DRAFT lo: needs native review
+  jd_pay_note: "ໃສ່ທະນາຄານ ແລະເລກບັນຊີທີ່ຢາກໃຫ້ຜູ້ສະໜັບສະໜູນໂອນເຂົ້າ ເມື່ອເຮົາຕອບອີເມລ ຈະຂໍຮູບ QR ຮັບເງິນຈາກແອັບທະນາຄານຂອງທ່ານ ເງິນເຂົ້າບັນຊີຂອງທ່ານໂດຍກົງ",   // DRAFT lo: needs native review
+  jd_bank: "ທະນາຄານ",   // DRAFT lo: needs native review
   title_pf: "ໂປຣໄຟລ໌ຂອງ{a} — circles",   // DRAFT lo: needs native review
   desc_pf: "ຮູ້ຈັກ{a} ສິລະປິນສາຂາ{d} ແນວຄິດຂອງຜົນງານ ຜົນງານທີ່ຂາຍຢູ່ ແລະ ຊ່ອງທາງສະໜັບສະໜູນ ຫຼື ສັ່ງເຮັດງານ",   // DRAFT lo: needs native review
   title_idx: "circles — ເມືອງຂອງສິລະປິນ ຊື້ກົງຈາກຄົນເຮັດ",   // DRAFT lo: needs native review
@@ -636,12 +695,15 @@ function openJoin() {
       <label>${esc(t('jd_disc'))}<select name="discipline">${opts}</select></label>
       <label>${esc(t('jd_link'))}<input name="link" type="url" placeholder="https://" maxlength="200"></label>
       <label>${esc(t('jd_msg'))}<textarea name="message" required maxlength="1500"></textarea></label>
+      <fieldset class="jd-pay"><legend>${esc(t('jd_pay_h'))}</legend><p class="note">${esc(t('jd_pay_note'))}</p>
+        <div class="row"><label>${esc(t('jd_bank'))}<select name="bank"><option value="">—</option><option value="BCEL">BCEL</option><option value="LDB">LDB</option><option value="other">${esc(t('jd_other'))}</option></select></label><label>${esc(t('sup_acc_name'))}<input name="account_name" maxlength="80"></label></div>
+        <label>${esc(t('sup_acc_no'))}<input name="account_no" inputmode="numeric" maxlength="40"></label></fieldset>
       <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
       <p class="note">${t('consent_form')}</p>
       <div class="act"><button class="btn" type="submit">${esc(t('jd_send'))}</button><button class="btn ghost" type="button" data-close>${esc(t('jd_cancel'))}</button></div>
       ${CONFIG.endpoint ? '' : `<p class="note">${esc(t('note_mailto'))}</p>`}</form>`);
   wireForm(d, async f => {
-    const res = await deliver('join', CONFIG.contact, t('jd_subject', {n: f.name}), {name: f.name, email: f.email, discipline: d.querySelector('select').selectedOptions[0].textContent, link: f.link, message: f.message, captcha: f['cf-turnstile-response']});
+    const res = await deliver('join', CONFIG.contact, t('jd_subject', {n: f.name}), {name: f.name, email: f.email, discipline: d.querySelector('select[name=discipline]').selectedOptions[0].textContent, link: f.link, message: f.message, bank: f.bank, account_name: f.account_name, account_no: f.account_no, captcha: f['cf-turnstile-response']});
     showDone(d, res, CONFIG.contact);
   });
   if (!d.open) d.showModal();
@@ -682,6 +744,7 @@ async function subscribeNews(form) {
 /* Support button: a real link only when CONFIG.donate is an https:// URL, otherwise a disabled "Coming soon" button (never a dead link) */
 function wireDonate() {
   const el = $('#donate-btn'); if (!el) return;
+  if (supOf({support: CONFIG.support})) { el.disabled = false; el.removeAttribute('aria-disabled'); el.classList.remove('soon'); el.dataset.support = 'site'; el.dataset.t = 'don_btn'; el.textContent = t('don_btn'); return; }
   let ok = false; try { ok = new URL(CONFIG.donate).protocol === 'https:'; } catch (e) {}
   if (!ok) return;
   const a = document.createElement('a');

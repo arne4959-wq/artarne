@@ -47,7 +47,8 @@ export default function PaymentPanel({artist, userEmail}) {
     <p className="mg-note">{mt('p_note')}</p>
     <p className="mg-note warn">{mt('p_warn')}</p>
     <div className="mg-grid">
-      <Field label={mt('p_bank')} name="bank" maxLength={30} {...props}/>
+      <Field label={mt('p_bank')} name="bank" maxLength={30} list="mg-banks" {...props}/>
+      <datalist id="mg-banks"><option value="BCEL"/><option value="LDB"/></datalist>   {/* the two banks most artists in Laos use; any other name can still be typed */}
       <Field label={mt('p_acc_name')} name="account_name" maxLength={80} {...props}/>
       <Field label={mt('p_acc_no')} name="account_no" inputMode="numeric" maxLength={40} {...props}/>
     </div>

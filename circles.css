@@ -135,3 +135,14 @@ html.lite .stand .spr canvas:first-child{opacity:1;}
 
 /* Lao mode: Lao has no capitals and no wide tracking, so translated text and buttons get normal letter-spacing (like the html[lang=th] rules) */
 html[lang=lo] [data-t],html[lang=lo] [data-t-html],html[lang=lo] button,html[lang=lo] .btn{letter-spacing:.01em;text-transform:none;}
+
+/* Support dialog (bank QR) */
+.sup-dlg{padding:1.4rem 1.6rem 1.6rem;display:grid;gap:1rem;justify-items:center;}
+.sup-qr{width:min(240px,70vw);height:auto;border:var(--line) solid var(--black);background:#fff;}
+.sup-dl{width:100%;display:grid;gap:.5rem;margin:0;}
+.sup-dl div{display:flex;justify-content:space-between;gap:1rem;border-bottom:2px solid var(--black);padding-bottom:.4rem;}
+.sup-dl dt{font-weight:700;}.sup-dl dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;word-break:break-all;}
+.sup-sample{background:var(--black);color:var(--paper);padding:.4rem .8rem;font-weight:700;margin:0;}
+.sup-dlg .act{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.jd-pay{border:2px dashed var(--black);padding:.8rem 1rem 1rem;margin:0;display:grid;gap:.7rem;min-width:0;}
+.jd-pay legend{font-weight:700;padding:0 .4rem;}
