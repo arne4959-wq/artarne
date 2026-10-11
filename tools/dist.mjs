@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..'), out = path.join(root, 'dist');
 const DIRS = ['art', 'fonts', 'og', 'vendor'];
-const FILES = ['.nojekyll', 'robots.txt', 'og.png'];
+const FILES = ['.nojekyll', 'robots.txt', 'og.png', 'sitemap.xml'];   // sitemap.xml exists only after a --site build
 const skip = n => n === '.DS_Store';
 
 fs.rmSync(out, {recursive: true, force: true}); fs.mkdirSync(out);
