@@ -22,10 +22,9 @@ const oldCode = [
   cut(/^const t = \(k, v\)[\s\S]*?^const fmtSize = .*$/m, 't … fmtSize'),
   cut(/^const RS = \[[\s\S]*?^function ransom[\s\S]*?^}$/m, 'ransom'),
   cut(/^function artBg[\s\S]*?^}$/m, 'artBg'),
-  cut(/^const workStatus = [\s\S]*?^const payLink = .*$/m, 'workStatus / payLink'),
 ].join('\n');
 const oldFor = (LANG, A) => new Function('LANG', 'ARTISTS', 'DISC_EN', 'CITY_EN', 'DISC_LO', 'CITY_LO', 'window',
-  oldCode + '\nreturn {STR, t, pk, nameL, discL, cityL, titleL, bldgL, fmtSize, money, moneyHtml, esc, ransom, artBg, workStatus, payLink};'
+  oldCode + '\nreturn {STR, t, pk, nameL, discL, cityL, titleL, bldgL, fmtSize, money, esc, ransom, artBg};'
 )(LANG, A.ARTISTS, A.DISC_EN, A.CITY_EN, A.DISC_LO, A.CITY_LO, globalThis);
 const oldData = new Function(read('artists.js') + '\nreturn {ARTISTS, DISC_EN, CITY_EN, DISC_LO, CITY_LO};')();
 
@@ -48,7 +47,7 @@ test('strings and config reach React unchanged', () => {
   assert.deepEqual(strings.STR, o.STR);
   assert.deepEqual(Object.keys(strings.STR), ['th', 'en', 'lo']);
   assert.ok(config.CONFIG.lakPerUsd > 0 && 'endpoint' in config.CONFIG);
-  assert.equal(typeof config.SHIPPING, 'object'); assert.equal(typeof config.RATES, 'object');
+  assert.ok(!('SHIPPING' in config) && !('RATES' in config));   // nothing is sold: no shipping terms, no rates
 });
 
 for (const L of ['th', 'en', 'lo']) test(`helpers match circles.js in ${L}`, () => {
@@ -66,17 +65,14 @@ for (const L of ['th', 'en', 'lo']) test(`helpers match circles.js in ${L}`, () 
       const id = `${a.id}-${i}`;
       assert.equal(n.titleL(p), o.titleL(p), `titleL ${id}`);
       assert.equal(n.fmtSize(p), o.fmtSize(p), `fmtSize ${id}`);
-      assert.equal(n.money(p.p, p), o.money(p.p, p), `money ${id}`);
-      assert.equal(n.moneyHtml(p.p, p), o.moneyHtml(p.p, p), `moneyHtml ${id}`);
       for (const k of ['m', 'q']) assert.deepEqual(n.pk(p, k), o.pk(p, k), `pk ${id} ${k}`);
-      assert.equal(art.workStatus(p), o.workStatus(p)); assert.equal(art.payLink(p), o.payLink(p));
+      assert.ok(!('workStatus' in art) && !('payLink' in art));
       assert.equal(art.artBg(a.works, i), o.artBg(a.works, i));
       checks += 9;
     });
   }
-  // kip rounding edge cases, and a work's own priceLak
+  // kip rounding edge cases
   for (const v of [0, 1, 44, 45, 450, 1234, 99999]) assert.equal(n.money(v), o.money(v), `money(${v})`);
-  assert.equal(n.money(500, {priceLak: 12345678}), o.money(500, {priceLak: 12345678}));
   assert.ok(checks > 600, `only ${checks} checks ran`);
 });
 
@@ -95,13 +91,10 @@ test('<Ransom> gives the same chips as ransom()', () => {
   }
 });
 
-test('<Stamp>, <StatusChip>, <ArtImg> match stampHtml / statusChip / artImg', () => {
+test('<ArtImg> matches artImg (no stamp or status chip any more: nothing is sold)', () => {
   for (const L of ['th', 'en', 'lo']) {
     const n = lang.makeLang(L), wrap = el => renderToStaticMarkup(React.createElement(i18n.LangProvider, {initial: L}, el));
     for (const a of data.ARTISTS) a.pieces.forEach((p, k) => {
-      const s = art.workStatus(p), lbl = s && n.t(s === 'sold' ? 'st_sold' : 'st_res');
-      assert.equal(wrap(React.createElement(artJsx.Stamp, {p})), s ? `<i class="stamp ${s}">${lang.esc(lbl)}</i>` : '');
-      assert.equal(wrap(React.createElement(artJsx.StatusChip, {p})), s ? `<span class="chip ${s}">${lang.esc(lbl)}</span>` : '');
       const img = wrap(React.createElement(artJsx.ArtImg, {a, k}));
       if (p.img) assert.ok(img.startsWith(`<img src="${p.img}" alt="${lang.esc(n.titleL(p)).replace(/&#39;/g, '&#x27;')}" loading="lazy" decoding="async" draggable="false"`), img);
       else assert.equal(img, '');
@@ -119,7 +112,7 @@ test('detectLang: ?lang, then saved, then browser language', () => {
 });
 
 test('every old page has CSS for its route, in the old order', async () => {
-  const pages = {home: 'index', studio: 'cutaway', buy: 'buy', profile: 'profile', join: 'join', privacy: 'privacy', terms: 'terms', notFound: '404'};
+  const pages = {home: 'index', studio: 'cutaway', profile: 'profile', join: 'join', privacy: 'privacy', terms: 'terms', notFound: '404'};
   for (const [mod, html] of Object.entries(pages)) {
     const list = (await vite.ssrLoadModule(`/src/styles/${mod}.js`)).default, src = read(html + '.html');
     const links = [...src.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m => m[1]).filter(h => h !== 'fonts/fonts.css');
@@ -137,7 +130,7 @@ test('routes: old .html names and the dynamic ?id= forms', async () => {
     ['/studio-dao.html', '', {page: 'studio', id: 'dao'}], ['/cutaway.html', '?id=thara&work=1', {page: 'studio', id: 'thara'}], ['/cutaway.html', '', {page: 'studio', id: ''}],
     ['/cutaway-napha.html', '?work=2', {redirect: 'studio-napha.html?work=2'}],
     ['/profile-kwan.html', '', {page: 'profile', id: 'kwan'}], ['/profile.html', '?id=pan', {page: 'profile', id: 'pan'}],
-    ['/buy-thara-3.html', '', {page: 'buy', id: 'thara', k: 3}], ['/buy.html', '?id=mali&k=2', {page: 'buy', id: 'mali', k: 2}],
+    ['/buy-thara-3.html', '', {redirect: 'profile-thara.html#pf-tips'}], ['/buy.html', '?id=mali&k=2', {redirect: 'profile-mali.html#pf-tips'}], ['/buy.html', '', {redirect: 'index.html'}],   // buying was removed: old addresses land on the donation block
     ['/nothing.html', '', {page: 'notFound'}], ['/studio-.html', '', {page: 'notFound'}], ['/x/../evil', '', {page: 'notFound'}],
   ];
   for (const [p, q, want] of cases) assert.deepEqual(route(p, q), want, p + q);

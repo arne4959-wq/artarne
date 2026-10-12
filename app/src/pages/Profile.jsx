@@ -1,11 +1,12 @@
 /* profile.html / profile-<id>.html — the artist profile (the picture hall is studio-<id>.html). From profile.js + profile.html.
-   Look: design/profile-reference.html. Optional artists.js fields (tagline, concept, sold, since, timeline[], commission{open,until},
-   instagram): an empty one hides its whole slot. */
-import {useRef} from 'react';
+   Look: design/profile-reference.html. Optional artists.js fields (tagline, concept, since, timeline[], instagram): an empty one hides its whole slot.
+   Donation-only: no prices, no sold state; the support box has preset amounts and a custom one, and opens the donation dialog. */
+import {useRef, useState} from 'react';
 import {CONFIG} from 'virtual:circles/config';
 import {useLang} from '../lib/i18n.jsx';
 import {usePageMeta} from '../lib/meta.js';
-import {artistById, workStatus} from '../lib/art.js';
+import {artistById} from '../lib/art.js';
+import {DON_AMOUNTS, MAX_AMOUNT, canDonate, sampleMode, validAmount} from '../lib/donate.js';
 import PageShell from '../components/PageShell.jsx';
 import Nav, {MENU_FULL} from '../components/Nav.jsx';
 import {MiniFoot, NotFoundSection} from '../components/Bits.jsx';
@@ -22,8 +23,7 @@ const LOGOS = [   // left%, top%, size px, opacity, start angle, seconds per tur
   [86, 62, 150, .28, 22, 14, 'turn', -20], [6, 80, 110, .24, -20, 10, 'turnr', 22], [46, 92, 190, .2, 4, 26, 'turn', 24]];
 
 function stats(A) {
-  const sold = A.pieces.filter(p => workStatus(p) === 'sold').length + (+A.sold > 0 ? +A.sold : 0);
-  return [[A.pieces.length, 'pf_nw', 'ink', -3], [sold, 'pf_ns', 'pink', 2], [+A.since > 0 ? A.since : 0, 'pf_ny', 'gold', -1.5]].filter(s => s[0] > 0);
+  return [[A.pieces.length, 'pf_nw', 'ink', -3], [+A.since > 0 ? A.since : 0, 'pf_ny', 'gold', -1.5]].filter(s => s[0] > 0);
 }
 
 async function copy(text) {
@@ -35,20 +35,18 @@ async function copy(text) {
 }
 
 function ProfileBody({A}) {
-  const L = useLang(), {t} = L, {openInquiry, openSupport} = useDialogs(), live = useRef(null), timers = useRef({});
+  const L = useLang(), {t} = L, {openDonate} = useDialogs(), live = useRef(null), timers = useRef({}), [custom, setCustom] = useState(''), [badAmt, setBadAmt] = useState(false);
   const name = L.nameL(A);
   const tagline = L.pk(A, 'tagline'), bio = L.pk(A, 'bio'), concept = L.pk(A, 'concept');
-  const com = A.commission && A.commission.open ? A.commission : null, until = com && L.pk(com, 'until');
   const tl = Array.isArray(A.timeline) ? A.timeline.filter(x => x && x.y && (x.t || x.tEn)) : [];
   const ig = A.instagram && https(A.instagram) ? A.instagram : '';
-  const can = !!(A.support && (A.support.qr || A.support.no));
+  const can = canDonate(A), smp = sampleMode(A);
   const url = () => new URL(`profile-${A.id}.html`, location.href).href;
   // the status line is emptied first, so a screen reader announces the same message twice in a row
   const say = m => {
     const el = live.current; el.textContent = ''; setTimeout(() => { el.textContent = m; }, 30);
     clearTimeout(timers.current.say); timers.current.say = setTimeout(() => { el.textContent = ''; }, 3000);
   };
-  const ask = () => { const k = A.pieces.findIndex(p => !workStatus(p)); openInquiry(A.id, k < 0 ? 0 : k, ''); };
   const copyLink = async () => { const ok = await copy(url()); say(t(ok ? 'pf_copied' : 'copy_fail')); };
   const share = async () => {
     if (navigator.share) { try { await navigator.share({title: document.title, url: url()}); } catch (err) { /* cancelled */ } return; }
@@ -63,7 +61,6 @@ function ProfileBody({A}) {
         <span key={i} className={`pf-ltr pf-in pf-drop pf-l${i % 3}`} style={{'--r': [-3, 2, -1.5, 2.5][i % 4] + 'deg', '--pf-d': (.5 + i * .14).toFixed(2) + 's'}} aria-hidden="true">{c}</span>)}</h2>
       <ul className="pf-tags" aria-label={t('lb_artist')}>{[[L.discL(A), 'paper', -2], [L.cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>
         <li key={i} className={`pf-tag pf-in pf-pop pf-t-${x[1]}`} style={{'--r': x[2] + 'deg', '--pf-d': (1 + i * .1) + 's'}}>{x[0]}</li>)}</ul>
-      {com ? <p className="pf-open pf-in pf-pop" style={{'--r': '-1.5deg', '--pf-d': '1.2s'}}><i className="pf-dot" aria-hidden="true"></i><b>{t('pf_open')}</b>{until ? <> <span>{t('pf_until', {m: until})}</span></> : null}</p> : null}
       {tagline || bio ? <div className="pf-note pf-in pf-rise" style={{'--r': '-.8deg', '--pf-d': '1.3s'}}><i className="pf-tp pf-tp-pink pf-tp-l"></i><i className="pf-tp pf-tp-pink pf-tp-r"></i>{tagline ? <p className="pf-tag1">“{tagline}”</p> : null}{bio ? <p className="pf-bio">{bio}</p> : null}</div> : null}
       {concept ? <div className="pf-cc pf-in pf-rise" style={{'--r': '.8deg', '--pf-d': '1.6s'}}><span className="pf-cv" aria-hidden="true">CONCEPT</span><div><small>{t('pf_cn', {a: name})}</small><p>{concept}</p></div><i className="pf-tp pf-tp-gold pf-tp-c"></i></div> : null}
       <ul className="pf-stats">{stats(A).map((s, i) => <li key={s[1]} className={`pf-st pf-st-${s[2]} pf-in pf-pop`} style={{'--r': s[3] + 'deg', '--pf-d': (1.6 + i * .08).toFixed(2) + 's'}}><b>{s[0]}</b><span>{t(s[1])}</span></li>)}</ul>
@@ -71,10 +68,9 @@ function ProfileBody({A}) {
       <div className="pf-works">
         <div className="pf-wh"><h3 className="bl bl-y"><span className="bl-t">{t('pf_wh')}</span></h3><span className="pf-hv">{t('pf_hover')}</span></div>
         <ul className="pf-strip">{A.pieces.slice(0, 4).map((p, k) => {
-          const sta = workStatus(p), price = sta ? t(sta === 'sold' ? 'st_sold' : 'st_res') : L.money(p.p, p);
-          return <li key={k} className="pf-in pf-rise" style={{'--r': [-3, 2, -1.5, 3][k] + 'deg', '--pf-d': (1.9 + k * .12).toFixed(2) + 's'}}><a className="pf-pk" href={`studio-${A.id}.html?work=${k}`} style={{'--ar': p.ar || '1/1'}} aria-label={L.titleL(p) + ' · ' + price}>
+          return <li key={k} className="pf-in pf-rise" style={{'--r': [-3, 2, -1.5, 3][k] + 'deg', '--pf-d': (1.9 + k * .12).toFixed(2) + 's'}}><a className="pf-pk" href={`studio-${A.id}.html?work=${k}`} style={{'--ar': p.ar || '1/1'}} aria-label={L.titleL(p) + ' · ' + p.y}>
             <span className={`pf-tp pf-tp-${TAPE[(k + 1) % 2]}`}></span>{p.img ? <img src={p.img} alt={L.titleL(p)} loading="lazy" decoding="async" draggable="false"/> : null}
-            <span className="pf-cap"><b>{L.titleL(p)}</b><span className={`pf-cp${sta === 'sold' ? ' pf-strike' : ''}`}>{price}</span></span></a></li>;
+            <span className="pf-cap"><b>{L.titleL(p)}</b><span className="pf-cp">{p.y}</span></span></a></li>;
         })}</ul>
         <a className="pf-all" href={`studio-${A.id}.html`}>{t('pf_all')}</a>
       </div>
@@ -82,11 +78,18 @@ function ProfileBody({A}) {
         <span className="pf-heart" aria-hidden="true">♥</span>
         <div className="pf-stx"><h3 className="bl bl-y bl-dk"><span className="bl-t">{t('pf_sup1', {a: name})} {t('pf_sup2')}</span></h3><p>{t('pf_supn')}</p></div>
         <div className="pf-sb">{can
-          ? <button type="button" className="pf-sbtn" onClick={() => openSupport(A.support, name)}>{t('pf_supb', {a: name})}</button>
-          : <><button type="button" className="pf-sbtn" disabled aria-disabled="true">{t('pf_supb', {a: name})}</button><span className="pf-soon" aria-hidden="true">{t('pf_soon')}</span></>}</div></div><i className="pf-tp pf-tp-gold pf-tp-s"></i></div>
+          ? <button type="button" className="pf-sbtn" onClick={() => openDonate(A)}>{t('pf_supb', {a: name})}</button>
+          : <><button type="button" className="pf-sbtn" disabled aria-disabled="true">{t('pf_supb', {a: name})}</button><span className="pf-soon" aria-hidden="true">{t('pf_soon')}</span></>}</div></div><i className="pf-tp pf-tp-gold pf-tp-s"></i>
+        {can && <div className="pf-tips" id="pf-tips" role="group" aria-labelledby="pf-tips-h">
+          <p className="pf-tips-h" id="pf-tips-h">{t('tip_h')}{smp && <> <span className="pf-tips-s">{t('sm_tag')}</span></>}</p>
+          <div className="pf-tips-r">{DON_AMOUNTS.map(n => <button key={n} type="button" className="pf-amt" data-pf-tip={n} aria-label={t('pf_supb', {a: name}) + ' ' + L.money(n)} onClick={() => openDonate(A, n)}>{L.money(n)}</button>)}</div>
+          <form className="pf-tipf" noValidate onSubmit={e => { e.preventDefault(); if (!validAmount(custom)) { setBadAmt(true); return; } setBadAmt(false); openDonate(A, +custom); }}>
+            <label htmlFor="pf-tip-n">{t('tip_other')}</label>
+            <input id="pf-tip-n" name="n" type="number" inputMode="numeric" min="1" max={MAX_AMOUNT} step="1" placeholder="12" value={custom} aria-invalid={badAmt || undefined} onChange={e => { setCustom(e.target.value); setBadAmt(false); }}/>
+            <button type="submit" className="pf-bt">{t('tip_go')}</button></form>
+          {badAmt && <p className="pf-tiperr" role="alert">{t('tip_bad')}</p>}</div>}</div>
       <div className="pf-cta pf-in pf-rise" style={{'--r': '0deg', '--pf-d': '2.2s'}}>
         <a className="pf-go bl bl-y bl-dk" href={`studio-${A.id}.html`}><span className="bl-t">{t('pf_walk')}</span></a>
-        <button type="button" className="pf-lk" data-pf-ask="" onClick={ask}>{t('pf_ask')}</button>
         {ig ? <a className="pf-lk" href={ig} target="_blank" rel="noopener">{t('pf_ig')}</a> : null}
         <button type="button" className="pf-bt pf-bt-gold" data-pf-share="" onClick={share}>{t('pf_share')}</button>
         <button type="button" className="pf-bt" data-pf-copy="" onClick={copyLink}>{t('pf_copy')}</button>

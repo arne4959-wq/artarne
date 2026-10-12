@@ -1,15 +1,14 @@
 /* home.js — small pure helpers of the home page (from site.js): which works are featured, the "NO.xx" label, opening a studio. */
-import {workStatus} from './art.js';
 
 /* The hand-picked featured works of the sample artists (site.js FEAT). Real artists (from the database) are added in front by `featuredPicks`. */
 const CURATED = [['mali', 0], ['phop', 2], ['napha', 0], ['phrae', 2], ['thara', 0], ['pan', 0], ['kwan', 2], ['irene', 1]];
 export const FEATURED_MAX = 8;
 export const TAPE = [-5, 4, -3, 6, -6, 3, -4, 5];
 
-/* → [{a, k}] : a real artist's first work that is still for sale (else the first work), then the curated sample picks that exist; at most 8.
+/* → [{a, k}] : a real artist's first work, then the curated sample picks that exist; at most 8.
    With only the sample artists this is exactly the old FEAT list. Nothing here can throw on a missing id or index. */
 export function featuredPicks(artists) {
-  const live = artists.filter(a => a.live && a.pieces.length).map(a => { const k = a.pieces.findIndex(p => !workStatus(p)); return {a, k: k < 0 ? 0 : k}; });
+  const live = artists.filter(a => a.live && a.pieces.length).map(a => { return {a, k: 0}; });
   const curated = CURATED.map(([id, k]) => ({a: artists.find(x => x.id === id), k})).filter(x => x.a && x.a.pieces[x.k]);
   return [...live, ...curated].slice(0, FEATURED_MAX);
 }
@@ -18,10 +17,8 @@ export const allWorks = artists => artists.flatMap(a => a.pieces.map((p, k) => (
 /* the list on screen: featured or all, sorted, sold works last */
 export function worksList(artists, {showAll, sortBy}) {
   let l = showAll ? allWorks(artists) : featuredPicks(artists).map(({a, k}) => ({a, p: a.pieces[k], k}));
-  if (sortBy === 'low') l = [...l].sort((x, y) => x.p.p - y.p.p);
-  else if (sortBy === 'high') l = [...l].sort((x, y) => y.p.p - x.p.p);
-  else if (sortBy === 'new') l = [...l].sort((x, y) => (y.p.y || 0) - (x.p.y || 0) || y.p.p - x.p.p);
-  return [...l.filter(x => workStatus(x.p) !== 'sold'), ...l.filter(x => workStatus(x.p) === 'sold')];
+  if (sortBy === 'new') l = [...l].sort((x, y) => (y.p.y || 0) - (x.p.y || 0));
+  return l;
 }
 
 export const noLabel = i => `NO.${String(i + 1).padStart(2, '0')}`;

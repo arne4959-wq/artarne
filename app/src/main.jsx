@@ -13,7 +13,6 @@ const PAGES = {
   privacy: lazy(() => import('./pages/Legal.jsx').then(m => ({default: () => <m.default which="privacy"/>}))),
   terms: lazy(() => import('./pages/Legal.jsx').then(m => ({default: () => <m.default which="terms"/>}))),
   notFound: lazy(() => import('./pages/NotFound.jsx')),
-  buy: lazy(() => import('./pages/Buy.jsx')),
   profile: lazy(() => import('./pages/Profile.jsx')),
   manage: lazy(() => import('./pages/Manage.jsx')),
 };

@@ -200,8 +200,8 @@
   };
   const HELLO = {th: '{a}เอง! กำลังทำงานอยู่', en: '{a} here. Working!'};
   const SEE = {
-    th: {free: ['ว้าว “{t}”!', '{p}… เก็บตังค์ก่อน', 'อันนี้แหละ!', 'ขอยืนดูนาน ๆ', 'อยากได้ไปแขวนห้อง'], sold: ['ขายไปแล้ว… ช้าไป!'], reserved: ['มีคนจองแล้ว ขอต่อคิว!']},
-    en: {free: ['Whoa, “{t}”!', '{p}… saving up', 'This one!', 'Can I just stare?', 'I want this on my wall'], sold: ['Sold… too late!'], reserved: ['On hold? Put me next!']},
+    th: {free: ['ว้าว “{t}”!', 'สวยจัง… ยืนดูได้ทั้งวัน', 'อันนี้แหละ!', 'ขอยืนดูนาน ๆ', 'ชอบจัง อยากขอบคุณคนวาด']},   // nothing is sold: no price, no sold / reserved talk
+    en: {free: ['Whoa, “{t}”!', 'So good… I could stay all day', 'This one!', 'Can I just stare?', 'I want to thank whoever made this']},
   };
   const L = () => (LANG === 'en' ? 'en' : 'th');
   const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -256,9 +256,8 @@
     const react = () => {
       if (curRoom !== room) return;
       const w = room.querySelector('.work'), p = w && A.pieces[+w.dataset.k]; if (!p) return;
-      const st = (typeof workStatus === 'function' && workStatus(p)) || 'free';
       room.querySelectorAll('.px-say:not(.v)').forEach(b => b.remove());
-      say(room, to + sw / 2, pick(SEE[L()][st]).replace('{t}', titleL(p)).replace('{p}', money(p.p, p)), 'v', 3000);
+      say(room, to + sw / 2, pick(SEE[L()].free).replace('{t}', titleL(p)), 'v', 3000);
     };
     if (reduce) { vis.style.transform = `translateX(${to}px)`; setTimeout(react, 300); return; }
     vis.style.transition = 'none'; vis.style.transform = `translateX(${from}px)`; vis.classList.add('walking', 'flip');

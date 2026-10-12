@@ -11,10 +11,10 @@ const text = (v, max) => { const x = s(v).trim(); return x ? x.slice(0, max) : n
 /* ---- profile ---- */
 export const PROFILE_TEXT = [   // [column, max length]
   ['name', 80], ['name_en', 80], ['name_lo', 80], ['disc', 60], ['city', 60], ['tagline', 200], ['tagline_en', 200],
-  ['concept', 400], ['concept_en', 400], ['bio', 2000], ['bio_en', 2000], ['bio_lo', 2000], ['commission_until', 30], ['commission_until_en', 30]];
+  ['concept', 400], ['concept_en', 400], ['bio', 2000], ['bio_en', 2000], ['bio_lo', 2000]];
 
 export function profileToForm(a) {
-  const f = {since: s(a.since), instagram: s(a.instagram), commission_open: !!a.commission_open};
+  const f = {since: s(a.since), instagram: s(a.instagram)};
   for (const [k] of PROFILE_TEXT) f[k] = s(a[k]);
   return f;
 }
@@ -30,22 +30,20 @@ export function formToProfile(f) {
   if (since !== null && !(Number.isInteger(since) && since >= 1900 && since <= 2100)) errors.since = 'er_year'; else update.since = since;
   const ig = s(f.instagram).trim();
   if (ig && !isHttps(ig)) errors.instagram = 'er_https'; else update.instagram = ig || null;
-  update.commission_open = !!f.commission_open;
   return Object.keys(errors).length ? {errors} : {update};
 }
 
-/* ---- works ---- */
-export const WORK_STATUS = ['', 'reserved', 'sold'];
+/* ---- works (donation-only: no price, status, edition or pay link) ---- */
 export const WORK_TEXT = [['title', 120], ['title_en', 120], ['title_lo', 120], ['medium', 120], ['medium_en', 120], ['medium_lo', 120],
   ['size', 60], ['size_lo', 60], ['quote', 300], ['quote_en', 300], ['quote_lo', 300], ['story', 3000], ['story_en', 3000], ['story_lo', 3000]];
 
 export const emptyWork = () => {
-  const f = {year: String(new Date().getFullYear()), price_usd: '', price_lak: '', ar: '1/1', img: '', status: '', edition: '', pay: ''};
+  const f = {year: String(new Date().getFullYear()), ar: '1/1', img: ''};
   for (const [k] of WORK_TEXT) f[k] = '';
   return f;
 };
 export function workToForm(w) {
-  const f = {year: s(w.year), price_usd: s(w.price_usd), price_lak: s(w.price_lak), ar: s(w.ar || '1/1'), img: s(w.img), status: s(w.status), edition: s(w.edition), pay: s(w.pay)};
+  const f = {year: s(w.year), ar: s(w.ar || '1/1'), img: s(w.img)};
   for (const [k] of WORK_TEXT) f[k] = s(w[k]);
   return f;
 }
@@ -56,16 +54,7 @@ export function formToWork(f) {
   if (!row.title) errors.title = 'er_required';
   const year = n(f.year);
   if (year !== null && !(Number.isInteger(year) && year >= 1900 && year <= 2100)) errors.year = 'er_year'; else row.year = year;
-  const usd = n(f.price_usd);
-  if (usd === null || !(usd >= 0) || usd > 99999999) errors.price_usd = 'er_price'; else row.price_usd = Math.round(usd * 100) / 100;
-  const lak = n(f.price_lak);
-  if (lak !== null && !(Number.isInteger(lak) && lak >= 0)) errors.price_lak = 'er_price'; else row.price_lak = lak;
   if (!/^[0-9]{1,3}\/[0-9]{1,3}$/.test(s(f.ar).trim())) errors.ar = 'er_ratio'; else row.ar = s(f.ar).trim();
-  const ed = n(f.edition);
-  if (ed !== null && !(Number.isInteger(ed) && ed > 1)) errors.edition = 'er_edition'; else row.edition = ed;
-  if (!WORK_STATUS.includes(f.status)) errors.status = 'er_required'; else row.status = f.status;
-  const pay = s(f.pay).trim();
-  if (pay && !isHttps(pay)) errors.pay = 'er_https'; else row.pay = pay || null;
   const img = s(f.img).trim();
   row.img = img || null;
   return Object.keys(errors).length ? {errors} : {row};

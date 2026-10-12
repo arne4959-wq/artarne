@@ -1,7 +1,7 @@
-/* payment.js — the LAO QR payment of one artist (public rows in Supabase) and the "I have paid" notice (the payment-notice Edge Function). */
+/* payment.js — the payment details of one artist (public rows in Supabase: bank, account, LAO QR) and the "I've donated" notice (the donation-notice Edge Function). */
 import {supabase, supabaseReady} from './supabase.js';
 
-/* → {bank, account_name, account_no, qrUrl} or null (no payment info: the buy page shows nothing extra) */
+/* → {bank, account_name, account_no, qrUrl} or null (no payment info: the donation dialog says so) */
 export async function fetchPayment(artistId) {
   if (!supabaseReady) return null;
   try {
@@ -21,10 +21,10 @@ export async function slipFromFile(file) {
   return {type: blob.type, data: btoa(bin)};
 }
 
-/* → {ok: true} or {error: code}. Codes: captcha, sold, busy, rate, not_found, bad_field, net */
-export async function sendNotice(body) {
+/* body: {artist_id, position?, donor_name, donor_email, amount, currency?, message?, captcha, slip?} → {ok: true} or {error: code}. Codes: captcha, busy, rate, not_found, bad_field, net */
+export async function sendDonation(body) {
   try {
-    const {error} = await supabase().functions.invoke('payment-notice', {body});
+    const {error} = await supabase().functions.invoke('donation-notice', {body});
     if (!error) return {ok: true};
     const j = error.context && typeof error.context.json === 'function' ? await error.context.json().catch(() => null) : null;
     return {error: (j && j.error) || 'net'};

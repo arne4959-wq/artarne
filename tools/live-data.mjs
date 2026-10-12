@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /* the columns the public may read (supabase/migrations/001_init.sql: user_id is not one of them, and there is no e-mail column at all) */
-export const ARTIST_COLUMNS = 'id,name,name_en,name_lo,disc,city,since,bio,bio_en,bio_lo,tagline,tagline_en,concept,concept_en,instagram,commission_open,commission_until,commission_until_en,sold_elsewhere,timeline,scale,kind,colors,created_at';
-export const WORK_COLUMNS = 'artist_id,position,title,title_en,title_lo,year,medium,medium_en,medium_lo,size,size_lo,price_usd,price_lak,ar,img,status,edition,pay,quote,quote_en,quote_lo,story,story_en,story_lo,concept';
+export const ARTIST_COLUMNS = 'id,name,name_en,name_lo,disc,city,since,bio,bio_en,bio_lo,tagline,tagline_en,concept,concept_en,instagram,timeline,scale,kind,colors,created_at';
+export const WORK_COLUMNS = 'artist_id,position,title,title_en,title_lo,year,medium,medium_en,medium_lo,size,size_lo,ar,img,quote,quote_en,quote_lo,story,story_en,story_lo,concept';
 const DEFAULT_COLORS = ['#C4958A', '#7A4A40', '#D4CFCA'];   // the building's three colours when the artist has set none
 
 const put = (o, k, v) => { if (v !== null && v !== undefined && v !== '') o[k] = v; };   // missing stays missing, so pk() falls back to Thai
@@ -15,18 +15,15 @@ export function workToPiece(w) {
   put(p, 't', w.title); put(p, 'tEn', w.title_en); put(p, 'titleLo', w.title_lo);
   put(p, 'y', w.year); put(p, 'm', w.medium); put(p, 'mEn', w.medium_en); put(p, 'mLo', w.medium_lo);
   put(p, 's', w.size); put(p, 'sLo', w.size_lo);
-  p.p = Number(w.price_usd); put(p, 'priceLak', w.price_lak == null ? null : Number(w.price_lak));
   p.ar = w.ar || '1/1'; put(p, 'img', w.img);
-  if (w.status === 'sold' || w.status === 'reserved') p.status = w.status;
-  put(p, 'edition', w.edition); put(p, 'pay', w.pay);
   put(p, 'q', w.quote); put(p, 'qEn', w.quote_en); put(p, 'qLo', w.quote_lo);
   put(p, 'st', w.story); put(p, 'stEn', w.story_en); put(p, 'stLo', w.story_lo);
   put(p, 'concept', w.concept);
   return p;
 }
 
-/* the artist's bank details (artist_payment is public by design: it is printed next to a QR, like any payment sign) → the `support` field the Support dialog reads.
-   qr_path is a object in the `qr` bucket: <artist_id>/<file>. No account number and no QR = no support (the button stays "coming soon"). */
+/* the artist's bank details (artist_payment is public by design: it is printed next to a QR, like any payment sign) → the `support` field the donation dialog reads.
+   qr_path is a object in the `qr` bucket: <artist_id>/<file>. No account number and no QR = no support (a real artist without bank details cannot be donated to yet). */
 export function payToSupport(p, baseUrl) {
   if (!p || (!p.account_no && !p.qr_path)) return null;
   const s = {}; put(s, 'bank', p.bank); put(s, 'name', p.account_name); put(s, 'no', p.account_no);
@@ -46,8 +43,6 @@ export function rowToArtist(a, works, pay, baseUrl) {
   put(o, 'concept', a.concept); put(o, 'conceptEn', a.concept_en);
   put(o, 'bio', a.bio); put(o, 'bioEn', a.bio_en); put(o, 'bioLo', a.bio_lo);
   put(o, 'tagline', a.tagline); put(o, 'taglineEn', a.tagline_en); put(o, 'instagram', a.instagram);
-  if (a.commission_open) { o.commission = {open: true}; put(o.commission, 'until', a.commission_until); put(o.commission, 'untilEn', a.commission_until_en); }
-  if (a.sold_elsewhere > 0) o.sold = a.sold_elsewhere;
   if (Array.isArray(a.timeline) && a.timeline.length) o.timeline = a.timeline;
   o.pieces = mine.map(workToPiece);
   const sup = payToSupport((pay || []).find(x => x.artist_id === a.id), baseUrl); if (sup) o.support = sup;

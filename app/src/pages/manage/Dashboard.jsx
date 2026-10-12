@@ -6,23 +6,23 @@ import {supabase} from '../../lib/supabase.js';
 import ProfilePanel from './ProfilePanel.jsx';
 import WorksPanel from './WorksPanel.jsx';
 import PaymentPanel from './PaymentPanel.jsx';
-import OrdersPanel from './OrdersPanel.jsx';
+import DonationsPanel from './DonationsPanel.jsx';
 
-const TABS = [['profile', 'tab_profile'], ['works', 'tab_works'], ['orders', 'tab_orders'], ['pay', 'tab_pay']];
+const TABS = [['profile', 'tab_profile'], ['works', 'tab_works'], ['donations', 'tab_donations'], ['pay', 'tab_pay']];
 
 export default function Dashboard({session, signOut}) {
   const mt = useMt(), {lang} = useLang();
   const [st, setSt] = useState({phase: 'loading'}), [tab, setTab] = useState('works');
-  const [fresh, setFresh] = useState(0), uid = session.user.id;   // fresh = payment notices waiting for the artist
+  const [fresh, setFresh] = useState(0), uid = session.user.id;   // fresh = donation notices waiting for the artist
   const load = useCallback(async () => {
     setSt({phase: 'loading'});
     const {data, error} = await supabase().from('artists').select('*').eq('user_id', uid).maybeSingle();
     setSt(error ? {phase: 'fail'} : data ? {phase: 'ok', artist: data} : {phase: 'none'});
   }, [uid]);
   useEffect(() => { load(); }, [load]);
-  useEffect(() => {   // the badge on the Payments tab, before the tab is opened
+  useEffect(() => {   // the badge on the Donations tab, before the tab is opened
     if (!st.artist) return;
-    supabase().from('payment_notices').select('id', {count: 'exact', head: true}).eq('artist_id', st.artist.id).eq('status', 'new').then(({count}) => setFresh(count || 0));
+    supabase().from('donation_notices').select('id', {count: 'exact', head: true}).eq('artist_id', st.artist.id).eq('status', 'pending').then(({count}) => setFresh(count || 0));
   }, [st.artist]);
 
   const artist = st.artist, name = artist ? (lang === 'en' && artist.name_en) || (lang === 'lo' && artist.name_lo) || artist.name : '';
@@ -40,12 +40,12 @@ export default function Dashboard({session, signOut}) {
         {!artist.approved && <p className="mg-note" role="status">{mt('hidden')}</p>}
         {artist.demo && <p className="mg-note warn">{mt('demo')}</p>}
         <div className="mg-tabs" role="tablist">
-          {TABS.map(([k, label]) => <button key={k} type="button" role="tab" id={`tab-${k}`} aria-selected={tab === k} aria-controls={`pan-${k}`} className="mg-tab" onClick={() => setTab(k)}>{mt(label)}{k === 'orders' && fresh > 0 && <b className="mg-badge" aria-label={String(fresh)}>{fresh}</b>}</button>)}
+          {TABS.map(([k, label]) => <button key={k} type="button" role="tab" id={`tab-${k}`} aria-selected={tab === k} aria-controls={`pan-${k}`} className="mg-tab" onClick={() => setTab(k)}>{mt(label)}{k === 'donations' && fresh > 0 && <b className="mg-badge" aria-label={String(fresh)}>{fresh}</b>}</button>)}
         </div>
         <div role="tabpanel" id={`pan-${tab}`} aria-labelledby={`tab-${tab}`}>
           {tab === 'profile' && <ProfilePanel artist={artist} onSaved={a => setSt({phase: 'ok', artist: a})}/>}
           {tab === 'works' && <WorksPanel artist={artist}/>}
-          {tab === 'orders' && <OrdersPanel artist={artist} onCount={setFresh}/>}
+          {tab === 'donations' && <DonationsPanel artist={artist} onCount={setFresh}/>}
           {tab === 'pay' && <PaymentPanel artist={artist} userEmail={session.user.email}/>}
         </div>
       </>}

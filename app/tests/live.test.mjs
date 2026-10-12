@@ -4,23 +4,24 @@ import assert from 'node:assert/strict';
 import {rowsToArtists, workToPiece, mergeArtists, payToSupport, ARTIST_COLUMNS, WORK_COLUMNS} from '../../tools/live-data.mjs';
 
 const artist = (o = {}) => ({id: 'mali', name: 'มะลิ', name_en: 'Mali', name_lo: null, disc: 'ศิลปะดิจิทัล', city: 'เวียงจันทน์', since: 2018, bio: 'bio', bio_en: null, bio_lo: null, tagline: null, tagline_en: null,
-  concept: null, concept_en: null, instagram: 'https://instagram.com/mali', commission_open: true, commission_until: 'ต.ค.', commission_until_en: 'Oct', sold_elsewhere: 3, timeline: [], scale: '1.10', kind: 'arch',
+  concept: null, concept_en: null, instagram: 'https://instagram.com/mali', timeline: [], scale: '1.10', kind: 'arch',
   colors: [], created_at: '2026-10-01T00:00:00Z', ...o});
 const work = (o = {}) => ({artist_id: 'mali', position: 0, title: 'ภาพหนึ่ง', title_en: 'One', title_lo: null, year: 2024, medium: 'สีน้ำ', medium_en: null, medium_lo: null, size: '50 × 70 ซม.', size_lo: null,
-  price_usd: '450.00', price_lak: null, ar: '4/5', img: 'https://x.supabase.co/storage/v1/object/public/art/mali/a.webp', status: '', edition: null, pay: null, quote: null, quote_en: null, quote_lo: null, story: null, story_en: null, story_lo: null, concept: null, ...o});
+  ar: '4/5', img: 'https://x.supabase.co/storage/v1/object/public/art/mali/a.webp', quote: null, quote_en: null, quote_lo: null, story: null, story_en: null, story_lo: null, concept: null, ...o});
 
 test('a row becomes an artist in the shape of artists.js; missing stays missing', () => {
   const [a] = rowsToArtists([artist()], [work()]);
   assert.equal(a.id, 'mali'); assert.equal(a.nameEn, 'Mali'); assert.ok(!('nameLo' in a) && !('bioEn' in a) && !('tagline' in a));
   assert.equal(a.scale, 1.1); assert.equal(a.kind, 'arch'); assert.equal(a.works.length, 3);
-  assert.deepEqual(a.commission, {open: true, until: 'ต.ค.', untilEn: 'Oct'}); assert.equal(a.sold, 3); assert.equal(a.live, true);
+  assert.ok(!('commission' in a) && !('sold' in a)); assert.equal(a.live, true);   // donation-only: nothing is sold, no commissions
   assert.deepEqual(a.titles, ['ภาพหนึ่ง']);
 });
 
-test('a piece has numbers as numbers, the price in dollars, the picture, and only a real status', () => {
-  const p = workToPiece(work({price_lak: '10000000', status: 'sold', edition: 12}));
-  assert.equal(p.p, 450); assert.equal(p.priceLak, 10000000); assert.equal(p.status, 'sold'); assert.equal(p.edition, 12); assert.equal(p.tEn, 'One'); assert.equal(p.ar, '4/5');
-  assert.ok(!('status' in workToPiece(work({status: ''}))) && !('pay' in workToPiece(work())) && !('edition' in workToPiece(work())));
+test('a piece has its texts and picture, and never a price, status, edition or pay link (donation-only)', () => {
+  const p = workToPiece(work({price_usd: '450.00', price_lak: '10000000', status: 'sold', edition: 12, pay: 'https://pay.example.com/x'}));
+  assert.equal(p.tEn, 'One'); assert.equal(p.ar, '4/5');
+  for (const k of ['p', 'priceLak', 'status', 'edition', 'pay']) assert.ok(!(k in p), k);
+  assert.ok(!/price|status|edition|pay\b|commission|sold_elsewhere/.test(ARTIST_COLUMNS + ',' + WORK_COLUMNS));   // the pull never even asks for them
   assert.equal(workToPiece(work({story_lo: 'ລາວ'})).stLo, 'ລາວ');
 });
 

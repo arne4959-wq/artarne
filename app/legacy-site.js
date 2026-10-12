@@ -3,7 +3,7 @@
 //
 //   virtual:circles/data             ARTISTS, DISC_EN, CITY_EN, DISC_LO, CITY_LO   from ../artists.js (+ the real artists of ../artists.live.json in front)
 //   virtual:circles/strings          STR (th / en / lo)                            from ../circles.js
-//   virtual:circles/config           CONFIG, SHIPPING, RATES                       from ../circles.js
+//   virtual:circles/config           CONFIG                                        from ../circles.js
 //   virtual:circles/css/<file>       the raw text of ../<file>.css (no .css on the id, or Vite would run it as a stylesheet)
 //   virtual:circles/page-css/<page>  the raw text of the <style> block in ../<page>.html
 //   virtual:circles/page-body/<page> the inner HTML of the first <main> in ../<page>.html (long static text: privacy, terms)
@@ -45,9 +45,7 @@ const LOADERS = {
   strings: () => ({watch: 'circles.js', code: src => `export ${grab(src, /^const STR = \{[\s\S]*?^\};/m, 'const STR', 'circles.js')}`}),
   config: () => ({watch: 'circles.js', code: src => [
     grab(src, /^const CONFIG = \{[\s\S]*?\};/m, 'const CONFIG', 'circles.js'),
-    grab(src, /^const SHIPPING = .*;$/m, 'const SHIPPING', 'circles.js'),
-    grab(src, /^const RATES = .*;$/m, 'const RATES', 'circles.js'),
-    'export {CONFIG, SHIPPING, RATES};',
+    'export {CONFIG};',
   ].join('\n')}),
   css: name => ({watch: name + '.css', code: src => `export default ${JSON.stringify(src)};`}),
   'page-css': name => ({watch: name + '.html', code: src => {

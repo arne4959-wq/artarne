@@ -11,8 +11,8 @@ export async function run({url, check}) {
   check('there are new-wave artists in the data', wave.length >= 4, wave.map(a => a.id));
   for (const a of wave) {
     const miss = ['bio', 'bioEn', 'city', 'since', 'email', 'kind', 'nameEn'].filter(k => !a[k]);
-    const bad = a.pieces.filter(p => !(p.t && p.tEn && p.m && p.mEn && p.s && p.p > 0 && p.y && p.ar && fs.existsSync(path.join(root, p.img))));
-    check(`${a.id}: complete data (bio TH+EN, 3 pieces with title/year/medium/size/price/image)`, !miss.length && !bad.length && a.pieces.length === 3 && DISC_EN[a.disc] && CITY_EN[a.city], {miss, bad: bad.map(p => p.t)});
+    const bad = a.pieces.filter(p => !(p.t && p.tEn && p.m && p.mEn && p.s && p.y && p.ar && fs.existsSync(path.join(root, p.img))));
+    check(`${a.id}: complete data (bio TH+EN, 3 pieces with title/year/medium/size/image)`, !miss.length && !bad.length && a.pieces.length === 3 && DISC_EN[a.disc] && CITY_EN[a.city], {miss, bad: bad.map(p => p.t)});
     check(`${a.id}: the English bio is exactly two sentences, the Thai bio is not empty`, (a.bioEn.match(/[.!?](\s|$)/g) || []).length === 2 && a.bio.length > 40, a.bioEn);
   }
   const kinds = new Set(ARTISTS.map(a => a.kind));

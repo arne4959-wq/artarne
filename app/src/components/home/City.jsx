@@ -54,7 +54,7 @@ export default function City({artists}) {
       <p data-t="city_p">{t('city_p')}</p>
       <div className="pager" hidden={map}><button onClick={() => scrollCity(-1)} aria-label={t('pager_l')}>←</button><button onClick={() => scrollCity(1)} aria-label={t('pager_r')}>→</button></div>
     </div>
-    <div className="city-tools reveal">
+    <div className="city-tools reveal" id="all-artists">
       <div className="vtog" id="vtog" role="group" aria-label={t('v_aria')}>
         {[['city', 'v_city'], ['map', 'v_map']].map(([v, k]) => <button key={v} type="button" className={'vt' + (view === v ? ' on' : '')} data-v={v} aria-pressed={view === v} data-t={k} onClick={() => setView(v)}>{t(k)}</button>)}
       </div>

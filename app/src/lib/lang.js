@@ -37,12 +37,9 @@ export function makeLang(lang) {
   const titleL = p => (lang === 'lo' && p.titleLo != null) ? p.titleLo : pk(p, 't');   // a work's title; Lao uses titleLo, missing = the Thai title
   const bldgL = a => lang === 'en' ? `${nameL(a)}'s building` : lang === 'lo' ? 'ຕຶກຂອງ' + nameL(a) : 'ตึกของ' + a.name;
   const fmtSize = p => p.s == null ? (lang === 'lo' && p.sLo != null ? p.sLo : '') : lang === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : (lang === 'lo' && p.sLo != null) ? p.sLo : p.s;   // a work from the database may have no size
-  /* prices: dollars in artists.js. Lao pages (with CONFIG.lakPerUsd set) show kip, a work's own priceLak first */
+  /* donation amounts (and nothing else): dollars. Lao pages (with CONFIG.lakPerUsd set) show kip */
   const lakOn = lang === 'lo' && +CONFIG.lakPerUsd > 0;
-  const lak = (n, w) => NF.format(w && +w.priceLak > 0 ? +w.priceLak : lakRound(n * CONFIG.lakPerUsd)) + ' ₭';
-  const money = (n, w) => lakOn ? lak(n, w) : usd(n);
-  const moneyHtml = (n, w) => lakOn ? `${esc(lak(n, w))}<small class="mny-s">${esc(usd(n))}</small>` : esc(usd(n));
-  const kip = (n, w) => (+CONFIG.lakPerUsd > 0 ? lak(n, w) : '');   // kip in every language: the LAO QR block always asks for kip
-  const usdText = usd;
-  return {lang, t, pk, nameL, discL, cityL, titleL, bldgL, fmtSize, money, moneyHtml, lakOn, kip, usdText};
+  const lak = n => NF.format(lakRound(n * CONFIG.lakPerUsd)) + ' ₭';
+  const money = n => lakOn ? lak(n) : usd(n);
+  return {lang, t, pk, nameL, discL, cityL, titleL, bldgL, fmtSize, money, lakOn};
 }

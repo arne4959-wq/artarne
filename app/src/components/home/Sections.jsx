@@ -5,11 +5,11 @@ import {CONFIG} from 'virtual:circles/config';
 import {useLang} from '../../lib/i18n.jsx';
 import {useMt} from '../../lib/manageStrings.js';
 import {reduce} from '../../lib/env.js';
-import {artBg, workStatus} from '../../lib/art.js';
+import {artBg} from '../../lib/art.js';
 import {worksList, allWorks, TAPE, noLabel, openStudio, spotlightOf} from '../../lib/home.js';
 import {CY_RING, ROOMS_SVG} from '../../lib/homeSvg.js';
 import {subscribeNews} from '../../lib/forms.js';
-import {Ransom, ArtImg, Stamp, StatusChip} from '../art.jsx';
+import {Ransom, ArtImg} from '../art.jsx';
 import {useDialogs} from '../Dialogs.jsx';
 import {useToast} from '../Toast.jsx';
 
@@ -62,7 +62,7 @@ export function How() {
 
 /* featured works: sorted, "show all", the cards. A new key per action makes the cards start over, like the old innerHTML did. */
 export function Featured({artists}) {
-  const L = useLang(), {t, nameL, discL, titleL, money, moneyHtml, lang} = L;
+  const L = useLang(), {t, nameL, discL, titleL, lang} = L;
   const [showAll, setShowAll] = useState(false), [sortBy, setSortBy] = useState('cur'), [mode, setMode] = useState('init'), [round, setRound] = useState(0), first = useRef(true);
   useEffect(() => { if (first.current) { first.current = false; return; } setMode('still'); setRound(r => r + 1); }, [lang]);   // a language switch: no animation
   const list = useMemo(() => worksList(artists, {showAll, sortBy}), [artists, showAll, sortBy]), total = useMemo(() => allWorks(artists).length, [artists]);
@@ -74,19 +74,19 @@ export function Featured({artists}) {
     <div className="feat-bar reveal">
       <label className="sortl"><span data-t="sort_label">{t('sort_label')}</span>
         <select id="sort" value={sortBy} onChange={e => { setSortBy(e.target.value); pop(); }}>
-          {[['cur', 'sort_cur'], ['low', 'sort_low'], ['high', 'sort_high'], ['new', 'sort_new']].map(([v, k]) => <option key={v} value={v} data-t={k}>{t(k)}</option>)}
+          {[['cur', 'sort_cur'], ['new', 'sort_new']].map(([v, k]) => <option key={v} value={v} data-t={k}>{t(k)}</option>)}
         </select></label>
       <button type="button" className="fbtn" id="all-btn" aria-pressed={showAll} onClick={() => { setShowAll(v => !v); pop(); }}>{showAll ? t('less_btn') : t('all_btn', {n: total})}</button>
       <span className="feat-count" id="feat-count" role="status">{t('feat_count', {n: list.length})}</span>
     </div>
     <div className="masonry" id="masonry">
       {list.map(({a, p, k}, n) => <div key={`${round}:${a.id}:${k}`} className={mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal'} style={{'--i': mode === 'init' ? n % 3 : n}}>
-        <a className="card" href={`studio-${a.id}.html?work=${k}`} draggable="false" data-id={a.id} data-k={k} data-cur="VIEW" aria-label={t('card_aria', {t: titleL(p), a: nameL(a), p: money(p.p, p)})}
+        <a className="card" href={`studio-${a.id}.html?work=${k}`} draggable="false" data-id={a.id} data-k={k} data-cur="VIEW" aria-label={t('card_aria', {t: titleL(p), a: nameL(a)})}
           onClick={e => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(a.id, k, reduce); }}>
           <i className="tape" style={{'--tr': TAPE[n % TAPE.length] + 'deg'}}></i>
-          <span className="art" style={{'--ar': p.ar, '--art': artBg(a.works, k)}}><ArtImg a={a} k={k}/><Stamp p={p}/></span>
+          <span className="art" style={{'--ar': p.ar, '--art': artBg(a.works, k)}}><ArtImg a={a} k={k}/></span>
           <span className="plate"><span className="pn">{titleL(p)}</span><span className="pa">{`${nameL(a)} · ${discL(a)}`}</span>
-            <span className={'pp' + (workStatus(p) ? ' strike' : '')} dangerouslySetInnerHTML={{__html: moneyHtml(p.p, p)}}/><StatusChip p={p}/></span>
+            <span className="pp">{p.y}</span></span>
         </a></div>)}
     </div>
   </section>;
@@ -95,7 +95,7 @@ export function Featured({artists}) {
 /* the spotlight: the first artist of the city and their first work. The three-question interview is the sample artist Napha's; a real
    artist shows their own tagline, concept and bio in the same frame. */
 export function Spotlight({artists}) {
-  const L = useLang(), {t, pk, nameL, discL, cityL, titleL, moneyHtml} = L, mt = useMt();
+  const L = useLang(), {t, pk, nameL, discL, cityL, titleL} = L, mt = useMt();
   const N = spotlightOf(artists); if (!N) return null;
   const idx = artists.indexOf(N), p = N.pieces[0], isNapha = N.id === 'napha';
   const meta = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)}).replace('NO.01', noLabel(idx));
@@ -107,7 +107,7 @@ export function Spotlight({artists}) {
     <div className="spot-g">
       <figure className="afr concrete reveal"><div className="afr-in" id="afr-in" style={{'--art': artBg(N.works, 0)}}>
         <img id="afr-img" alt={titleL(p)} decoding="async" src={p.img || undefined}/>
-        <figcaption id="afr-cap" dangerouslySetInnerHTML={{__html: `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y} · ${moneyHtml(p.p, p)}</span>`}}/>
+        <figcaption id="afr-cap" dangerouslySetInnerHTML={{__html: `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y}</span>`}}/>
       </div></figure>
       <div className="spot-qa">
         <div className="spot-meta reveal" id="spot-meta">{meta}</div>

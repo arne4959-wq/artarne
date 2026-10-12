@@ -31,18 +31,21 @@ export default function Nav({links = [], join = false, menu = null, brandHref = 
       {brandHref ? <a className="brand" href={brandHref} onPointerEnter={spin} onClick={spin}>{brand}</a>
         : <div className="brand" onPointerEnter={spin} onClick={spin}>{brand}</div>}
       <div className="links">
-        {links.map(([href, k]) => <a key={href + k} href={href} data-t={k}>{t(k)}</a>)}
+        {withAll(links).map(([href, k]) => <a key={href + k} href={href} data-t={k}>{t(k)}</a>)}
         <LangButton/>
         {join && <button type="button" className="join" onClick={() => dialogs.openJoin()}>Join</button>}
         {menu && <button type="button" className="menu-btn" id="menu-btn" aria-label={t('menu_aria')} aria-expanded={open ? 'true' : 'false'} aria-controls="mnav"
           onClick={e => { e.stopPropagation(); setOpen(o => !o); }}><i></i><i></i></button>}
       </div>
       {menu && <div className={'mnav' + (open ? ' open' : '')} id="mnav" inert={!open} onClick={e => { if (e.target.closest('a')) setOpen(false); }}>
-        {menu.map(([href, k]) => <a key={href + k} href={href} data-t={k}>{t(k)}</a>)}
+        {withAll(menu).map(([href, k]) => <a key={href + k} href={href} data-t={k}>{t(k)}</a>)}
       </div>}
     </nav>
   );
 }
+
+/* "All artists": next to "City" in the top bar and the phone menu, on every page (it goes to the search + filter row of the home page) */
+const withAll = list => list.flatMap(([href, k]) => /#city$/.test(href) ? [[href, k], [href.replace(/#city$/, '#all-artists'), 'nav_all']] : [[href, k]]);
 
 /* the menus the old pages used */
 export const MENU_FULL = [['index.html#city', 'nav_city'], ['index.html#manifesto', 'foot_manifesto'], ['index.html#how', 'foot_how'], ['index.html#featured', 'foot_feat'], ['index.html#map', 'foot_map'], ['join.html', 'foot_join']];

@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {useMt} from '../../lib/manageStrings.js';
 import {supabase} from '../../lib/supabase.js';
 import {profileToForm, formToProfile} from '../../lib/manage.js';
-import {Field, Check, SaveState} from './Field.jsx';
+import {Field, SaveState} from './Field.jsx';
 
 export default function ProfilePanel({artist, onSaved}) {
   const mt = useMt();
@@ -43,8 +43,6 @@ export default function ProfilePanel({artist, onSaved}) {
     <h3 className="mg-h3">{mt('h_links')}</h3>
     <div className="mg-grid">
       <Field label={mt('f_instagram')} name="instagram" type="url" inputMode="url" placeholder="https://instagram.com/…" wide {...props}/>
-      <div className="wide"><Check label={mt('f_commission')} name="commission_open" form={form} set={set}/></div>
-      {form.commission_open && <><Field label={mt('f_until')} name="commission_until" maxLength={30} {...props}/><Field label={mt('f_until_en')} name="commission_until_en" maxLength={30} {...props}/></>}
     </div>
     <div className="mg-bar"><button type="submit" className="btn" disabled={state === 'saving'}>{mt('save')}</button><SaveState state={state}/></div>
   </form>;

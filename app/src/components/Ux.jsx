@@ -6,7 +6,7 @@ import {useDialogs} from './Dialogs.jsx';
 import {useToast} from './Toast.jsx';
 
 const KEY = 'circles-calm';
-const supOf = A => { const s = A && A.support; return s && (s.qr || s.no) ? s : null; };
+import {canDonate} from '../lib/donate.js';
 
 /* skip link: moves the focus to <main id="main"> itself (the smooth-scroll library would otherwise swallow the #main jump) */
 export function SkipLink() {
@@ -25,7 +25,7 @@ export function Calm() {
 }
 
 export function Fab({A}) {
-  const {t, nameL} = useLang(), {openSupport} = useDialogs(), toast = useToast(), [away, setAway] = useState(false);
+  const {t, nameL} = useLang(), {openDonate} = useDialogs(), toast = useToast(), [away, setAway] = useState(false);
   useEffect(() => {   // hide the floating Support button while the page's own Support button is on screen
     let raf = 0;
     const check = () => { raf = 0; const vh = innerHeight; setAway([...document.querySelectorAll('[data-support]:not(.fab-s), .pf-sbtn')].some(el => { const r = el.getBoundingClientRect(); return r.width && r.bottom > 0 && r.top < vh; })); };
@@ -39,9 +39,8 @@ export function Fab({A}) {
     try { if (navigator.share) { await navigator.share({title: document.title, url}); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
     try { await navigator.clipboard.writeText(url); toast(t('share_copied')); } catch (e) { /* no clipboard: nothing to do */ }
   };
-  const sup = supOf(A);
   return <div className="fab-wrap">
     <button type="button" className="btn ghost fab-s fab-share" onClick={share}>↗ {t('share_btn')}</button>
-    {sup && <button type="button" className={'btn pk fab-s fab-sup' + (away ? ' away' : '')} onClick={() => openSupport(sup, nameL(A))}>{t('pf_supb', {a: nameL(A)})}</button>}
+    {canDonate(A) && <button type="button" className={'btn pk fab-s fab-sup' + (away ? ' away' : '')} onClick={() => openDonate(A)}>{t('pf_supb', {a: nameL(A)})}</button>}
   </div>;
 }

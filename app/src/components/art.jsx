@@ -1,16 +1,17 @@
-/* art.jsx — the small markup helpers of circles.js (ransom, stampHtml, statusChip, artImg) as components */
+/* art.jsx — the small markup helpers of circles.js (ransom, artImg) as components */
 import {Fragment} from 'react';
 import {useLang} from '../lib/i18n.jsx';
-import {RS, ROT, YOFF, graphemes, workStatus} from '../lib/art.js';
+import {RS, ROT, YOFF, graphemes} from '../lib/art.js';
 
 /* OLD_QUOTE_BUG: the old ransom() wrote font-family:"Special Elite" inside style="…", so the quote ended the attribute
    and those chips never got their font (or weight): they show the heading's font instead. Kept on purpose so the
    React pages look exactly like the old ones; set it to false to get the Special Elite chips that were intended. */
 export const OLD_QUOTE_BUG = true;
 function Chip({c, i, seed}) {
-  const st = RS[(i + seed) % RS.length], k = (i * 3 + seed) % ROT.length;
-  const font = OLD_QUOTE_BUG && st.ff.includes('"') ? {} : {fontFamily: st.ff, fontWeight: st.w || 400};
-  return <span className={/^\s+$/.test(c) ? 'sp' : undefined}
+  const st = RS[(i + seed) % RS.length], k = (i * 3 + seed) % ROT.length, tl = /[\u0E00-\u0EFF]/.test(c);   // tl: a Thai or Lao letter: taller tile (.tl) and the font that places stacked marks best
+  const font = tl ? {fontFamily: st.ff === 'Chonburi' ? 'Chonburi,IBM Plex Sans Thai,var(--lao)' : 'IBM Plex Sans Thai,var(--lao)', fontWeight: st.ff === 'Chonburi' ? (st.w || 400) : 700}
+    : OLD_QUOTE_BUG && st.ff.includes('"') ? {} : {fontFamily: st.ff, fontWeight: st.w || 400};
+  return <span className={/^\s+$/.test(c) ? 'sp' : tl ? 'tl' : undefined}
     style={{'--r': ROT[k] + 'deg', '--y': YOFF[k] + 'px', '--k': i, background: st.bg, color: st.fg, ...font}}>{c}</span>;
 }
 
@@ -24,16 +25,6 @@ export function Ransom({text, seed = 0, wrap = false, as: Tag = 'span', ...rest}
     const chips = graphemes(tok).map(c => { const k = i++; return <Chip key={k} c={c} i={k} seed={seed}/>; });
     return /^\s+$/.test(tok) ? <Fragment key={n}>{chips}</Fragment> : <span key={n} className="rw">{chips}</span>;
   })}</Tag>;
-}
-
-export function Stamp({p}) {
-  const {t} = useLang(), s = workStatus(p);
-  return s ? <i className={`stamp ${s}`}>{t(s === 'sold' ? 'st_sold' : 'st_res')}</i> : null;
-}
-
-export function StatusChip({p}) {
-  const {t} = useLang(), s = workStatus(p);
-  return s ? <span className={`chip ${s}`}>{t(s === 'sold' ? 'st_sold' : 'st_res')}</span> : null;
 }
 
 export function ArtImg({a, k}) {

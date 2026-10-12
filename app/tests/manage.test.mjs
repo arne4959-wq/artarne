@@ -3,29 +3,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {formToProfile, formToWork, formToPayment, formToEmail, emptyWork, workToForm, profileToForm, nextPosition, fitSize, ratioOf, fileKey, isHttps} from '../src/lib/manage.js';
 
-const goodWork = () => ({...emptyWork(), title: 'เช้าหมอก', price_usd: '1800'});
+const goodWork = () => ({...emptyWork(), title: 'เช้าหมอก'});
 const goodProfile = () => ({...profileToForm({}), name: 'นภา', disc: 'จิตรกรรม', city: 'เชียงใหม่'});
 
-test('a work needs a title and a price; the price is rounded to cents', () => {
+test('a work needs only a title (no price: nothing is sold)', () => {
   assert.deepEqual(formToWork({...goodWork(), title: ' '}).errors, {title: 'er_required'});
-  assert.deepEqual(formToWork({...goodWork(), price_usd: ''}).errors, {price_usd: 'er_price'});
-  assert.deepEqual(formToWork({...goodWork(), price_usd: '-1'}).errors, {price_usd: 'er_price'});
-  assert.deepEqual(formToWork({...goodWork(), price_usd: 'abc'}).errors, {price_usd: 'er_price'});
-  assert.equal(formToWork({...goodWork(), price_usd: '12.345'}).row.price_usd, 12.35);
+  const {row} = formToWork({...goodWork(), price_usd: '5', status: 'sold', edition: '3', pay: 'https://pay.example.com/p', price_lak: '1'});
+  for (const k of ['price_usd', 'price_lak', 'status', 'edition', 'pay']) assert.ok(!(k in row), k + ' must not be sent');
 });
 
-test('work: year, kip, ratio, edition, status, pay link', () => {
+test('work: year and ratio', () => {
   assert.equal(formToWork({...goodWork(), year: '24'}).errors.year, 'er_year');
-  assert.equal(formToWork({...goodWork(), price_lak: '1.5'}).errors.price_lak, 'er_price');
   assert.equal(formToWork({...goodWork(), ar: '4:5'}).errors.ar, 'er_ratio');
-  assert.equal(formToWork({...goodWork(), edition: '1'}).errors.edition, 'er_edition');
-  assert.equal(formToWork({...goodWork(), edition: '12'}).row.edition, 12);
-  assert.equal(formToWork({...goodWork(), edition: ''}).row.edition, null);   // empty = one of a kind
-  assert.equal(formToWork({...goodWork(), status: 'gone'}).errors.status, 'er_required');
-  assert.equal(formToWork({...goodWork(), pay: 'http://pay.example.com'}).errors.pay, 'er_https');
-  assert.equal(formToWork({...goodWork(), pay: 'https://x'}).errors.pay, 'er_https');
-  assert.equal(formToWork({...goodWork(), pay: 'https://pay.example.com/p'}).row.pay, 'https://pay.example.com/p');
-  assert.equal(formToWork({...goodWork(), pay: ''}).row.pay, null);
+  assert.equal(formToWork({...goodWork(), year: '2024', ar: '4/5'}).row.ar, '4/5');
 });
 
 test('a work never carries the fields the artist must not set', () => {
@@ -34,9 +24,9 @@ test('a work never carries the fields the artist must not set', () => {
 });
 
 test('work form round-trip keeps the values', () => {
-  const w = {title: 'A', title_en: 'B', year: 2022, price_usd: '450.00', price_lak: 10000000, ar: '4/5', img: 'https://x.co/a.webp', status: 'reserved', edition: 12, pay: null, story: null};
+  const w = {title: 'A', title_en: 'B', year: 2022, ar: '4/5', img: 'https://x.co/a.webp', story: null};
   const {row} = formToWork(workToForm(w));
-  assert.equal(row.title_en, 'B'); assert.equal(row.price_usd, 450); assert.equal(row.price_lak, 10000000); assert.equal(row.status, 'reserved'); assert.equal(row.edition, 12); assert.equal(row.story, null);
+  assert.equal(row.title_en, 'B'); assert.equal(row.year, 2022); assert.equal(row.ar, '4/5'); assert.equal(row.story, null);
 });
 
 test('profile: name, discipline and city are required; instagram must be https', () => {
