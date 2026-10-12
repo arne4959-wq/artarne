@@ -81,6 +81,8 @@ html[lang=en] .mus-q{font:italic 400 .9rem/1.4 "Playfair Display",Georgia,serif;
 .mus-pr.strike{text-decoration:line-through;background:var(--bone);}
 .mus-acts .btn{font-size:.9rem;padding:.5rem .8rem;box-shadow:3px 3px 0 var(--black);}
 .mus-acts{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;}
+.mus-don{font:600 .82rem var(--thai);background:none;border:0;border-bottom:2px dotted var(--black);padding:.05rem 0;cursor:pointer;color:var(--black);}
+.mus-don:hover,.mus-don:focus-visible{background:var(--black);color:var(--paper);padding:.05rem .4rem;}
 .mus-more{font:600 .82rem var(--thai);background:none;border:0;border-bottom:3px solid var(--pink);padding:.05rem 0;cursor:pointer;color:var(--black);}
 .mus-more:hover,.mus-more:focus-visible{background:var(--black);color:var(--paper);border-color:var(--black);padding:.05rem .4rem;}
 

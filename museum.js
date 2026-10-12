@@ -137,7 +137,7 @@
   function labelHtml(k) {
     const p = A.pieces[k];
     return `<i class="mus-tape"></i><small>${p.y} · ${esc(fmtSize(p))}</small><b>${esc(titleL(p))}</b>${p.q ? `<i class="mus-q">“${esc(pk(p, 'q'))}”</i>` : ''}`
-      + `<span class="mus-acts">${canDonate(A) ? `<button type="button" class="btn pk" data-support="${esc(A.id)}" data-for="${esc(titleL(p))}">${esc(t('pf_supb', {a: nameL(A)}))}</button>` : ''}<button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
+      + `<span class="mus-acts">${canDonate(A) ? `<button type="button" class="mus-don" data-support="${esc(A.id)}" data-for="${esc(titleL(p))}" data-quiet>${esc(t('don_work'))}</button>` : ''}<button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
   }
   function update() {
     const w = document.getElementById('mus-world'); if (!w) return;

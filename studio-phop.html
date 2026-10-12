@@ -74,12 +74,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(30px);background:var(--pink);color:var(--black);border:var(--line) solid var(--black);font:400 .95rem var(--anton);letter-spacing:.1em;padding:.7rem 1.3rem;opacity:0;pointer-events:none;transition:opacity .45s var(--ease),transform .45s var(--ease);z-index:1000;box-shadow:5px 5px 0 var(--black);max-width:92vw;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* page head */
-.cut-head{padding:3.5rem 3rem 2rem;max-width:1000px;margin:0 auto;display:grid;gap:1.1rem;justify-items:start;}
+/* page head: compact on every screen, so the hall (the first picture and its light) shows on the first screen */
+.cut-head{padding:1.2rem 3rem 1.2rem;max-width:1000px;margin:0 auto;display:grid;gap:.6rem;justify-items:start;}
 .back{font:400 .95rem var(--type);letter-spacing:.1em;color:var(--black);text-decoration:none;border-bottom:3px solid var(--pink);padding-bottom:.1rem;}
 .kicker{display:inline-block;background:var(--black);color:var(--gold);font:italic 500 1.1rem "Playfair Display",serif;letter-spacing:.04em;padding:.35rem .95rem;}
-.cut-head h1{font-size:clamp(3.4rem,10vw,7rem);}
-.cut-head p{font:300 1.05rem/1.9 var(--thai);max-width:560px;border-left:5px solid var(--pink);padding-left:1rem;}
+.cut-head h1{font-size:clamp(2.4rem,6vw,3.8rem);}
+.cut-head p{font:400 1rem/1.7 var(--thai);max-width:560px;border-left:5px solid var(--pink);padding-left:1rem;}
+.cut-head p.bio:not(.open){display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cut-head .more{font:600 .85rem var(--thai);background:none;border:0;border-bottom:2px solid var(--pink);padding:.1rem 0;cursor:pointer;color:inherit;min-height:44px;}
+.cut-head .est{display:none;}
 .meta{font:400 .85rem var(--type);letter-spacing:.14em;color:var(--tartan-red);}
 .hint{font:400 .85rem var(--type);letter-spacing:.1em;}
 .nf{padding:6rem 3rem;max-width:760px;margin:0 auto;display:grid;gap:1.4rem;justify-items:start;}
@@ -216,7 +219,7 @@ body.noir{background-image:repeating-linear-gradient(90deg,rgba(244,241,232,.05)
 .est{display:flex;align-items:center;gap:1rem;width:min(420px,100%);font:italic 500 1.15rem "Playfair Display",serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
 .est::before,.est::after{content:"";flex:1;height:5px;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);}
 /* thick-thin rule closing the header */
-.noir .cut-head{position:relative;padding-bottom:2.6rem;}
+.noir .cut-head{position:relative;padding-bottom:1.6rem;}
 .noir .cut-head::after{content:"";position:absolute;left:3rem;right:3rem;bottom:.8rem;height:7px;border-top:3px solid var(--gold);border-bottom:1px solid var(--gold);}
 /* cut corners on every plaque */
 .fl,.work .cap,.sn{clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);}
@@ -351,6 +354,8 @@ html[lang=th] .cc-card small{font:600 .8rem var(--thai);letter-spacing:.01em;}
 .dlg-pr{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;}
 .dlg-pr small{font:400 .8rem/1.45 var(--thai);color:#4a4642;max-width:15em;}
 .dlg-deal .btn{display:block;width:100%;text-align:center;}
+.dlg-don{justify-self:start;font:600 1rem var(--thai);background:none;border:0;border-bottom:3px dotted var(--black);padding:.1rem 0;cursor:pointer;color:var(--black);min-height:44px;}
+.dlg-don:hover,.dlg-don:focus-visible{background:var(--black);color:var(--paper);padding:.1rem .5rem;}
 .dlg-how{list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
 .dlg-how li{counter-increment:s;text-wrap:balance;display:grid;gap:.25rem;justify-items:start;font:400 .76rem/1.4 var(--thai);color:#3a3733;}
 .dlg-how li::before{content:counter(s);display:grid;place-items:center;width:1.45rem;height:1.45rem;border-radius:50%;background:var(--black);color:var(--gold);font:400 .78rem var(--anton);}
@@ -388,7 +393,6 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 /* ===== sold + pay ===== */
 .lbl .prow{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;margin-top:.15rem;}
 .lbl .prow .pr{margin-top:0;}.lbl .prow .chip{margin-left:0;}
-.work.is-sold .art img,.work.is-sold .art{filter:saturate(.55);}
 .dlg-stt{font:600 .92rem/1.5 var(--thai);}
 .dlg-deal a.btn{text-align:center;}
 .dlg-deal .btn.ghost{background:var(--paper);color:var(--black);font-size:.95rem;padding:.6rem 1rem;box-shadow:4px 4px 0 var(--black);}
@@ -425,12 +429,11 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 <main id="main" data-pre="1" data-studio="phop">
     <header class="cut-head">
       <div class="bc bc-dark" role="navigation" aria-label="เส้นทางหน้า"><ol><li><a href="index.html#city">เมือง</a></li><li aria-current="page"><span>ภพ</span></li></ol></div>
-      <a class="back reveal in" href="index.html#city">← กลับไปเดินเมือง</a>
       <div class="kicker reveal in" style="--i:1">NO.08 · ตึกของภพ · ★ คลื่นลูกใหม่</div>
       <h1 class="rn reveal in" style="--i:2" id="rn-title" aria-label="ภพ"><span class="tl" style="--r:2.5deg;--y:1px;--k:0;background:#E8B730;color:#0E0D0C;font-family:" chonburi","ibm="" plex="" sans="" thai",var(--lao);font-weight:400"="">ภ</span><span class="tl" style="--r:-1.5deg;--y:1px;--k:1;background:#0E0D0C;color:#F4F1E8;font-family:" ibm="" plex="" sans="" thai",var(--lao);font-weight:700"="">พ</span></h1>
       <div class="est reveal in" style="--i:3"><span>ก่อตั้ง 2019</span></div>
       <div class="meta reveal in" style="--i:3">ศิลปะเจเนอเรทีฟ · ตั้งแต่ 2019 · กรุงเทพฯ</div>
-      <p class="reveal in" style="--i:4">ภพเขียนโค้ดให้เครื่องพล็อตเตอร์วาดภาพด้วยปากกา เส้นทุกเส้นมาจากสมการ แต่ปากกาหมึกหมดกลางทางเมื่อไหร่ ภาพนั้นก็ไม่เหมือนใครทันที</p>
+      <p class="bio reveal in" id="cut-bio" style="--i:4">ภพเขียนโค้ดให้เครื่องพล็อตเตอร์วาดภาพด้วยปากกา เส้นทุกเส้นมาจากสมการ แต่ปากกาหมึกหมดกลางทางเมื่อไหร่ ภาพนั้นก็ไม่เหมือนใครทันที</p><button type="button" class="more" id="cut-more" aria-controls="cut-bio" aria-expanded="false">อ่านต่อ</button>
       <div class="hint reveal in" style="--i:5" data-t="mus_hint">▼ เดินดูภาพทีละชิ้น ใช้ลูกศร ← → บนคีย์บอร์ดได้ กดที่ภาพที่สว่างเพื่อดูรายละเอียดเต็ม</div>
     </header>
     <div class="tower-wrap mus-on">
@@ -451,7 +454,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
         <div class="mus-map" aria-hidden="true"><small>ผังตึก</small><svg viewBox="0 0 126 114" aria-hidden="true"><rect x="28" y="8" width="70" height="96" class="mus-hall"></rect><path d="M52 104h22v6h-22z" class="mus-door"></path><rect class="mus-m is-on" data-k="0" x="26" y="70.4" width="4" height="16"></rect><rect class="mus-m" data-k="1" x="96" y="41.6" width="4" height="16"></rect><rect class="mus-m" data-k="2" x="50" y="7" width="26" height="4"></rect><path id="mus-you" class="mus-you" d="M0 -6 L5 4 L-5 4Z" transform="translate(63 90.6)"></path></svg></div>
         <div class="mus-ctl"><button type="button" class="btn mus-prev" id="mus-prev" disabled="">← ภาพก่อน</button><span class="mus-cnt" id="mus-cnt">1 / 3</span><button type="button" class="btn pk mus-next" id="mus-next">เดินต่อ →</button></div>
       </div>
-      <aside class="mus-label" id="mus-label" aria-live="polite"><i class="mus-tape"></i><small>2024 · 30 × 40 ซม.</small><b>สนามเวกเตอร์</b><i class="mus-q">“ลมที่มองไม่เห็น ถูกวาดด้วยสมการ”</i><span class="mus-acts"><button type="button" class="btn pk" data-support="phop" data-for="สนามเวกเตอร์">สนับสนุนภพ</button><button type="button" class="mus-more" data-mus="more">รายละเอียดและแนวคิด</button></span></aside>
+      <aside class="mus-label" id="mus-label" aria-live="polite"><i class="mus-tape"></i><small>2024 · 30 × 40 ซม.</small><b>สนามเวกเตอร์</b><i class="mus-q">“ลมที่มองไม่เห็น ถูกวาดด้วยสมการ”</i><span class="mus-acts"><button type="button" class="mus-don" data-support="phop" data-for="สนามเวกเตอร์" data-quiet="">โดเนท · ได้แรงบันดาลใจจากงานนี้</button><button type="button" class="mus-more" data-mus="more">รายละเอียดและแนวคิด</button></span></aside>
     </section>
       <div class="tower-foot"><span>SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น</span><a class="btn pk" href="index.html#city">← กลับไปเดินเมือง</a></div>
       <div class="snav" role="navigation" aria-label="studios">
@@ -472,7 +475,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
       <p class="dlg-by" id="dlg-by"></p>
       <div class="dlg-story" id="dlg-story"><small id="dlg-sk"></small><blockquote id="dlg-q"></blockquote><p id="dlg-st"></p></div>
       <dl id="dlg-dl"></dl>
-      <div class="dlg-deal"><button type="button" class="btn pk" id="dlg-sup" data-support=""></button><small class="dlg-paynote" id="dlg-supn"></small></div>
+      <div class="dlg-deal"><button type="button" class="dlg-don" id="dlg-sup" data-support="" data-quiet></button><small class="dlg-paynote" id="dlg-supn"></small></div>
       <div class="dlg-nav"><button type="button" id="dlg-prev">←</button><div class="dlg-th" id="dlg-th"></div><button type="button" id="dlg-next">→</button><span class="dlg-cnt" id="dlg-cnt"></span></div>
     </div>
   </div>
@@ -556,12 +559,11 @@ function render(initial) {
   main.innerHTML = `
     <header class="cut-head">
       ${breadcrumbHtml([[t('bc_city'), 'index.html#city'], [nameL(A), '']], 'bc-dark')}
-      <a class="back ${cls}" href="index.html#city">${esc(t('cw_back'))}</a>
       <div class="kicker ${cls}" style="--i:1">NO.${String(idx + 1).padStart(2, '0')} · ${esc(bldgL(A))}${A.wave ? ' · ★ ' + esc(t('wave')) : ''}</div>
       <h1 class="rn ${cls}" style="--i:2" id="rn-title" aria-label="${esc(nameL(A))}"></h1>
       <div class="est ${cls}" style="--i:3"><span>${esc(t('cw_est', {y: A.since}))}</span></div>
       <div class="meta ${cls}" style="--i:3">${esc(t('cw_meta', {d: discL(A), y: A.since, c: cityL(A)}))}</div>
-      <p class="${cls}" style="--i:4">${esc(pk(A, 'bio'))}</p>
+      <p class="bio ${cls}" id="cut-bio" style="--i:4">${esc(pk(A, 'bio'))}</p><button type="button" class="more" id="cut-more" aria-controls="cut-bio" aria-expanded="false">${esc(t('bio_more'))}</button>
       <div class="hint ${cls}" style="--i:5">${esc(t('cw_hint'))}</div>
     </header>
     <div class="tower-wrap">
@@ -605,7 +607,7 @@ function fillDlg(k) {
     + (steps.length ? `<ol class="cc-steps" aria-label="${esc(t('cc_steps'))}">${steps.slice(0, 3).map((x, i) => `<li class="cc-card"><i class="cc-tape" aria-hidden="true"></i><small>${esc(t('cc_step', {n: i + 1}))}</small><b>${esc(pk(x, 'h'))}</b><p>${esc(pk(x, 'd'))}</p></li>`).join('')}</ol>` : '');
   $('#dlg-dl').innerHTML = `<div><dt>${esc(t('lb_year'))}</dt><dd>${p.y}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div class="w"><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div>`;
   const sup = $('#dlg-sup');                                      // donation-only: the one action is "Support <artist>", which opens the donation dialog (this work is named as the inspiration)
-  supportBtn(sup, A); sup.dataset.support = A.id; sup.dataset.for = titleL(p);
+  sup.textContent = t('don_work'); sup.hidden = !canDonate(A); sup.dataset.support = A.id; sup.dataset.for = titleL(p);
   $('#dlg-supn').textContent = t('dlg_supn');
   const pv = $('#dlg-prev'), nx = $('#dlg-next'), n = A.pieces.length;
   pv.setAttribute('aria-label', t('w_prev')); nx.setAttribute('aria-label', t('w_next')); pv.disabled = k === 0; nx.disabled = k === n - 1;
@@ -636,6 +638,10 @@ function observeReveal() {
 let ready = false;
 onLang(() => { if (ready) { render(false); if (dlg.open && openK != null) fillDlg(openK); } });
 render(true);
+main.addEventListener('click', e => {   // the bio is two lines until "More" is pressed (delegated: the head is rebuilt on a language switch)
+  const more = e.target.closest('#cut-more'), bio = document.getElementById('cut-bio'); if (!more || !bio) return;
+  const open = bio.classList.toggle('open'); more.textContent = t(open ? 'bio_less' : 'bio_more'); more.setAttribute('aria-expanded', String(open));
+});
 wireNav(); ready = true; applyLang();
 const w0 = params.get('work');
 if (A && w0 !== null && /^\d+$/.test(w0) && +w0 < A.pieces.length) setTimeout(() => openWork(+w0), reduce ? 0 : 700);

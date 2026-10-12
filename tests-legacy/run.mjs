@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// node tests-legacy/run.mjs [build|smoke|flow|sample|hd2d|layout|newwave|inline|perf|all]   (tests of the old plain-HTML site, served from the repo root)      (default: build + smoke + flow; "all" adds perf)
+// node tests-legacy/run.mjs [build|smoke|flow|sample|ux|hd2d|layout|newwave|inline|perf|all]   (tests of the old plain-HTML site, served from the repo root)      (default: build + smoke + flow; "all" adds perf)
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -8,7 +8,7 @@ import {makeChecker} from './check.mjs';
 
 const root = process.env.CIRCLES_ROOT ? path.resolve(process.env.CIRCLES_ROOT) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');   // CIRCLES_ROOT=app/dist runs a suite against the React build
 const want = process.argv[2] || 'default';
-const names = want === 'all' ? ['build', 'smoke', 'flow', 'sample', 'hd2d', 'layout', 'newwave', 'inline', 'perf'] : want === 'default' ? ['build', 'smoke', 'flow', 'sample', 'hd2d', 'layout', 'newwave', 'inline'] : [want];
+const names = want === 'all' ? ['build', 'smoke', 'flow', 'sample', 'ux', 'hd2d', 'layout', 'newwave', 'inline', 'perf'] : want === 'default' ? ['build', 'smoke', 'flow', 'sample', 'ux', 'hd2d', 'layout', 'newwave', 'inline'] : [want];
 /* The real circles.js has the live form endpoint and a Turnstile key, and Turnstile refuses 127.0.0.1. The tests drive the email-app path,
    so they get a copy with both emptied (the real file is not touched). */
 const circles = !fs.existsSync(path.join(root, 'circles.js')) ? '' : fs.readFileSync(path.join(root, 'circles.js'), 'utf8').replace(/endpoint: '[^']*'/, "endpoint: ''").replace(/turnstileSiteKey: '[^']*'/, "turnstileSiteKey: ''");

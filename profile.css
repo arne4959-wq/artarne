@@ -169,3 +169,13 @@ html.lite .pf-ring,html.lite .pf-star,html.lite .pf-dotb{display:none;}
 
 .pf-in-wrap>.bc{align-self:flex-start;}
 .pf-tips{scroll-margin-top:90px;}
+
+/* compact header: the works come right after the name and tags, so the first picture is on the first screen */
+.pf-in-wrap{padding-top:1.2rem;gap:1rem;}
+.pf-port{width:min(104px,26vw);height:min(104px,26vw);margin-top:0;}
+.pf-pic{border-width:4px;box-shadow:6px 6px 0 var(--black);font-size:clamp(2.2rem,8vw,3.2rem);}
+.pf-name{font-size:clamp(2.2rem,7vw,3.6rem);}
+.pf-note:not(.open) .pf-bio{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.pf-more{margin-top:.4rem;min-height:44px;font:600 .9rem var(--thai);background:none;border:0;border-bottom:3px solid var(--pink);padding:.1rem 0;cursor:pointer;color:var(--black);}
+.pf-works{margin-top:0;}
+@media(max-width:600px){.pf-in-wrap{padding-top:.8rem;gap:.8rem;}.pf-port{width:84px;height:84px;}.pf-pic{font-size:2.4rem;}}
