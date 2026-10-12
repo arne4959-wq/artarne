@@ -11,7 +11,7 @@ const DIST = path.resolve(APP, process.env.CIRCLES_DIST || 'dist');             
 const DATA = process.env.CIRCLES_FIXTURE && fs.existsSync(path.join(process.env.CIRCLES_FIXTURE, 'artists.js')) ? path.join(process.env.CIRCLES_FIXTURE, 'artists.js') : path.join(APP, '..', 'artists.js');
 const demo = new Function(fs.readFileSync(DATA, 'utf8') + '\nreturn {ARTISTS};')().ARTISTS;
 const ARTISTS = mergeArtists(demo, readLive(path.dirname(DATA)));   // the real artists of artists.live.json come first, like in the app
-export const PAGES = ['join.html', 'manage.html', 'privacy.html', 'terms.html', '404.html', 'cutaway.html', 'profile.html',
+export const PAGES = ['join.html', 'manage.html', 'highlights.html', 'legends.html', 'privacy.html', 'terms.html', '404.html', 'cutaway.html', 'profile.html',
   ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`)];
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

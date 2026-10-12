@@ -301,12 +301,14 @@ html[lang=en] .lbl .q{font:italic 400 .86rem/1.4 "Playfair Display",Georgia,seri
 .plaque{bottom:auto;top:46px;}
 
 /* detail window */
-dialog.work-dlg{width:min(1120px,95vw);}
-.dlg-in{grid-template-columns:1.3fr 1fr;}
+dialog.work-dlg{width:min(1120px,95vw);padding:0 12px;background:var(--a-conc);border:4px solid #0E0D0C;border-radius:0;overscroll-behavior:contain;}
+.wd-h{padding-right:.9rem;}
+.wd-room{min-width:62px;}
+.dlg-in{grid-template-columns:1.3fr 1fr;background:var(--a-grid),var(--paper);border-left:3px solid var(--black);border-right:3px solid var(--black);}
 /* the picture stands out: large, a plain paper margin, one washi tape, nothing else on it (no pattern, no gold frame, no badge) */
-.dlg-art{position:relative;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse 58% 16% at 50% 94%,rgba(244,241,232,.13),transparent 70%),#141211;padding:3.4rem 3.4rem 3rem;min-height:440px;}
-.dlg-art::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:120%;transform:translateX(-50%);z-index:-1;clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);background:linear-gradient(180deg,rgba(244,241,232,.26),rgba(244,241,232,.05));}
-.dlg-art .frame{position:relative;width:min(100%,520px,calc(66vh * var(--arn,1)));aspect-ratio:var(--ar);margin:0 auto;background:var(--art);box-shadow:0 0 0 clamp(10px,1.6vw,16px) var(--paper),0 22px 44px rgba(0,0,0,.55);}
+.dlg-art{position:relative;overflow:hidden;isolation:isolate;background:var(--a-conc);box-shadow:inset 10px 10px 0 rgba(14,13,12,.3);border-right:4px solid var(--black);padding:3.4rem 3.4rem 3rem;min-height:440px;}   /* the picture hangs in a concrete wall niche */
+.dlg-art::before{content:none;}
+.dlg-art .frame{position:relative;width:min(100%,520px,calc(66vh * var(--arn,1)));aspect-ratio:var(--ar);margin:0 auto;background:var(--art);box-shadow:0 0 0 clamp(10px,1.6vw,16px) var(--paper),0 0 0 calc(clamp(10px,1.6vw,16px) + 3px) var(--black),8px 10px 0 calc(clamp(10px,1.6vw,16px) + 3px) rgba(14,13,12,.28);}
 .dlg-art .frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 .dlg-tape{position:absolute;top:-30px;left:50%;width:84px;height:26px;margin-left:-42px;background:var(--pink);border:2px solid var(--black);transform:rotate(-3deg);z-index:2;pointer-events:none;}
 .dlg-body{padding:2rem 1.8rem 1.6rem;gap:.9rem;}
@@ -341,6 +343,29 @@ html[lang=en] .cc-q{font:italic 500 1.35rem/1.35 "Playfair Display",Georgia,seri
 html[lang=th] .cc-card small{font:600 .8rem var(--thai);letter-spacing:.01em;}
 .cc-card b{font:400 1.2rem/1.35 "Chonburi",var(--thai);}
 .cc-card p{font:400 .88rem/1.65 var(--thai);color:#3a3733;}
+/* the artist's own words = a drawing sheet: riveted beam, numbered rows, a title block, a rubber stamp */
+.voice{position:relative;text-align:left;background:var(--paper);border:4px solid var(--black);box-shadow:6px 6px 0 var(--black);}
+.v-top{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .8rem 1.15rem;background:var(--a-beam);border-bottom:4px solid var(--black);}
+.v-top::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:10px;background:var(--a-rivets);}
+.v-top h3{margin:0;padding:.15rem .65rem;background:var(--gold);border:3px solid var(--black);font:400 1.05rem/1.5 var(--anton);letter-spacing:.08em;text-transform:uppercase;transform:rotate(-1deg);}
+html[lang=th] .v-top h3,html[lang=lo] .v-top h3{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.v-stamp{padding:.15rem .5rem;border:3px double var(--tartan-red);background:var(--paper);color:var(--tartan-red);font:700 .78rem/1.5 var(--thai);transform:rotate(4deg);}
+.v-say{margin:0;padding:1rem 1rem .25rem;font:400 clamp(1.15rem,3vw,1.4rem)/1.6 "Chonburi",var(--thai);text-wrap:balance;}
+html[lang=en] .v-say{font:italic 500 1.3rem/1.45 "Playfair Display",Georgia,serif;}
+.v-by{margin:0;padding:0 1rem .9rem;font:400 .9rem/1.6 var(--type);text-align:right;color:#3a3733;}
+.v-rows{margin:0;border-top:3px solid var(--black);}
+.v-rows>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);border-bottom:2px solid var(--black);}
+.v-rows dt{padding:.7rem .8rem;background:var(--bone);border-right:2px solid var(--black);font:600 .8rem/1.5 var(--thai);color:var(--tartan-red);}
+.v-rows dt b{display:block;margin-bottom:.15rem;font:400 1.35rem/1.2 var(--anton);color:var(--black);}
+.v-rows dd{margin:0;padding:.7rem .9rem;font:400 1rem/1.8 var(--thai);}
+.v-tb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);font:400 .74rem/1.5 var(--type);letter-spacing:.08em;text-transform:uppercase;color:#3a3733;}
+.v-tb span{padding:.45rem .8rem;}.v-tb span+span{border-left:2px solid var(--black);}
+.v-tb b{display:block;font:600 .95rem/1.5 var(--thai);letter-spacing:0;text-transform:none;color:var(--black);}
+.v-note{margin:0;font:400 .8rem/1.7 var(--type);color:#3a3733;}
+.res-btn{justify-self:start;min-height:44px;padding:.3rem .9rem;border:3px solid var(--black);background:var(--paper);color:var(--black);font:600 1rem/1.4 var(--thai);cursor:pointer;box-shadow:4px 4px 0 var(--black);}
+.res-btn b{font:400 .95rem var(--type);background:var(--black);color:var(--paper);padding:.05rem .4rem;}
+.res-btn[aria-pressed=true]{background:var(--pink);}
+@media(max-width:520px){.v-rows>div{grid-template-columns:minmax(0,1fr);}.v-rows dt{display:flex;gap:.5rem;align-items:baseline;border-right:0;border-bottom:2px solid var(--black);}.v-rows dt b{margin:0;}}
 @media(max-width:860px){
   .dlg-concept{padding:1.4rem 1.1rem 1.6rem;}
   .cc-top,.cc-steps{grid-template-columns:1fr;}
@@ -454,7 +479,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
         <div class="mus-map" aria-hidden="true"><small>ผังตึก</small><svg viewBox="0 0 126 114" aria-hidden="true"><rect x="28" y="8" width="70" height="96" class="mus-hall"></rect><path d="M52 104h22v6h-22z" class="mus-door"></path><rect class="mus-m is-on" data-k="0" x="26" y="70.4" width="4" height="16"></rect><rect class="mus-m" data-k="1" x="96" y="41.6" width="4" height="16"></rect><rect class="mus-m" data-k="2" x="50" y="7" width="26" height="4"></rect><path id="mus-you" class="mus-you" d="M0 -6 L5 4 L-5 4Z" transform="translate(63 90.6)"></path></svg></div>
         <div class="mus-ctl"><button type="button" class="btn mus-prev" id="mus-prev" disabled="">← ภาพก่อน</button><span class="mus-cnt" id="mus-cnt">1 / 3</span><button type="button" class="btn pk mus-next" id="mus-next">เดินต่อ →</button></div>
       </div>
-      <aside class="mus-label" id="mus-label" aria-live="polite"><i class="mus-tape"></i><small>2022 · 120 × 90 ซม.</small><b>เช้าหมอก</b><i class="mus-q">“หมอกที่บังภูเขา ทำให้เราอยากมองหาภูเขามากกว่าเดิม”</i><span class="mus-acts"><button type="button" class="mus-don" data-support="napha" data-for="เช้าหมอก" data-quiet="">โดเนท · ได้แรงบันดาลใจจากงานนี้</button><button type="button" class="mus-more" data-mus="more">รายละเอียดและแนวคิด</button></span></aside>
+      <aside class="mus-label" id="mus-label" aria-live="polite"><i class="mus-tape"></i><small>2022 · 120 × 90 ซม.</small><b>เช้าหมอก</b><i class="mus-q">“สิ่งที่มองไม่เห็น ไม่ได้แปลว่าไม่มีอยู่”</i><span class="mus-acts"><button type="button" class="mus-don" data-support="napha" data-for="เช้าหมอก" data-quiet="">โดเนท · ได้แรงบันดาลใจจากงานนี้</button><button type="button" class="mus-more" data-mus="more">รายละเอียดและแนวคิด</button></span></aside>
     </section>
       <div class="tower-foot"><span>SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น</span><a class="btn pk" href="index.html#city">← กลับไปเดินเมือง</a></div>
       <div class="snav" role="navigation" aria-label="studios">
@@ -466,20 +491,20 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 <footer class="mini-foot"><a href="index.html">circles</a> · <a href="privacy.html" data-t="legal_privacy">นโยบายความเป็นส่วนตัว</a> · <a href="terms.html" data-t="legal_terms">เงื่อนไขการใช้งาน</a></footer>
 
 <dialog class="work-dlg" id="dlg" aria-labelledby="dlg-t">
-  <button type="button" class="dlg-x" id="dlg-x" data-t-aria="close" aria-label="ปิด">✕</button>
+  <div class="cdlg-h wd-h"><div class="cdlg-t"><h2 id="dlg-t"></h2></div><div class="cdlg-fl wd-room" id="dlg-fl" aria-hidden="true"></div><button type="button" class="cdlg-x" id="dlg-x" data-t-aria="close" aria-label="ปิด">✕</button></div>
   <div class="dlg-in">
     <div class="dlg-art"><div class="frame zoom-host" id="dlg-frame"></div></div>
     <div class="dlg-body">
-      <div class="meta" id="dlg-fl"></div>
-      <h2 id="dlg-t"></h2>
       <p class="dlg-by" id="dlg-by"></p>
+      <div id="dlg-voice"></div>
       <div class="dlg-story" id="dlg-story"><small id="dlg-sk"></small><blockquote id="dlg-q"></blockquote><p id="dlg-st"></p></div>
       <dl id="dlg-dl"></dl>
-      <div class="dlg-deal"><button type="button" class="dlg-don" id="dlg-sup" data-support="" data-quiet></button><small class="dlg-paynote" id="dlg-supn"></small></div>
+      <div class="dlg-deal"><button type="button" class="dlg-don" id="dlg-sup" data-support="" data-quiet></button><button type="button" class="res-btn" id="dlg-res" aria-pressed="false"></button><small class="dlg-paynote" id="dlg-supn"></small></div>
       <div class="dlg-nav"><button type="button" id="dlg-prev">←</button><div class="dlg-th" id="dlg-th"></div><button type="button" id="dlg-next">→</button><span class="dlg-cnt" id="dlg-cnt"></span></div>
     </div>
   </div>
   <section class="dlg-concept" id="dlg-concept" aria-labelledby="dlg-cc-h" hidden></section>
+  <div class="cdlg-foot" aria-hidden="true"></div>
 </dialog>
 
 <script src="artists.js"></script>
@@ -550,7 +575,7 @@ function render(initial) {
           ${deco(A.kind, i, n)}
           <button type="button" class="work" data-k="${k}" aria-label="${esc(titleL(A.pieces[k]) + ' — ' + t('cw_view', {t: titleL(A.pieces[k])}))}">
             <span class="aw"><i class="beam"></i><span class="art" style="--ar:${A.pieces[k].ar};--h:${frameH(A.pieces[k].ar)}px;--art:${artBg(A.works, k)}">${artImg(A, k)}</span></span>
-            <span class="lbl"><i class="tape"></i><small>${A.pieces[k].y} · ${esc(fmtSize(A.pieces[k]))}</small><b>${esc(titleL(A.pieces[k]))}</b>${A.pieces[k].q ? `<i class="q">“${esc(pk(A.pieces[k], 'q'))}”</i>` : ''}<span class="go">${esc(t('cw_look'))}</span></span>
+            <span class="lbl"><i class="tape"></i><small>${A.pieces[k].y} · ${esc(fmtSize(A.pieces[k]))}</small><b>${esc(titleL(A.pieces[k]))}</b>${sayOf(A.pieces[k]) ? `<i class="q">“${esc(sayOf(A.pieces[k]))}”</i>` : ''}<span class="go">${esc(t('cw_look'))}</span></span>
           </button>
         </div>
         <div class="slab"></div>
@@ -590,13 +615,14 @@ const dlg = $('#dlg');
 function fillDlg(k) {
   const p = A.pieces[k]; openK = k;
   const level = k + 1;
-  $('#dlg-fl').textContent = `FL.0${level} — ROOM ${ROOMS[level - 1]}`;
+  $('#dlg-fl').innerHTML = `<small>${esc(t('room_k'))}</small><b>0${level}</b>`;                       // the room number, like a floor sign in the beam
   $('#dlg-t').textContent = titleL(p);
   const fr = $('#dlg-frame'); fr.style.setProperty('--ar', p.ar); fr.style.setProperty('--art', artBg(A.works, k)); fr.style.setProperty('--arn', String(+(p.ar.split('/')[0] / p.ar.split('/')[1]).toFixed(4)));
   fr.innerHTML = p.img ? `<i class="dlg-tape" aria-hidden="true"></i>${artImg(A, k)}${zoomBtnHtml()}` : '';   // one decoration (the tape)
   $('#dlg-by').innerHTML = t('d_by', {a: esc(nameL(A)), d: esc(discL(A)), c: esc(cityL(A))});
-  const story = $('#dlg-story'); story.hidden = !p.st;
-  if (p.st) { $('#dlg-sk').textContent = t('d_story'); $('#dlg-q').textContent = pk(p, 'q') || ''; $('#dlg-st').textContent = pk(p, 'st'); }
+  const vh = voiceHtml(p); $('#dlg-voice').innerHTML = vh;                                         // "In the artist's words": the artist's own three fields
+  const story = $('#dlg-story'); story.hidden = !p.st || !!vh;                                       // the old third-person story only shows when the artist has not written their own
+  if (p.st && !vh) { $('#dlg-sk').textContent = t('d_story'); $('#dlg-q').textContent = pk(p, 'q') || ''; $('#dlg-st').textContent = pk(p, 'st'); }
   const cc = $('#dlg-concept'), c = p.concept, steps = c && Array.isArray(c.steps) ? c.steps.filter(x => x && (x.h || x.d)) : [];
   const hasCc = !!(c && (c.origin || c.material || c.quote || steps.length));   // no concept = no block, never an empty one
   cc.hidden = !hasCc;
@@ -608,12 +634,26 @@ function fillDlg(k) {
   $('#dlg-dl').innerHTML = `<div><dt>${esc(t('lb_year'))}</dt><dd>${p.y}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div class="w"><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div>`;
   const sup = $('#dlg-sup');                                      // donation-only: the one action is "Support <artist>", which opens the donation dialog (this work is named as the inspiration)
   sup.textContent = t('don_work'); sup.hidden = !canDonate(A); sup.dataset.support = A.id; sup.dataset.for = titleL(p);
-  $('#dlg-supn').textContent = t('dlg_supn');
+  $('#dlg-supn').textContent = t('dlg_supn'); paintRes(k);
   const pv = $('#dlg-prev'), nx = $('#dlg-next'), n = A.pieces.length;
   pv.setAttribute('aria-label', t('w_prev')); nx.setAttribute('aria-label', t('w_next')); pv.disabled = k === 0; nx.disabled = k === n - 1;
   $('#dlg-th').innerHTML = A.pieces.map((q, j) => `<button type="button" class="th${j === k ? ' on' : ''}" data-th="${j}" style="--art:${artBg(A.works, j)}" aria-label="${esc(titleL(q))}"${j === k ? ' aria-current="true"' : ''}>${artImg(A, j)}</button>`).join('');
   $('#dlg-cnt').textContent = `${k + 1} / ${n}`;
 }
+function voiceHtml(p) {
+  const say = pk(p, 'say'), why = pk(p, 'why'), look = pk(p, 'look');
+  if (!say && !why && !look) return '';
+  const rows = [[why, 'v_why', '01'], [look, 'v_look', '02']].filter(x => x[0]);
+  return `<section class="voice" aria-labelledby="v-h"><div class="v-top"><h3 id="v-h">${esc(t('v_h'))}</h3><span class="v-stamp">${esc(t('v_stamp'))}</span></div>`
+    + (say ? `<p class="v-say">“${esc(say)}”</p><p class="v-by">${esc(t('v_by', {a: nameL(A)}))}</p>` : '')
+    + (rows.length ? `<dl class="v-rows">${rows.map(x => `<div><dt><b>${x[2]}</b>${esc(t(x[1]))}</dt><dd>${esc(x[0])}</dd></div>`).join('')}</dl>` : '')
+    + `<div class="v-tb"><span>${esc(t('v_tb_by'))}<b>${esc(nameL(A))}</b></span><span>${esc(t('v_tb_work'))}<b>${esc(titleL(p))} · ${p.y}</b></span></div></section><p class="v-note">${esc(t('v_note'))}</p>`;
+}
+function paintRes(k) {   // the "Resonated" button: the count is sample data plus this browser's own tap
+  const b = $('#dlg-res'), on = resMine(A.id, k);
+  b.setAttribute('aria-pressed', String(on)); b.innerHTML = `<span aria-hidden="true">♥</span> ${esc(t(on ? 'res_on' : 'res_btn'))} <b>${resCount(A.id, k)}</b>`;
+}
+$('#dlg-res').addEventListener('click', () => { if (openK == null) return; resToggle(A.id, openK); paintRes(openK); });
 function openWork(k) {
   fillDlg(k); if (!dlg.open) dlg.showModal();
   try { const u = new URL(location.href); u.searchParams.set('work', k); history.replaceState(null, '', u); } catch (e) {}

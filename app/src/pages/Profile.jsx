@@ -12,6 +12,7 @@ import Nav, {MENU_FULL} from '../components/Nav.jsx';
 import {MiniFoot, NotFoundSection} from '../components/Bits.jsx';
 import {useDialogs} from '../components/Dialogs.jsx';
 import {Fab, SkipLink} from '../components/Ux.jsx';
+import {Dist, ScLink} from '../components/Dist.jsx';
 import sprite from 'virtual:circles/sprite/profile';
 import styles from '../styles/profile.js';
 
@@ -70,7 +71,8 @@ function ProfileBody({A}) {
         <ul className="pf-strip">{A.pieces.slice(0, 4).map((p, k) => {
           return <li key={k} className="pf-in pf-rise" style={{'--r': [-3, 2, -1.5, 3][k] + 'deg', '--pf-d': (1.9 + k * .12).toFixed(2) + 's'}}><a className="pf-pk" href={`studio-${A.id}.html?work=${k}`} style={{'--ar': p.ar || '1/1'}} aria-label={L.titleL(p) + ' · ' + p.y}>
             <span className={`pf-tp pf-tp-${TAPE[(k + 1) % 2]}`}></span>{p.img ? <img src={p.img} alt={L.titleL(p)} loading="lazy" decoding="async" draggable="false"/> : null}
-            <span className="pf-cap"><b>{L.titleL(p)}</b><span className="pf-cp">{p.y}</span></span></a></li>;
+            <span className="pf-cap"><b>{L.titleL(p)}</b><span className="pf-cp">{p.y}</span></span></a>
+            {(L.pk(p, 'say') || L.pk(p, 'q')) ? <p className="pf-say">“{L.pk(p, 'say') || L.pk(p, 'q')}”<span>{t('pf_say_k')} · {name}</span></p> : null}</li>;
         })}</ul>
         <a className="pf-all" href={`studio-${A.id}.html`}>{t('pf_all')}</a>
       </div>
@@ -108,7 +110,7 @@ export default function Profile({id}) {
     <main id="main" tabIndex={-1} {...built}>{A ? <>
       <div className="pf-marq" aria-hidden="true" key={'m' + lang}><div className="pf-marq-t">{t('pf_marq').repeat(10)}</div></div>
       <ProfileBody key={lang} A={A}/></> : <NotFoundSection/>}</main>
-    <MiniFoot/>
+    <Dist here="profile"/><MiniFoot/><div className="foot-tools"><ScLink/></div>
     {A && <Fab A={A}/>}
   </PageShell>;
 }

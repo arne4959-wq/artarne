@@ -7,6 +7,8 @@ export function route(pathname, search = '') {
   if (file === 'index.html') return {page: 'home'};
   if (['join.html', 'privacy.html', 'terms.html'].includes(file)) return {page: file.slice(0, -5)};
   if (file === 'manage.html') return {page: 'manage'};
+  if (file === 'highlights.html') return {page: 'highlights'};
+  if (file === 'legends.html') return {page: 'legends'};
   if (file === '404.html') return {page: 'notFound'};
   if ((m = file.match(/^studio-([a-z0-9-]+)\.html$/i))) return {page: 'studio', id: m[1]};
   if (file === 'cutaway.html') return {page: 'studio', id: q.get('id') || ''};

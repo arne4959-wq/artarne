@@ -35,7 +35,8 @@ export function formToProfile(f) {
 
 /* ---- works (donation-only: no price, status, edition or pay link) ---- */
 export const WORK_TEXT = [['title', 120], ['title_en', 120], ['title_lo', 120], ['medium', 120], ['medium_en', 120], ['medium_lo', 120],
-  ['size', 60], ['size_lo', 60], ['quote', 300], ['quote_en', 300], ['quote_lo', 300], ['story', 3000], ['story_en', 3000], ['story_lo', 3000]];
+  ['size', 60], ['size_lo', 60], ['quote', 300], ['quote_en', 300], ['quote_lo', 300], ['story', 3000], ['story_en', 3000], ['story_lo', 3000],
+  ['say', 300], ['say_en', 300], ['say_lo', 300], ['why', 1500], ['why_en', 1500], ['why_lo', 1500], ['look', 800], ['look_en', 800], ['look_lo', 800]];   // say / why / look = "the artist tells it"
 
 export const emptyWork = () => {
   const f = {year: String(new Date().getFullYear()), ar: '1/1', img: ''};

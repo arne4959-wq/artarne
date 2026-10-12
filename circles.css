@@ -225,3 +225,58 @@ html[lang=lo]{--thai:"IBM Plex Sans Thai","Noto Sans Lao","Noto Sans Lao UI","Ph
 .cdlg .pf-tips-r{justify-content:center;}
 .cdlg .pf-tipf input{width:7.5rem;}
 .sm-for{margin:0;font:700 .95rem var(--thai);}
+
+/* ===== punk x architecture: donation / support windows, forms, street signs =====
+   One language everywhere: board-formed concrete, a row of rivets, a yellow/black hazard footing, a black name plate taped with pink. Palette tokens only (concrete = --concrete lightened with paper).
+   The decoration lives on the window frame; the room inside stays plain so the artwork and the words are the focus. */
+:root{
+  --a-form:repeating-linear-gradient(180deg,transparent 0 21px,rgba(14,13,12,.2) 21px 22px),repeating-linear-gradient(90deg,transparent 0 5px,rgba(244,241,232,.07) 5px 6px);
+  --a-lift:linear-gradient(rgba(244,241,232,.26),rgba(244,241,232,.26));
+  --a-rivets:radial-gradient(circle,#0E0D0C 0 2.6px,rgba(244,241,232,.6) 2.8px 3.8px,transparent 4px) 0 0/24px 100% repeat-x;
+  --a-hazard:repeating-linear-gradient(-45deg,#0E0D0C 0 11px,#E8B730 11px 22px);
+  --a-grid:linear-gradient(rgba(14,13,12,.055) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,rgba(14,13,12,.055) 1px,transparent 1px) 0 0/22px 22px;
+  --a-conc:var(--grain,none),var(--a-form),var(--a-lift),#8F8C85;
+  --a-beam:var(--grain,none),var(--a-form),var(--a-lift),var(--a-lift),#8F8C85;
+}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.cdlg:not(.zoomdlg){padding:0 12px;border:4px solid #0E0D0C;background:var(--a-conc);border-radius:0;overscroll-behavior:contain;}
+.cdlg-h{position:sticky;top:0;z-index:2;margin:0 -12px;display:flex;justify-content:flex-start;align-items:center;gap:.7rem;padding:1.05rem 1rem 1.5rem;background:var(--a-beam);color:#0E0D0C;border-bottom:5px solid #0E0D0C;}
+.cdlg-h::after{content:"";position:absolute;left:0;right:0;bottom:3px;height:12px;background:var(--a-rivets);pointer-events:none;}
+.cdlg-t{position:relative;flex:1;min-width:0;}
+.cdlg-t::before{content:"";position:absolute;z-index:1;top:-11px;left:14px;width:64px;height:18px;background:var(--pink);border:2px solid #0E0D0C;transform:rotate(-6deg);}
+.cdlg-h h2{display:inline-block;max-width:100%;margin:0;padding:.3rem .9rem .4rem;background:#0E0D0C;color:#F4F1E8;box-shadow:4px 4px 0 var(--pink);font:400 clamp(1.2rem,4vw,1.75rem)/1.45 "Chonburi",var(--thai);text-wrap:balance;transform:rotate(-1.2deg);}
+.cdlg-fl{flex:none;display:grid;justify-items:center;gap:.15rem;min-width:66px;padding:.3rem .45rem .35rem;background:#0E0D0C;color:var(--gold);border:3px solid #0E0D0C;box-shadow:inset 0 0 0 2px #45423B,3px 3px 0 rgba(14,13,12,.35);text-align:center;line-height:1.2;}
+.cdlg-fl small{font:400 .66rem/1.3 var(--type);letter-spacing:.14em;text-transform:uppercase;color:var(--paper);}
+.cdlg-fl b{font:400 1.85rem/1.1 var(--anton);letter-spacing:.02em;}
+.cdlg-fl b i{font-style:normal;font-size:.85rem;color:#C4C1B9;}
+.cdlg-fl span{font:600 .7rem/1.4 var(--thai);color:var(--paper);max-width:76px;}
+.cdlg-x{flex:none;width:46px;height:46px;border:3px solid #0E0D0C;background-color:var(--gold);background-image:radial-gradient(circle at 7px 7px,#0E0D0C 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) 7px,#0E0D0C 0 2px,transparent 2.6px),radial-gradient(circle at 7px calc(100% - 7px),#0E0D0C 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#0E0D0C 0 2px,transparent 2.6px);color:#0E0D0C;font:400 1.2rem var(--anton);cursor:pointer;box-shadow:3px 3px 0 #0E0D0C;}
+.cdlg-x:hover{background-color:var(--pink);}
+.cdlg-b{background:var(--a-grid),#F4F1E8;border-left:3px solid #0E0D0C;border-right:3px solid #0E0D0C;}
+.cdlg-foot{margin:0 -12px;height:22px;border-top:4px solid #0E0D0C;background:var(--a-hazard);}
+.qr-plate{position:relative;padding:14px;background:radial-gradient(circle at 7px 7px,#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 7px) 7px,#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at 7px calc(100% - 7px),#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#0E0D0C 0 2.4px,transparent 3px),var(--a-conc);border:3px solid #0E0D0C;box-shadow:5px 5px 0 #0E0D0C;}
+.qr-plate .sup-qr,.qr-plate svg{display:block;}
+/* thank-you = an engraved cornerstone, taped on */
+.stone{position:relative;display:grid;justify-items:center;gap:.15rem;justify-self:center;min-width:190px;padding:1rem 1.5rem 1.05rem;background:var(--a-conc);border:4px solid #0E0D0C;box-shadow:6px 6px 0 #0E0D0C,inset 0 0 0 7px rgba(14,13,12,.1);color:#0E0D0C;text-shadow:0 1px 0 rgba(244,241,232,.55);transform:rotate(-1deg);margin-bottom:.4rem;}
+.stone::before{content:"";position:absolute;top:-12px;right:18px;width:62px;height:18px;background:var(--gold);border:2px solid #0E0D0C;transform:rotate(7deg);}
+.stone .st-h{font:400 1.9rem/1.2 var(--anton);color:var(--pink);text-shadow:2px 2px 0 #0E0D0C;}
+.stone b{font:400 2.5rem/1.15 var(--anton);letter-spacing:.06em;font-weight:400;}
+.stone .st-l{font:400 .85rem/1.5 var(--type);letter-spacing:.14em;text-transform:uppercase;}
+/* money for circles itself: a gold plate on every step says whose money this is */
+.sc-plate{margin:0;width:100%;padding:.55rem .8rem;background:var(--gold);border:3px solid #0E0D0C;box-shadow:4px 4px 0 #0E0D0C;font:600 .95rem/1.7 var(--thai);text-align:left;}
+.sc-plate b{display:block;font:400 .78rem/1.5 var(--type);letter-spacing:.1em;text-transform:uppercase;}
+.after{display:grid;gap:.5rem;justify-items:center;padding:.8rem .9rem;border:3px dashed #0E0D0C;background:rgba(244,241,232,.7);text-align:center;}
+.after h3{margin:0;font:400 1.05rem/1.6 "Chonburi",var(--thai);}
+.after p{margin:0;font:400 .9rem/1.7 var(--thai);}
+.linkish{background:none;border:0;border-bottom:3px solid var(--pink);font:600 .95rem var(--thai);color:#0E0D0C;cursor:pointer;padding:.2rem 0;min-height:32px;}
+@media(max-width:600px){.cdlg:not(.zoomdlg){padding:0 8px;}.cdlg-h,.cdlg-foot{margin:0 -8px;}.cdlg-h{gap:.5rem;padding:1rem .7rem 1.4rem;}.cdlg-fl{min-width:58px;padding:.25rem .35rem .3rem;}.cdlg-fl b{font-size:1.55rem;}}
+@media(prefers-reduced-motion:reduce){.stone{transform:none;}}
+/* street signs to the other districts, above the footer of every page */
+.pl-dist{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;padding:.7rem 16px .8rem;background:var(--a-conc);border-top:4px solid var(--black);border-bottom:4px solid var(--black);position:relative;z-index:2;}
+.pl-dist-k{font:400 .74rem var(--type);letter-spacing:.12em;text-transform:uppercase;color:var(--black);background:var(--paper);border:2px solid var(--black);padding:.05rem .45rem;transform:rotate(-2deg);}
+.pl-sign{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.45rem 1.4rem;border:3px solid var(--black);background-color:var(--black);color:var(--paper);text-decoration:none;
+  background-image:radial-gradient(circle at 9px 50%,#F4F1E8 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 9px) 50%,#F4F1E8 0 2.4px,transparent 3px);font:400 .95rem/1.4 var(--anton);letter-spacing:.08em;text-transform:uppercase;box-shadow:3px 3px 0 rgba(14,13,12,.45);}
+.pl-sign:hover{background-color:#2c2a26;}
+.pl-sign[aria-current]{background-color:var(--gold);color:var(--black);background-image:radial-gradient(circle at 9px 50%,#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 9px) 50%,#0E0D0C 0 2.4px,transparent 3px);box-shadow:4px 4px 0 var(--pink);}
+html[lang=th] .pl-sign,html[lang=lo] .pl-sign{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;font-size:.9rem;}
+

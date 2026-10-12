@@ -23,6 +23,8 @@ test('a piece has its texts and picture, and never a price, status, edition or p
   for (const k of ['p', 'priceLak', 'status', 'edition', 'pay']) assert.ok(!(k in p), k);
   assert.ok(!/price|status|edition|pay\b|commission|sold_elsewhere/.test(ARTIST_COLUMNS + ',' + WORK_COLUMNS));   // the pull never even asks for them
   assert.equal(workToPiece(work({story_lo: 'ລາວ'})).stLo, 'ລາວ');
+  const t = workToPiece(work({say: 'ก', say_en: 'a', why: 'ข', look_lo: 'ລ'}));   // "the artist tells it"
+  assert.deepEqual([t.say, t.sayEn, t.why, t.lookLo, 'look' in t], ['ก', 'a', 'ข', 'ລ', false]);
 });
 
 test('works come in the order of their position, titles follow', () => {

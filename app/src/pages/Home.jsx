@@ -8,6 +8,7 @@ import {drawGrain} from '../lib/home.js';
 import {observeIn, useHeroEffects, useCursor, useLenis, useCountUp} from '../lib/useHome.js';
 import PageShell from '../components/PageShell.jsx';
 import {SkipLink} from '../components/Ux.jsx';
+import {Dist, ScLink} from '../components/Dist.jsx';
 import Nav from '../components/Nav.jsx';
 import {Loader, CursorMarkup, Curtain, Marquee} from '../components/home/HomeTop.jsx';
 import Hero from '../components/home/Hero.jsx';
@@ -40,6 +41,6 @@ export default function Home() {
     <Spotlight artists={ARTISTS}/>
     <Stats artists={ARTISTS}/><JoinBand/><Support/>
     </main>
-    <Footer/>
+    <Dist here="home"/><Footer/><div className="foot-tools"><ScLink/></div>
   </PageShell>;
 }

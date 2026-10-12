@@ -29,7 +29,7 @@
     const picks = A.pieces.slice(0, 4).map((p, k) => {
       return `<li class="pf-in pf-rise" style="--r:${[-3, 2, -1.5, 3][k]}deg;--pf-d:${(1.9 + k * .12).toFixed(2)}s"><a class="pf-pk" href="studio-${esc(A.id)}.html?work=${k}" style="--ar:${esc(p.ar || '1/1')}" aria-label="${esc(titleL(p) + ' · ' + p.y)}">
         <span class="pf-tp pf-tp-${TAPE[(k + 1) % 2]}"></span>${p.img ? `<img src="${esc(p.img)}" alt="${esc(titleL(p))}" loading="lazy" decoding="async" draggable="false">` : ''}
-        <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp">${esc(p.y)}</span></span></a></li>`;
+        <span class="pf-cap"><b>${esc(titleL(p))}</b><span class="pf-cp">${esc(p.y)}</span></span></a>${sayOf(p) ? `<p class="pf-say">“${esc(sayOf(p))}”<span>${esc(t('pf_say_k'))} · ${esc(name)}</span></p>` : ''}</li>`;
     }).join('');
     const can = canDonate(A), tips = can;   // sample artists always get the donation block (a generated SAMPLE QR); a real one only with payment details
     const supBtn = can

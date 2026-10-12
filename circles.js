@@ -51,7 +51,7 @@ function openSupport(info, who) {
 document.addEventListener('click', e => {   // any [data-support] button: "site" = CONFIG.support, otherwise an artist id
   const b = e.target.closest && e.target.closest('[data-support]'); if (!b || b.disabled) return;
   const id = b.dataset.support, A = id === 'site' ? null : ARTISTS.find(x => x.id === id);
-  if (id === 'site') { if (CONFIG.support) openSupport(CONFIG.support, 'Circles'); }
+  if (id === 'site') openSupportCircles();
   else if (A && canDonate(A)) openDonate(A, 0, b.dataset.for || '');   // data-for: the work that inspired the donation (the money still goes to the artist)
 });
 
@@ -83,7 +83,7 @@ function samplePayHtml(A, usd, who) {   // banner + QR + account block + amount,
   return `<div class="sup-dlg sm-pay">`
     + (real ? '' : `<p class="sup-sample" role="note">${esc(t('sm_banner'))}</p>`)
     + (usd > 0 ? `<p class="sm-amt">${esc(t('tip_amt', {m: money(usd)}))}</p>` : '')
-    + (real && info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sup_qr_t', {a: who}))}" width="240" height="240">` : sampleQrSvg(A.id + ':' + usd, t('sm_qr_alt')))
+    + `<div class="qr-plate">` + (real && info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sup_qr_t', {a: who}))}" width="240" height="240">` : sampleQrSvg(A.id + ':' + usd, t('sm_qr_alt'))) + `</div>`
     + `<dl class="sup-dl">${row('sup_bank', info.bank)}${row('sup_acc_name', real ? info.name : 'SAMPLE')}${row('sup_acc_no', real ? info.no : '000 000 000 000')}</dl>`
     + `<p class="note">${esc(t('sup_direct', {a: who}))}</p></div>`;
 }
@@ -122,7 +122,7 @@ function openDonate(A, usd, forTitle) {
   const step0 = () => {
     d.innerHTML = dlgShell(title(), `<div class="sup-dlg">${forNote}<p class="sm-amt">${esc(t('tip_h'))}</p><div class="pf-tips-r">${DON_AMOUNTS.map(n => `<button type="button" class="pf-amt" data-amt="${n}">${esc(money(n))}</button>`).join('')}</div>
       <form class="pf-tipf" novalidate><label for="don-n">${esc(t('tip_other'))}</label><input id="don-n" name="n" type="number" inputmode="numeric" min="1" max="1000" step="1" placeholder="12"><button type="submit" class="btn pk">${esc(t('tip_go'))}</button></form>
-      <p class="pf-tiperr" role="alert" hidden>${esc(t('tip_bad'))}</p><div class="act">${close}</div></div>`);
+      <p class="pf-tiperr" role="alert" hidden>${esc(t('tip_bad'))}</p><div class="act">${close}</div></div>`, [1, 4, '1']);
     wireClose();
     d.querySelectorAll('[data-amt]').forEach(b => b.onclick = () => { usd = +b.dataset.amt; step1(); });
     const f = d.querySelector('.pf-tipf'), inp = f.elements.n, err = d.querySelector('.pf-tiperr');
@@ -131,21 +131,72 @@ function openDonate(A, usd, forTitle) {
   };
   const step1 = () => {
     d.innerHTML = dlgShell(title(), samplePayHtml(A, usd, who).replace('<dl class="sup-dl">', `${forNote}<p class="note">${esc(t('don_how'))}</p><dl class="sup-dl">`)
-      + `<div class="sup-dlg sm-act"><div class="act"><button type="button" class="btn pk" data-sm-sent>${esc(t('tip_sent'))}</button>${close}</div></div>`);
+      + `<div class="sup-dlg sm-act"><div class="act"><button type="button" class="btn pk" data-sm-sent>${esc(t('tip_sent'))}</button>${close}</div></div>`, [2, 4, '2']);
     wireClose(); d.querySelector('[data-sm-sent]').onclick = step2;
   };
   const step2 = () => {
-    d.innerHTML = dlgShell(esc(t('pay_notice_h')), sampleNoticeHtml()); wireClose();
+    d.innerHTML = dlgShell(esc(t('pay_notice_h')), sampleNoticeHtml(), [3, 4, '3']); wireClose();
     sampleNoticeWire(d, step3, step1); d.querySelector('input[name=name]').focus();
   };
   const step3 = () => {
     smTip(A.id, usd);
-    d.innerHTML = dlgShell(esc(t('pay_done_h')), `<div class="cdlg-done" role="status"><p class="intro">${esc(t('pay_done_tip', {a: who, m: money(usd)}))}</p><p class="sup-sample">${esc(t('sm_banner'))}</p><div class="act">${close}</div></div>`);
+    d.innerHTML = dlgShell(esc(t('pay_done_h')), `<div class="cdlg-done" role="status"><div class="stone" aria-hidden="true"><span class="st-h">♥</span><b>${esc(money(usd))}</b><span class="st-l">${esc(who)} · ${new Date().getFullYear()}</span></div><p class="intro">${esc(t('pay_done_tip', {a: who, m: money(usd)}))}</p><p class="sup-sample">${esc(t('sm_banner'))}</p>`
+      + `<div class="after"><h3>${esc(t('af_h'))}</h3><p>${esc(t('af_p'))}</p><button type="button" class="btn ghost" data-sc>${esc(t('af_btn'))}</button></div><div class="act">${close}</div></div>`, [4, 4, '4']);
     wireClose(); d.querySelector('[data-close]').focus();
   };
   if (usd > 0) step1(); else step0();
   if (!d.open) d.showModal();
 }
+/* ---------- "Support circles": money for the site itself, kept apart from every artist donation ----------
+   Its own window (floors 1 amount, 2 scan, 3 thanks) and its own sample QR. A gold plate on every step says whose money this is. CONFIG.support (a real, non-sample bank QR) replaces the sample once it exists.
+   The gift is remembered under its own key (circles-sample-v1 .circles); it is never added to an artist's total and never counts in the highlights. Opened by any [data-sc] button (the footer link, the box after an artist thank-you). */
+const SC_AMOUNTS = [1, 3, 5];
+function openSupportCircles() {
+  const d = mountDialog('dlg-sc'), info = CONFIG.support, real = !!info && !info.sample && !!(info.qr || info.no), row = (k, v) => v ? `<div><dt>${esc(t(k))}</dt><dd>${esc(v)}</dd></div>` : '';
+  const close = '<button type="button" class="btn ghost" data-close>' + esc(t('close')) + '</button>', wireClose = () => d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
+  const plate = `<p class="sc-plate"><b>${esc(t('sc_k'))}</b>${esc(t('sc_not'))}</p>`, banner = real ? '' : `<p class="sup-sample" role="note">${esc(t('sm_banner'))}</p>`;
+  let usd = 0;
+  const step0 = () => {
+    d.innerHTML = dlgShell(esc(t('sc_title')), `<div class="sup-dlg">${plate}${banner}<p class="sm-amt">${esc(t('sc_pick'))}</p><div class="pf-tips-r">${SC_AMOUNTS.map(n => `<button type="button" class="pf-amt" data-amt="${n}">${esc(money(n))}</button>`).join('')}</div>
+      <form class="pf-tipf" novalidate><label for="sc-n">${esc(t('tip_other'))}</label><input id="sc-n" name="n" type="number" inputmode="numeric" min="1" max="1000" step="1" placeholder="2"><button type="submit" class="btn pk">${esc(t('tip_go'))}</button></form>
+      <p class="pf-tiperr" role="alert" hidden>${esc(t('tip_bad'))}</p><div class="act">${close}</div></div>`, [1, 3, '1']);
+    wireClose();
+    d.querySelectorAll('[data-amt]').forEach(b => b.onclick = () => { usd = +b.dataset.amt; step1(); });
+    const f = d.querySelector('.pf-tipf'), inp = f.elements.n, err = d.querySelector('.pf-tiperr');
+    f.addEventListener('submit', e => { e.preventDefault(); const v = inp.value.trim(); if (!/^\d{1,4}$/.test(v) || +v < 1 || +v > 1000) { err.hidden = false; inp.focus(); return; } usd = +v; step1(); });
+    inp.addEventListener('input', () => { err.hidden = true; });
+  };
+  const step1 = () => {
+    d.innerHTML = dlgShell(esc(t('sc_title')), `<div class="sup-dlg sm-pay"><p class="sm-amt">${esc(t('sc_total', {m: money(usd)}))}</p>${plate}${banner}
+      <div class="qr-plate">${real && info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sc_qr_t'))}" width="240" height="240">` : sampleQrSvg('circles:' + usd, t('sm_qr_alt'))}</div><p class="note">${esc(t('sc_how'))}</p>
+      <dl class="sup-dl">${row('sup_bank', real ? info.bank : '')}${row('sup_acc_name', real ? info.name : t('sc_acc'))}${row('sup_acc_no', real ? info.no : '')}</dl>
+      <div class="act"><button type="button" class="btn pk" data-sc-sent>${esc(t('sc_sent'))}</button>${close}</div><button type="button" class="linkish" data-sc-back>${esc(t('change_amt'))}</button></div>`, [2, 3, '2']);
+    wireClose(); d.querySelector('[data-sc-sent]').onclick = step2; d.querySelector('[data-sc-back]').onclick = step0;
+  };
+  const step2 = () => {
+    const o = smGet(); smPut({...o, circles: [...(o.circles || []), {u: usd, at: Date.now()}].slice(-20)});
+    d.innerHTML = dlgShell(esc(t(real ? 'sc_done_r_h' : 'sc_done_h')), `<div class="cdlg-done" role="status"><div class="stone" aria-hidden="true"><span class="st-h">♥</span><b>${esc(money(usd))}</b><span class="st-l">circles · ${new Date().getFullYear()}</span></div>
+      <p class="intro">${esc(t(real ? 'sc_done_r_p' : 'sc_done_p', {m: money(usd)}))}</p>${real ? '' : `<p class="sup-sample">${esc(t('sm_banner'))}</p>`}<div class="act">${close}</div></div>`, [3, 3, '4']);
+    wireClose(); d.querySelector('[data-close]').focus();
+  };
+  document.querySelectorAll('dialog[open]').forEach(x => { if (x !== d) x.close(); });
+  step0(); if (!d.open) d.showModal();
+}
+document.addEventListener('click', e => { if (e.target.closest && e.target.closest('[data-sc]')) openSupportCircles(); });
+
+/* ---------- "Resonated" (sample numbers) ----------
+   The ranking of the weekly highlights: taps of the "Resonated" button, views break ties. Until there are real visitors the counts are stable made-up numbers
+   (a hash of the work) plus this browser's own tap (localStorage circles-res-v1). Donation amounts are never part of it. */
+const hash32 = s => { let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+const sampleRes = (aid, k) => 40 + hash32(aid + ':' + k + ':r') % 320;
+const sampleViews = (aid, k) => 700 + hash32(aid + ':' + k + ':v') % 3600;
+const RES_KEY = 'circles-res-v1'; let resMem = {};
+const resGet = () => { try { const o = JSON.parse(localStorage.getItem(RES_KEY)); if (o && typeof o === 'object') return o; } catch (e) {} return resMem; };
+const resMine = (aid, k) => !!resGet()[aid + ':' + k];
+const resCount = (aid, k) => sampleRes(aid, k) + (resMine(aid, k) ? 1 : 0);
+function resToggle(aid, k) { const o = {...resGet()}, key = aid + ':' + k; if (o[key]) delete o[key]; else o[key] = 1; resMem = o; try { localStorage.setItem(RES_KEY, JSON.stringify(o)); } catch (e) {} return !!o[key]; }
+const sayOf = p => pk(p, 'say') || pk(p, 'q') || '';   // the one sentence the artist wrote about the work (older data: the quote)
+
 /* ---------- fullscreen zoom of an artwork ----------
    zoomBtnHtml() is the button (put it inside the element that holds the picture, with class .zoom-host on that element); a click on any [data-zoom] opens that host's <img> in openZoom().
    Wheel / pinch zooms, drag pans, double-click or double-tap toggles, + - 0 and the arrow keys work, Esc / the close button / a tap outside the picture close it. Only transform changes. */
@@ -299,6 +350,104 @@ th: {
   desc_cw:'เดินเข้าไปในตึกของ{a} ศิลปินสาขา{d} ดูผลงานทีละชั้น แล้วสนับสนุนตรงถึงศิลปิน',
   nf_h:'ตึกนี้ยังไม่ได้สร้าง', nf_p:'ไม่มีศิลปินคนนี้ในเมือง กลับไปเดินดูตึกที่มีอยู่',
   mq:['ศิลปินไม่มีกฎ','SUPPORT ART','สนับสนุนตรงถึงคนทำ','NO MIDDLEMAN','เมืองของศิลปิน','ART NOT SORRY'],
+  nav_hi:'ไฮไลต์',
+  nav_lg:'ย่านตำนาน',
+  dist_k:'ป้ายทาง',
+  dist_aria:'ทางลัดไปที่ต่าง ๆ ในเมือง',
+  dist_city:'ตึกศิลปิน',
+  dist_hi:'ไฮไลต์สัปดาห์นี้',
+  dist_lg:'ย่านตำนาน',
+  hi_h:'ไฮไลต์ประจำสัปดาห์',
+  hi_meta:'ผลงานและแนวคิดที่คนดูโดนใจที่สุดในสัปดาห์นี้ เรียงจากปุ่ม “โดนใจ” ไม่นับยอดเงินโดเนท',
+  hi_week:'สัปดาห์ที่ {n} · {r} {y}',
+  hi_how_k:'นับยังไง',
+  hi_how:'เรียงจากจำนวนคนกด “โดนใจ” ในสัปดาห์นี้ ถ้าเท่ากันดูจากจำนวนคนดู ไม่นับยอดเงินโดเนท',
+  hi_not:'ไม่ใช่การแข่งขัน ทุกงานดีในแบบของตัวเอง ไฮไลต์นี้แค่บอกว่าสัปดาห์นี้คนดูโดนใจอะไร',
+  hi_t_w:'ผลงาน',
+  hi_t_c:'แนวคิด',
+  hi_t_n:'ศิลปินใหม่น่าจับตา',
+  hi_by:'โดย {a}',
+  hi_views:'{n} คนดู',
+  hi_res:'♥ {n} โดนใจ',
+  hi_open:'อันดับ {n}: {t} โดย {a}',
+  hi_dir:'อันดับ 4–6',
+  hi_c_lead:'แนวคิดที่คนกด “โดนใจ” มากที่สุดในสัปดาห์นี้ ทุกประโยคเป็นคำของศิลปินเอง',
+  hi_own:'คำของศิลปินเอง',
+  hi_from:'จากงาน “{t}”',
+  hi_n_lead:'ที่สำหรับศิลปินที่เพิ่งเข้าร่วมไม่เกิน 3 เดือน สัปดาห์ละ 1 คน ยอดยังน้อยก็มีที่ยืน',
+  hi_n_badge:'ศิลปินใหม่น่าจับตา',
+  hi_joined:'เข้าร่วมเมื่อ {n} สัปดาห์ก่อน',
+  hi_n_go:'ไปดูตึกของ{a}',
+  hi_n_more:'น่าจับตาเหมือนกัน',
+  res_btn:'โดนใจ',
+  res_on:'โดนใจแล้ว',
+  lg_h:'ย่านตำนาน',
+  lg_meta:'ผลงานของผู้วางรากฐานศิลปะ หนัง และเพลง คัดทีละชิ้น ใส่เครดิตทุกชิ้น ย่านนี้ไม่มีปุ่มโดเนท',
+  lg_lead:'ผลงานของคนที่วางรากฐานให้ศิลปะ หนัง และเพลง คัดทีละชิ้นโดย circles ใช้เฉพาะงานที่หมดลิขสิทธิ์หรือได้รับอนุญาต และใส่เครดิตทุกชิ้น',
+  lg_nodon:'ย่านนี้ไม่มีปุ่มโดเนท เพราะเจ้าของงานจากไปแล้ว ถ้าอยากสนับสนุนศิลปินที่ยังทำงานอยู่ ไปดูไฮไลต์ประจำสัปดาห์',
+  lg_go:'ไปสนับสนุนศิลปินที่ยังทำงานอยู่',
+  lg_flt:'กรองตามประเภท',
+  lg_all:'ทั้งหมด',
+  lg_img:'ภาพ',
+  lg_film:'หนัง',
+  lg_music:'เพลง',
+  lg_sample:'ตัวอย่างช่อง',
+  lg_f_title:'ชื่อผลงาน',
+  lg_f_maker:'ผู้สร้าง · ปี',
+  lg_f_own:'คำของผู้สร้างเอง',
+  lg_f_src:'ที่มา',
+  lg_f_hist:'บันทึกประวัติ (ไม่ใช่คำของผู้สร้าง)',
+  lg_f_credit:'เครดิตไฟล์และสัญญาอนุญาต',
+  lg_p_title:'[ชื่อผลงาน]',
+  lg_p_maker:'[ชื่อผู้สร้าง] · [ปี]',
+  lg_p_own:'“[คำพูดจริงของผู้สร้าง]”',
+  lg_p_src:'[จดหมาย หนังสือ หรือบทสัมภาษณ์ และปี]',
+  lg_p_hist:'[ข้อมูลสั้น ๆ ว่างานนี้เกิดขึ้นเมื่อไหร่ อย่างไร]',
+  lg_p_credit:'[พิพิธภัณฑ์หรือคลัง] · [CC0 หรือหมดลิขสิทธิ์]',
+  lg_ph_img:'[ภาพจากพิพิธภัณฑ์]',
+  lg_ph_aud:'[ไฟล์เสียง]',
+  lg_play:'เล่น (ยังไม่มีไฟล์)',
+  lg_empty:'ห้องว่าง · {k}',
+  lg_empty_p:'รอผลงานประเภท{k}ชิ้นต่อไป',
+  sc_link:'ช่วยให้ circles ไปต่อ',
+  sc_title:'ช่วย circles',
+  sc_k:'เงินให้ circles',
+  sc_not:'เงินก้อนนี้เข้าบัญชี circles เพื่อดูแลเว็บ ไม่ไปถึงศิลปิน และไม่เกี่ยวกับที่โดเนทให้ศิลปิน จะช่วยหรือไม่ก็ได้',
+  sc_pick:'เลือกจำนวนที่อยากช่วย circles',
+  sc_acc:'circles (ตัวอย่าง)',
+  sc_qr_t:'สแกนเพื่อช่วย circles',
+  sc_how:'สแกน QR ด้วยแอปธนาคาร แล้วกด “ฉันช่วยแล้ว” (สาธิต: ไม่มีเงินเคลื่อนไหวจริง)',
+  sc_sent:'ฉันช่วยแล้ว',
+  sc_total:'ช่วย circles {m}',
+  sc_done_h:'ขอบคุณที่ช่วย circles (สาธิต)',
+  sc_done_p:'บันทึกการช่วย circles {m} แบบจำลองแล้ว เงินก้อนนี้ไม่ได้ไปถึงศิลปิน นี่คือการสาธิต ไม่มีเงินเคลื่อนไหว',
+  af_h:'อยากช่วยให้เว็บนี้ไปต่อไหม',
+  af_p:'โดเนทเมื่อกี้ไปถึงศิลปินเต็มจำนวน ไม่หักอะไรเลย ถ้าอยากช่วยค่าดูแลเว็บ มีช่องแยกให้ ช่วยหรือไม่ก็ได้',
+  af_btn:'ช่วย circles (แยกจากศิลปิน)',
+  fl_k:'ชั้น',
+  fl_sr:'ขั้นที่ {n} จาก {m}: {s}',
+  fl_1:'เลือกยอด',
+  fl_2:'สแกนจ่าย',
+  fl_3:'แจ้งโอน',
+  fl_4:'ขอบคุณ',
+  room_k:'ห้อง',
+  change_amt:'เปลี่ยนจำนวน',
+  pay_notice_p:'{a} จะเห็นชื่อและข้อความของคุณในหน้าจัดการของศิลปิน',
+  v_h:'ศิลปินเล่าเอง',
+  v_stamp:'เขียนโดยศิลปิน',
+  v_say:'งานนี้อยากบอกว่า',
+  v_why:'ที่มาของงาน',
+  v_look:'อยากให้ดูตรงนี้',
+  v_by:'— {a} เจ้าของผลงาน',
+  v_tb_by:'ผู้เขียน',
+  v_tb_work:'ผลงาน',
+  v_note:'ข้อความในส่วนนี้ศิลปินเขียนเองทั้งหมด circles ไม่แก้ไขและไม่ตีความแทน',
+  f_say:'งานนี้อยากบอกอะไร (ประโยคเดียว)',
+  f_why:'ที่มาของงาน',
+  f_look:'อยากให้ดูตรงไหน',
+  pf_say_k:'ศิลปินเล่าเอง',
+  sc_done_r_h:'ขอบคุณที่ช่วย circles',
+  sc_done_r_p:'ขอบคุณที่ช่วยดูแลเว็บ {m} ทีมงานจะเห็นยอดเมื่อเงินเข้าบัญชี circles เงินก้อนนี้ไม่ได้ไปถึงศิลปิน',
 },
 en: {
   nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', menu_aria:'Menu', lang_aria:'Switch language',
@@ -368,6 +517,104 @@ en: {
   desc_cw:"Walk into {a}'s building. {d} artist. See the work floor by floor, then support the artist directly.",
   nf_h:"This building doesn't exist yet", nf_p:'No artist by that name lives here. Go back and walk the buildings that do.',
   mq:['NO RULES FOR ARTISTS','SUPPORT ART','SUPPORT THE MAKER','NO MIDDLEMAN','CITY OF ARTISTS','ART NOT SORRY'],
+  nav_hi:'Highlights',
+  nav_lg:'Legends',
+  dist_k:'Signposts',
+  dist_aria:'Shortcuts to places in the city',
+  dist_city:'Artists’ buildings',
+  dist_hi:'This week',
+  dist_lg:'Legends',
+  hi_h:'Weekly highlights',
+  hi_meta:'The works and ideas people resonated with most this week. Ranked by the Resonated button; donation amounts never count.',
+  hi_week:'Week {n} · {r} {y}',
+  hi_how_k:'How it’s counted',
+  hi_how:'Ranked by how many people tapped “Resonated” this week; views break ties. Donation amounts never count.',
+  hi_not:'Not a competition. Every work is good in its own way; this only shows what moved people this week.',
+  hi_t_w:'Works',
+  hi_t_c:'Concepts',
+  hi_t_n:'New artist to watch',
+  hi_by:'by {a}',
+  hi_views:'{n} views',
+  hi_res:'♥ {n} resonated',
+  hi_open:'Number {n}: {t} by {a}',
+  hi_dir:'Numbers 4–6',
+  hi_c_lead:'The concepts people resonated with most this week. Every line is the artist’s own words.',
+  hi_own:'Artist’s own words',
+  hi_from:'from “{t}”',
+  hi_n_lead:'A spot for an artist who joined less than 3 months ago, one each week, even with small numbers.',
+  hi_n_badge:'New artist to watch',
+  hi_joined:'Joined {n} weeks ago',
+  hi_n_go:'Visit {a}’s building',
+  hi_n_more:'Also worth watching',
+  res_btn:'Resonated',
+  res_on:'Resonated',
+  lg_h:'Legends',
+  lg_meta:'Work by the people who laid the foundations of art, film and music. Picked one piece at a time, every piece credited. No donate button here.',
+  lg_lead:'Work by the people who laid the foundations of art, film and music. Picked one piece at a time by circles, only public-domain or licensed works, every piece credited.',
+  lg_nodon:'There is no donate button here: these makers have passed away. To support artists who are still working, see this week’s highlights.',
+  lg_go:'Support living artists',
+  lg_flt:'Filter by type',
+  lg_all:'All',
+  lg_img:'Images',
+  lg_film:'Film',
+  lg_music:'Music',
+  lg_sample:'Sample slot',
+  lg_f_title:'Title',
+  lg_f_maker:'Maker · year',
+  lg_f_own:'In the maker’s own words',
+  lg_f_src:'Source',
+  lg_f_hist:'Historical note (not the maker’s words)',
+  lg_f_credit:'File credit and license',
+  lg_p_title:'[Title]',
+  lg_p_maker:'[Maker] · [year]',
+  lg_p_own:'“[A real quote by the maker]”',
+  lg_p_src:'[Letter, book or interview, and year]',
+  lg_p_hist:'[A short note on when and how it was made]',
+  lg_p_credit:'[Museum or archive] · [CC0 or public domain]',
+  lg_ph_img:'[Image from a museum]',
+  lg_ph_aud:'[Audio file]',
+  lg_play:'Play (no file yet)',
+  lg_empty:'Empty room · {k}',
+  lg_empty_p:'Waiting for the next {k} piece',
+  sc_link:'Help circles keep going',
+  sc_title:'Support circles',
+  sc_k:'Money for circles',
+  sc_not:'This goes to circles’ own account to run the site. It does not reach any artist and is separate from your donation to an artist. Entirely optional.',
+  sc_pick:'Choose how much to give circles',
+  sc_acc:'circles (sample)',
+  sc_qr_t:'Scan to support circles',
+  sc_how:'Scan the QR with your banking app, then tap “I’ve given” (demo: no real money moves).',
+  sc_sent:'I’ve given',
+  sc_total:'Support circles: {m}',
+  sc_done_h:'Thank you for supporting circles (demo)',
+  sc_done_p:'A pretend gift of {m} to circles was recorded. It did not go to any artist. This is a demo: no money moved.',
+  af_h:'Want to help this site keep going?',
+  af_p:'Your donation just now reached the artist in full, with nothing taken out. If you’d like to help with running costs, there is a separate option. Entirely up to you.',
+  af_btn:'Support circles (separate from the artist)',
+  fl_k:'Floor',
+  fl_sr:'Step {n} of {m}: {s}',
+  fl_1:'Amount',
+  fl_2:'Scan',
+  fl_3:'Notice',
+  fl_4:'Thanks',
+  room_k:'Room',
+  change_amt:'Change amount',
+  pay_notice_p:'{a} sees your name and message in the artist’s dashboard.',
+  v_h:'In the artist’s words',
+  v_stamp:'Written by the artist',
+  v_say:'What this work says',
+  v_why:'Where it came from',
+  v_look:'Look here',
+  v_by:'— {a}, who made this work',
+  v_tb_by:'Written by',
+  v_tb_work:'Work',
+  v_note:'Everything in this section is written by the artist. circles does not edit or interpret it.',
+  f_say:'What this work says (one sentence)',
+  f_why:'Where it came from',
+  f_look:'Where to look',
+  pf_say_k:'In the artist’s words',
+  sc_done_r_h:'Thank you for supporting circles',
+  sc_done_r_p:'Thank you for helping run the site with {m}. It is counted when it reaches circles’ account. It did not go to any artist.',
 },
 /* lo:begin */
 // DRAFT lo: every line below needs native review (written by Claude, not a native speaker). Keys not listed fall back to Thai.
@@ -670,6 +917,137 @@ lo: {
   v_aria: "ເລືອກມຸມມອງເມືອງ",   // DRAFT lo: needs native review
   // TODO lo: news_consent (falls back to Thai) - newsletter consent (privacy wording): needs a proper translation, not a guess
   // TODO lo: jd_subject (falls back to Thai) - subject line of the join-request email that reaches the site owner: left in Thai so the owner can read it
+  nav_hi: "ໄຮໄລທ໌",   // DRAFT lo: needs native review
+  nav_lg: "ຍ່ານຕຳນານ",   // DRAFT lo: needs native review
+  dist_k: "ປ້າຍທາງ",   // DRAFT lo: needs native review
+  dist_aria: "ທາງລັດໄປບ່ອນຕ່າງໆໃນເມືອງ",   // DRAFT lo: needs native review
+  dist_city: "ຕຶກສິລະປິນ",   // DRAFT lo: needs native review
+  dist_hi: "ໄຮໄລທ໌ອາທິດນີ້",   // DRAFT lo: needs native review
+  dist_lg: "ຍ່ານຕຳນານ",   // DRAFT lo: needs native review
+  hi_h: "ໄຮໄລທ໌ປະຈຳອາທິດ",   // DRAFT lo: needs native review
+  hi_meta: "ຜົນງານ ແລະ ແນວຄິດທີ່ຄົນເບິ່ງຖືກໃຈທີ່ສຸດໃນອາທິດນີ້ ຈັດອັນດັບຈາກປຸ່ມ “ຖືກໃຈ” ບໍ່ນັບຍອດເງິນບໍລິຈາກ",   // DRAFT lo: needs native review
+  hi_week: "ອາທິດທີ {n} · {r} {y}",   // DRAFT lo: needs native review
+  hi_how_k: "ນັບແນວໃດ",   // DRAFT lo: needs native review
+  hi_how: "ຈັດອັນດັບຈາກຈຳນວນຄົນກົດ “ຖືກໃຈ” ໃນອາທິດນີ້ ຖ້າເທົ່າກັນເບິ່ງຈາກຈຳນວນຄົນເບິ່ງ ບໍ່ນັບຍອດເງິນບໍລິຈາກ",   // DRAFT lo: needs native review
+  hi_not: "ບໍ່ແມ່ນການແຂ່ງຂັນ ທຸກຜົນງານດີໃນແບບຂອງຕົນເອງ ໄຮໄລທ໌ນີ້ພຽງບອກວ່າອາທິດນີ້ຄົນເບິ່ງຖືກໃຈຫຍັງ",   // DRAFT lo: needs native review
+  hi_t_w: "ຜົນງານ",   // DRAFT lo: needs native review
+  hi_t_c: "ແນວຄິດ",   // DRAFT lo: needs native review
+  hi_t_n: "ສິລະປິນໃໝ່ໜ້າຕິດຕາມ",   // DRAFT lo: needs native review
+  hi_by: "ໂດຍ {a}",   // DRAFT lo: needs native review
+  hi_views: "{n} ຄົນເບິ່ງ",   // DRAFT lo: needs native review
+  hi_res: "♥ {n} ຖືກໃຈ",   // DRAFT lo: needs native review
+  hi_open: "ອັນດັບ {n}: {t} ໂດຍ {a}",   // DRAFT lo: needs native review
+  hi_dir: "ອັນດັບ 4–6",   // DRAFT lo: needs native review
+  hi_c_lead: "ແນວຄິດທີ່ຄົນກົດ “ຖືກໃຈ” ຫຼາຍທີ່ສຸດໃນອາທິດນີ້ ທຸກປະໂຫຍກແມ່ນຄຳຂອງສິລະປິນເອງ",   // DRAFT lo: needs native review
+  hi_own: "ຄຳຂອງສິລະປິນເອງ",   // DRAFT lo: needs native review
+  hi_from: "ຈາກຜົນງານ “{t}”",   // DRAFT lo: needs native review
+  hi_n_lead: "ບ່ອນສຳລັບສິລະປິນທີ່ເພິ່ງເຂົ້າຮ່ວມບໍ່ເກີນ 3 ເດືອນ ອາທິດລະ 1 ຄົນ ຍອດຍັງໜ້ອຍກໍມີບ່ອນຢືນ",   // DRAFT lo: needs native review
+  hi_n_badge: "ສິລະປິນໃໝ່ໜ້າຕິດຕາມ",   // DRAFT lo: needs native review
+  hi_joined: "ເຂົ້າຮ່ວມເມື່ອ {n} ອາທິດກ່ອນ",   // DRAFT lo: needs native review
+  hi_n_go: "ໄປເບິ່ງຕຶກຂອງ{a}",   // DRAFT lo: needs native review
+  hi_n_more: "ໜ້າຕິດຕາມຄືກັນ",   // DRAFT lo: needs native review
+  res_btn: "ຖືກໃຈ",   // DRAFT lo: needs native review
+  res_on: "ຖືກໃຈແລ້ວ",   // DRAFT lo: needs native review
+  lg_h: "ຍ່ານຕຳນານ",   // DRAFT lo: needs native review
+  lg_meta: "ຜົນງານຂອງຜູ້ວາງຮາກຖານສິລະປະ ຮູບເງົາ ແລະ ເພງ ຄັດເລືອກເທື່ອລະຊິ້ນ ໃສ່ເຄຣດິດທຸກຊິ້ນ ຍ່ານນີ້ບໍ່ມີປຸ່ມບໍລິຈາກ",   // DRAFT lo: needs native review
+  lg_lead: "ຜົນງານຂອງຄົນທີ່ວາງຮາກຖານໃຫ້ສິລະປະ ຮູບເງົາ ແລະ ເພງ ຄັດເລືອກເທື່ອລະຊິ້ນໂດຍ circles ໃຊ້ສະເພາະງານທີ່ໝົດລິຂະສິດ ຫຼື ໄດ້ຮັບອະນຸຍາດ ແລະ ໃສ່ເຄຣດິດທຸກຊິ້ນ",   // DRAFT lo: needs native review
+  lg_nodon: "ຍ່ານນີ້ບໍ່ມີປຸ່ມບໍລິຈາກ ເພາະເຈົ້າຂອງຜົນງານຈາກໄປແລ້ວ ຖ້າຢາກສະໜັບສະໜູນສິລະປິນທີ່ຍັງເຮັດວຽກຢູ່ ໄປເບິ່ງໄຮໄລທ໌ປະຈຳອາທິດ",   // DRAFT lo: needs native review
+  lg_go: "ໄປສະໜັບສະໜູນສິລະປິນທີ່ຍັງເຮັດວຽກຢູ່",   // DRAFT lo: needs native review
+  lg_flt: "ກັ່ນຕອງຕາມປະເພດ",   // DRAFT lo: needs native review
+  lg_all: "ທັງໝົດ",   // DRAFT lo: needs native review
+  lg_img: "ຮູບ",   // DRAFT lo: needs native review
+  lg_film: "ຮູບເງົາ",   // DRAFT lo: needs native review
+  lg_music: "ເພງ",   // DRAFT lo: needs native review
+  lg_sample: "ຊ່ອງຕົວຢ່າງ",   // DRAFT lo: needs native review
+  lg_f_title: "ຊື່ຜົນງານ",   // DRAFT lo: needs native review
+  lg_f_maker: "ຜູ້ສ້າງ · ປີ",   // DRAFT lo: needs native review
+  lg_f_own: "ຄຳຂອງຜູ້ສ້າງເອງ",   // DRAFT lo: needs native review
+  lg_f_src: "ທີ່ມາ",   // DRAFT lo: needs native review
+  lg_f_hist: "ບັນທຶກປະຫວັດ (ບໍ່ແມ່ນຄຳຂອງຜູ້ສ້າງ)",   // DRAFT lo: needs native review
+  lg_f_credit: "ເຄຣດິດໄຟລ໌ ແລະ ສັນຍາອະນຸຍາດ",   // DRAFT lo: needs native review
+  lg_p_title: "[ຊື່ຜົນງານ]",   // DRAFT lo: needs native review
+  lg_p_maker: "[ຊື່ຜູ້ສ້າງ] · [ປີ]",   // DRAFT lo: needs native review
+  lg_p_own: "“[ຄຳເວົ້າຈິງຂອງຜູ້ສ້າງ]”",   // DRAFT lo: needs native review
+  lg_p_src: "[ຈົດໝາຍ ປຶ້ມ ຫຼື ບົດສຳພາດ ແລະ ປີ]",   // DRAFT lo: needs native review
+  lg_p_hist: "[ຂໍ້ມູນສັ້ນໆວ່າຜົນງານນີ້ເກີດຂຶ້ນເມື່ອໃດ ແນວໃດ]",   // DRAFT lo: needs native review
+  lg_p_credit: "[ພິພິທະພັນ ຫຼື ຄັງ] · [CC0 ຫຼື ໝົດລິຂະສິດ]",   // DRAFT lo: needs native review
+  lg_ph_img: "[ຮູບຈາກພິພິທະພັນ]",   // DRAFT lo: needs native review
+  lg_ph_aud: "[ໄຟລ໌ສຽງ]",   // DRAFT lo: needs native review
+  lg_play: "ຫຼິ້ນ (ຍັງບໍ່ມີໄຟລ໌)",   // DRAFT lo: needs native review
+  lg_empty: "ຫ້ອງວ່າງ · {k}",   // DRAFT lo: needs native review
+  lg_empty_p: "ລໍຖ້າຜົນງານປະເພດ{k}ຊິ້ນຕໍ່ໄປ",   // DRAFT lo: needs native review
+  sc_link: "ຊ່ວຍໃຫ້ circles ໄປຕໍ່",   // DRAFT lo: needs native review
+  sc_title: "ຊ່ວຍ circles",   // DRAFT lo: needs native review
+  sc_k: "ເງິນໃຫ້ circles",   // DRAFT lo: needs native review
+  sc_not: "ເງິນກ້ອນນີ້ເຂົ້າບັນຊີ circles ເພື່ອດູແລເວັບ ບໍ່ໄປຮອດສິລະປິນ ແລະ ບໍ່ກ່ຽວກັບທີ່ບໍລິຈາກໃຫ້ສິລະປິນ ຈະຊ່ວຍ ຫຼື ບໍ່ກໍໄດ້",   // DRAFT lo: needs native review
+  sc_pick: "ເລືອກຈຳນວນທີ່ຢາກຊ່ວຍ circles",   // DRAFT lo: needs native review
+  sc_acc: "circles (ຕົວຢ່າງ)",   // DRAFT lo: needs native review
+  sc_qr_t: "ສະແກນເພື່ອຊ່ວຍ circles",   // DRAFT lo: needs native review
+  sc_how: "ສະແກນ QR ດ້ວຍແອັບທະນາຄານ ແລ້ວກົດ “ຂ້ອຍຊ່ວຍແລ້ວ” (ສາທິດ: ບໍ່ມີເງິນເຄື່ອນໄຫວຈິງ)",   // DRAFT lo: needs native review
+  sc_sent: "ຂ້ອຍຊ່ວຍແລ້ວ",   // DRAFT lo: needs native review
+  sc_total: "ຊ່ວຍ circles {m}",   // DRAFT lo: needs native review
+  sc_done_h: "ຂອບໃຈທີ່ຊ່ວຍ circles (ສາທິດ)",   // DRAFT lo: needs native review
+  sc_done_p: "ບັນທຶກການຊ່ວຍ circles {m} ແບບຈຳລອງແລ້ວ ເງິນກ້ອນນີ້ບໍ່ໄດ້ໄປຮອດສິລະປິນ ນີ້ແມ່ນການສາທິດ ບໍ່ມີເງິນເຄື່ອນໄຫວ",   // DRAFT lo: needs native review
+  af_h: "ຢາກຊ່ວຍໃຫ້ເວັບນີ້ໄປຕໍ່ບໍ",   // DRAFT lo: needs native review
+  af_p: "ເງິນບໍລິຈາກເມື່ອກີ້ໄປຮອດສິລະປິນເຕັມຈຳນວນ ບໍ່ຫັກຫຍັງເລີຍ ຖ້າຢາກຊ່ວຍຄ່າດູແລເວັບ ມີຊ່ອງແຍກໃຫ້ ຊ່ວຍ ຫຼື ບໍ່ກໍໄດ້",   // DRAFT lo: needs native review
+  af_btn: "ຊ່ວຍ circles (ແຍກຈາກສິລະປິນ)",   // DRAFT lo: needs native review
+  fl_k: "ຊັ້ນ",   // DRAFT lo: needs native review
+  fl_sr: "ຂັ້ນທີ {n} ຈາກ {m}: {s}",   // DRAFT lo: needs native review
+  fl_1: "ເລືອກຍອດ",   // DRAFT lo: needs native review
+  fl_2: "ສະແກນຈ່າຍ",   // DRAFT lo: needs native review
+  fl_3: "ແຈ້ງໂອນ",   // DRAFT lo: needs native review
+  fl_4: "ຂອບໃຈ",   // DRAFT lo: needs native review
+  room_k: "ຫ້ອງ",   // DRAFT lo: needs native review
+  change_amt: "ປ່ຽນຈຳນວນ",   // DRAFT lo: needs native review
+  pay_notice_p: "{a} ຈະເຫັນຊື່ ແລະ ຂໍ້ຄວາມຂອງທ່ານໃນໜ້າຈັດການຂອງສິລະປິນ",   // DRAFT lo: needs native review
+  v_h: "ສິລະປິນເລົ່າເອງ",   // DRAFT lo: needs native review
+  v_stamp: "ຂຽນໂດຍສິລະປິນ",   // DRAFT lo: needs native review
+  v_say: "ຜົນງານນີ້ຢາກບອກວ່າ",   // DRAFT lo: needs native review
+  v_why: "ທີ່ມາຂອງຜົນງານ",   // DRAFT lo: needs native review
+  v_look: "ຢາກໃຫ້ເບິ່ງຕົງນີ້",   // DRAFT lo: needs native review
+  v_by: "— {a} ເຈົ້າຂອງຜົນງານ",   // DRAFT lo: needs native review
+  v_tb_by: "ຜູ້ຂຽນ",   // DRAFT lo: needs native review
+  v_tb_work: "ຜົນງານ",   // DRAFT lo: needs native review
+  v_note: "ຂໍ້ຄວາມໃນສ່ວນນີ້ສິລະປິນຂຽນເອງທັງໝົດ circles ບໍ່ແກ້ໄຂ ແລະ ບໍ່ຕີຄວາມແທນ",   // DRAFT lo: needs native review
+  f_say: "ຜົນງານນີ້ຢາກບອກຫຍັງ (ປະໂຫຍກດຽວ)",   // DRAFT lo: needs native review
+  f_why: "ທີ່ມາຂອງຜົນງານ",   // DRAFT lo: needs native review
+  f_look: "ຢາກໃຫ້ເບິ່ງຕົງໃດ",   // DRAFT lo: needs native review
+  pf_say_k: "ສິລະປິນເລົ່າເອງ",   // DRAFT lo: needs native review
+  tip_h: "ເລືອກຈຳນວນທີ່ຢາກສະໜັບສະໜູນ",   // DRAFT lo: needs native review
+  tip_other: "ຈຳນວນອື່ນ (USD)",   // DRAFT lo: needs native review
+  tip_go: "ຕໍ່ໄປ",   // DRAFT lo: needs native review
+  tip_bad: "ໃສ່ຈຳນວນເຕັມ 1–1000 ໂດລາ",   // DRAFT lo: needs native review
+  tip_amt: "ຍອດສະໜັບສະໜູນ {m}",   // DRAFT lo: needs native review
+  tip_sent: "ຂ້ອຍໂອນແລ້ວ",   // DRAFT lo: needs native review
+  sm_tag: "ຕົວຢ່າງ / SAMPLE",   // DRAFT lo: needs native review
+  sm_banner: "ຕົວຢ່າງ (SAMPLE) · ນີ້ແມ່ນການສາທິດ ບໍ່ມີຫຍັງຖືກສົ່ງອອກໄປ ຢ່າໂອນເງິນຈິງ",   // DRAFT lo: needs native review
+  sm_qr_alt: "QR ຕົວຢ່າງ ບໍ່ແມ່ນຂອງຈິງ",   // DRAFT lo: needs native review
+  pay_notice_h: "ແຈ້ງວ່າໂອນແລ້ວ",   // DRAFT lo: needs native review
+  pay_slip: "ສະລິບໂອນເງິນ (ບໍ່ບັງຄັບ ຮູບບໍ່ເກີນ 2 MB)",   // DRAFT lo: needs native review
+  pay_slip_big: "ໄຟລ໌ໃຫຍ່ເກີນ 2 MB",   // DRAFT lo: needs native review
+  pay_slip_type: "ຕ້ອງເປັນໄຟລ໌ຮູບພາບ",   // DRAFT lo: needs native review
+  pay_need_name: "ໃສ່ຊື່",   // DRAFT lo: needs native review
+  pay_need_email: "ໃສ່ອີເມວໃຫ້ຖືກຕ້ອງ",   // DRAFT lo: needs native review
+  pay_submit: "ສົ່ງແຈ້ງໂອນ",   // DRAFT lo: needs native review
+  pay_sending: "ກຳລັງສົ່ງ…",   // DRAFT lo: needs native review
+  pay_back: "ຍ້ອນກັບ",   // DRAFT lo: needs native review
+  pay_done_h: "ຂອບໃຈ (ສາທິດ)",   // DRAFT lo: needs native review
+  pay_done_tip: "ບັນທຶກການສະໜັບສະໜູນ {m} ໃຫ້ {a} ແບບຈຳລອງແລ້ວ ນີ້ແມ່ນການສາທິດ ບໍ່ມີຫຍັງຖືກສົ່ງອອກໄປ ແລະ ບໍ່ມີເງິນເຄື່ອນໄຫວ",   // DRAFT lo: needs native review
+  dlg_supn: "ເງິນເຂົ້າບັນຊີສິລະປິນໂດຍກົງ ຕອນນີ້ circles ບໍ່ຫັກຄ່າທຳນຽມ",   // DRAFT lo: needs native review
+  don_for: "ເພື່ອຜົນງານ “{t}”",   // DRAFT lo: needs native review
+  don_how: "ສະແກນ QR ດ້ວຍແອັບທະນາຄານ (ເຊັ່ນ BCEL One) ຫຼື ໂອນເຂົ້າບັນຊີດ້ານລຸ່ມ ແລ້ວກົດ “ຂ້ອຍໂອນແລ້ວ” ເງິນເຂົ້າສິລະປິນໂດຍກົງ ຕອນນີ້ circles ບໍ່ຫັກຄ່າທຳນຽມ",   // DRAFT lo: needs native review
+  zoom_btn: "ຂະຫຍາຍຮູບເຕັມຈໍ",   // DRAFT lo: needs native review
+  zoom_in: "ຊູມເຂົ້າ",   // DRAFT lo: needs native review
+  zoom_out: "ຊູມອອກ",   // DRAFT lo: needs native review
+  zoom_reset: "ຂະໜາດພໍດີ",   // DRAFT lo: needs native review
+  zoom_hint: "ເລື່ອນລໍ້ເມົາສ໌ ຫຼື ຫຍິກນິ້ວເພື່ອຊູມ ລາກເພື່ອເລື່ອນ ກົດ Esc ເພື່ອປິດ",   // DRAFT lo: needs native review
+  nav_all: "ສິລະປິນທັງໝົດ",   // DRAFT lo: needs native review
+  bc_aria: "ເສັ້ນທາງໜ້າ",   // DRAFT lo: needs native review
+  bc_city: "ເມືອງ",   // DRAFT lo: needs native review
+  bc_artists: "ສິລະປິນ",   // DRAFT lo: needs native review
+  bc_work: "ຜົນງານ",   // DRAFT lo: needs native review
+  sc_done_r_h: "ຂອບໃຈທີ່ຊ່ວຍ circles",   // DRAFT lo: needs native review
+  sc_done_r_p: "ຂອບໃຈທີ່ຊ່ວຍດູແລເວັບ {m} ທີມງານຈະເຫັນຍອດເມື່ອເງິນເຂົ້າບັນຊີ circles ເງິນກ້ອນນີ້ບໍ່ໄດ້ໄປຮອດສິລະປິນ",   // DRAFT lo: needs native review
 },
 /* lo:end */
 };
@@ -788,8 +1166,13 @@ function mountDialog(id) {
   if (!d) { d = document.createElement('dialog'); d.id = id; d.className = 'cdlg'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.close(); }); }
   return d;
 }
-function dlgShell(title, inner) {
-  return `<div class="cdlg-h"><h2>${title}</h2><button type="button" class="cdlg-x" data-close aria-label="${esc(t('close'))}">✕</button></div>${inner}`;
+/* Every window is a small concrete building: a riveted beam on top (black name plate with pink tape, the lift-style floor sign, a bolted close button),
+   the room, and a yellow/black hazard footing. floor = [n, of, key]: "floor n of `of`", labelled by the string fl_<key> (donation steps; omitted for plain forms). */
+function floorHtml(n, of, label) {
+  return `<div class="cdlg-fl" aria-hidden="true"><small>${esc(t('fl_k'))}</small><b>${n}<i>/${of}</i></b><span>${esc(label)}</span></div><span class="sr">${esc(t('fl_sr', {n, m: of, s: label}))}</span>`;
+}
+function dlgShell(title, inner, floor) {
+  return `<div class="cdlg-h"><div class="cdlg-t"><h2>${title}</h2></div>${floor ? floorHtml(floor[0], floor[1], t('fl_' + floor[2])) : ''}<button type="button" class="cdlg-x" data-close aria-label="${esc(t('close'))}">✕</button></div><div class="cdlg-b">${inner}</div><div class="cdlg-foot" aria-hidden="true"></div>`;
 }
 function showDone(d, res, to) {
   const ok = res.mode === 'sent', fail = res.mode === 'fail';
@@ -1030,7 +1413,14 @@ function coinSwap(svg, opts) {
         const ps = () => { sh.innerHTML = `<span aria-hidden="true">↗</span><span class="calm-t"> ${esc(t('share_btn'))}</span>`; sh.setAttribute('aria-label', t('share_btn')); sh.title = t('share_btn'); };
         ps(); onLang(ps); row.appendChild(sh);
       }
+      const sc = document.createElement('button'); sc.type = 'button'; sc.className = 'calm sc-foot'; sc.dataset.sc = '';   // "Help circles keep going": money for the site, separate from any artist
+      const pc = () => { sc.textContent = t('sc_link'); }; pc(); onLang(pc); row.appendChild(sc);
       (foot || document.body).appendChild(row);
+    }
+    if (!document.querySelector('.pl-dist') && foot) {   // street signs to the other districts of the city (the page you are on is marked)
+      const here = document.body.dataset.page || '', dist = document.createElement('nav'); dist.className = 'pl-dist'; dist.setAttribute('aria-label', t('dist_aria'));
+      const paint = () => { dist.setAttribute('aria-label', t('dist_aria')); dist.innerHTML = `<span class="pl-dist-k">${esc(t('dist_k'))}</span>` + [['index.html#city', 'dist_city', 'home'], ['highlights.html', 'dist_hi', 'highlights'], ['legends.html', 'dist_lg', 'legends']].map(([h, k, pg]) => `<a class="pl-sign" href="${h}"${here === pg ? ' aria-current="page"' : ''}>${esc(t(k))}</a>`).join(''); };
+      paint(); onLang(paint); foot.before(dist);
     }
     const A = pageArtist();
     if (A && !document.querySelector('.fab-wrap') && canDonate(A)) {

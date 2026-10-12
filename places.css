@@ -1,0 +1,137 @@
+/* places.css — highlights.html (weekly highlights) and legends.html (the Legends district). Rules start with .pl- or are scoped to those two pages.
+   Same language as the donation windows: board-formed concrete, a row of rivets, a yellow/black hazard footing, black plates with pink tape. Palette tokens only. */
+.pl-page main,.pl-page .pl-main{background:var(--grain,none),radial-gradient(rgba(14,13,12,.2) 1.2px,transparent 1.7px) 0 0/15px 15px,linear-gradient(rgba(244,241,232,.52),rgba(244,241,232,.52)),#8F8C85;}
+.pl-page{background:var(--bone);}
+.pl-main{padding:1.4rem 16px 3rem;}
+.pl-wrap{width:min(100%,1000px);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:1.4rem;}
+.pl-crumb{align-self:flex-start;}
+.pl-crumb.bc{font:400 .95rem/1.4 var(--type);}
+.pl-crumb a{border-bottom:2px solid var(--pink);}
+
+/* page title = a yellow blade */
+.pl-h{display:inline-block;margin:0;font:400 clamp(1.4rem,4vw,2rem)/1.5 var(--anton);letter-spacing:.1em;text-transform:uppercase;background:var(--gold);border:3px solid var(--black);box-shadow:6px 6px 0 var(--black);padding:.35rem 1.2rem;transform:skewX(-8deg);}
+.pl-h>span{display:inline-block;transform:skewX(8deg);}
+html[lang=th] .pl-h,html[lang=lo] .pl-h{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.pl-lead{margin:0;max-width:60ch;text-align:center;font:400 1.05rem/1.8 var(--thai);}
+.pl-week{margin:-.4rem 0 0;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;justify-content:center;font:400 .95rem var(--type);}
+.pl-chip{background:var(--black);color:var(--gold);font:400 .8rem var(--anton);letter-spacing:.12em;padding:.15rem .5rem;}
+.pl-how{margin:0;max-width:640px;width:100%;padding:.7rem .9rem;background:var(--paper);border:3px solid var(--black);box-shadow:5px 5px 0 var(--black);font:400 .98rem/1.7 var(--thai);text-align:left;display:grid;gap:.35rem;}
+.pl-how b{font:400 .78rem var(--type);letter-spacing:.1em;text-transform:uppercase;color:var(--tartan-red);}
+.pl-how span+span{color:#3a3733;}
+
+/* tabs = three doors on a beam */
+.pl-tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.pl-tabs [role=tab]{min-height:46px;padding:.5rem 1rem;border:3px solid var(--black);background:var(--paper);color:var(--black);font:400 1rem/1.4 var(--anton);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:4px 4px 0 var(--black);transition:transform .2s var(--ease),box-shadow .2s var(--ease);}
+html[lang=th] .pl-tabs [role=tab],html[lang=lo] .pl-tabs [role=tab]{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.pl-tabs [role=tab][aria-selected=true]{background:var(--pink);transform:translateY(-3px);box-shadow:4px 7px 0 var(--black);}
+.pl-panel{width:100%;display:grid;gap:1.4rem;justify-items:center;}
+.pl-panel[hidden]{display:none;}
+
+/* weekly works: a skyline podium, the tallest tower = most "resonated" */
+.pl-podium{width:100%;max-width:760px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;}
+.pl-pc{display:flex;justify-content:center;align-items:flex-end;height:100%;padding:0 clamp(4px,2vw,16px);border-bottom:7px solid var(--black);}
+.pl-twr{display:flex;flex-direction:column;align-items:center;width:100%;color:inherit;text-decoration:none;}
+.pl-bb{position:relative;display:block;width:100%;border:4px solid var(--black);background:var(--bone);box-shadow:5px 5px 0 var(--black);overflow:hidden;transition:transform .2s var(--ease),box-shadow .2s var(--ease);}
+.pl-bb img{display:block;width:100%;height:100%;object-fit:cover;}
+.pl-legs{display:block;width:62%;height:16px;background:linear-gradient(90deg,#0E0D0C 0 6px,transparent 6px calc(100% - 6px),#0E0D0C calc(100% - 6px));}
+.pl-tb{position:relative;display:flex;justify-content:center;align-items:flex-start;width:80%;height:var(--h);padding-top:10px;border:4px solid var(--black);border-bottom:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='26'%3E%3Crect x='6' y='8' width='10' height='12' fill='%230E0D0C' fill-opacity='.5'/%3E%3C/svg%3E") 0 34px,var(--a-conc);}
+.pl-r1 .pl-tb{--h:clamp(120px,22vw,200px);}.pl-r2 .pl-tb{--h:clamp(84px,15vw,140px);}.pl-r3 .pl-tb{--h:clamp(62px,11vw,104px);}
+.pl-rk{position:relative;z-index:1;font:400 clamp(1.2rem,4vw,1.8rem)/1.2 var(--anton);background:var(--gold);border:3px solid var(--black);padding:.1rem .4rem;}
+.pl-r1 .pl-rk{background:var(--pink);}
+.pl-twr:hover .pl-bb,.pl-twr:focus-visible .pl-bb{transform:translateY(-4px);box-shadow:5px 9px 0 var(--black);}
+.pl-caps{width:100%;max-width:760px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(4px,2vw,16px);margin-top:-.6rem;}
+.pl-cap{margin:0;padding:0 2px;text-align:center;display:grid;gap:.15rem;align-content:start;}
+.pl-cap b{font:400 clamp(.9rem,2.6vw,1.1rem)/1.5 "Chonburi",var(--thai);}
+.pl-cap span{font:400 .78rem/1.5 var(--type);color:var(--black);}
+.pl-cap .pl-ct{color:var(--tartan-red);}
+/* ranks 4-6: a lobby directory board */
+.pl-dir{width:100%;max-width:640px;margin:0;background:var(--black);color:var(--paper);border:4px solid var(--black);box-shadow:7px 7px 0 var(--gold);padding:.3rem 0 .4rem;}
+.pl-dir-h{margin:0;padding:.35rem 1rem .5rem;font:400 .78rem var(--type);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
+.pl-dir ol{margin:0;padding:0;list-style:none;}
+.pl-dir a{display:grid;grid-template-columns:2.8rem minmax(0,1fr) auto;gap:.8rem;align-items:center;width:100%;min-height:52px;padding:.55rem 1rem;border-top:1px dashed #8F8C85;color:inherit;text-decoration:none;}
+.pl-dir a:hover{background:#25231f;}
+.pl-dir .pl-n{font:400 1.45rem/1.2 var(--anton);color:var(--gold);}
+.pl-dir .pl-tt{font:400 1rem/1.5 "Chonburi",var(--thai);}
+.pl-dir .pl-by{display:block;font:400 .8rem/1.5 var(--type);color:#D9D6CC;}
+.pl-dir .pl-ct{font:400 .8rem/1.5 var(--type);color:#D9D6CC;text-align:right;}
+
+/* concepts: engraved plaques, every line is the artist's own words */
+.pl-cl{width:100%;max-width:700px;display:grid;gap:20px;margin:0;padding:0;list-style:none;}
+.pl-cp{position:relative;display:grid;grid-template-columns:3rem minmax(0,1fr);gap:.9rem;align-items:start;padding:1rem 1.1rem;background:var(--grain,none),var(--a-form),var(--a-lift),var(--a-lift),#8F8C85;border:4px solid var(--black);box-shadow:6px 6px 0 var(--black);color:var(--black);}
+.pl-cp:nth-child(odd){transform:rotate(-.6deg);}.pl-cp:nth-child(even){transform:rotate(.5deg);}
+.pl-cp .pl-n{font:400 1.8rem/1.2 var(--anton);color:var(--black);background:var(--gold);border:3px solid var(--black);text-align:center;padding:.2rem 0;}
+.pl-cp:first-child .pl-n{background:var(--pink);}
+.pl-cp q{display:block;font:400 clamp(1.05rem,3.2vw,1.25rem)/1.7 "Chonburi",var(--thai);}
+.pl-cp .pl-meta{display:flex;flex-wrap:wrap;gap:.35rem .8rem;align-items:center;margin-top:.55rem;font:400 .82rem/1.5 var(--type);}
+.pl-own{padding:.02rem .4rem;border:3px double var(--tartan-red);background:var(--paper);color:var(--tartan-red);font:700 .72rem/1.5 var(--thai);}
+
+/* new artist to watch */
+.pl-newb{width:100%;max-width:700px;display:grid;gap:1.2rem;}
+.pl-feat{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.1rem;align-items:center;padding:1.5rem 1.2rem 1.3rem;background:var(--paper);border:5px solid var(--black);box-shadow:9px 9px 0 var(--pink);}
+.pl-feat::before{content:"";position:absolute;top:-14px;left:22px;width:84px;height:22px;background:var(--gold);border:3px solid var(--black);transform:rotate(-4deg);}
+.pl-av{display:flex;align-items:center;justify-content:center;width:84px;height:84px;border-radius:50%;border:4px solid var(--black);box-shadow:4px 4px 0 var(--black);font:400 2.3rem/1.3 "Chonburi",var(--thai);}
+.pl-badge{display:inline-block;margin:0 0 .4rem;padding:.15rem .55rem;background:var(--black);color:var(--gold);font:400 .82rem/1.5 var(--anton);letter-spacing:.1em;text-transform:uppercase;}
+html[lang=th] .pl-badge,html[lang=lo] .pl-badge{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.pl-feat h3{margin:0;font:400 1.6rem/1.5 "Chonburi",var(--thai);}
+.pl-feat .pl-j{margin:.15rem 0 .5rem;font:400 .82rem/1.5 var(--type);color:#3a3733;}
+.pl-feat q{display:block;font:400 1.05rem/1.7 "Chonburi",var(--thai);}
+.pl-feat .pl-ct{margin:.5rem 0 .8rem;font:400 .82rem/1.5 var(--type);color:var(--tartan-red);}
+.pl-runs{margin:0;padding:0;list-style:none;display:grid;gap:10px;}
+.pl-runs li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.8rem;align-items:center;padding:.6rem .9rem;background:var(--paper);border:3px solid var(--black);box-shadow:4px 4px 0 var(--black);}
+.pl-runs .pl-av{width:48px;height:48px;font-size:1.3rem;border-width:3px;box-shadow:2px 2px 0 var(--black);}
+.pl-runs b{display:block;font:400 1.05rem/1.5 "Chonburi",var(--thai);}
+.pl-runs span{font:400 .8rem/1.5 var(--type);color:#3a3733;}
+.pl-runs .pl-ct{color:var(--tartan-red);text-align:right;}
+.pl-more{margin:0;text-align:center;font:400 .78rem var(--type);letter-spacing:.14em;text-transform:uppercase;}
+.pl-btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:48px;font:400 1.1rem/1.4 var(--anton);letter-spacing:.12em;text-transform:uppercase;padding:.6rem 1.4rem;border:3px solid var(--black);background:var(--pink);color:var(--black);text-decoration:none;cursor:pointer;box-shadow:6px 6px 0 var(--gold);}
+html[lang=th] .pl-btn,html[lang=lo] .pl-btn{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.pl-btn:hover{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--pink);}
+@media(max-width:520px){.pl-feat{grid-template-columns:1fr;justify-items:center;text-align:center;}}
+
+/* Legends district: a monument front (pediment, lintel, columns, step), vitrines on concrete plinths */
+.pl-pedi{width:100%;max-width:720px;display:grid;justify-items:center;}
+.pl-pedi svg{display:block;width:100%;height:clamp(46px,9vw,78px);}
+.pl-pedi h1{width:100%;margin:-4px 0 0;padding:.5rem 1rem .6rem;text-align:center;background:var(--black);color:var(--paper);border:4px solid var(--black);box-shadow:6px 6px 0 var(--pink);font:400 clamp(1.8rem,6vw,2.8rem)/1.5 "Chonburi",var(--thai);}
+.pl-cols{display:flex;justify-content:space-around;width:90%;height:clamp(34px,6vw,52px);}
+.pl-cols i{width:clamp(20px,5vw,40px);background:repeating-linear-gradient(90deg,#8F8C85 0 5px,#C4C1B9 5px 7px);border-left:3px solid var(--black);border-right:3px solid var(--black);}
+.pl-step{width:100%;height:18px;background:var(--a-conc);border:4px solid var(--black);}
+.pl-nodon{margin:0;width:100%;max-width:640px;display:grid;gap:.7rem;justify-items:center;text-align:center;padding:1rem;background:var(--gold);border:4px solid var(--black);box-shadow:6px 6px 0 var(--black);font:600 1rem/1.7 var(--thai);}
+.pl-nodon .pl-btn{background:var(--black);color:var(--paper);box-shadow:4px 4px 0 var(--pink);}
+.pl-flt{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.pl-flt button{min-height:44px;padding:.4rem .95rem;border:3px solid var(--black);background:var(--paper);color:var(--black);font:400 .95rem/1.4 var(--anton);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+html[lang=th] .pl-flt button,html[lang=lo] .pl-flt button{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.pl-flt button[aria-pressed=true]{background:var(--black);color:var(--paper);}
+.pl-vitr{width:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:26px;margin:0;padding:0;list-style:none;align-items:start;}
+.pl-vt{display:grid;background:var(--paper);border:4px solid var(--black);box-shadow:6px 6px 0 var(--black);}
+.pl-vt[hidden]{display:none;}
+.pl-vt-top{position:relative;display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem .7rem 1rem;background:var(--a-conc);border-bottom:4px solid var(--black);}
+.pl-vt-top::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:10px;background:var(--a-rivets);}
+.pl-vt-type{padding:.1rem .55rem;background:var(--black);color:var(--paper);font:400 .9rem/1.5 var(--anton);letter-spacing:.1em;text-transform:uppercase;}
+html[lang=th] .pl-vt-type,html[lang=lo] .pl-vt-type{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.pl-vt-stamp{padding:.05rem .4rem;border:3px double var(--tartan-red);background:var(--paper);color:var(--tartan-red);font:700 .74rem/1.5 var(--thai);transform:rotate(3deg);}
+.pl-media{position:relative;margin:.8rem .8rem .2rem;border:3px solid var(--black);display:flex;align-items:center;justify-content:center;text-align:center;}
+.pl-media.img{aspect-ratio:4/3;background:var(--bone);}
+.pl-media.img svg{position:absolute;inset:0;width:100%;height:100%;}
+.pl-media.img span{position:relative;padding:.1rem .5rem;background:var(--paper);border:2px solid var(--black);font:400 .85rem/1.5 var(--type);}
+.pl-media.aud{justify-content:flex-start;gap:.7rem;padding:.7rem;background:var(--black);color:var(--paper);font:400 .85rem/1.5 var(--type);}
+.pl-media.vid{aspect-ratio:16/9;background:var(--black);color:var(--paper);}
+.pl-play{flex:none;width:44px;height:44px;border:3px solid var(--paper);background:var(--pink);color:var(--black);font:400 1rem var(--anton);cursor:not-allowed;opacity:.85;}
+.pl-bars{flex:1;height:30px;background:repeating-linear-gradient(90deg,#C4C1B9 0 3px,transparent 3px 7px);-webkit-mask:linear-gradient(0deg,#000 20%,transparent 20% 30%,#000 30% 70%,transparent 70% 80%,#000 80%);mask:linear-gradient(0deg,#000 20%,transparent 20% 30%,#000 30% 70%,transparent 70% 80%,#000 80%);opacity:.85;}
+.pl-tri{width:0;height:0;border-left:30px solid var(--paper);border-top:18px solid transparent;border-bottom:18px solid transparent;opacity:.85;}
+.pl-vt dl{margin:.6rem .8rem .9rem;display:grid;gap:.6rem;}
+.pl-vt dl>div{display:grid;gap:.1rem;}
+.pl-vt dt{font:400 .74rem/1.5 var(--type);letter-spacing:.08em;text-transform:uppercase;color:var(--tartan-red);}
+.pl-vt dd{margin:0;font:400 .95rem/1.7 var(--thai);color:#3a3733;}
+.pl-vt dd small{display:block;margin-top:.15rem;font:400 .8rem/1.5 var(--type);}
+.pl-vt-own{padding-left:.6rem;border-left:5px solid var(--pink);}
+.pl-vt-hist{padding-left:.6rem;border-left:5px solid #8F8C85;}
+.pl-vt-base{height:18px;background:var(--a-rivets),var(--a-conc);border-top:4px solid var(--black);}
+.pl-vt.empty{min-height:260px;align-content:center;justify-items:center;gap:.4rem;padding:1rem;text-align:center;background:rgba(244,241,232,.55);border-style:dashed;box-shadow:none;}
+.pl-vt.empty .pl-media{width:80%;margin:0 0 .4rem;}
+.pl-em-h{margin:0;font:400 1.05rem/1.5 var(--anton);letter-spacing:.08em;text-transform:uppercase;}
+html[lang=th] .pl-em-h,html[lang=lo] .pl-em-h{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.pl-em-p{margin:0;font:400 .85rem/1.6 var(--type);}
+.pl-foot{width:min(100%,1000px);margin:0 auto;padding:0 16px 2rem;display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:center;font:400 .85rem var(--type);letter-spacing:.08em;}
+.pl-foot a{color:var(--black);text-decoration:none;border-bottom:3px solid var(--pink);}
+@media(prefers-reduced-motion:reduce){.pl-bb,.pl-tabs [role=tab],.pl-btn{transition:none;}}

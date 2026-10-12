@@ -98,6 +98,20 @@ function WorkForm({artist, work, nextPos, onCancel, onSaved}) {
       <Field label={mt('f_story_en')} name="story_en" as="textarea" wide maxLength={3000} {...props}/>
       <Field label={mt('f_story_lo')} name="story_lo" as="textarea" wide maxLength={3000} {...props}/>
     </div>
+    <h3 className="mg-h3">{mt('h_wtell')}</h3>
+    <p className="mg-note">{mt('tell_note')}</p>
+    <div className="mg-grid">
+      <Field label={mt('f_say')} name="say" maxLength={300} {...props}/>
+      <Field label={mt('f_say_en')} name="say_en" maxLength={300} {...props}/>
+      <Field label={mt('f_say_lo')} name="say_lo" maxLength={300} {...props}/>
+      <span className="wide"></span>
+      <Field label={mt('f_why')} name="why" as="textarea" wide maxLength={1500} {...props}/>
+      <Field label={mt('f_why_en')} name="why_en" as="textarea" wide maxLength={1500} {...props}/>
+      <Field label={mt('f_why_lo')} name="why_lo" as="textarea" wide maxLength={1500} {...props}/>
+      <Field label={mt('f_look')} name="look" as="textarea" wide maxLength={800} {...props}/>
+      <Field label={mt('f_look_en')} name="look_en" as="textarea" wide maxLength={800} {...props}/>
+      <Field label={mt('f_look_lo')} name="look_lo" as="textarea" wide maxLength={800} {...props}/>
+    </div>
     <div className="mg-bar">
       <button type="submit" className="btn" disabled={state === 'saving'}>{mt('save')}</button>
       <button type="button" className="btn ghost" onClick={onCancel}>{mt('w_cancel')}</button>

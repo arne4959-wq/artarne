@@ -5,7 +5,7 @@ import path from 'node:path';
 
 /* the columns the public may read (supabase/migrations/001_init.sql: user_id is not one of them, and there is no e-mail column at all) */
 export const ARTIST_COLUMNS = 'id,name,name_en,name_lo,disc,city,since,bio,bio_en,bio_lo,tagline,tagline_en,concept,concept_en,instagram,timeline,scale,kind,colors,created_at';
-export const WORK_COLUMNS = 'artist_id,position,title,title_en,title_lo,year,medium,medium_en,medium_lo,size,size_lo,ar,img,quote,quote_en,quote_lo,story,story_en,story_lo,concept';
+export const WORK_COLUMNS = 'artist_id,position,title,title_en,title_lo,year,medium,medium_en,medium_lo,size,size_lo,ar,img,quote,quote_en,quote_lo,story,story_en,story_lo,say,say_en,say_lo,why,why_en,why_lo,look,look_en,look_lo,concept';
 const DEFAULT_COLORS = ['#C4958A', '#7A4A40', '#D4CFCA'];   // the building's three colours when the artist has set none
 
 const put = (o, k, v) => { if (v !== null && v !== undefined && v !== '') o[k] = v; };   // missing stays missing, so pk() falls back to Thai
@@ -18,6 +18,9 @@ export function workToPiece(w) {
   p.ar = w.ar || '1/1'; put(p, 'img', w.img);
   put(p, 'q', w.quote); put(p, 'qEn', w.quote_en); put(p, 'qLo', w.quote_lo);
   put(p, 'st', w.story); put(p, 'stEn', w.story_en); put(p, 'stLo', w.story_lo);
+  put(p, 'say', w.say); put(p, 'sayEn', w.say_en); put(p, 'sayLo', w.say_lo);                 // "the artist tells it": written by the artist, shown as is
+  put(p, 'why', w.why); put(p, 'whyEn', w.why_en); put(p, 'whyLo', w.why_lo);
+  put(p, 'look', w.look); put(p, 'lookEn', w.look_en); put(p, 'lookLo', w.look_lo);
   put(p, 'concept', w.concept);
   return p;
 }

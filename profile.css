@@ -179,3 +179,13 @@ html.lite .pf-ring,html.lite .pf-star,html.lite .pf-dotb{display:none;}
 .pf-more{margin-top:.4rem;min-height:44px;font:600 .9rem var(--thai);background:none;border:0;border-bottom:3px solid var(--pink);padding:.1rem 0;cursor:pointer;color:var(--black);}
 .pf-works{margin-top:0;}
 @media(max-width:600px){.pf-in-wrap{padding-top:.8rem;gap:.8rem;}.pf-port{width:84px;height:84px;}.pf-pic{font-size:2.4rem;}}
+
+/* the artist's own first sentence under each picture */
+.pf-say{margin:.9rem 0 0;width:0;min-width:100%;font:400 .98rem/1.6 "Chonburi",var(--thai);text-align:center;text-wrap:balance;}
+.pf-say span{display:block;margin-top:.2rem;font:400 .8rem/1.5 var(--type);color:var(--black);}
+/* the support box is a small concrete building too: a riveted beam on top, a hazard-stripe footing. The decoration is on the frame, not on the pictures. */
+.pf-sup{padding-top:0;}
+.pf-sbox{position:relative;padding-top:calc(1.7rem + 22px);padding-bottom:calc(1.8rem + 16px);}
+.pf-sbox::before{content:"";position:absolute;left:-5px;right:-5px;top:-5px;height:30px;border:5px solid var(--black);background:var(--a-rivets),var(--a-conc);}
+.pf-sbox::after{content:"";position:absolute;left:-5px;right:-5px;bottom:-5px;height:24px;border:5px solid var(--black);background:var(--a-hazard);}
+@media(max-width:560px){.pf-sbox{padding-top:calc(1.6rem + 22px);padding-bottom:calc(1.6rem + 16px);}}
