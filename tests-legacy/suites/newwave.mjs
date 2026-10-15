@@ -42,7 +42,7 @@ export async function run({url, check}) {
     await z.go(`${url}/cutaway.html?id=${wave[0].id}&work=1`, 3500);
     const r = await z.ev(`(()=>{const f=document.getElementById('dlg-frame'),i=f.querySelector('img'),b=f.querySelector('.zoom-btn'),fr=f.getBoundingClientRect();return {tape:f.querySelectorAll('.dlg-tape').length,stamp:f.querySelectorAll('.stamp').length,btn:!!b,host:f.classList.contains('zoom-host'),src:i&&i.getAttribute('src'),w:Math.round(fr.width),shadow:getComputedStyle(f).boxShadow.includes('232, 183, 48')}})()`);
     check('open work: one tape, no sticker on the picture, no gold frame, picture wider than 400px, zoom button present', r.tape === 1 && r.stamp === 0 && r.btn && r.host && !r.shadow && r.w > 400, r);
-    const rect = await z.ev("(()=>{const r=document.querySelector('#dlg-frame .zoom-btn').getBoundingClientRect();return [r.x+r.width/2,r.y+r.height/2]})()");
+    const rect = await z.ev("(()=>{document.querySelector('#dlg-frame .zoom-btn').scrollIntoView({block:'center'});const r=document.querySelector('#dlg-frame .zoom-btn').getBoundingClientRect();return [r.x+r.width/2,r.y+r.height/2]})()");
     await z.send('Input.dispatchMouseEvent', {type: 'mousePressed', x: rect[0], y: rect[1], button: 'left', clickCount: 1}); await z.send('Input.dispatchMouseEvent', {type: 'mouseReleased', x: rect[0], y: rect[1], button: 'left', clickCount: 1}); await sleep(500);
     const o = await z.ev(`({open:document.getElementById('dlg-zoom').open,src:(document.querySelector('.zm-img')||{}).src||''})`);
     check('zoom button opens the fullscreen viewer with the current work\'s image', o.open && o.src.endsWith(r.src), {o, expect: r.src});

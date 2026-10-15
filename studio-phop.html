@@ -304,7 +304,7 @@ html[lang=en] .lbl .q{font:italic 400 .86rem/1.4 "Playfair Display",Georgia,seri
 dialog.work-dlg{width:min(1120px,95vw);padding:0 12px;background:var(--a-conc);border:4px solid #0E0D0C;border-radius:0;overscroll-behavior:contain;}
 .wd-h{padding-right:.9rem;}
 .wd-room{min-width:62px;}
-.dlg-in{grid-template-columns:1.3fr 1fr;background:var(--a-grid),var(--paper);border-left:3px solid var(--black);border-right:3px solid var(--black);}
+.dlg-in{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);background:var(--a-grid),var(--paper);border-left:3px solid var(--black);border-right:3px solid var(--black);}
 /* the picture stands out: large, a plain paper margin, one washi tape, nothing else on it (no pattern, no gold frame, no badge) */
 .dlg-art{position:relative;overflow:hidden;isolation:isolate;background:var(--a-conc);box-shadow:inset 10px 10px 0 rgba(14,13,12,.3);border-right:4px solid var(--black);padding:3.4rem 3.4rem 3rem;min-height:440px;}   /* the picture hangs in a concrete wall niche */
 .dlg-art::before{content:none;}
@@ -354,6 +354,10 @@ html[lang=th] .v-top h3,html[lang=lo] .v-top h3{font-family:"Chonburi",var(--tha
 html[lang=en] .v-say{font:italic 500 1.3rem/1.45 "Playfair Display",Georgia,serif;}
 .v-by{margin:0;padding:0 1rem .9rem;font:400 .9rem/1.6 var(--type);text-align:right;color:#3a3733;}
 .v-rows{margin:0;border-top:3px solid var(--black);}
+.dlg-body{min-width:0;grid-template-columns:minmax(0,1fr);}
+#dlg-voice{min-width:0;}
+.dlg-body .v-rows{display:block;font:inherit;gap:0;}
+.dlg-body .v-rows dt{padding:.7rem .8rem;text-transform:none;letter-spacing:0;}
 .v-rows>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);border-bottom:2px solid var(--black);}
 .v-rows dt{padding:.7rem .8rem;background:var(--bone);border-right:2px solid var(--black);font:600 .8rem/1.5 var(--thai);color:var(--tartan-red);}
 .v-rows dt b{display:block;margin-bottom:.15rem;font:400 1.35rem/1.2 var(--anton);color:var(--black);}
@@ -361,7 +365,7 @@ html[lang=en] .v-say{font:italic 500 1.3rem/1.45 "Playfair Display",Georgia,seri
 .v-tb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);font:400 .74rem/1.5 var(--type);letter-spacing:.08em;text-transform:uppercase;color:#3a3733;}
 .v-tb span{padding:.45rem .8rem;}.v-tb span+span{border-left:2px solid var(--black);}
 .v-tb b{display:block;font:600 .95rem/1.5 var(--thai);letter-spacing:0;text-transform:none;color:var(--black);}
-.v-note{margin:0;font:400 .8rem/1.7 var(--type);color:#3a3733;}
+.v-note{margin:.7rem 0 0;font:400 .8rem/1.7 var(--type);color:#3a3733;}
 .res-btn{justify-self:start;min-height:44px;padding:.3rem .9rem;border:3px solid var(--black);background:var(--paper);color:var(--black);font:600 1rem/1.4 var(--thai);cursor:pointer;box-shadow:4px 4px 0 var(--black);}
 .res-btn b{font:400 .95rem var(--type);background:var(--black);color:var(--paper);padding:.05rem .4rem;}
 .res-btn[aria-pressed=true]{background:var(--pink);}

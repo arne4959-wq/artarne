@@ -37,7 +37,7 @@ export async function run({url, check}) {
   let b = await launch(); await b.lang('en'); await b.view(1280, 900); const ev = b.ev;
   await ev("localStorage.removeItem('circles-sample-v1')");
   await b.go(`${url}/index.html`, 3500);
-  check('home: a Support button opens the donation dialog', (await ev("(()=>{const x=document.querySelector('[data-support=site]');if(!x||x.disabled)return false;x.click();return true})()")) && (await ev("!!document.getElementById('dlg-support')?.open")));
+  check('home: the site Support button opens the separate "Support circles" window', (await ev("(()=>{const x=document.querySelector('[data-support=site]');if(!x||x.disabled)return false;x.click();return true})()")) && (await ev("!!document.getElementById('dlg-sc')?.open")));
   await ev("document.getElementById('dlg-support').close()");
   await b.go(`${url}/studio-${A.id}.html?work=0`, 3500);
   await ev("document.getElementById('dlg-sup').click()"); await sleep(600);
