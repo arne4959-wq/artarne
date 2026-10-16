@@ -1,6 +1,9 @@
 /* showcase.css — donate.html, legend.html, legend-work.html. Punk x architecture: ransom-note titles, tape, hazard strips, a moving marquee, and a snap-in entrance.
    Palette tokens only (--black --bone --paper --pink --gold --tartan-red). Animation: transform and opacity only. Reduced motion: nothing moves. */
-.sc-mq{background:var(--black);color:var(--paper);overflow:hidden;white-space:nowrap;border-bottom:3px solid var(--gold);}
+/* phones: wide things clipped by body{overflow-x:hidden} still widened Chrome's layout viewport (donate / legend: 438px at 390), so the page could be panned sideways */
+/* clip, not hidden, on both: hidden on body would make it a scroll container and break the sticky nav and sticky action bar */
+html,html body{overflow-x:clip;}
+.sc-mq{contain:paint;/* the 4,400px ticker inside kept the page's scroll width at 438px on phones */background:var(--black);color:var(--paper);overflow:hidden;white-space:nowrap;border-bottom:3px solid var(--gold);}
 .sc-mq-in{display:inline-flex;gap:1.1rem;padding:.55rem 0;font:400 1.05rem var(--anton);letter-spacing:.14em;text-transform:uppercase;will-change:transform;animation:scMq 34s linear infinite;}
 .sc-mq-in i{color:var(--tartan-red);font-style:normal;}
 .sc-mq-in span:nth-child(4n+3){color:var(--gold);}
