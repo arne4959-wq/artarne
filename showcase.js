@@ -10,7 +10,8 @@
 
   /* ---------- punk bits ---------- */
   const ransom = (parts, cls = '', sz = '', label = '', tag = 'h1') => `<${tag} class="sc-ransom ${cls}" ${sz ? `style="--sz:${sz}"` : ''} ${tag === 'h1' ? `aria-label="${esc(label || parts.join(' '))}"` : 'aria-hidden="true"'}>${parts.map((p, i) => `<span class="sc-in" style="--i:${i + 1}" aria-hidden="true">${esc(p)}</span>`).join('')}</${tag}>`;
-  const marquee = () => { const w = ['ART NOT SORRY', 'NO MIDDLEMAN', L('ศิลปะไม่มีวันจบ', 'ART WITHOUT END'), 'NO GALLERY'], one = w.map(x => `<span>${esc(x)}</span><i>✱</i>`).join(''); return `<div class="sc-mq" aria-hidden="true"><div class="sc-mq-in">${one.repeat(6)}</div></div>`; };
+  const MQ = {monet: ['LIGHT CHANGES', 'SAME STACK · NEW HOUR', 'FOLLOW NATURE', 'PAINT WHAT YOU SEE'], vangogh: ['LINE', 'COLOUR', 'LETTERS TO THEO', 'THE CYPRESSES STILL PREOCCUPY ME'], hokusai: ['THE WAVE', 'ONE MOUNTAIN · MANY VIEWS', 'THIRTY-SIX VIEWS OF FUJI', 'DRAW UNTIL THE END'], seurat: ['DOT BY DOT', 'PURE COLOUR', 'THE EYE DOES THE MIXING', 'TWO YEARS · ONE PICTURE']};
+  const marquee = id => { const w = MQ[id] || ['ART NOT SORRY', 'NO MIDDLEMAN', L('ศิลปะไม่มีวันจบ', 'ART WITHOUT END'), 'NO GALLERY'], one = w.map(x => `<span>${esc(x)}</span><i>✱</i>`).join(''); return `<div class="sc-mq" aria-hidden="true"><div class="sc-mq-in">${one.repeat(6)}</div></div>`; };
   const hazard = '<div class="sc-hz" aria-hidden="true"></div>';
   const tape = (x, r, red) => `<i class="sc-tape${red ? ' red' : ''}" style="--tx:${x}%;--tr:${r}deg" aria-hidden="true"></i>`;
   const burst = txt => `<span class="sc-burst" aria-hidden="true">${txt}</span>`;
@@ -18,7 +19,7 @@
   let shown = false;
   const setPage = html => { main.classList.toggle('sc-still', shown); shown = true; main.innerHTML = html; if (reduce) main.querySelectorAll('.sc-in').forEach(e => e.style.opacity = 1); };
 
-  /* ---------- the legends' words (two painters; history in circles' words, not theirs) ---------- */
+  /* ---------- the legends' words (painters; history in circles' words, not theirs) ---------- */
   const BIO = {
     monet: {
       name: ['CLAUDE', 'MONET'], years: '1840–1926', place: L('ฝรั่งเศส', 'France'),
@@ -33,29 +34,77 @@
       pillars: [[L('เส้น', 'Line'), L('เส้นที่หนาและหมุน ทำให้ภาพมีแรง', 'Thick, swirling strokes give the picture force')], [L('สี', 'Colour'), L('สีสดและตัดกัน เพื่อบอกความรู้สึก', 'Bright, clashing colour to carry feeling')], [L('จดหมาย', 'Letters'), L('คิดงานออกมาเป็นตัวหนังสือถึง Theo', 'Thinking out loud on paper to Theo')]],
       timeline: [['1853', L('เกิดที่ Zundert ประเทศเนเธอร์แลนด์', 'Born in Zundert, the Netherlands')], ['1880', L('ตัดสินใจเป็นจิตรกรอย่างจริงจัง', 'Decides to become an artist in earnest')], ['1888', L('ย้ายไปอาร์ล และเช่าบ้านสีเหลือง', 'Moves to Arles and rents the Yellow House')], ['1889', L('พักรักษาตัวที่แซ็ง-เรมี และวาดภาพทุ่งข้าวสาลีกับต้นไซเปรส', 'Recovers at Saint-Rémy and paints the wheat field with cypresses')], ['1890', L('เสียชีวิตที่ Auvers-sur-Oise', 'Dies at Auvers-sur-Oise')]],
       period: [[L('อยู่ที่ไหน', 'Where'), L('โรงพยาบาลที่แซ็ง-เรมี-เดอ-โพรวองซ์ ทางใต้ของฝรั่งเศส วาดจากสวนและทุ่งรอบ ๆ', 'The asylum at Saint-Rémy-de-Provence in the south of France, painting the garden and fields around it')], [L('วิธีทำงาน', 'How he worked'), L('ใช้สีหนาและเส้นหมุน ๆ เขียนถึงต้นไซเปรสว่า “งามด้วยเส้นและสัดส่วน”', 'Thick paint and swirling lines; he wrote of the cypresses as “beautiful as regards lines and proportions”')], [L('สิ่งที่เปลี่ยน', 'What changed'), L('จากความสว่างของอาร์ล มาเป็นภาพที่เส้นเคลื่อนไหวและแน่นขึ้น', 'From the brightness of Arles to pictures with moving, tighter line')]]
+    },
+    hokusai: {
+      name: ['KATSUSHIKA', 'HOKUSAI'], years: '1760–1849', place: L('ญี่ปุ่น', 'Japan'),
+      lead: L('ช่างพิมพ์ภาพแกะไม้และจิตรกรผู้ทำงานจนอายุเกือบเก้าสิบ เขาเปลี่ยนชื่อตัวเองหลายครั้ง และกลับไปหาภูเขาไฟฟูจิกับคลื่นซ้ำแล้วซ้ำอีก เพื่อดูว่าเส้นเดียวกันเล่าได้กี่แบบ', 'A woodblock printer and painter who worked until nearly ninety. He changed his own name many times and kept returning to Mount Fuji and the wave to see how many ways one line can tell it.'),
+      pillars: [[L('เส้น', 'Line'), L('เส้นที่มั่นคงและเล่นกับจังหวะ ทำให้ภาพมีพลัง', 'A steady, rhythmic line gives the picture force')], [L('ซ้ำเพื่อเห็นมุมใหม่', 'Repeat for a new view'), L('วาดภูเขาลูกเดิมเป็นชุด มุมใหม่ทุกครั้ง', 'One mountain drawn as a series, a new angle each time')], [L('คนกับธรรมชาติ', 'People and nature'), L('คนตัวเล็กอยู่ในธรรมชาติที่ใหญ่กว่า', 'Small people inside a larger nature')]],
+      timeline: [['1760', L('เกิดในเอโดะ (โตเกียวในปัจจุบัน)', 'Born in Edo (today’s Tokyo)')], ['1814', L('ตีพิมพ์เล่มแรกของ “โฮคุไซมังงะ” สมุดภาพร่างที่รวมสิ่งต่าง ๆ รอบตัว', 'Publishes the first volume of the Hokusai Manga, sketchbooks of everything around him')], ['1830–32', L('ทำชุด “สามสิบหกทัศนียภาพของภูเขาไฟฟูจิ” ซึ่งมีภาพคลื่นใหญ่', 'Makes Thirty-six Views of Mount Fuji, which includes the Great Wave')], ['1834', L('ตีพิมพ์ “หนึ่งร้อยทัศนียภาพของภูเขาไฟฟูจิ”', 'Publishes One Hundred Views of Mount Fuji')], ['1849', L('เสียชีวิตที่เอโดะ', 'Dies in Edo')]],
+      period: [[L('อยู่ที่ไหน', 'Where'), L('เอโดะ เมืองหลวงที่คึกคักของญี่ปุ่นสมัยนั้น ซึ่งมีตลาดภาพพิมพ์ขนาดใหญ่', 'Edo, Japan’s busy capital, with a large market for prints')], [L('วิธีทำงาน', 'How he worked'), L('ภาพพิมพ์แกะไม้ ศิลปินเขียนแบบ ช่างแกะแม่พิมพ์ และช่างพิมพ์ทำงานร่วมกัน ภาพหนึ่งพิมพ์ได้หลายแผ่น', 'Woodblock prints: artist, block-cutter and printer worked together, and one design could be printed many times')], [L('สิ่งที่เปลี่ยน', 'What changed'), L('จากภาพคนและนักแสดง มาเป็นภาพทิวทัศน์ที่คนเป็นแค่ส่วนเล็ก ๆ', 'From pictures of people and actors to landscapes where people are a small part')]]
+    },
+    seurat: {
+      name: ['GEORGES', 'SEURAT'], years: '1859–1891', place: L('ฝรั่งเศส', 'France'),
+      lead: L('จิตรกรผู้เปลี่ยนการผสมสีให้เป็นงานของตาคนดู เขาวางจุดสีบริสุทธิ์เคียงกันอย่างอดทน และเสียชีวิตตั้งแต่อายุสามสิบเอ็ดปี', 'A painter who turned colour mixing into work for the viewer’s eye. He set pure dots of colour side by side with patience, and died at thirty-one.'),
+      pillars: [[L('จุด', 'Dot'), L('จุดสีเล็ก ๆ เคียงกัน ให้ตาผสมเอง', 'Small dabs of colour side by side, mixed by the eye')], [L('วิทยาศาสตร์ของสี', 'Colour science'), L('เขาศึกษาทฤษฎีสีมาวางแผนภาพ', 'He studied colour theory to plan his pictures')], [L('ความอดทน', 'Patience'), L('ภาพใหญ่หนึ่งภาพใช้เวลาราวสองปี', 'One large picture took about two years')]],
+      timeline: [['1859', L('เกิดที่ปารีส', 'Born in Paris')], ['1884', L('เริ่มวาด “บ่ายวันอาทิตย์บนเกาะลา กรองด์ ฌาตต์”', 'Begins A Sunday on La Grande Jatte')], ['1886', L('แสดงภาพนี้ที่นิทรรศการอิมเพรสชันนิสต์ครั้งสุดท้าย', 'Shows it at the last Impressionist exhibition')], ['1888–89', L('เพิ่มกรอบสีรอบภาพ', 'Adds the painted border')], ['1891', L('เสียชีวิตที่ปารีส', 'Dies in Paris')]],
+      period: [[L('อยู่ที่ไหน', 'Where'), L('ปารีส เขาทำภาพศึกษาจำนวนมากริมแม่น้ำแซนก่อนลงมือวาดภาพใหญ่', 'Paris; he made many studies by the Seine before the large canvas')], [L('วิธีทำงาน', 'How he worked'), L('วางจุดสีบริสุทธิ์เคียงกัน ให้ตาของคนดูผสมสีเอง แทนการผสมสีบนจานสี', 'Pure dabs of colour set side by side so the viewer’s eye mixes them, instead of mixing on the palette')], [L('สิ่งที่เปลี่ยน', 'What changed'), L('จากพู่กันที่เป็นธรรมชาติของอิมเพรสชันนิสต์ มาเป็นระบบที่วางแผนไว้', 'From the loose brushwork of the Impressionists to a planned system')]]
     }
   };
   const idOf = x => x.file.split('/').pop().split('-')[0];
   const legend = id => { const x = LG.LEGENDS.find(l => idOf(l) === id); return x ? {x, b: BIO[id], id} : null; };
-  const tabs = cur => `<div role="navigation" class="sc-tabs sc-in" style="--i:1" aria-label="${esc(L('ศิลปินตำนาน', 'Legends'))}"><span class="sc-tag k">${esc(L('ศิลปินตำนาน 2 คน', '2 legends'))}</span>${LG.LEGENDS.map(l => { const i = idOf(l); return `<a href="legend.html?id=${i}"${i === cur ? ' aria-current="page"' : ''}>${esc(pk(l, 'maker'))}</a>`; }).join('')}</div>`;
+  const tabs = cur => `<div role="navigation" class="sc-tabs sc-in" style="--i:1" aria-label="${esc(L('ศิลปินตำนาน', 'Legends'))}"><span class="sc-tag k">${esc(L('ศิลปินตำนาน ' + LG.LEGENDS.length + ' คน', LG.LEGENDS.length + ' legends'))}</span>${LG.LEGENDS.map(l => { const i = idOf(l); return `<a href="legend.html?id=${i}"${i === cur ? ' aria-current="page"' : ''}>${esc(pk(l, 'maker'))}</a>`; }).join('')}</div>`;
+  /* Each legend's page is that painter's own place: his picture behind the page, his palette and pattern (all in showcase.css under body[data-lg]). */
+  /* Things that drift behind the page, each one his: Van Gogh = stars and sunflowers rising | Monet = water lilies and ripples on the pond |
+     Hokusai = plovers sailing and foam curls bobbing | Seurat = dots of pure colour floating up. Decoration only (aria-hidden); still when the visitor asks for less motion. */
+  const SVG = {
+    star: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#1e3a7a" fill-opacity=".35"/><g fill="none" stroke="#f2c230" stroke-width="3"><circle cx="50" cy="50" r="40" stroke-opacity=".3"/><circle cx="50" cy="50" r="29" stroke-opacity=".5"/><circle cx="50" cy="50" r="19" stroke-opacity=".8"/></g><circle cx="50" cy="50" r="10" fill="#fff3a6"/></svg>',
+    sunflower: '<svg viewBox="0 0 100 100"><g fill="#f2c230" stroke="#b9791a" stroke-width="1.5">' + Array.from({length: 12}, (_, i) => `<ellipse cx="50" cy="20" rx="8" ry="17" transform="rotate(${i * 30} 50 50)"/>`).join('') + '</g><circle cx="50" cy="50" r="14" fill="#6b4210"/><circle cx="50" cy="50" r="8" fill="#8a5a1c"/></svg>',
+    lily: '<svg viewBox="0 0 100 100"><g fill="#f7bdd2" stroke="#c97a9a" stroke-width="1.5">' + Array.from({length: 8}, (_, i) => `<ellipse cx="50" cy="26" rx="9" ry="22" transform="rotate(${i * 45} 50 50)"/>`).join('') + '</g><circle cx="50" cy="50" r="9" fill="#f2c64a"/></svg>',
+    pad: '<svg viewBox="0 0 100 70"><ellipse cx="50" cy="35" rx="46" ry="30" fill="#6aa890" stroke="#3f7a66" stroke-width="2"/><path d="M50 35 L96 30" stroke="#d8e8e2" stroke-width="3"/></svg>',
+    ripple: '<svg viewBox="0 0 100 100"><g fill="none" stroke="#8f7fc2" stroke-width="2"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="32"/><circle cx="50" cy="50" r="18"/></g></svg>',
+    bird: '<svg viewBox="0 0 80 40"><path d="M4 28Q22 4 40 24Q58 4 76 28" fill="none" stroke="#16466b" stroke-width="5" stroke-linecap="round"/></svg>',
+    foam: '<svg viewBox="0 0 100 70"><path d="M5 62Q28 -4 72 20Q92 34 72 46Q58 36 62 28" fill="none" stroke="#16466b" stroke-width="5" stroke-linecap="round"/><g fill="#fffaf0" stroke="#16466b" stroke-width="2"><circle cx="82" cy="18" r="3"/><circle cx="90" cy="28" r="2.5"/><circle cx="76" cy="8" r="2.5"/></g></svg>',
+    dot: c => `<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.2" fill="${c}"/></svg>`
+  };
+  const FLOATS = {
+    vangogh: [['star', 'rise', 70, 150], ['sunflower', 'rise', 60, 110]],
+    monet: [['lily', 'sail', 70, 110], ['pad', 'sail', 90, 160], ['ripple', 'ripple', 120, 220]],
+    hokusai: [['bird', 'sail', 50, 90], ['foam', 'bob', 80, 140]],
+    seurat: [['dot', 'rise', 14, 38]]
+  };
+  const DOTS = ['#e0792b', '#2f5fa8', '#5b8f3a', '#e8c13c', '#8a5aa8'];
+  const floatLayer = id => {
+    document.querySelectorAll('.lg-float').forEach(e => e.remove());
+    const kinds = FLOATS[id]; if (!kinds) return;
+    const n = matchMedia('(max-width:700px)').matches ? 8 : 16, el = document.createElement('div');
+    el.className = 'lg-float'; el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = Array.from({length: n}, (_, i) => {
+      const [k, mv, a, b] = kinds[i % kinds.length], r = (m, o) => (i * m + o) % 100 / 100, size = Math.round(a + (b - a) * r(37, 11));
+      const art = k === 'dot' ? SVG.dot(DOTS[i % DOTS.length]) : SVG[k];
+      return `<span class="lg-f lg-${mv}" data-k="${k}" style="--x:${Math.round(r(29, 7) * 100)};--y:${Math.round(r(53, 19) * 100)};--s:${size}px;--d:${Math.round(55 + r(17, 3) * 60)}s;--dl:-${Math.round(r(41, 5) * 90)}s;--dx:${Math.round(r(23, 9) * 30 - 15)}vw">${art}</span>`;
+    }).join('');
+    document.body.appendChild(el);
+  };
+  const applyTheme = (id, x) => { document.body.dataset.lg = id; document.body.style.setProperty('--lg-img', `url("${x.file}")`); floatLayer(id); };
+  const seal = id => id === 'hokusai' ? '<span class="sc-seal" aria-hidden="true">北斎</span>' : '';
   const bad = () => setPage(`<div class="sc-wrap"><p class="sc-lead">${esc(L('ไม่พบศิลปินคนนี้', 'No such artist'))} · <a href="legends.html">${esc(t('lg_h'))}</a></p></div>`);
 
   /* ---------- legend.html : the legend's introduction, then the works ---------- */
   function renderLegend() {
     const id = q.get('id') || 'monet', g = legend(id); if (!g) return bad();
     const {x, b} = g, who = pk(x, 'maker');
-    setMeta(who + ' — ' + t('lg_h') + ' · circles', b.lead);
-    setPage(marquee() + `<div class="sc-wrap">
+    setMeta(who + ' — ' + t('lg_h') + ' · circles', b.lead); applyTheme(id, x);
+    setPage(marquee(id) + `<div class="sc-wrap">
       ${crumbs([[t('bc_city'), 'index.html#city'], [t('lg_h'), 'legends.html'], [who, '']])}
       ${tabs(id)}
       <div class="sc-hero"><div>
-        <span class="sc-tag sc-in" style="--i:1">${esc(L('ศิลปินตำนาน', 'Legend'))} · ${b.years} · ${esc(b.place)}</span>
-        ${ransom(b.name[0].split(''), '', '4.6rem', who)}${ransom(b.name[1].replace(/ /g, '·').split(''), '', '4.6rem', '', 'div')}
+        <span class="sc-tag sc-in" style="--i:1">${esc(L('ศิลปินตำนาน', 'Legend'))} · ${b.years} · ${esc(b.place)}</span>${seal(id)}
+        ${ransom(b.name[0].split(''), b.name[0].length > 8 ? 'long' : '', b.name[0].length > 8 ? 'min(3.4rem,8.4vw)' : 'min(4.6rem,12.5vw)', who)}${ransom(b.name[1].replace(/ /g, '·').split(''), '', b.name[1].length > 6 ? 'min(3.5rem,11vw)' : 'min(4.6rem,12.5vw)', '', 'div')}
         <p class="sc-lead sc-in" style="--i:9">${esc(b.lead)}</p>
         <div class="sc-row sc-in" style="--i:10"><a class="sc-btn" href="#works">${esc(L('ดูผลงาน ↓', 'See the works ↓'))}</a><span class="sc-note">${esc(L('ศิลปินตำนาน · ผลงานสาธารณสมบัติ · ไม่รับโดเนท', 'Legend · public-domain work · no donations'))}</span></div>
         <p class="sc-in" style="--i:11"><a href="highlights.html">${esc(t('lg_go'))}</a></p>
       </div>
-      <figure class="sc-port sc-in" style="--i:4;--r:1.4deg">${tape(30, -5)}${burst('LEGEND<br>★')}<img src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title') + ' — ' + who)}"><figcaption>${esc(pk(x, 'title'))} · ${esc(x.year)}</figcaption></figure></div>
+      <figure class="sc-port sc-in" style="--i:4;--r:1.4deg">${tape(30, -5)}${burst('LEGEND<br>★')}<img class="gm-${idOf(x)}" src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title') + ' — ' + who)}"><figcaption>${esc(pk(x, 'title'))} · ${esc(x.year)}</figcaption></figure></div>
       <section class="sc-sec dark" aria-labelledby="sc-c"><span class="sc-tag">${esc(L('แนวคิด', 'Concept'))}</span>
         <h2 class="sc-h2" id="sc-c">${esc(L('แนวคิดของเขา', 'His idea'))}</h2>
         <blockquote class="sc-quote">${esc(pk(x, 'own'))}</blockquote>
@@ -66,7 +115,7 @@
         <p class="sc-src" style="color:#4a4943">${esc(L('ประวัติเรียบเรียงโดย circles ไม่ใช่คำของศิลปิน', 'History is written by circles, not the artist’s words'))}</p></section>
       <section id="works" aria-labelledby="sc-w" style="padding-top:3.5rem"><span class="sc-tag">${esc(L('ผลงาน', 'Works'))}</span><h2 class="sc-h2" id="sc-w">${esc(L('ผลงานของเขา', 'His work'))}</h2>
         <p class="sc-lead">${esc(L('กดดูภาพ แล้วอ่านว่าเขาเป็นศิลปินแบบไหนในช่วงปีนั้น', 'Open a picture to read who he was as an artist that year'))}</p>
-        <div class="sc-works"><article class="sc-card sc-work sc-in" style="--i:1;--r:-.8deg">${tape(22, -4, true)}<img src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title'))}" loading="lazy"><span class="sc-tag">${esc(x.year)} · ${esc(pk(x, 'sign'))}</span><h3>${esc(pk(x, 'title'))}</h3><small>${esc(who)}</small><a class="sc-btn" href="legend-work.html?id=${id}&k=0">${esc(L('ดูช่วงชีวิตตอนวาดภาพนี้ →', 'Who he was when he painted this →'))}</a></article></div></section>
+        <div class="sc-works"><article class="sc-card sc-work sc-in" style="--i:1;--r:-.8deg">${tape(22, -4, true)}<img class="gm-${idOf(x)}" src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title'))}" loading="lazy"><span class="sc-tag">${esc(x.year)} · ${esc(pk(x, 'sign'))}</span><h3>${esc(pk(x, 'title'))}</h3><small>${esc(who)}</small><a class="sc-btn" href="legend-work.html?id=${id}&k=0">${esc(L('ดูช่วงชีวิตตอนวาดภาพนี้ →', 'Who he was when he painted this →'))}</a></article></div></section>
     </div>` + hazard);
   }
 
@@ -74,11 +123,11 @@
   function renderWork() {
     const id = q.get('id') || 'monet', g = legend(id); if (!g) return bad();
     const {x, b} = g, who = pk(x, 'maker'), other = LG.LEGENDS.find(l => idOf(l) !== id), oid = other && idOf(other);
-    setMeta(pk(x, 'title') + ' — ' + who + ' · circles', pk(x, 'note'));
-    setPage(marquee() + `<div class="sc-wrap">
+    setMeta(pk(x, 'title') + ' — ' + who + ' · circles', pk(x, 'note')); applyTheme(id, x);
+    setPage(marquee(id) + `<div class="sc-wrap">
       ${crumbs([[t('bc_city'), 'index.html#city'], [t('lg_h'), 'legends.html'], [who, 'legend.html?id=' + id], [pk(x, 'title'), '']])}
       <div class="sc-split">
-        <div class="sc-pic sc-in" style="--i:1">${tape(40, -4)}${burst('CC0<br>' + esc(L('สาธารณะ', 'public')))}<figure><img src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title') + ' — ' + who)}"></figure></div>
+        <div class="sc-pic sc-in" style="--i:1">${tape(40, -4)}${burst('CC0<br>' + esc(L('สาธารณะ', 'public')))}<figure><img class="gm-${idOf(x)}" src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title') + ' — ' + who)}"></figure></div>
         <div><div class="sc-row sc-in" style="--i:2"><span class="sc-tag">${esc(x.year)}</span><span class="sc-tag k">${esc(pk(x, 'sign'))}</span></div>
           ${ransom(pk(x, 'title').replace(/\s*\(.*\)$/, '').split(/\s+/).slice(0, 3), LANG === 'en' ? '' : 'th', '3.4rem')}
           <p class="sc-src" style="color:#4a4943">${esc(pk(x, 'title'))} · ${esc(who)}</p>
@@ -138,5 +187,5 @@
   }
 
   const PAGE = document.body.dataset.page, render = PAGE === 'donate' ? renderDonate : PAGE === 'legend' ? renderLegend : renderWork;
-  onLang(render); wireNav(); applyLang();
+  onLang(() => LG.ready.then(render)); wireNav(); applyLang();
 })();

@@ -112,7 +112,7 @@
   .sc-steps{grid-template-columns:1fr 1fr;}.sc-steps li:nth-child(2){border-right:0;}.sc-steps li:nth-child(-n+2){border-bottom:3px solid var(--black);}
   .sc-pill,.sc-cards3{grid-template-columns:1fr;}
   .sc-tl li{grid-template-columns:1fr;gap:.2rem;}
-  .sc-ransom span{--sz:3rem;}
+  .sc-ransom span{--sz:min(3rem,8.4vw);}
   .sc-pay .row{grid-template-columns:1fr;}
 }
 
@@ -124,3 +124,54 @@
 .sc-tabs{background:none;position:static;padding:0;border:0;}
 .sc-credit a,.sc-src a{display:inline-flex;align-items:center;min-height:44px;}
 .sc-credit a,.sc-src a{min-width:44px;}
+
+/* a calm paper colour behind each picture while it loads (no empty white hole) */
+.sc-work img,.sc-port img,.sc-pic img{background:#d8d0bd;}
+
+/* ============ each legend's own place ============
+   The page of a legend wears that painter's picture, palette and pattern. Tokens only change colour: the layout is the same for everyone.
+   body[data-lg] is set by showcase.js (applyTheme); --lg-img is his picture. The picture is fixed behind everything, under a veil so the words stay readable. */
+body[data-lg]{--lg-veil:.58;}
+body[data-lg]::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:var(--lg-pattern,none),linear-gradient(rgba(244,241,232,var(--lg-veil)),rgba(244,241,232,var(--lg-veil))),var(--lg-img) center/cover no-repeat;}
+body[data-lg] main.pl-main,body[data-lg] .pl-page main{background:transparent;}
+.sc-seal{display:inline-block;margin-left:.6rem;padding:.2rem .5rem;background:var(--pink);color:var(--paper);font:700 1.25rem/1.1 "Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;letter-spacing:.05em;border:2px solid var(--black);transform:rotate(-4deg);vertical-align:middle;}
+
+/* Van Gogh: night-blue, cobalt and yellow; paint swirls */
+body[data-lg="vangogh"]{--pink:#2f5fb3;--gold:#f2c230;--tartan-red:#d9902a;--lg-veil:.5;
+  --lg-pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cg fill='none' stroke='%23f2c230' stroke-opacity='.22' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M20 110c0-50 70-50 70 0s-45 40-45 5 32-26 32-2'/%3E%3Cpath d='M130 40c30-26 76 4 56 36s-60 8-44-14 36-6 28 8'/%3E%3Cpath d='M140 170c22 22 62 4 56-24'/%3E%3C/g%3E%3C/svg%3E");}
+/* Monet: lilac haze, rose and pond green; a soft ripple */
+body[data-lg="monet"]{--pink:#8f7fc2;--gold:#f0bfca;--tartan-red:#5f9c8c;--lg-veil:.5;
+  --lg-pattern:repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 2px,transparent 2px 9px);}
+/* Hokusai: Prussian blue, paper and the vermilion of a seal; waves */
+body[data-lg="hokusai"]{--pink:#c8312b;--gold:#ecdcb8;--tartan-red:#16466b;--lg-veil:.55;
+  --lg-pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='30'%3E%3Cg fill='none' stroke='%2316466b' stroke-opacity='.2' stroke-width='1.5'%3E%3Cpath d='M0 30a30 30 0 0 1 60 0M10 30a20 20 0 0 1 40 0M20 30a10 10 0 0 1 20 0'/%3E%3C/g%3E%3C/svg%3E");}
+/* Seurat: orange and blue made of dots; the eye mixes them */
+body[data-lg="seurat"]{--pink:#e0792b;--gold:#f1d38a;--tartan-red:#2f5fa8;--lg-veil:.55;
+  --lg-pattern:radial-gradient(circle,rgba(224,121,43,.35) 1.6px,transparent 2.2px) 0 0/12px 12px,radial-gradient(circle,rgba(47,95,168,.35) 1.6px,transparent 2.2px) 6px 6px/12px 12px;}
+
+/* ---- things drifting behind each legend's page (made by floatLayer in showcase.js; transform and opacity only) ---- */
+.lg-float{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
+.lg-f{position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);width:var(--s);height:var(--s);opacity:.7;will-change:transform;}
+.lg-f svg{display:block;width:100%;height:100%;}
+.lg-f[data-k="dot"]{opacity:.8;}
+.lg-f[data-k="ripple"]{opacity:.55;}
+@media (prefers-reduced-motion:no-preference){
+.lg-rise{top:0;animation:lgRise var(--d) linear var(--dl) infinite;}
+.lg-sail{left:0;animation:lgSail var(--d) linear var(--dl) infinite;}
+.lg-bob{animation:lgBob 7s ease-in-out var(--dl) infinite alternate;}
+.lg-f[data-k="star"] svg{animation:lgPulse 4.5s ease-in-out infinite alternate;}
+.lg-f[data-k="sunflower"] svg,.lg-f[data-k="lily"] svg{animation:lgSpin 90s linear infinite;}
+.lg-f[data-k="bird"] svg,.lg-f[data-k="pad"] svg{animation:lgBob 5s ease-in-out infinite alternate;}
+.lg-f[data-k="ripple"] svg{animation:lgRipple 7s ease-out infinite;}
+.lg-f[data-k="dot"] svg{animation:lgSway 6s ease-in-out infinite alternate;}
+}
+@keyframes lgRise{from{transform:translate3d(0,108vh,0);}to{transform:translate3d(var(--dx,0),-30vh,0);}}
+@keyframes lgSail{from{transform:translate3d(-25vw,0,0);}to{transform:translate3d(125vw,0,0);}}
+@keyframes lgBob{from{transform:translate3d(0,-10px,0) rotate(-4deg);}to{transform:translate3d(0,12px,0) rotate(4deg);}}
+@keyframes lgPulse{from{transform:scale(.82);opacity:.55;}to{transform:scale(1.12);opacity:1;}}
+@keyframes lgSpin{to{transform:rotate(360deg);}}
+@keyframes lgRipple{from{transform:scale(.3);opacity:.7;}to{transform:scale(1.3);opacity:0;}}
+@keyframes lgSway{from{transform:translateX(-14px);}to{transform:translateX(14px);}}
+
+@media(max-width:860px){.sc-ransom.long span{--sz:min(3rem,6.6vw);}}

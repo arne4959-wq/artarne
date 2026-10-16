@@ -388,6 +388,7 @@ th: {
   lg_go:'ไปสนับสนุนศิลปินที่ยังทำงานอยู่', lg_open:'ดูประวัติและผลงานของเขา →',
   lg_img:"ภาพวาด",
   lg_count:"{n} ภาพบนผนัง",
+  nav_don:'บริจาค', foot_report:'แจ้งปัญหา',
   lg_f_title:"ชื่อภาพ",
   lg_f_maker:"จิตรกร · ปี",
   lg_f_own:"แนวคิดของเขา ในคำของเขาเอง",
@@ -541,6 +542,7 @@ en: {
   lg_go:'Support living artists',
   lg_img:"Paintings",
   lg_count:"{n} paintings on the walls",
+  nav_don:'Donate', foot_report:'Report a problem',
   lg_f_title:"Title",
   lg_f_maker:"Painter · year",
   lg_f_own:"His concept, in his own words",
@@ -927,6 +929,23 @@ lo: {
   lg_go: "ໄປສະໜັບສະໜູນສິລະປິນທີ່ຍັງເຮັດວຽກຢູ່",   // DRAFT lo: needs native review
   lg_img: "ຮູບແຕ້ມ",   // DRAFT lo: needs native review
   lg_count: "{n} ຮູບຢູ່ເທິງຝາ",   // DRAFT lo: needs native review
+  news_consent: "ສະໝັກແລ້ວຖືວ່າຮັບ<a href=\"privacy.html\">ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ</a> ຍົກເລີກໄດ້ທຸກເວລາ",   // DRAFT lo: needs native review
+  jd_subject: "ຂໍມີຕຶກໃນ circles — {n}",   // DRAFT lo: needs native review
+  don_done_real: "ສົ່ງແຈ້ງແລ້ວ ສິລະປິນຈະກວດຍອດແລະຕອບກັບທາງອີເມວທີ່ທ່ານໃຫ້ໄວ້ ຂອບໃຈທີ່ສະໜັບສະໜູນ",   // DRAFT lo: needs native review
+  don_e_captcha: "ຢືນຢັນຕົວຕົນບໍ່ຜ່ານ ລອງໃໝ່ອີກຄັ້ງ",   // DRAFT lo: needs native review
+  don_e_busy: "ສິລະປິນມີແຈ້ງຄ້າງຢູ່ຫຼາຍ ລອງໃໝ່ພາຍຫຼັງ",   // DRAFT lo: needs native review
+  don_e_rate: "ລອງເລື້ອຍເກີນໄປ ລໍຖ້າຈັກໜ້ອຍ",   // DRAFT lo: needs native review
+  don_e_not_found: "ບໍ່ພົບສິລະປິນຫຼືຜົນງານນີ້",   // DRAFT lo: needs native review
+  don_e_bad_field: "ຂໍ້ມູນບໍ່ຄົບຫຼືບໍ່ຖືກຕ້ອງ",   // DRAFT lo: needs native review
+  don_e_net: "ສົ່ງບໍ່ສຳເລັດ ລອງໃໝ່ອີກຄັ້ງ",   // DRAFT lo: needs native review
+  don_e_slip: "ໃຊ້ໄຟລ໌ສະລິບນີ້ບໍ່ໄດ້ (JPG, PNG ຫຼື WebP)",   // DRAFT lo: needs native review
+  don_none: "ສິລະປິນຍັງບໍ່ໄດ້ໃສ່ຂໍ້ມູນບັນຊີຮັບເງິນ",   // DRAFT lo: needs native review
+  hint_swipe: "▼ ປັດຊ້າຍ-ຂວາເພື່ອເດີນເບິ່ງຮູບ ແຕະທີ່ຮູບເພື່ອເບິ່ງລາຍລະອຽດເຕັມ",   // DRAFT lo: needs native review
+  desc_pf: "ຮູ້ຈັກ{a} ສິລະປິນສາຂາ{d} ແນວຄິດຂອງງານ ຜົນງານໃນພິພິທະພັນ ແລະຊ່ອງທາງສະໜັບສະໜູນ",   // DRAFT lo: needs native review
+  cy_p: "ຊື່ Circles ມາຈາກຄວາມເຊື່ອວ່າງານສິລະປະບໍ່ມີວັນຈົບ ສິລະປິນເຮັດຊິ້ນໜຶ່ງສຳເລັດ ກໍມີຊິ້ນຕໍ່ໄປລໍຢູ່ສະເໝີ ການສະໜັບສະໜູນຈາກຄົນເບິ່ງບໍ່ແມ່ນຈຸດສິ້ນສຸດ ແຕ່ເປັນແຮງໃຫ້ເຮັດຕໍ່ ແລະເມືອງນີ້ກໍວຽນໄປແບບນັ້ນເລື້ອຍໆ",   // DRAFT lo: needs native review
+  lg_open: "ເບິ່ງປະຫວັດແລະຜົນງານຂອງເຂົາ →",   // DRAFT lo: needs native review
+  nav_don: "ບໍລິຈາກ",   // DRAFT lo: needs native review
+  foot_report: "ແຈ້ງບັນຫາ",   // DRAFT lo: needs native review
   lg_f_title: "ຊື່ຮູບ",   // DRAFT lo: needs native review
   lg_f_maker: "ນັກແຕ້ມ · ປີ",   // DRAFT lo: needs native review
   lg_f_own: "ແນວຄິດຂອງເຂົາ ໃນຄຳຂອງເຂົາເອງ",   // DRAFT lo: needs native review
@@ -1330,6 +1349,9 @@ function coinSwap(svg, opts) {
   if (!('IntersectionObserver' in window)) return;
   const io = new IntersectionObserver(es => es.forEach(en => en.target.classList.toggle('zz-off', !en.isIntersecting)), {rootMargin: '120px 0px'});
   const go = () => document.querySelectorAll('#hero, #city').forEach(el => io.observe(el));
+  /* "Report a problem" link in the page footers: goes to the contact address in CONFIG (so it becomes real when CONFIG.contact is real) */
+  const rp = () => document.querySelectorAll('a.rp').forEach(a => { a.href = 'mailto:' + CONFIG.contact + '?subject=' + encodeURIComponent('circles: problem report'); });
+  document.readyState === 'loading' ? addEventListener('DOMContentLoaded', rp) : rp();
   document.readyState === 'loading' ? addEventListener('DOMContentLoaded', go) : go();
 })();
 /* ===== lite:end ===== */

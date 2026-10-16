@@ -10,7 +10,7 @@
    Lao (…Lo) lines are DRAFT: need native review. Needs from circles.js: t, esc, pk, onLang. */
 (function () {
   'use strict';
-  const LEGENDS = [
+  const ALL = [
     {file: 'legends/monet-stacks-of-wheat.jpg', w: 843, h: 498, year: '1890–91',
       title: 'ฟ่อนข้าวสาลี (ปลายฤดูร้อน)', titleEn: 'Stacks of Wheat (End of Summer)', titleLo: 'ກອງເຂົ້າສາລີ (ທ້າຍລະດູຮ້ອນ)',
       maker: 'Claude Monet', makerEn: 'Claude Monet', makerLo: 'Claude Monet',
@@ -47,23 +47,90 @@
       creditEn: 'The Metropolitan Museum of Art · Purchase, The Annenberg Foundation Gift, 1993 (1993.132) · public domain, CC0, from Met Open Access',
       creditLo: 'The Metropolitan Museum of Art · Purchase, The Annenberg Foundation Gift, 1993 (1993.132) · ສາທາລະນະສົມບັດ CC0 ຈາກ Met Open Access',
       creditUrl: 'https://www.metmuseum.org/art/collection/search/436535'}
+    ,{file: 'legends/hokusai-great-wave.jpg', w: 1200, h: 819, year: '1830–32',
+      title: 'คลื่นใหญ่นอกคานางาวะ', titleEn: 'Under the Wave off Kanagawa (The Great Wave)', titleLo: 'ຄື້ນໃຫຍ່ນອກຄານາງາວະ',
+      maker: 'Katsushika Hokusai', makerEn: 'Katsushika Hokusai', makerLo: 'Katsushika Hokusai',
+      sign: 'คลื่น', signEn: 'WAVE', signLo: 'ຄື້ນ',
+      own: '“ขอให้ผู้ที่มีชีวิตยืนยาวพอ เป็นพยานว่าถ้อยคำของข้าพเจ้านี้ไม่เท็จ”',
+      ownEn: '“Those of you who live long enough, bear witness that these words of mine prove not false.”',
+      ownLo: '“ຂໍໃຫ້ຜູ້ທີ່ມີຊີວິດຍືນຍາວພໍ ເປັນພະຍານວ່າຖ້ອຍຄຳຂອງຂ້ານ້ອຍນີ້ບໍ່ແມ່ນເລື່ອງຕົວະ”',
+      src: 'บทส่งท้ายของ Hokusai ใน “หนึ่งร้อยทัศนียภาพของภูเขาไฟฟูจิ” ปี 1834 (ฉบับแปลอังกฤษตามที่ Wikipedia อ้างไว้ ไม่ระบุผู้แปล ภาษาไทยแปลโดย circles)',
+      srcEn: 'Hokusai’s postscript to One Hundred Views of Mount Fuji, 1834 (English as quoted on Wikipedia, translator not named)',
+      srcLo: 'ບົດສົ່ງທ້າຍຂອງ Hokusai ໃນ “ໜຶ່ງຮ້ອຍທັດສະນີຍະພາບຂອງພູເຂົາໄຟຟູຈິ” ປີ 1834 (ສະບັບແປອັງກິດຕາມທີ່ Wikipedia ອ້າງໄວ້ ບໍ່ລະບຸຜູ້ແປ ພາສາລາວແປໂດຍ circles)',
+      srcUrl: 'https://en.wikipedia.org/wiki/One_Hundred_Views_of_Mount_Fuji',
+      note: 'ภาพนี้อยู่ในชุด “สามสิบหกทัศนียภาพของภูเขาไฟฟูจิ” ที่โฮคุไซทำเมื่ออายุใกล้เจ็ดสิบปี คลื่นยักษ์ยกตัวเหนือเรือสามลำ ขณะที่ภูเขาไฟฟูจิเล็ก ๆ อยู่ไกลออกไป ข้อความข้างบนเป็นบทส่งท้ายที่เขาเพิ่มในหนังสืออีกเล่มเมื่อปี 1834 ไม่ได้พูดถึงภาพนี้โดยตรง',
+      noteEn: 'This print belongs to the series Thirty-six Views of Mount Fuji, made when Hokusai was close to seventy. A huge wave rises over three boats while a small Mount Fuji sits far away. The words above are a postscript he added to a different book in 1834 and do not speak of this print.',
+      noteLo: 'ຮູບນີ້ຢູ່ໃນຊຸດ “ສາມສິບຫົກທັດສະນີຍະພາບຂອງພູເຂົາໄຟຟູຈິ” ທີ່ໂຮກຸໄຊເຮັດຕອນອາຍຸໃກ້ເຈັດສິບປີ ຄື້ນຍັກຍົກຕົວເໜືອເຮືອສາມລຳ ໃນຂະນະທີ່ພູເຂົາໄຟຟູຈິນ້ອຍໆຢູ່ໄກອອກໄປ ຂໍ້ຄວາມຂ້າງເທິງເປັນບົດສົ່ງທ້າຍທີ່ເຂົາເພີ່ມໃນປຶ້ມອີກເຫຼັ້ມປີ 1834 ບໍ່ໄດ້ເວົ້າເຖິງຮູບນີ້ໂດຍກົງ',
+      credit: 'The Metropolitan Museum of Art · H. O. Havemeyer Collection, Bequest of Mrs. H. O. Havemeyer, 1929 (JP1847) · ภาพสาธารณสมบัติ CC0 จาก Met Open Access',
+      creditEn: 'The Metropolitan Museum of Art · H. O. Havemeyer Collection, Bequest of Mrs. H. O. Havemeyer, 1929 (JP1847) · public domain, CC0, from Met Open Access',
+      creditLo: 'The Metropolitan Museum of Art · H. O. Havemeyer Collection, Bequest of Mrs. H. O. Havemeyer, 1929 (JP1847) · ສາທາລະນະສົມບັດ CC0 ຈາກ Met Open Access',
+      creditUrl: 'https://www.metmuseum.org/art/collection/search/45434'}
+    ,{file: 'legends/seurat-la-grande-jatte.jpg', w: 1600, h: 1072, year: '1884–86',
+      title: 'บ่ายวันอาทิตย์บนเกาะลา กรองด์ ฌาตต์', titleEn: 'A Sunday on La Grande Jatte — 1884', titleLo: 'ບ່າຍວັນອາທິດເທິງເກາະລາ ກຣອງ ຊາດ',
+      maker: 'Georges Seurat', makerEn: 'Georges Seurat', makerLo: 'Georges Seurat',
+      sign: 'จุด', signEn: 'DOT', signLo: 'ຈຸດ',
+      own: '“ศิลปะคือความกลมกลืน ความกลมกลืนคือการเทียบกันของสิ่งที่ตรงข้ามและสิ่งที่คล้ายกัน ในน้ำหนัก สี และเส้น …”',
+      ownEn: '“Art is harmony. Harmony is the analogy of contrary elements and the analogy of similar elements of tone, color and line …”',
+      ownLo: '“ສິລະປະຄືຄວາມກົມກຽວ ຄວາມກົມກຽວຄືການທຽບກັນຂອງສິ່ງທີ່ກົງກັນຂ້າມ ແລະສິ່ງທີ່ຄ້າຍກັນ ໃນນ້ຳໜັກ ສີ ແລະເສັ້ນ …”',
+      src: 'ข้อเขียนของ Seurat ปี 1890 (ฉบับแปลอังกฤษตามที่ arthistoryproject.com รวบรวมไว้ ไม่ระบุผู้แปล ภาษาไทยแปลโดย circles)',
+      srcEn: 'Seurat’s statement of 1890 (English as collected by arthistoryproject.com, translator not named)',
+      srcLo: 'ຂໍ້ຂຽນຂອງ Seurat ປີ 1890 (ສະບັບແປອັງກິດຕາມທີ່ arthistoryproject.com ລວບລວມໄວ້ ບໍ່ລະບຸຜູ້ແປ ພາສາລາວແປໂດຍ circles)',
+      srcUrl: 'https://arthistoryproject.com/artists/georges-seurat/the-aesthetics-of-tone-color-and-line/',
+      note: 'เซอราต์ใช้เวลาราวสองปี (1884–86) กับภาพนี้ ทำภาพร่างและภาพศึกษามากมาย แล้ววางจุดสีบริสุทธิ์เคียงกันให้ตาของคนดูผสมสีเอง ภาพถูกแสดงที่นิทรรศการอิมเพรสชันนิสต์ครั้งสุดท้ายในปี 1886 ข้อความข้างบนเขียนในปี 1890 ไม่ได้พูดถึงภาพนี้โดยตรง',
+      noteEn: 'Seurat spent about two years (1884–86) on this canvas, making many sketches and studies, then set pure dabs of colour side by side so the viewer’s eye does the mixing. It was shown at the last Impressionist exhibition in 1886. The words above date from 1890 and do not speak of this painting.',
+      noteLo: 'ເຊອຣາດໃຊ້ເວລາປະມານສອງປີ (1884–86) ກັບຮູບນີ້ ເຮັດຮູບຮ່າງແລະຮູບສຶກສາຫຼາຍ ແລ້ວວາງຈຸດສີບໍລິສຸດຄຽງກັນໃຫ້ຕາຂອງຜູ້ເບິ່ງປະສົມສີເອງ ຮູບຖືກສະແດງທີ່ງານວາງສະແດງອິມເພຣສຊັນນິສຄັ້ງສຸດທ້າຍປີ 1886 ຂໍ້ຄວາມຂ້າງເທິງຂຽນໃນປີ 1890 ບໍ່ໄດ້ເວົ້າເຖິງຮູບນີ້ໂດຍກົງ',
+      credit: 'Art Institute of Chicago · Helen Birch Bartlett Memorial Collection (1926.224) · ภาพสาธารณสมบัติ CC0 จากคลังเปิดของพิพิธภัณฑ์',
+      creditEn: 'Art Institute of Chicago · Helen Birch Bartlett Memorial Collection (1926.224) · public domain, CC0, from the museum’s open-access archive',
+      creditLo: 'Art Institute of Chicago · Helen Birch Bartlett Memorial Collection (1926.224) · ສາທາລະນະສົມບັດ CC0 ຈາກຄັງເປີດຂອງພິພິທະພັນ',
+      creditUrl: 'https://www.artic.edu/artworks/27992'}
   ];
+
+  /* The first two pictures are always in the folder. Every later legend appears only once its picture file is really there
+     (and takes its real width/height), so a legend whose image has not been added yet never shows a broken frame. */
+  const LEGENDS = ALL.slice(0, 2);
+  const probe = x => new Promise(r => { const i = new Image(); i.onload = () => { x.w = i.naturalWidth; x.h = i.naturalHeight; r(x); }; i.onerror = () => r(null); i.src = x.file; });
+  const ready = Promise.all(ALL.slice(2).map(probe)).then(a => { a.forEach(x => x && LEGENDS.push(x)); });
+  const idOf = x => x.file.split('/').pop().split('-')[0];
+
+  /* Each painter's own trick, on his picture. CSS only; all motion is off when the visitor asks for reduced motion.
+     monet: the light moves through a day | vangogh: the paint swirls under the pointer | hokusai: the wave rolls in | seurat: the dots grow into the picture */
+  (function gimmicks() {
+    const st = document.createElement('style');
+    st.textContent = `@property --gm-dot{syntax:'<percentage>';inherits:false;initial-value:100%}
+@media (prefers-reduced-motion:no-preference){
+.gm-monet{animation:gm-light 14s ease-in-out infinite alternate}
+@keyframes gm-light{0%{filter:brightness(.84) saturate(.85) sepia(.3) hue-rotate(-10deg)}45%{filter:brightness(1.05) saturate(1.1)}100%{filter:brightness(.9) saturate(1.2) sepia(.28) hue-rotate(12deg)}}
+.gm-vangogh:hover,.gm-vangogh:focus{filter:url(#gm-swirl)}
+.gm-hokusai{animation:gm-wave 2.2s cubic-bezier(.2,.7,.2,1) both}
+@keyframes gm-wave{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.gm-seurat{--gm-dot:100%;-webkit-mask:radial-gradient(circle,#000 var(--gm-dot),transparent calc(var(--gm-dot) + 1%)) 0 0/6px 6px;mask:radial-gradient(circle,#000 var(--gm-dot),transparent calc(var(--gm-dot) + 1%)) 0 0/6px 6px;animation:gm-dots 2.6s ease-out both}
+@keyframes gm-dots{from{--gm-dot:22%}to{--gm-dot:100%}}
+}`;
+    document.head.appendChild(st);
+    const d = document.createElement('div');
+    d.setAttribute('aria-hidden', 'true');
+    d.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+    d.innerHTML = '<svg width="0" height="0"><filter id="gm-swirl"><feTurbulence type="fractalNoise" baseFrequency=".012 .02" numOctaves="2" seed="3" result="n"><animate attributeName="baseFrequency" dur="6s" values=".012 .02;.02 .012;.012 .02" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="14"/></filter></svg>';
+    document.body.appendChild(d);
+  })();
   const $ = s => document.querySelector(s);
   const link = (url, txt) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(txt)}</a>`;
 
   function piece(x) {
     const fr = x.w / x.h;
     return `<li class="pl-vt pl-lg" data-type="img"><div class="pl-vt-top"><span class="pl-vt-type">${esc(t('lg_img'))}</span><span class="pl-vt-sign">${esc(pk(x, 'sign'))}</span></div>
-      <figure class="pl-media img pl-lg-fig" style="aspect-ratio:${fr.toFixed(3)}"><img src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title') + ' — ' + pk(x, 'maker'))}" loading="lazy" decoding="async"></figure>
+      <figure class="pl-media img pl-lg-fig" style="aspect-ratio:${fr.toFixed(3)}"><img class="gm-${idOf(x)}" src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title') + ' — ' + pk(x, 'maker'))}" loading="lazy" decoding="async"></figure>
       <dl><div><dt>${esc(t('lg_f_title'))}</dt><dd>${esc(pk(x, 'title'))}</dd></div>
       <div><dt>${esc(t('lg_f_maker'))}</dt><dd>${esc(pk(x, 'maker') + ' · ' + x.year)}</dd></div>
       <div class="pl-vt-own"><dt>${esc(t('lg_f_own'))}</dt><dd><q>${esc(pk(x, 'own')).replace(/^“|”$/g, '')}</q><small>${esc(t('lg_f_src'))}: ${link(x.srcUrl, pk(x, 'src'))}</small></dd></div>
       <div class="pl-vt-hist"><dt>${esc(t('lg_f_hist'))}</dt><dd>${esc(pk(x, 'note'))}</dd></div>
-      <div><dt>${esc(t('lg_f_credit'))}</dt><dd>${link(x.creditUrl, pk(x, 'credit'))}</dd></div></dl><a class="pl-btn" href="legend.html?id=${esc(x.file.split('/').pop().split('-')[0])}">${esc(t('lg_open'))}</a><div class="pl-vt-base" aria-hidden="true"></div></li>`;
+      <div><dt>${esc(t('lg_f_credit'))}</dt><dd>${link(x.creditUrl, pk(x, 'credit'))}</dd></div></dl><a class="pl-btn" href="legend.html?id=${esc(idOf(x))}">${esc(t('lg_open'))}</a><div class="pl-vt-base" aria-hidden="true"></div></li>`;
   }
   function render() {
-    $('#lg-count').textContent = t('lg_count', {n: LEGENDS.length});
-    $('#lg-list').innerHTML = LEGENDS.map(piece).join('');
+    ready.then(() => {
+      $('#lg-count').textContent = t('lg_count', {n: LEGENDS.length});
+      $('#lg-list').innerHTML = LEGENDS.map(piece).join('');
+    });
   }
-  window.LG = {render, LEGENDS};
+  window.LG = {render, LEGENDS, ready};
 })();

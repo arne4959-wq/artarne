@@ -168,7 +168,7 @@ html[data-calm="1"] *,html[data-calm="1"] *::before,html[data-calm="1"] *::after
 .fab-wrap .fab-sup.away{display:none;}
 
 @media(max-width:900px){.calm-t{display:inline;}}
-@media(max-width:600px){.fab-wrap{right:.5rem;bottom:.5rem;max-width:calc(100vw - 4rem);}.fab-wrap .btn{padding:.45rem .75rem;font-size:.8rem;letter-spacing:.06em;}}
+@media(max-width:600px){.fab-wrap{right:.5rem;bottom:.5rem;max-width:calc(100vw - 4rem);}.fab-wrap .btn{min-height:48px;padding:.55rem .95rem;font-size:.95rem;letter-spacing:.05em;}}
 .sup-q{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
 .city-search{flex:1 1 220px;min-width:0;min-height:44px;padding:.5rem .9rem;border:var(--line,3px) solid var(--black);background:var(--paper);color:var(--black);font:400 1rem var(--sans,inherit);}
 
@@ -289,3 +289,6 @@ html[lang=th] .pl-sign,html[lang=lo] .pl-sign{font-family:"Chonburi",var(--thai)
 
 /* donation dialog: the action row sticks to the bottom edge of the window, so "I have donated / Close" is never cut off on a short screen */
 .cdlg .sm-act{position:sticky;bottom:0;z-index:2;padding:.8rem 1.6rem;background:var(--paper);border-top:3px solid var(--black);}
+
+/* phone: on the hand-written pages the menu button holds the links (the same list is in .mnav), so the bar itself shows only brand, language and menu: nothing spills past the screen */
+@media(max-width:860px){.pl-page nav .links>a{display:none;}}
