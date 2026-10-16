@@ -20,6 +20,8 @@
 
 /* phone: pages with a menu button show their links only in the menu (page rules lost to the 44px tap-target rule above and the bar overflowed) */
 @media(max-width:860px){nav:has(.menu-btn) .links>a{display:none;}}
+/* pages with no menu button (privacy, terms): keep only the first link on a phone; the other one is repeated at the foot of the page */
+@media(max-width:860px){nav:not(:has(.menu-btn)) .links>a:not(:first-child){display:none;}}
 /* language switch: three side-by-side buttons, the current language filled black (the page language is always visible; one tap to any language) */
 .lang-seg{display:inline-flex;border:2px solid var(--black);background:var(--paper);}
 .lang-seg button{font:400 .8rem var(--anton);letter-spacing:.1em;color:var(--black);background:transparent;border:0;padding:.3rem .5rem;min-width:44px;min-height:44px;cursor:pointer;}
