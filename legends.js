@@ -59,7 +59,7 @@
       <div><dt>${esc(t('lg_f_maker'))}</dt><dd>${esc(pk(x, 'maker') + ' · ' + x.year)}</dd></div>
       <div class="pl-vt-own"><dt>${esc(t('lg_f_own'))}</dt><dd><q>${esc(pk(x, 'own')).replace(/^“|”$/g, '')}</q><small>${esc(t('lg_f_src'))}: ${link(x.srcUrl, pk(x, 'src'))}</small></dd></div>
       <div class="pl-vt-hist"><dt>${esc(t('lg_f_hist'))}</dt><dd>${esc(pk(x, 'note'))}</dd></div>
-      <div><dt>${esc(t('lg_f_credit'))}</dt><dd>${link(x.creditUrl, pk(x, 'credit'))}</dd></div></dl><div class="pl-vt-base" aria-hidden="true"></div></li>`;
+      <div><dt>${esc(t('lg_f_credit'))}</dt><dd>${link(x.creditUrl, pk(x, 'credit'))}</dd></div></dl><a class="pl-btn" href="legend.html?id=${esc(x.file.split('/').pop().split('-')[0])}">${esc(t('lg_open'))}</a><div class="pl-vt-base" aria-hidden="true"></div></li>`;
   }
   function render() {
     $('#lg-count').textContent = t('lg_count', {n: LEGENDS.length});

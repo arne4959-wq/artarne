@@ -84,4 +84,16 @@ export async function run({url, check}) {
     check(`${p}: a single, styled footer row (privacy and terms once, not blue)`, f.rows === 1 && f.old === 0 && f.dupes === 1 && f.color !== 'rgb(0, 0, 238)' && f.under === 'underline', f);
     b.close();
   }
+
+  /* the showcase pages (donate for a living artist; legend intro; legend work): one h1, named, >= 44px, >= 12px, no sideways scroll, no donate on legends, snap-in finishes */
+  for (const [w, h, touch] of [[1280, 800, false], [375, 812, true]]) for (const p of ['donate.html?a=napha', 'legend.html?id=monet', 'legend-work.html?id=vangogh&k=0']) {
+    b = await launch(); await b.lang('th'); await b.view(w, h, touch);
+    await b.go(`${url}/${p}`, 3200); r = await b.ev(AUDIT);
+    const over = await b.ev('document.documentElement.scrollWidth > innerWidth');
+    const don = await b.ev("!!document.querySelector('[data-amt],[data-support],.sc-amt,#dlg-tip')");
+    const shown = await b.ev("[...document.querySelectorAll('.sc-in')].every(e => getComputedStyle(e).opacity === '1')");
+    check(`${p} @${w}: one h1, named, >= 44px, >= 12px, no sideways scroll, entrance finished`, r.h1 === 1 && !r.noname.length && !r.small.length && !r.tiny.length && !over && shown, {...r, over, shown});
+    if (p.startsWith('legend')) check(`${p}: a legend has no donate control`, !don);
+    b.close();
+  }
 }
