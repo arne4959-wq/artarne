@@ -134,10 +134,16 @@
   }
 
   /* ---------------- state ---------------- */
+  /* "Report this work": an e-mail to CONFIG.contact naming the artist and the work. Not shown while the contact is still the *.example placeholder. */
+  function reportLink(A, k, p) {
+    if (!CONFIG.contact || /\.example$/i.test(CONFIG.contact)) return '';
+    const subj = encodeURIComponent(`circles: report a work (${A.id} #${k} ${titleL(p)})`);
+    return `<a class="mus-rp" href="mailto:${esc(CONFIG.contact)}?subject=${subj}">${esc(t('rp_work'))}</a>`;
+  }
   function labelHtml(k) {
     const p = A.pieces[k];
     return `<i class="mus-tape"></i><small>${p.y} · ${esc(fmtSize(p))}</small><b>${esc(titleL(p))}</b>${sayOf(p) ? `<i class="mus-q">“${esc(sayOf(p))}”</i>` : ''}`
-      + `<span class="mus-acts">${canDonate(A) ? `<button type="button" class="mus-don" data-support="${esc(A.id)}" data-for="${esc(titleL(p))}" data-quiet>${esc(t('don_work'))}</button>` : ''}<button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button></span>`;
+      + `<span class="mus-acts">${canDonate(A) ? `<button type="button" class="mus-don" data-support="${esc(A.id)}" data-for="${esc(titleL(p))}" data-quiet>${esc(t('don_work'))}</button>` : ''}<button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button>${reportLink(A, k, p)}</span>`;
   }
   function update() {
     const w = document.getElementById('mus-world'); if (!w) return;

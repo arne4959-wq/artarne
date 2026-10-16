@@ -30,16 +30,21 @@ else {
 
 /* 2. legends: every entry has a profile in showcase.js; pictures not added yet are only a note */
 const lg = read('legends.js'), sc = read('showcase.js');
-const files = [...lg.matchAll(/file:\s*'(legends\/[^']+)'/g)].map(x => x[1]);
+const [lgMain, lgMore = ''] = lg.split('const MORE');   // legends first; the gallery pictures (MORE) after
+const files = [...lgMain.matchAll(/file:\s*'(legends\/[^']+)'/g)].map(x => x[1]);
+const moreFiles = [...lgMore.matchAll(/file:\s*'(legends\/[^']+)'/g)].map(x => x[1]);
 const bio = new Set([...sc.matchAll(/\n    (\w+): \{\n      name:/g)].map(x => x[1]));
 for (const f of files) {
   const id = f.split('/').pop().split('-')[0];
   if (!bio.has(id)) fail.push(`legend "${id}" has no profile (BIO) in showcase.js`);
-  if (!exists(f)) warn.push(`legend picture not added yet: ${f} (the legend stays hidden until the file is there)`);
+  if (!exists(f)) warn.push(`legend picture not added yet: ${f} (the legend stays hidden until the file is there; run npm run pictures)`);
 }
-console.log(`legends: ${files.length} entries`);
+const missingMore = moreFiles.filter(f => !exists(f));
+if (missingMore.length) warn.push(`${missingMore.length} of ${moreFiles.length} gallery pictures are not in legends/ yet (they simply do not show; run npm run pictures)`);
+console.log(`legends: ${files.length} entries, ${moreFiles.length} gallery pictures`);
 
 /* 3. still-a-prototype markers */
+if (/analytics:\s*'https?:/.test(circles) && /ไม่ใช้เครื่องมือวิเคราะห์|runs no analytics/.test(read('privacy.html'))) fail.push('CONFIG.analytics is on but privacy.html still says there is no analytics: update privacy.html first');
 if (/sample:\s*true/.test(circles)) warn.push('CONFIG.support.sample is true: the bank details and QR are samples');
 if (/\.example/.test(circles.split('\n').find(l => l.startsWith('const CONFIG')) || '')) warn.push('CONFIG.contact is a *.example address');
 if (/donate:\s*''/.test(circles)) warn.push("CONFIG.donate is empty (the 'support the site' link)");

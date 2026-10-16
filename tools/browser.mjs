@@ -42,6 +42,7 @@ export async function launch({gpu = false, throttle = 0} = {}) {
     dir = fs.mkdtempSync(path.join(os.tmpdir(), 'circles-chrome-'));
     const args = ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${dir}`, '--no-first-run', '--no-default-browser-check', 'about:blank'];
     if (!gpu) args.unshift('--disable-gpu');
+    if (process.env.CHROME_NO_SANDBOX) args.unshift('--no-sandbox');   // CI / root containers only
     chrome = spawn(findChrome(), args, {stdio: 'ignore'});
     for (let i = 0; i < 40 && !tabs; i++) {
       await sleep(250);

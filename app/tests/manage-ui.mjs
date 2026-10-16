@@ -59,7 +59,7 @@ const set = async (label, v) => { const sel = await inputOf(label); if (!sel) re
 let ok = 0, bad = 0; const check = (n, c, x = '') => { c ? ok++ : bad++; console.log((c ? '  ✓ ' : '  ✗ ') + n + (c ? '' : '  ' + x)); };
 
 {   // the door (no session)
-  await b.view(1280, 900); await b.go(srv.url + '/manage.html?anon', 2500);
+  await b.view(1280, 900); await b.go(srv.url + '/manage.html?anon&full', 2500);
   check('no session: the concrete door, no sign-up button', await b.ev("!!document.querySelector('.mg-door') && ![...document.querySelectorAll('button,a')].some(x=>/sign ?up|สมัครสมาชิก/i.test(x.textContent))"));
   // the wall is alive: three depths, a sticker shadow under every shape, people on the kerb, a bird
   check('wall has far, mid and near shapes', await b.ev("document.querySelectorAll('.far .sp').length>=8 && document.querySelectorAll('.mid .sp').length>=6 && document.querySelectorAll('.near .sp').length>=4"));
@@ -106,9 +106,12 @@ for (const [name, w, h, touch] of [['desk', 1280, 900, false], ['phone', 390, 84
     await set('ชื่องาน (ไทย)', 'ทดสอบ'); await set('ปี', '2024');
     check('the work form has no price, status, edition or pay-link field', await b.ev("![...document.querySelectorAll('label.mg-lbl span')].some(x => /ราคา|สถานะ|edition|ลิงก์จ่ายเงิน/i.test(x.textContent))"));
     await b.ev("window.__calls.length=0");
+    await clickText('button[type=submit]', 'บันทึก'); await sleep(300);
+    check('a new work cannot be saved before ticking "this is my own work"', !/POST/.test(await b.ev("JSON.stringify(window.__calls)")) && await b.ev("!!document.querySelector('.mg-own .bad')"));
+    await b.ev("document.querySelector('.mg-own input').click()"); await sleep(150);
     await clickText('button[type=submit]', 'บันทึก'); await sleep(500);
     const c2 = await b.ev("JSON.stringify(window.__calls)");
-    check('valid work sends POST with artist_id and position 2, and no price / status', /POST/.test(c2) && /artist_id/.test(c2) && /position/.test(c2) && !/price|status|edition/.test(c2), c2);
+    check('valid work sends POST with artist_id and position 2, and no price / status', /POST/.test(c2) && /artist_id/.test(c2) && /position/.test(c2) && /rights_confirmed_at/.test(c2) && !/price|status|edition/.test(c2), c2);
     check('after save the list is back', await b.ev("!!document.querySelector('.mg-works')"));
     // delete needs two presses
     await b.ev("window.__calls.length=0");

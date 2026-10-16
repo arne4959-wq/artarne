@@ -9,6 +9,8 @@
     "build": "node tools/build.mjs",
     "dist": "node tools/dist.mjs",
     "pictures": "node tools/get-pictures.mjs",
+    "lao-review": "node tools/lao-review.mjs",
+    "doctor": "node tools/doctor.mjs",
     "check": "node tools/check-release.mjs",
     "check:live": "node tools/check-release.mjs --strict",
     "test": "node tests-legacy/run.mjs",

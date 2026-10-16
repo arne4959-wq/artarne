@@ -1,0 +1,51 @@
+# Rebuilds and publishes the site to GitHub Pages.
+# Runs when: main changes, every 30 minutes (so artists' edits in manage.html show up by themselves), or by hand (Actions tab → Run workflow).
+# One-time setup: repo Settings → Pages → Source = "GitHub Actions". Nothing secret is needed: the Supabase key used is the public one in circles.js.
+name: deploy
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm --prefix app ci
+      - run: npm run app:test
+      - run: npm run app:build
+      - name: Pull the artists' latest profiles and works from Supabase
+        run: npm run pull
+      - name: Build the pages (uses the Chrome that GitHub's runner already has)
+        env:
+          CHROME_PATH: google-chrome
+          CHROME_NO_SANDBOX: '1'
+        run: npm run build
+      - run: npm run check
+      - run: npm run dist
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4

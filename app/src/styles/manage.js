@@ -161,6 +161,8 @@ html[lang="th"] .mg-tab,html[lang="lo"] .mg-tab{font-family:"Chonburi",var(--tha
 .mg-panel>h2{font:400 1.45rem/1.3 "Chonburi",var(--thai);margin-bottom:1.1rem;}
 .mg-note{background:var(--gold);border:var(--line) solid var(--black);padding:.8rem 1rem;margin-bottom:1.4rem;font:400 .98rem/1.7 var(--thai);}
 .mg-note.warn{background:var(--paper);border-style:dashed;}
+.mg-own{display:block;margin:1.4rem 0 .4rem;font:500 .98rem/1.6 var(--thai);cursor:pointer;}
+.mg-own input{width:1.2rem;height:1.2rem;margin-right:.5rem;vertical-align:-.2rem;accent-color:var(--black);}
 .mg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 1.4rem;}
 .mg-grid .wide{grid-column:1/-1;}
 .mg-lbl{display:block;margin-bottom:1.1rem;}

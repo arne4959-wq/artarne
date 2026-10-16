@@ -108,3 +108,6 @@ html.lite .mus-art img{box-shadow:none;}
   .mus-more{position:relative;}
   .mus-more::after{content:"";position:absolute;left:-6px;right:-6px;top:-12px;bottom:-12px;}
 }
+
+.mus-rp{font:500 .72rem var(--thai);color:var(--black);opacity:.6;text-decoration:underline;margin-left:.6rem;min-height:44px;display:inline-flex;align-items:center;}
+.mus-rp:hover,.mus-rp:focus-visible{opacity:1;}

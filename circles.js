@@ -13,6 +13,7 @@
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
 const CONFIG = { shop: false, support: {bank: 'BCEL', name: 'SAMPLE', no: '000 000 000 000', qr: 'art/qr-sample.svg', sample: true}, endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
   lakPerUsd: 22400,
+  analytics: '',   // OFF. To count visits without cookies: make a free GoatCounter site and put 'https://YOURNAME.goatcounter.com/count' here. Then ALSO update privacy.html (it says there is no analytics). docs/GO-LIVE.md
   supabaseUrl: 'https://lgkqvfmnqdpajddishio.supabase.co', supabaseKey: 'sb_publishable_vDPIYxQA0JiZCumJ_qMuhg_BxFSfuXp' };   // supabase*: the artists' database (supabase/README.md). The publishable key is meant to be public: the access rules in the database protect the data, never put a secret / service_role key here.
 // lakPerUsd: approximate rate, October 2026. It does NOT update itself: change it by hand when the kip moves.
 // turnstileSiteKey: optional Cloudflare Turnstile key (free CAPTCHA). Only used together with `endpoint`; the endpoint must verify the token it receives as `captcha`.
@@ -344,7 +345,7 @@ th: {
   cw_meta:'{d} · ตั้งแต่ {y} · {c}', cw_view:'ดูรายละเอียด {t}', cw_prev:'← ตึกก่อนหน้า', cw_next:'ตึกถัดไป →', cw_roof:'{n} · STUDIO',
   lb_artist:'ศิลปิน', lb_year:'ปี', lb_medium:'วัสดุ', lb_size:'ขนาด',  w_prev:'← ชิ้นก่อน', w_next:'ชิ้นถัดไป →',                v_city:"ดูแบบตึก", v_map:"ดูแบบแผนที่", v_aria:"เลือกมุมมองเมือง", cw_look:'ดูรายละเอียด →', d_by:'โดย <b>{a}</b> · {d} · {c}',  d_story:'ที่มาของงานชิ้นนี้', cc_h:'แนวคิดของงาน', cc_origin:'ที่มา', cc_mat:'วัสดุ', cc_steps:'ขั้นตอนการทำ', cc_step:'ขั้นที่ {n}',
   cy_h:'วงกลมไม่มีปลายทาง ศิลปะก็เหมือนกัน', cy_p:'ชื่อ Circles มาจากความเชื่อว่างานศิลปะไม่มีวันจบ ศิลปินทำชิ้นหนึ่งเสร็จ ก็มีชิ้นต่อไปรออยู่เสมอ การสนับสนุนจากคนดูไม่ใช่จุดสิ้นสุด แต่เป็นแรงให้ทำต่อ และเมืองนี้ก็วนไปแบบนั้นเรื่อย ๆ', cy_1:'วาด', cy_2:'โชว์ในตึก', cy_3:'มีคนสนับสนุน', cy_4:'วาดต่อ', cy_aria:'วงจร 4 ขั้น: วาด โชว์ในตึก มีคนสนับสนุน แล้ววนกลับไปวาดต่อ',
-  sup_h:'สนับสนุน Circles', sup_p:'ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า', sup_where:'เงินสนับสนุนไปไหน', sup_r1:'ค่าเซิร์ฟเวอร์และโดเมน', sup_r2:'การดูแลและพัฒนาเว็บ', sup_r3:'กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน', sup_note:'ตัวอย่าง: หมวดและสัดส่วนยังไม่ตกลง [__]% คือตัวเลขที่ยังไม่รู้ จะใส่เมื่อมีข้อมูลจริง', don_btn:'สนับสนุน →', don_soon:'เร็วๆ นี้',   
+  sup_h:'สนับสนุน Circles', sup_p:'ตอนนี้ศิลปินรับเงินเต็ม ไม่มีค่าธรรมเนียม เว็บอยู่ได้ด้วยเงินสนับสนุน ถ้ามีค่าธรรมเนียมในอนาคต เราจะบอกล่วงหน้า', sup_where:'เงินสนับสนุนไปไหน', sup_r1:'ค่าเซิร์ฟเวอร์และโดเมน', sup_r2:'การดูแลและพัฒนาเว็บ', sup_r3:'กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน', sup_note:'ยังไม่มีการกำหนดสัดส่วน เราจะประกาศรายรับและรายจ่ายจริงเมื่อมีเงินสนับสนุนเข้ามา เงินที่คุณให้ศิลปินผ่านปุ่ม “สนับสนุน” ของแต่ละงานโอนตรงเข้าบัญชีของศิลปิน ไม่ผ่านมือ circles และไม่มีการหักค่าธรรมเนียม', don_btn:'สนับสนุน →', don_soon:'เร็วๆ นี้',   
   title_idx:'circles — เมืองของศิลปิน สนับสนุนตรงถึงคนทำ', title_cw:'ตึกของ{a} — circles',
   desc_idx:'circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วสนับสนุนตรงถึง\u2060คน\u2060ทำ',
   desc_cw:'เดินเข้าไปในตึกของ{a} ศิลปินสาขา{d} ดูผลงานทีละชั้น แล้วสนับสนุนตรงถึงศิลปิน',
@@ -388,7 +389,7 @@ th: {
   lg_go:'ไปสนับสนุนศิลปินที่ยังทำงานอยู่', lg_open:'ดูประวัติและผลงานของเขา →',
   lg_img:"ภาพวาด",
   lg_count:"{n} ภาพบนผนัง",
-  foot_set:'ตั้งค่า (ศิลปิน)',   nav_don:'บริจาค', foot_report:'แจ้งปัญหา',
+  foot_set:'ตั้งค่า (ศิลปิน)',   nav_don:'บริจาค', foot_report:'แจ้งปัญหา',   rp_work:'แจ้งงานนี้',
   mk_go:'เข้าไปในตึกของผม →',   mk_k:'จากคนสร้างเมือง', mk_h:'งานของผม', mk_p:'เมืองนี้เริ่มจากงานเล็ก ๆ ที่ผมทำเอง ตัดแปะ ซ้อนภาพ ใส่ดาวแดง ผมเป็นนักศึกษาไอทีปีหนึ่งที่เวียงจันทน์ ภาพเหล่านี้เป็นฝีมือผม ใช้เป็นเสียงของเมืองไปก่อนที่ศิลปินคนอื่นจะเข้ามา', mk_a1:'ภาพตัดแปะภาพวาดสระบัวและคำว่า ART ซ้ำ ๆ มีดาวแดงลอยทับ', mk_a2:'ภาพม้าขาวสีเทา มีดาวแดงบนหน้าผาก', mk_a3:'ภาพตัดแปะสีเขียวสะท้อนแสง มีดาวสีชมพูและจุดสีส้ม',
   lg_f_title:"ชื่อภาพ",
   lg_f_maker:"จิตรกร · ปี",
@@ -498,7 +499,7 @@ en: {
   cw_meta:'{d} · since {y} · {c}', cw_view:'View details of {t}', cw_prev:'← Previous building', cw_next:'Next building →', cw_roof:'{n} · STUDIO',
   lb_artist:'Artist', lb_year:'Year', lb_medium:'Medium', lb_size:'Size',  w_prev:'← Previous work', w_next:'Next work →',                v_city:"Buildings", v_map:"Map", v_aria:"Choose how to see the city", cw_look:'View details →', d_by:'by <b>{a}</b> · {d} · {c}',  d_story:'The story behind it', cc_h:'Concept of the work', cc_origin:'Origin', cc_mat:'Materials', cc_steps:'How it was made', cc_step:'Step {n}',
   cy_h:'A circle has no end. Neither does art.', cy_p:'The name Circles comes from the belief that art is never finished. When an artist completes one piece, the next is already waiting. Support is not an ending. It is what lets the artist keep going, and the city keeps turning that way.', cy_1:'Draw', cy_2:'Show in the building', cy_3:'Someone supports', cy_4:'Draw again', cy_aria:'A loop of 4 steps: draw, show in the building, someone supports, then back to drawing again',
-  sup_h:'Support Circles', sup_p:'Right now artists keep the full amount, with no fees. The site runs on support. If we ever add a fee, we will tell you in advance.', sup_where:'Where the support goes', sup_r1:'Servers and domain', sup_r2:'Running and improving the site', sup_r3:'Events and new space for artists', sup_note:'Sample: the categories and shares are not final. [__]% marks a number we do not know yet and will fill in once we have real data.', don_btn:'Support →', don_soon:'Coming soon',   
+  sup_h:'Support Circles', sup_p:'Right now artists keep the full amount, with no fees. The site runs on support. If we ever add a fee, we will tell you in advance.', sup_where:'Where the support goes', sup_r1:'Servers and domain', sup_r2:'Running and improving the site', sup_r3:'Events and new space for artists', sup_note:'No shares are set yet. We will publish real income and spending once support comes in. Money you give an artist through a work’s “Support” button goes straight to that artist’s own account. It does not pass through circles and nothing is deducted.', don_btn:'Support →', don_soon:'Coming soon',   
   title_idx:'circles — a city of artists. Support the maker directly', title_cw:"{a}'s building — circles",
   desc_idx:'circles is a city of artists. One concrete building is one artist. No gallery, no middleman. Walk in, look at the work, support the maker directly.',
   desc_cw:"Walk into {a}'s building. {d} artist. See the work floor by floor, then support the artist directly.",
@@ -543,7 +544,7 @@ en: {
   lg_go:'Support living artists',
   lg_img:"Paintings",
   lg_count:"{n} paintings on the walls",
-  foot_set:'Settings (artists)',   nav_don:'Donate', foot_report:'Report a problem',
+  foot_set:'Settings (artists)',   nav_don:'Donate', foot_report:'Report a problem',   rp_work:'Report this work',
   mk_go:'Walk into my building →',   mk_k:'From the city’s maker', mk_h:'My own work', mk_p:'This city started from small things I made myself: collage, layered images, red stars. I am a first-year IT student in Vientiane. These pieces are mine, and they are the voice of the city until other artists arrive.', mk_a1:'Collage of a water-lily pond painting with the word ART repeated and red stars floating over it', mk_a2:'Grey-toned white horse with a red star on its forehead', mk_a3:'Neon green collage with pink stars and orange dots',
   lg_f_title:"Title",
   lg_f_maker:"Painter · year",
@@ -772,7 +773,7 @@ lo: {
   sup_r1: "ຄ່າເຊີບເວີ ແລະ ໂດເມນ",   // DRAFT lo: needs native review
   sup_r2: "ການດູແລ ແລະ ພັດທະນາເວັບ",   // DRAFT lo: needs native review
   sup_r3: "ກິດຈະກຳ ແລະ ພື້ນທີ່ໃໝ່ສຳລັບສິລະປິນ",   // DRAFT lo: needs native review
-  sup_note: "ຕົວຢ່າງ: ໝວດ ແລະ ສັດສ່ວນຍັງບໍ່ຕົກລົງ [__]% ແມ່ນຕົວເລກທີ່ຍັງບໍ່ຮູ້ ຈະໃສ່ເມື່ອມີຂໍ້ມູນຈິງ",   // DRAFT lo: needs native review
+  sup_note: "ຍັງບໍ່ໄດ້ກຳນົດສັດສ່ວນ ເຮົາຈະປະກາດລາຍຮັບ ແລະ ລາຍຈ່າຍຈິງເມື່ອມີເງິນສະໜັບສະໜູນເຂົ້າມາ ເງິນທີ່ທ່ານໃຫ້ສິລະປິນຜ່ານປຸ່ມ “ສະໜັບສະໜູນ” ຂອງແຕ່ລະຜົນງານ ໂອນຕົງເຂົ້າບັນຊີຂອງສິລະປິນ ບໍ່ຜ່ານ circles ແລະ ບໍ່ຫັກຄ່າທຳນຽມ",   // DRAFT lo: needs native review
   don_btn: "ສະໜັບສະໜູນ →",   // DRAFT lo: needs native review
   don_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
   mq: ["ສິລະປິນບໍ່ມີກົດ", "SUPPORT ART", "ສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ", "NO MIDDLEMAN", "ເມືອງຂອງສິລະປິນ", "ART NOT SORRY"],   // DRAFT lo: needs native review
@@ -949,6 +950,7 @@ lo: {
   foot_set: "ຕັ້ງຄ່າ (ສິລະປິນ)",   // DRAFT lo: needs native review
   nav_don: "ບໍລິຈາກ",   // DRAFT lo: needs native review
   mk_go: 'ເຂົ້າໄປໃນຕຶກຂອງຂ້ອຍ →',   mk_k: 'ຈາກຜູ້ສ້າງເມືອງ', mk_h: 'ຜົນງານຂອງຂ້ອຍ', mk_p: 'ເມືອງນີ້ເລີ່ມຈາກງານນ້ອຍໆທີ່ຂ້ອຍເຮັດເອງ ຕັດແປະ ຊ້ອນຮູບ ໃສ່ດາວແດງ ຂ້ອຍເປັນນັກສຶກສາໄອທີປີໜຶ່ງຢູ່ວຽງຈັນ ຮູບເຫຼົ່ານີ້ເປັນຝີມືຂ້ອຍ ເປັນສຽງຂອງເມືອງກ່ອນທີ່ສິລະປິນຄົນອື່ນຈະເຂົ້າມາ', mk_a1: 'ຮູບຕັດແປະຮູບແຕ້ມສະນ້ຳດອກບົວແລະຄຳວ່າ ART ຊ້ຳໆ ມີດາວແດງລອຍທັບ', mk_a2: 'ຮູບມ້າຂາວສີເທົາ ມີດາວແດງເທິງໜ້າຜາກ', mk_a3: 'ຮູບຕັດແປະສີຂຽວສະທ້ອນແສງ ມີດາວສີບົວແລະຈຸດສີສົ້ມ',   // DRAFT lo: needs native review
+  rp_work: "ແຈ້ງຜົນງານນີ້",   // DRAFT lo: needs native review
   foot_report: "ແຈ້ງບັນຫາ",   // DRAFT lo: needs native review
   lg_f_title: "ຊື່ຮູບ",   // DRAFT lo: needs native review
   lg_f_maker: "ນັກແຕ້ມ · ປີ",   // DRAFT lo: needs native review
@@ -1355,8 +1357,19 @@ function coinSwap(svg, opts) {
   const io = new IntersectionObserver(es => es.forEach(en => en.target.classList.toggle('zz-off', !en.isIntersecting)), {rootMargin: '120px 0px'});
   const go = () => document.querySelectorAll('#hero, #city').forEach(el => io.observe(el));
   /* "Report a problem" link in the page footers: goes to the contact address in CONFIG (so it becomes real when CONFIG.contact is real) */
-  const rp = () => document.querySelectorAll('a.rp').forEach(a => { a.href = 'mailto:' + CONFIG.contact + '?subject=' + encodeURIComponent('circles: problem report'); });
+  const rp = () => document.querySelectorAll('a.rp').forEach(a => {
+    const live = CONFIG.contact && !/\.example$/i.test(CONFIG.contact);   // a *.example address goes nowhere: no dead "report" link until a real one is set
+    if (live) a.href = 'mailto:' + CONFIG.contact + '?subject=' + encodeURIComponent('circles: problem report');
+    const w = a.closest('.rp-w'); if (w) w.hidden = !live; else a.hidden = !live;
+  });
   document.readyState === 'loading' ? addEventListener('DOMContentLoaded', rp) : rp();
+  /* Visit counter: OFF unless CONFIG.analytics is set. GoatCounter: no cookies, no personal id. Skipped when the browser sends Do-Not-Track / Global Privacy Control and on local addresses. */
+  (() => {
+    const u = CONFIG.analytics;
+    if (!u || !/^https:\/\/[a-z0-9-]+\.goatcounter\.com\/count$/.test(u)) return;
+    if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl || /^(localhost|127\.|\[::1\])/.test(location.hostname)) return;
+    const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = u; document.head.appendChild(s);
+  })();
   document.readyState === 'loading' ? addEventListener('DOMContentLoaded', go) : go();
 })();
 /* ===== lite:end ===== */

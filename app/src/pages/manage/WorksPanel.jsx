@@ -45,6 +45,7 @@ export default function WorksPanel({artist}) {
           <div className="mg-wbody">
             <b>{title(w)}</b>
             <span className="meta">{w.year || ''}</span>
+            {w.hidden && <span className="mg-ok bad" role="status">{mt('w_hidden')}</span>}
             <div className="mg-acts">
               <button type="button" className="mg-mini" onClick={() => setEditing(w)}>{mt('w_edit')}</button>
               <button type="button" className="mg-mini del" data-sure={sure === w.id ? '' : undefined} onClick={() => remove(w)} onBlur={() => setSure('')}>{sure === w.id ? mt('w_del_sure') : mt('w_del')}</button>
@@ -58,13 +59,16 @@ export default function WorksPanel({artist}) {
 function WorkForm({artist, work, nextPos, onCancel, onSaved}) {
   const mt = useMt();
   const [form, setForm] = useState(() => (work ? workToForm(work) : emptyWork())), [errors, setErrors] = useState({}), [state, setState] = useState('');
+  const needRights = !work || !work.rights_confirmed_at, [own, setOwn] = useState(false);
   const set = (k, v) => { setForm(f => ({...f, [k]: v})); setState(''); };
   const props = {form, set, errors};
 
   async function save(e) {
     e.preventDefault();
     const r = formToWork(form);
+    if (needRights && !own) { setErrors({...(r.errors || {}), own: 'er_own'}); setState('fix'); return; }
     if (r.errors) { setErrors(r.errors); setState('fix'); return; }
+    if (needRights) r.row.rights_confirmed_at = new Date().toISOString();
     setErrors({}); setState('saving');
     const q = supabase().from('works');
     const {error} = work ? await q.update(r.row).eq('id', work.id) : await q.insert({...r.row, artist_id: artist.id, position: nextPos});
@@ -74,6 +78,7 @@ function WorkForm({artist, work, nextPos, onCancel, onSaved}) {
 
   return <form className="mg-panel" onSubmit={save} noValidate>
     <h2>{work ? mt('w_editing') : mt('w_new')}</h2>
+    <p className="mg-note">{mt('rules_note')}</p>
     <ImagePick src={form.img} ar={form.ar} bucket="art" artistId={artist.id} onDone={({url, ratio}) => { set('img', url); set('ar', ratio); }}/>
     <h3 className="mg-h3">{mt('h_wbasic')}</h3>
     <div className="mg-grid">
@@ -112,6 +117,8 @@ function WorkForm({artist, work, nextPos, onCancel, onSaved}) {
       <Field label={mt('f_look_en')} name="look_en" as="textarea" wide maxLength={800} {...props}/>
       <Field label={mt('f_look_lo')} name="look_lo" as="textarea" wide maxLength={800} {...props}/>
     </div>
+    {needRights && <label className="mg-own"><input type="checkbox" checked={own} onChange={e => { setOwn(e.target.checked); setState(''); setErrors(x => ({...x, own: undefined})); }}/> {mt('own_check')}
+      {errors.own && <span className="mg-ok bad" role="alert"> {mt(errors.own)}</span>}</label>}
     <div className="mg-bar">
       <button type="submit" className="btn" disabled={state === 'saving'}>{mt('save')}</button>
       <button type="button" className="btn ghost" onClick={onCancel}>{mt('w_cancel')}</button>
