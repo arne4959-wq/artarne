@@ -1,51 +1,69 @@
-/* legends.js — legends.html, the Legends district. ONLY THE FRAME is built: slots that can hold an image, a film or a piece of music, each with the
-   fields a piece needs. There are at most two clearly marked SAMPLE slots (placeholder text, no real work); circles does not pick anything in here.
-   arne curates: to add a piece, put a real entry in LEGENDS below (see the field list) and delete the matching sample / empty slot.
-   No donate button anywhere in this district (the makers have passed away); one link leads to the living artists.
-   LEGENDS entry: {type:'img'|'film'|'music', file:'legends/x.jpg' (an image) | 'legends/x.mp3' | 'legends/x.mp4', title, titleEn, maker, makerEn, year, own:'the maker\'s own words', ownEn, src:'where the words come from',
-                   note:'history, NOT the maker\'s words', noteEn, credit:'file credit + licence'}  - every piece needs credit and licence.
-   Needs from circles.js: t, esc, pk, onLang. */
+/* legends.js — legends.html, the Legends district. PAINTINGS ONLY: no film, no music, no samples, no empty rooms.
+   Every room holds one painting by one painter who has passed away, with the painter's OWN words (the "concept") and where they come from.
+   No donate button anywhere in this district; one link leads to the living artists.
+   To add a painter: put a new entry in LEGENDS (fields below) and put the image in legends/. Rules for an entry:
+     - image: public domain / CC0 from a museum's open-access archive (check the museum's own record: Met isPublicDomain, AIC is_public_domain), credit + record link
+     - own: the painter's real words, with src (letter number / date / place). If there are no verifiable words, leave own out and the room says so; never invent a quote.
+     - note: history in circles' words, labelled as such on the page. Not the painter's words.
+   LEGENDS entry: {file, w, h, title, titleEn, titleLo, maker, makerEn, makerLo, year, sign (+En/Lo: one-word identity), own (+En/Lo), src (+En/Lo), srcUrl,
+                   note (+En/Lo), credit (+En/Lo), creditUrl}
+   Lao (…Lo) lines are DRAFT: need native review. Needs from circles.js: t, esc, pk, onLang. */
 (function () {
   'use strict';
-  const LEGENDS = [];                    // real pieces: none yet. They are chosen one by one by the site owner.
-  const SLOTS = [{type: 'img', sample: true}, {type: 'music', sample: true}, {type: 'film', empty: true}, {type: 'img', empty: true}];   // 2 marked samples + empty rooms
-  const KEY = {img: 'lg_img', film: 'lg_film', music: 'lg_music'};
-  let filter = 'all';
-  const X = '<svg viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0L400 300M400 0L0 300" stroke="#8F8C85" stroke-width="2"/></svg>';
+  const LEGENDS = [
+    {file: 'legends/monet-stacks-of-wheat.jpg', w: 843, h: 498, year: '1890–91',
+      title: 'ฟ่อนข้าวสาลี (ปลายฤดูร้อน)', titleEn: 'Stacks of Wheat (End of Summer)', titleLo: 'ກອງເຂົ້າສາລີ (ທ້າຍລະດູຮ້ອນ)',
+      maker: 'Claude Monet', makerEn: 'Claude Monet', makerLo: 'Claude Monet',
+      sign: 'แสง', signEn: 'LIGHT', signLo: 'ແສງ',
+      own: '“เพราะมันเปลี่ยนไปเรื่อย ๆ ฉันจึงได้แต่ตามธรรมชาติไป โดยไม่อาจจับเธอไว้ได้”',
+      ownEn: '“…by dint of changes I am following Nature without being able to grasp her…”',
+      ownLo: '“ເພາະມັນປ່ຽນໄປເລື້ອຍໆ ຂ້ອຍຈຶ່ງໄດ້ແຕ່ຕາມທຳມະຊາດໄປ ໂດຍບໍ່ສາມາດຈັບນາງໄວ້ໄດ້”',
+      src: 'จดหมายถึง Gustave Geffroy, Fresselines, 24 เมษายน 1889 (ฉบับแปลอังกฤษที่ arthistoryproject.com รวบรวมไว้ ภาษาไทยแปลโดย circles)',
+      srcEn: 'Letter to Gustave Geffroy, Fresselines, 24 April 1889 (English translation as collected by arthistoryproject.com)',
+      srcLo: 'ຈົດໝາຍເຖິງ Gustave Geffroy, Fresselines, 24 ເມສາ 1889 (ສະບັບແປອັງກິດທີ່ arthistoryproject.com ລວບລວມໄວ້ ພາສາລາວແປໂດຍ circles)',
+      srcUrl: 'https://arthistoryproject.com/artists/claude-monet/the-despair-of-painting-nature-letters-to-gustave-geffroy',
+      note: 'โมเนต์วาดกองฟ่อนข้าวใกล้บ้านที่ Giverny เป็นชุดราว 25 ภาพช่วงปี 1890–91 โดยเลือกกองเดิมซ้ำ ๆ แล้วปล่อยให้แสงและเวลาเปลี่ยนภาพไปทีละผืน ภาพนี้คือบ่ายที่แสงเริ่มอ่อนลงปลายฤดูร้อน จดหมายข้างบนเขียนก่อนหน้านั้นหนึ่งปีและไม่ได้พูดถึงภาพนี้โดยตรง',
+      noteEn: 'Monet painted the stacks near his home at Giverny as a series of about 25 canvases in 1890–91, returning to the same stacks and letting light and time change each picture. This one is a late-summer afternoon as the light softens. The letter above was written a year earlier and does not mention this painting.',
+      noteLo: 'ໂມເນ໌ແຕ້ມກອງເຂົ້າສາລີໃກ້ເຮືອນຢູ່ Giverny ເປັນຊຸດປະມານ 25 ຮູບໃນປີ 1890–91 ເລືອກກອງເດີມຊ້ຳໆ ແລ້ວປ່ອຍໃຫ້ແສງແລະເວລາປ່ຽນຮູບໄປທີລະຜືນ ຮູບນີ້ແມ່ນຕອນບ່າຍທີ່ແສງເລີ່ມອ່ອນລົງທ້າຍລະດູຮ້ອນ ຈົດໝາຍຂ້າງເທິງຂຽນກ່ອນໜ້ານັ້ນໜຶ່ງປີ ແລະບໍ່ໄດ້ເວົ້າເຖິງຮູບນີ້ໂດຍກົງ',
+      credit: 'Art Institute of Chicago · Gift of Arthur M. Wood, Sr. in memory of Pauline Palmer Wood (1985.1103) · ภาพสาธารณสมบัติ CC0 จากคลังเปิดของพิพิธภัณฑ์',
+      creditEn: 'Art Institute of Chicago · Gift of Arthur M. Wood, Sr. in memory of Pauline Palmer Wood (1985.1103) · public domain, CC0, from the museum’s open-access archive',
+      creditLo: 'Art Institute of Chicago · Gift of Arthur M. Wood, Sr. in memory of Pauline Palmer Wood (1985.1103) · ສາທາລະນະສົມບັດ CC0 ຈາກຄັງເປີດຂອງພິພິທະພັນ',
+      creditUrl: 'https://www.artic.edu/artworks/64818'},
+    {file: 'legends/vangogh-wheat-field-cypresses.jpg', w: 1000, h: 796, year: '1889',
+      title: 'ทุ่งข้าวสาลีกับต้นไซเปรส', titleEn: 'Wheat Field with Cypresses', titleLo: 'ທົ່ງເຂົ້າສາລີກັບຕົ້ນໄຊເປຣສ',
+      maker: 'Vincent van Gogh', makerEn: 'Vincent van Gogh', makerLo: 'Vincent van Gogh',
+      sign: 'เส้นและสี', signEn: 'LINE + COLOUR', signLo: 'ເສັ້ນແລະສີ',
+      own: '“ต้นไซเปรสยังตามหลอกหลอนความคิดฉัน … มันงามด้วยเส้นและสัดส่วน เหมือนเสาโอเบลิสก์ของอียิปต์”',
+      ownEn: '“The cypresses still preoccupy me … It’s beautiful as regards lines and proportions, like an Egyptian obelisk.”',
+      ownLo: '“ຕົ້ນໄຊເປຣສຍັງຄົງຢູ່ໃນຄວາມຄິດຂອງຂ້ອຍ … ມັນງາມດ້ວຍເສັ້ນແລະສັດສ່ວນ ຄືເສົາໂອເບລິສກ໌ຂອງອີຍິບ”',
+      src: 'จดหมายฉบับที่ 783 ถึง Theo van Gogh, Saint-Rémy-de-Provence, 25 มิถุนายน 1889 (ฉบับแปลอังกฤษของ vangoghletters.org ภาษาไทยแปลโดย circles)',
+      srcEn: 'Letter 783 to Theo van Gogh, Saint-Rémy-de-Provence, 25 June 1889 (English translation by vangoghletters.org)',
+      srcLo: 'ຈົດໝາຍສະບັບທີ 783 ເຖິງ Theo van Gogh, Saint-Rémy-de-Provence, 25 ມິຖຸນາ 1889 (ສະບັບແປອັງກິດຂອງ vangoghletters.org ພາສາລາວແປໂດຍ circles)',
+      srcUrl: 'https://vangoghletters.org/vg/letters/let783/letter.html',
+      note: 'ฟานก็อกฮ์วาดภาพนี้ในปี 1889 ช่วงที่พักรักษาตัวอยู่ที่โรงพยาบาลในแซ็ง-เรมี-เดอ-โพรว็องส์ ทางใต้ของฝรั่งเศส เขาเขียนถึงต้นไซเปรสและทุ่งข้าวสาลีในจดหมายช่วงฤดูร้อนเดียวกัน แต่จดหมายไม่ได้ระบุว่าหมายถึงผืนนี้',
+      noteEn: 'Van Gogh painted this in 1889 while he was a patient at the asylum in Saint-Rémy-de-Provence in the south of France. He wrote about cypresses and a wheat field in a letter from the same summer, but the letter does not say it means this canvas.',
+      noteLo: 'ວານກ໊ອກຮ໌ແຕ້ມຮູບນີ້ໃນປີ 1889 ຕອນທີ່ພັກປິ່ນປົວຢູ່ໂຮງໝໍໃນແຊງ-ເຣມີ-ເດ-ໂປຣວອງສ໌ ທາງໃຕ້ຂອງຝຣັ່ງ ເຂົາຂຽນເຖິງຕົ້ນໄຊເປຣສແລະທົ່ງເຂົ້າສາລີໃນຈົດໝາຍຍາມລະດູຮ້ອນດຽວກັນ ແຕ່ຈົດໝາຍບໍ່ໄດ້ບອກວ່າໝາຍເຖິງຜືນນີ້',
+      credit: 'The Metropolitan Museum of Art · Purchase, The Annenberg Foundation Gift, 1993 (1993.132) · ภาพสาธารณสมบัติ CC0 จาก Met Open Access',
+      creditEn: 'The Metropolitan Museum of Art · Purchase, The Annenberg Foundation Gift, 1993 (1993.132) · public domain, CC0, from Met Open Access',
+      creditLo: 'The Metropolitan Museum of Art · Purchase, The Annenberg Foundation Gift, 1993 (1993.132) · ສາທາລະນະສົມບັດ CC0 ຈາກ Met Open Access',
+      creditUrl: 'https://www.metmuseum.org/art/collection/search/436535'}
+  ];
+  const $ = s => document.querySelector(s);
+  const link = (url, txt) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(txt)}</a>`;
 
-  function media(x, k) {
-    if (x.type === 'music') return x.file
-      ? `<div class="pl-media aud"><audio controls preload="none" src="${esc(x.file)}" aria-label="${esc(pk(x, 'title'))}"></audio></div>`
-      : `<div class="pl-media aud"><button class="pl-play" type="button" disabled aria-label="${esc(t('lg_play'))}">▶</button><span class="pl-bars" aria-hidden="true"></span><span>${esc(t('lg_ph_aud'))}</span></div>`;
-    if (x.type === 'film') return x.file
-      ? `<div class="pl-media vid"><video controls preload="none" src="${esc(x.file)}" aria-label="${esc(pk(x, 'title'))}"></video></div>`
-      : `<div class="pl-media vid" aria-hidden="true"><span class="pl-tri"></span></div>`;
-    return x.file ? `<div class="pl-media img"><img src="${esc(x.file)}" alt="${esc(pk(x, 'title'))}" loading="lazy" decoding="async"></div>`
-      : `<div class="pl-media img" role="img" aria-label="${esc(t('lg_ph_img'))}">${X}<span aria-hidden="true">${esc(t('lg_ph_img'))}</span></div>`;
-  }
-  function piece(x, sample) {
-    const k = t(KEY[x.type]);
-    const v = (key, ph) => sample ? t(ph) : pk(x, key) || '';
-    return `<li class="pl-vt" data-type="${x.type}"${filter !== 'all' && filter !== x.type ? ' hidden' : ''}><div class="pl-vt-top"><span class="pl-vt-type">${esc(k)}</span>${sample ? `<span class="pl-vt-stamp">${esc(t('lg_sample'))}</span>` : ''}</div>${media(sample ? {type: x.type} : x)}
-      <dl><div><dt>${esc(t('lg_f_title'))}</dt><dd>${esc(sample ? t('lg_p_title') : pk(x, 'title'))}</dd></div>
-      <div><dt>${esc(t('lg_f_maker'))}</dt><dd>${esc(sample ? t('lg_p_maker') : pk(x, 'maker') + ' · ' + x.year)}</dd></div>
-      <div class="pl-vt-own"><dt>${esc(t('lg_f_own'))}</dt><dd>${esc(sample ? t('lg_p_own') : '“' + pk(x, 'own') + '”')}<small>${esc(t('lg_f_src'))}: ${esc(sample ? t('lg_p_src') : x.src)}</small></dd></div>
-      <div class="pl-vt-hist"><dt>${esc(t('lg_f_hist'))}</dt><dd>${esc(v('note', 'lg_p_hist'))}</dd></div>
-      <div><dt>${esc(t('lg_f_credit'))}</dt><dd>${esc(sample ? t('lg_p_credit') : x.credit)}</dd></div></dl><div class="pl-vt-base" aria-hidden="true"></div></li>`;
-  }
-  function empty(x) {
-    const k = t(KEY[x.type]);
-    return `<li class="pl-vt empty" data-type="${x.type}"${filter !== 'all' && filter !== x.type ? ' hidden' : ''}>${x.type === 'film' ? '<div class="pl-media vid" aria-hidden="true"><span class="pl-tri"></span></div>' : `<div class="pl-media img" aria-hidden="true">${X}</div>`}
-      <p class="pl-em-h">${esc(t('lg_empty', {k}))}</p><p class="pl-em-p">${esc(t('lg_empty_p', {k}))}</p></li>`;
+  function piece(x) {
+    const fr = x.w / x.h;
+    return `<li class="pl-vt pl-lg" data-type="img"><div class="pl-vt-top"><span class="pl-vt-type">${esc(t('lg_img'))}</span><span class="pl-vt-sign">${esc(pk(x, 'sign'))}</span></div>
+      <figure class="pl-media img pl-lg-fig" style="aspect-ratio:${fr.toFixed(3)}"><img src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title') + ' — ' + pk(x, 'maker'))}" loading="lazy" decoding="async"></figure>
+      <dl><div><dt>${esc(t('lg_f_title'))}</dt><dd>${esc(pk(x, 'title'))}</dd></div>
+      <div><dt>${esc(t('lg_f_maker'))}</dt><dd>${esc(pk(x, 'maker') + ' · ' + x.year)}</dd></div>
+      <div class="pl-vt-own"><dt>${esc(t('lg_f_own'))}</dt><dd><q>${esc(pk(x, 'own')).replace(/^“|”$/g, '')}</q><small>${esc(t('lg_f_src'))}: ${link(x.srcUrl, pk(x, 'src'))}</small></dd></div>
+      <div class="pl-vt-hist"><dt>${esc(t('lg_f_hist'))}</dt><dd>${esc(pk(x, 'note'))}</dd></div>
+      <div><dt>${esc(t('lg_f_credit'))}</dt><dd>${link(x.creditUrl, pk(x, 'credit'))}</dd></div></dl><div class="pl-vt-base" aria-hidden="true"></div></li>`;
   }
   function render() {
-    const real = LEGENDS.map(x => piece(x, false)), samples = LEGENDS.length ? [] : SLOTS.filter(x => x.sample).map(x => piece(x, true));
-    $('#lg-list').innerHTML = real.concat(samples, SLOTS.filter(x => x.empty).map(empty)).join('');
+    $('#lg-count').textContent = t('lg_count', {n: LEGENDS.length});
+    $('#lg-list').innerHTML = LEGENDS.map(piece).join('');
   }
-  const $ = s => document.querySelector(s);
-  document.addEventListener('click', e => {
-    const b = e.target.closest('[data-flt]'); if (!b) return;
-    filter = b.dataset.flt; document.querySelectorAll('[data-flt]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render();
-  });
-  window.LG = {render};
+  window.LG = {render, LEGENDS};
 })();

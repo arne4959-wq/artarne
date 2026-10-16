@@ -11,7 +11,7 @@ import PageShell from '../components/PageShell.jsx';
 import Nav, {MENU_FULL} from '../components/Nav.jsx';
 import {MiniFoot, NotFoundSection} from '../components/Bits.jsx';
 import {useDialogs} from '../components/Dialogs.jsx';
-import {Fab, SkipLink} from '../components/Ux.jsx';
+import {Fab, ShareFoot, SkipLink} from '../components/Ux.jsx';
 import {Dist, ScLink} from '../components/Dist.jsx';
 import sprite from 'virtual:circles/sprite/profile';
 import styles from '../styles/profile.js';
@@ -110,7 +110,7 @@ export default function Profile({id}) {
     <main id="main" tabIndex={-1} {...built}>{A ? <>
       <div className="pf-marq" aria-hidden="true" key={'m' + lang}><div className="pf-marq-t">{t('pf_marq').repeat(10)}</div></div>
       <ProfileBody key={lang} A={A}/></> : <NotFoundSection/>}</main>
-    <Dist here="profile"/><MiniFoot/><div className="foot-tools"><ScLink/></div>
+    <Dist here="profile"/><MiniFoot/><div className="foot-tools">{A && <ShareFoot/>}<ScLink/></div>
     {A && <Fab A={A}/>}
   </PageShell>;
 }

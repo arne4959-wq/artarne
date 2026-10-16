@@ -24,23 +24,31 @@ export function Calm() {
     <span aria-hidden="true">{on ? '▶' : '❚❚'}</span><span className="calm-t"> {lab}</span></button>;
 }
 
-export function Fab({A}) {
-  const {t, nameL} = useLang(), {openDonate} = useDialogs(), toast = useToast(), [away, setAway] = useState(false);
-  useEffect(() => {   // hide the floating Support button while the page's own Support button is on screen
-    let raf = 0;
-    const check = () => { raf = 0; const vh = innerHeight; setAway([...document.querySelectorAll('[data-support]:not(.fab-s), .pf-sbtn')].some(el => { const r = el.getBoundingClientRect(); return r.width && r.bottom > 0 && r.top < vh; })); };
-    const queue = () => { if (!raf) raf = requestAnimationFrame(check); };
-    addEventListener('scroll', queue, {passive: true}); addEventListener('resize', queue);
-    const id = setInterval(queue, 2000); queue();
-    return () => { removeEventListener('scroll', queue); removeEventListener('resize', queue); clearInterval(id); cancelAnimationFrame(raf); };
-  }, []);
+/* Share sits in the footer row (a quiet button), so nothing floats over the work on a phone */
+export function ShareFoot() {
+  const {t} = useLang(), toast = useToast();
   const share = async () => {
     const url = location.href.split('#')[0];
     try { if (navigator.share) { await navigator.share({title: document.title, url}); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
     try { await navigator.clipboard.writeText(url); toast(t('share_copied')); } catch (e) { /* no clipboard: nothing to do */ }
   };
-  return <div className="fab-wrap">
-    <button type="button" className="btn ghost fab-s fab-share" onClick={share}>↗ {t('share_btn')}</button>
-    {canDonate(A) && <button type="button" className={'btn pk fab-s fab-sup' + (away ? ' away' : '')} onClick={() => openDonate(A)}>{t('pf_supb', {a: nameL(A)})}</button>}
-  </div>;
+  return <button type="button" className="calm share-foot" aria-label={t('share_btn')} title={t('share_btn')} onClick={share}><span aria-hidden="true">↗</span><span className="calm-t"> {t('share_btn')}</span></button>;
+}
+
+/* the one floating button: "Donate to <artist>". Hidden on the first screen (nothing is covered there) and while the page's own (primary) Donate button
+   is on screen; the quiet per-work links do not count */
+export function Fab({A}) {
+  const {t, nameL} = useLang(), {openDonate} = useDialogs(), [away, setAway] = useState(true), can = canDonate(A);
+  useEffect(() => {
+    if (!can) return;
+    document.documentElement.classList.add('has-fab');
+    let raf = 0;
+    const check = () => { raf = 0; const vh = innerHeight; setAway(scrollY < 160 || [...document.querySelectorAll('[data-support]:not(.fab-s):not([data-quiet]), .pf-sbtn')].some(el => { const r = el.getBoundingClientRect(); return r.width && r.bottom > 0 && r.top < vh; })); };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(check); };
+    addEventListener('scroll', queue, {passive: true}); addEventListener('resize', queue);
+    const first = setTimeout(queue, 800), id = setInterval(queue, 2000); queue();
+    return () => { removeEventListener('scroll', queue); removeEventListener('resize', queue); clearTimeout(first); clearInterval(id); cancelAnimationFrame(raf); document.documentElement.classList.remove('has-fab'); };
+  }, [can]);
+  if (!can) return null;
+  return <div className="fab-wrap"><button type="button" className={'btn pk fab-s fab-sup' + (away ? ' away' : '')} data-support={A.id} onClick={() => openDonate(A)}>{t('pf_supb', {a: nameL(A)})}</button></div>;
 }

@@ -166,5 +166,5 @@ The CSS is the blocks marked `noir + art deco` in `cutaway.html` and `spotlight:
 ## Windows, artists' words, highlights, Legends
 - Every window is a concrete building (beam, rivets, floor sign, hazard footing): `dlgShell()` in circles.js + the `.cdlg-*` rules at the end of circles.css. The artwork window is in cutaway.html.
 - "Artist tells it": `say / why / look` (+En) per work in artists.js; fields in the artist dashboard (supabase/migrations/004_artist_tells.sql).
-- highlights.html (ranked by "Resonated" taps, views break ties, never donations; sample numbers) and legends.html (frame only, nothing picked by us). "Support circles" is a separate window with its own sample QR.
+- highlights.html (ranked by "Resonated" taps, views break ties, never donations; sample numbers) and legends.html (paintings only: Claude Monet and Vincent van Gogh, with their own words, sources and CC0 credits; no donate button). "Support circles" is a separate window with its own sample QR.
 - Edit the template + artists.js, then run `node tools/build.mjs`. Screenshots: `node tools/shots.mjs`. New suite: `node tests-legacy/run.mjs places`.

@@ -20,8 +20,19 @@ export async function run({url, check}) {
   check('highlights: concepts tab shows the artists\' own words', await ev("document.querySelectorAll('#pan-c .pl-cp q').length>=3 && !document.getElementById('pan-c').hidden"));
   /* legends */
   await b.go(`${url}/legends.html`, 3000);
-  const l = await ev("({samples:document.querySelectorAll('.pl-vt-stamp').length,donate:document.querySelectorAll('[data-support],.pf-sbtn').length,go:!!document.querySelector('.pl-nodon a[href=\"highlights.html\"]')})");
-  check('legends: at most 2 marked sample slots, no donate button, a link to the living artists', l.samples > 0 && l.samples <= 2 && l.donate === 0 && l.go, l);
+  const l = await ev(`(()=>{const rooms=[...document.querySelectorAll('.pl-vt')];const own=r=>r.querySelector('.pl-vt-own q')?.textContent||'';const img=r=>r.querySelector('img');return {rooms:rooms.length,names:rooms.map(r=>r.querySelectorAll('dd')[1].textContent),
+    donate:document.querySelectorAll('[data-support],.pf-sbtn,.pf-donate').length,go:!!document.querySelector('.pl-nodon a[href="highlights.html"]'),
+    other:document.querySelectorAll('audio,video,.pl-vt.empty,.pl-vt-stamp,.pl-flt,[data-type=film],[data-type=music]').length,
+    pics:rooms.every(r=>img(r)&&/^legends\\/.+\\.jpg$/.test(img(r).getAttribute('src'))),loaded:rooms.every(r=>img(r)?.complete&&img(r).naturalWidth>400),
+    quotes:rooms.every(r=>own(r).length>20),srcs:rooms.every(r=>/^https:/.test(r.querySelector('.pl-vt-own a')?.href||'')),
+    credits:rooms.every(r=>/CC0|public domain|สาธารณสมบัติ/.test(r.querySelector('dl>div:last-child dd')?.textContent||'')&&/^https:/.test(r.querySelector('dl>div:last-child a')?.href||'')),
+    hist:rooms.every(r=>/\\(.*circles.*\\)/.test(r.querySelector('.pl-vt-hist dt').textContent)),sign:rooms.every(r=>r.querySelector('.pl-vt-sign')?.textContent.length>1)}})()`);
+  check('legends: paintings only (no film, music, samples or empty rooms), no donate button, a link to the living artists', l.rooms >= 2 && l.other === 0 && l.donate === 0 && l.go, l);
+  check('legends: Claude Monet and Vincent van Gogh are there, each with a painting file that loads', l.names.some(n => /Monet/.test(n)) && l.names.some(n => /Gogh/.test(n)) && l.pics && l.loaded, l);
+  check('legends: each room has the painter\'s own words with a linked source, a sign, a history note labelled as circles\' words, and a linked CC0/public-domain credit', l.quotes && l.srcs && l.sign && l.hist && l.credits, l);
+  await ev("document.getElementById('lang-btn')?.click()"); 
+  const lang = await ev("(()=>{for(const l of ['en','lo']){setLang(l);var rs=[...document.querySelectorAll('.pl-vt')];if(!rs.length||rs.some(r=>r.querySelector('.pl-vt-own q').textContent.length<20||!r.querySelector('dd').textContent.trim()))return 'empty '+l;}setLang('th');return 'ok'})()");
+  check('legends: English and Lao render every room (Lao falls back to Thai only where a line is missing)', lang === 'ok', lang);
   /* studio work window: the artist's words + resonated */
   await b.go(`${url}/cutaway.html?id=napha&work=0`, 3500);
   const w = await ev("({voice:!!document.querySelector('#dlg .voice'),stamp:/Written by the artist/.test(document.querySelector('.v-stamp')?.textContent||''),rows:document.querySelectorAll('#dlg .v-rows>div').length,note:/does not edit or interpret/.test(document.querySelector('.v-note')?.textContent||''),room:document.getElementById('dlg-fl').textContent})");

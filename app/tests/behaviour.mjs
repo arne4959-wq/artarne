@@ -241,6 +241,80 @@ const SCENARIOS = {
     r.anchor = await ev("Math.abs(document.getElementById('city').getBoundingClientRect().top - 70) < 60");
     return r;
   },
+  'studio: the hall — Walk on / Previous / arrow keys / a click on a picture move the lit work': async ({b, base, ev}) => {
+    await b.go(`${base}/studio-napha.html?lang=en`, 2500);
+    const st = () => ev(`({cnt: document.getElementById('mus-cnt').textContent, on: [...document.querySelectorAll('#mus .mus-art.is-on')].map(e => e.dataset.k), mark: [...document.querySelectorAll('#mus .mus-m.is-on')].map(e => e.dataset.k),
+      world: document.getElementById('mus-world').style.transform, gone: [...document.querySelectorAll('#mus .mus-gone')].map(e => e.dataset.d).join(','), you: document.getElementById('mus-you').getAttribute('transform'),
+      prev: document.getElementById('mus-prev').disabled, next: document.getElementById('mus-next').disabled, label: document.getElementById('mus-label').textContent, hint: document.querySelector('.hint').textContent, dlg: document.getElementById('dlg').open})`);
+    const r = {start: await st()};
+    await ev(`document.getElementById('mus-next').click()`); await sleep(200); r.next = await st();
+    await b.key('ArrowRight', 'ArrowRight', 39); await sleep(200); r.arrowRight = await st();
+    await b.key('ArrowRight', 'ArrowRight', 39); await sleep(200); r.pastEnd = await st();
+    await ev(`document.getElementById('mus-prev').click()`); await sleep(200); r.prev = await st();
+    await b.key('ArrowLeft', 'ArrowLeft', 37); await sleep(200); r.arrowLeft = await st();
+    await ev(`document.querySelector('#mus .mus-art[data-k="2"]').click()`); await sleep(200); r.clickOther = await st();
+    await ev(`document.querySelector('#mus .mus-art[data-k="2"]').click()`); await sleep(400); r.clickLit = await st();
+    return r;
+  },
+  'studio: the artwork window — opens, pages, artist words, Resonated, quiet donate, Esc, ?work in the address': async ({b, base, ev}) => {
+    await b.go(`${base}/studio-napha.html?lang=en`, 2500);
+    const win = () => ev(`(() => { const d = document.getElementById('dlg'); return {open: d.open, room: d.querySelector('#dlg-fl').textContent, title: d.querySelector('#dlg-t').textContent, by: d.querySelector('#dlg-by').textContent,
+      stamp: (d.querySelector('.v-stamp') || {}).textContent, say: (d.querySelector('.v-say') || {}).textContent, rows: [...d.querySelectorAll('.v-rows dt')].map(e => e.textContent), note: (d.querySelector('.v-note') || {}).textContent,
+      story: d.querySelector('#dlg-story').hidden, dl: d.querySelector('#dlg-dl').textContent, cc: !d.querySelector('#dlg-concept').hidden, ccText: d.querySelector('#dlg-concept').textContent,
+      sup: {hidden: d.querySelector('#dlg-sup').hidden, text: d.querySelector('#dlg-sup').textContent, support: d.querySelector('#dlg-sup').dataset.support, for: d.querySelector('#dlg-sup').dataset.for, quiet: d.querySelector('#dlg-sup').hasAttribute('data-quiet')},
+      res: [d.querySelector('#dlg-res').getAttribute('aria-pressed'), d.querySelector('#dlg-res').textContent], note2: d.querySelector('#dlg-supn').textContent,
+      thumbs: [...d.querySelectorAll('.dlg-th .th')].map(e => e.classList.contains('on')), cnt: d.querySelector('#dlg-cnt').textContent, prev: d.querySelector('#dlg-prev').disabled, next: d.querySelector('#dlg-next').disabled,
+      url: location.search, hall: document.getElementById('mus-cnt').textContent, frame: d.querySelector('#dlg-frame').getAttribute('style'), zoomBtn: !!d.querySelector('#dlg-frame .zoom-btn'), tape: !!d.querySelector('#dlg-frame .dlg-tape')}; })()`);
+    const r = {closed: await win()};
+    await ev(`document.querySelector('.mus-more').click()`); await sleep(400); r.fromLabel = await win();
+    await ev(`document.getElementById('dlg-next').click()`); await sleep(300); r.next = await win();
+    await ev(`document.getElementById('dlg-res').click()`); await sleep(200); r.resOn = await win();
+    r.stored = await ev(`localStorage.getItem('circles-res-v1')`);
+    await ev(`document.getElementById('dlg-res').click()`); await sleep(200); r.resOff = (await win()).res;
+    await b.key('ArrowRight', 'ArrowRight', 39); await sleep(300); r.keyNext = await win();
+    await ev(`document.querySelector('#dlg-th .th[data-th="0"]').click()`); await sleep(300); r.thumb = await win();
+    await ev(`document.getElementById('dlg-sup').click()`); await sleep(500);
+    r.donate = await ev(`({open: document.getElementById('dlg-tip').open, h2: document.querySelector('#dlg-tip h2').textContent, forNote: (document.querySelector('#dlg-tip .sm-for') || {}).textContent, windowStill: document.getElementById('dlg').open})`);
+    await b.key('Escape', 'Escape', 27); await sleep(400); r.afterEscDonate = await ev(`({tip: document.getElementById('dlg-tip').open, win: document.getElementById('dlg').open})`);
+    await b.key('Escape', 'Escape', 27); await sleep(400); r.afterEsc = await win();
+    await ev(`document.querySelector('#mus .mus-art[data-k="1"]').click()`); await sleep(300);
+    await ev(`document.querySelector('#mus .mus-art[data-k="1"]').click()`); await sleep(400); r.fromPicture = (await win()).title;
+    await ev(`document.getElementById('dlg-x').click()`); await sleep(300); r.afterX = await ev(`({open: document.getElementById('dlg').open, search: location.search})`);
+    return r;
+  },
+  'studio: ?work=1 opens that work after a pause, and the hall stands in front of it': async ({b, base, ev}) => {
+    await b.go(`${base}/studio-mali.html?lang=en&work=1`, 2600);
+    return ev(`({open: document.getElementById('dlg').open, title: document.getElementById('dlg-t').textContent, hall: document.getElementById('mus-cnt').textContent, on: [...document.querySelectorAll('#mus .mus-art.is-on')].map(e => e.dataset.k)})`);
+  },
+  'studio: zoom — opens from the window, + / 1× / Esc': async ({b, base, ev}) => {
+    await b.go(`${base}/studio-napha.html?lang=en&work=0`, 2600);
+    await ev(`document.querySelector('#dlg-frame .zoom-btn').click()`); await sleep(400);
+    const z = () => ev(`({open: document.getElementById('dlg-zoom').open, src: document.querySelector('#dlg-zoom .zm-img').getAttribute('src'), tf: document.querySelector('#dlg-zoom .zm-img').style.transform, zin: document.querySelector('#dlg-zoom .zm-stage').classList.contains('zm-in'), hint: document.querySelector('#dlg-zoom .zm-hint').textContent})`);
+    const r = {open: await z()};
+    await ev(`document.querySelector('#dlg-zoom [data-zi]').click()`); await sleep(100); r.in = await z();
+    await ev(`document.querySelector('#dlg-zoom [data-zr]').click()`); await sleep(100); r.reset = await z();
+    await b.key('Escape', 'Escape', 27); await sleep(400); r.esc = await ev(`({zoom: !!document.getElementById('dlg-zoom') && document.getElementById('dlg-zoom').open, win: document.getElementById('dlg').open})`);
+    return r;
+  },
+  'studio: bio More/Less, language switch keeps the work, footer Share, one floating Donate button': async ({b, base, ev}) => {
+    await b.go(`${base}/studio-napha.html?lang=en`, 2500);
+    const r = {more: await ev(`document.getElementById('cut-more').textContent`)};
+    await ev(`document.getElementById('cut-more').click()`); await sleep(150);
+    r.moreOpen = await ev(`({t: document.getElementById('cut-more').textContent, exp: document.getElementById('cut-more').getAttribute('aria-expanded'), open: document.getElementById('cut-bio').classList.contains('open')})`);
+    await ev(`document.getElementById('mus-next').click()`); await sleep(200);
+    await ev(`document.getElementById('lang').click()`); await sleep(500);
+    r.lang = await ev(`({lang: document.documentElement.lang, cnt: document.getElementById('mus-cnt').textContent, label: document.querySelector('#mus-label b').textContent, title: document.title})`);   // (the old page also folded the bio again on a language switch; React keeps it open)
+    r.foot = await ev(`({share: !!document.querySelector('.foot-tools .share-foot'), floating: [...document.querySelectorAll('.fab-wrap button')].map(e => e.className.replace(/ away/, '')), hasFab: document.documentElement.classList.contains('has-fab'), awayAtTop: document.querySelector('.fab-sup').classList.contains('away')})`);
+    await ev(`window.scrollTo(0, 1200)`); await sleep(1200);
+    r.scrolled = await ev(`document.querySelector('.fab-sup').classList.contains('away')`);
+    await ev(`document.querySelector('.fab-sup').click()`); await sleep(500);
+    r.fab = await ev(`({open: document.getElementById('dlg-tip').open, forNote: !!document.querySelector('#dlg-tip .sm-for')})`);
+    return r;
+  },
+  'studio: unknown artist shows the not-found block': async ({b, base, ev}) => {
+    await b.go(`${base}/cutaway.html?id=nobody&lang=en`, 1800);
+    return ev(`({h1: document.querySelector('main h1').textContent, hall: !!document.getElementById('mus'), title: document.title})`);
+  },
   'unknown address shows the 404 page': async ({b, base, ev}) => {
     await b.go(`${base}/no-such-page.html`, 1500);
     return ev(`({h1: document.querySelector('h1').textContent, btn: document.getElementById('b').getAttribute('href'), title: document.title})`);

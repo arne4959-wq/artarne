@@ -14,6 +14,7 @@ const PAGES = {
   terms: lazy(() => import('./pages/Legal.jsx').then(m => ({default: () => <m.default which="terms"/>}))),
   notFound: lazy(() => import('./pages/NotFound.jsx')),
   profile: lazy(() => import('./pages/Profile.jsx')),
+  studio: lazy(() => import('./pages/Studio.jsx')),
   manage: lazy(() => import('./pages/Manage.jsx')),
   highlights: lazy(() => import('./pages/Highlights.jsx')),
   legends: lazy(() => import('./pages/Legends.jsx')),

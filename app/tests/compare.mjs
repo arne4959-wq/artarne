@@ -6,6 +6,7 @@
 //   · a screenshot: share of pixels that differ
 //   · console errors / failed requests and horizontal overflow on the React page
 // Extra states: "join.html#dialog" also opens the Join dialog and compares it; "index.html#map" the map view, "index.html#filter" the new-wave filter.
+// --root=sel,sel: compare only the DOM of those elements (screenshots still cover the whole page).
 // --fixture: both sides use the test data of tests/fixture.mjs (pay link, commission, shipping, no endpoint …).
 // Exit code 1 when a DOM differs or more than 0.5 % of pixels differ. Screenshots of failures go to tests/out/.
 import fs from 'node:fs';
@@ -16,6 +17,7 @@ import {makeFixture} from './fixture.mjs';
 
 const APP = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), SITE = path.resolve(APP, '..'), OUT = path.join(APP, 'tests', 'out');
 const pages = process.argv.slice(2).filter(a => !a.startsWith('--'));
+const ROOTS = ((process.argv.find(a => a.startsWith('--root=')) || '').slice(7).split(',').filter(Boolean));   // --root=main,#dlg: compare only these parts (the old page may have moved on elsewhere)
 const MAX_PX = 0.005, WAIT = +(process.argv.find(a => a.startsWith('--wait=')) || '--wait=1800').slice(7);
 if (!pages.length) { console.log('usage: node tests/compare.mjs page.html [page.html#dialog …]'); process.exit(2); }
 const FIX = process.argv.includes('--fixture') ? makeFixture() : null;
@@ -23,7 +25,8 @@ if (!FIX && !fs.existsSync(path.join(APP, 'dist', 'index.html'))) { console.log(
 fs.mkdirSync(OUT, {recursive: true});
 
 /* runs in the page: a flat, comparable list of the visible document */
-const SNAPSHOT = `(() => {
+const SNAPSHOT = roots => `(() => {
+  const ROOTS = ${JSON.stringify(roots)};
   const SKIP_TAG = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'LINK', 'META', 'TITLE']);
   // data-t stays compared: circles.css styles [data-t] in Lao. data-t-aria / -ph / -html were only read by the old script.
   // The old ransom() chips carry junk attributes from a quote bug (font-family:"Special Elite" ends style="…"):
@@ -44,14 +47,16 @@ const SNAPSHOT = `(() => {
       if (n.id === 'root') { walk(n, depth); continue; }                                    // the React mount point is layout-neutral (display:contents)
       if (n.tagName.toLowerCase() === 'svg' && n.getAttribute('width') === '0' && n.getAttribute('height') === '0') { out.push('  '.repeat(depth) + '<svg sprite>'); continue; }
       // style is compared as the browser reads it (cssText), not as written
-      const attrs = [...n.attributes].filter(a => !SKIP_ATTR(a.name, n)).map(a => a.name + '=' + JSON.stringify(a.name === 'style' ? n.style.cssText : a.value.replace(/\\s+/g, ' ').trim())).sort();
+      const attrs = [...n.attributes].filter(a => !SKIP_ATTR(a.name, n) && !(a.name === 'style' && !n.style.cssText)).map(a => a.name + '=' + JSON.stringify(a.name === 'style' ? n.style.cssText : a.value.replace(/\\s+/g, ' ').trim())).sort();
       out.push('  '.repeat(depth) + '<' + n.tagName.toLowerCase() + (attrs.length ? ' ' + attrs.join(' ') : '') + '>');
       if (n.tagName === 'DIALOG' && !n.open) continue;
+      if (n.hidden) continue;                          // what is not shown cannot differ on screen (the old window left stale text in its hidden story box)
       walk(n, depth + 1);
     }
     flush();
   };
-  walk(document.body, 0);
+  if (ROOTS.length) ROOTS.forEach(sel => { const e = document.querySelector(sel); out.push('# ' + sel + (e ? '' : ' (missing)')); if (e) walk({childNodes: [e]}, 0); });
+  else walk(document.body, 0);
   return {dom: out, title: document.title, lang: document.documentElement.lang, ox: document.documentElement.scrollWidth - innerWidth};
 })()`;
 
@@ -91,7 +96,7 @@ try {
           if (state === 'filter') { await b.ev(`document.querySelector('.fbtn[data-d="*wave"]').click()`); await sleep(1500); }                      // the home page with the new-wave filter on
           if (state === 'dialog') { await b.ev(`(document.querySelector('.jn-cta .btn')||document.querySelector('nav .join')).click()`); await sleep(500); }
           await b.ev('document.fonts.ready.then(()=>1)');
-          const s = await b.ev(SNAPSHOT);
+          const s = await b.ev(SNAPSHOT(ROOTS));
           const shot = await b.send('Page.captureScreenshot', {format: 'png'});
           return {...s, png: 'data:image/png;base64,' + shot.data};
         };

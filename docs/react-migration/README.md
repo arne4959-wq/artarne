@@ -9,7 +9,7 @@ When every page is done, the root files are removed and `app/` becomes the site.
 | 2. Vite project, data, strings, helpers, CSS | done (this note) |
 | 3. Simple pages: 404, privacy, terms, join | done: same DOM and look as the old pages (30/30), same behaviour (7/7) |
 | 4. buy, profile | done: see below |
-| 5. studio / museum | next |
+| 5. studio / museum | done: hall (`Hall.jsx`), artwork window (`WorkDialog.jsx`), zoom (`Zoom.jsx`); `studio-ui.mjs`, `studio.test.mjs`, 8 studio behaviour scenarios, `compare.mjs --root=main,#dlg` identical to the old page. Not ported: the `?floors` tower and pixel-punks.js (tower only) |
 | 6. home (city strip, hd2d, loader) | done: same DOM and look as the old page (`compare.mjs index.html`, 3 languages x 2 sizes, also #map and #filter), 11 behaviour scenarios, old hd2d / layout / perf suites pass on `app/dist` (`CIRCLES_ROOT=app/dist node tests-legacy/run.mjs hd2d`) |
 | 7. pre-render, og images, sitemap, tests | |
 

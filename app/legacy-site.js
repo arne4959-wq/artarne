@@ -21,7 +21,7 @@ import {fileURLToPath} from 'node:url';
 import {readLive} from '../tools/live-data.mjs';
 
 export const SITE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const STATIC = ['art', 'fonts', 'og', 'vendor'];
+const STATIC = ['art', 'fonts', 'og', 'people', 'vendor'];
 const STATIC_FILES = ['og.png', 'robots.txt', '.nojekyll'];
 const P = 'virtual:circles/', R = '\0' + P;
 /* tests only: CIRCLES_FIXTURE=<dir> reads artists.js / circles.js from that folder instead (tests/fixture.mjs makes one) */

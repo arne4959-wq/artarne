@@ -382,33 +382,18 @@ th: {
   res_btn:'โดนใจ',
   res_on:'โดนใจแล้ว',
   lg_h:'ย่านตำนาน',
-  lg_meta:'ผลงานของผู้วางรากฐานศิลปะ หนัง และเพลง คัดทีละชิ้น ใส่เครดิตทุกชิ้น ย่านนี้ไม่มีปุ่มโดเนท',
-  lg_lead:'ผลงานของคนที่วางรากฐานให้ศิลปะ หนัง และเพลง คัดทีละชิ้นโดย circles ใช้เฉพาะงานที่หมดลิขสิทธิ์หรือได้รับอนุญาต และใส่เครดิตทุกชิ้น',
+  lg_meta:"ภาพวาดของผู้วางรากฐานศิลปะ คัดทีละชิ้น ใส่เครดิตทุกชิ้น ย่านนี้ไม่มีปุ่มโดเนท",
+  lg_lead:"ภาพวาดของคนที่วางรากฐานให้ศิลปะ คัดทีละชิ้นโดย circles ใช้เฉพาะภาพที่หมดลิขสิทธิ์จากคลังภาพของพิพิธภัณฑ์ และใส่เครดิตทุกชิ้น คำของจิตรกรในแต่ละห้องเป็นคำของเขาเองพร้อมที่มา ส่วนบันทึกประวัติเป็นคำของ circles",
   lg_nodon:'ย่านนี้ไม่มีปุ่มโดเนท เพราะเจ้าของงานจากไปแล้ว ถ้าอยากสนับสนุนศิลปินที่ยังทำงานอยู่ ไปดูไฮไลต์ประจำสัปดาห์',
   lg_go:'ไปสนับสนุนศิลปินที่ยังทำงานอยู่',
-  lg_flt:'กรองตามประเภท',
-  lg_all:'ทั้งหมด',
-  lg_img:'ภาพ',
-  lg_film:'หนัง',
-  lg_music:'เพลง',
-  lg_sample:'ตัวอย่างช่อง',
-  lg_f_title:'ชื่อผลงาน',
-  lg_f_maker:'ผู้สร้าง · ปี',
-  lg_f_own:'คำของผู้สร้างเอง',
+  lg_img:"ภาพวาด",
+  lg_count:"{n} ภาพบนผนัง",
+  lg_f_title:"ชื่อภาพ",
+  lg_f_maker:"จิตรกร · ปี",
+  lg_f_own:"แนวคิดของเขา ในคำของเขาเอง",
   lg_f_src:'ที่มา',
-  lg_f_hist:'บันทึกประวัติ (ไม่ใช่คำของผู้สร้าง)',
+  lg_f_hist:"บันทึกประวัติ (คำของ circles ไม่ใช่คำของจิตรกร)",
   lg_f_credit:'เครดิตไฟล์และสัญญาอนุญาต',
-  lg_p_title:'[ชื่อผลงาน]',
-  lg_p_maker:'[ชื่อผู้สร้าง] · [ปี]',
-  lg_p_own:'“[คำพูดจริงของผู้สร้าง]”',
-  lg_p_src:'[จดหมาย หนังสือ หรือบทสัมภาษณ์ และปี]',
-  lg_p_hist:'[ข้อมูลสั้น ๆ ว่างานนี้เกิดขึ้นเมื่อไหร่ อย่างไร]',
-  lg_p_credit:'[พิพิธภัณฑ์หรือคลัง] · [CC0 หรือหมดลิขสิทธิ์]',
-  lg_ph_img:'[ภาพจากพิพิธภัณฑ์]',
-  lg_ph_aud:'[ไฟล์เสียง]',
-  lg_play:'เล่น (ยังไม่มีไฟล์)',
-  lg_empty:'ห้องว่าง · {k}',
-  lg_empty_p:'รอผลงานประเภท{k}ชิ้นต่อไป',
   sc_link:'ช่วยให้ circles ไปต่อ',
   sc_title:'ช่วย circles',
   sc_k:'เงินให้ circles',
@@ -549,33 +534,18 @@ en: {
   res_btn:'Resonated',
   res_on:'Resonated',
   lg_h:'Legends',
-  lg_meta:'Work by the people who laid the foundations of art, film and music. Picked one piece at a time, every piece credited. No donate button here.',
-  lg_lead:'Work by the people who laid the foundations of art, film and music. Picked one piece at a time by circles, only public-domain or licensed works, every piece credited.',
+  lg_meta:"Paintings by the people who laid the foundations of art. Picked one piece at a time, every piece credited. No donate button here.",
+  lg_lead:"Paintings by the people who laid the foundations of art. Picked one piece at a time by circles, only public-domain images from museum archives, every piece credited. The words in each room are the painter’s own, with their source. The historical note is circles’ own.",
   lg_nodon:'There is no donate button here: these makers have passed away. To support artists who are still working, see this week’s highlights.',
   lg_go:'Support living artists',
-  lg_flt:'Filter by type',
-  lg_all:'All',
-  lg_img:'Images',
-  lg_film:'Film',
-  lg_music:'Music',
-  lg_sample:'Sample slot',
-  lg_f_title:'Title',
-  lg_f_maker:'Maker · year',
-  lg_f_own:'In the maker’s own words',
+  lg_img:"Paintings",
+  lg_count:"{n} paintings on the walls",
+  lg_f_title:"Title",
+  lg_f_maker:"Painter · year",
+  lg_f_own:"His concept, in his own words",
   lg_f_src:'Source',
-  lg_f_hist:'Historical note (not the maker’s words)',
+  lg_f_hist:"Historical note (circles’ words, not the painter’s)",
   lg_f_credit:'File credit and license',
-  lg_p_title:'[Title]',
-  lg_p_maker:'[Maker] · [year]',
-  lg_p_own:'“[A real quote by the maker]”',
-  lg_p_src:'[Letter, book or interview, and year]',
-  lg_p_hist:'[A short note on when and how it was made]',
-  lg_p_credit:'[Museum or archive] · [CC0 or public domain]',
-  lg_ph_img:'[Image from a museum]',
-  lg_ph_aud:'[Audio file]',
-  lg_play:'Play (no file yet)',
-  lg_empty:'Empty room · {k}',
-  lg_empty_p:'Waiting for the next {k} piece',
   sc_link:'Help circles keep going',
   sc_title:'Support circles',
   sc_k:'Money for circles',
@@ -949,33 +919,18 @@ lo: {
   res_btn: "ຖືກໃຈ",   // DRAFT lo: needs native review
   res_on: "ຖືກໃຈແລ້ວ",   // DRAFT lo: needs native review
   lg_h: "ຍ່ານຕຳນານ",   // DRAFT lo: needs native review
-  lg_meta: "ຜົນງານຂອງຜູ້ວາງຮາກຖານສິລະປະ ຮູບເງົາ ແລະ ເພງ ຄັດເລືອກເທື່ອລະຊິ້ນ ໃສ່ເຄຣດິດທຸກຊິ້ນ ຍ່ານນີ້ບໍ່ມີປຸ່ມບໍລິຈາກ",   // DRAFT lo: needs native review
-  lg_lead: "ຜົນງານຂອງຄົນທີ່ວາງຮາກຖານໃຫ້ສິລະປະ ຮູບເງົາ ແລະ ເພງ ຄັດເລືອກເທື່ອລະຊິ້ນໂດຍ circles ໃຊ້ສະເພາະງານທີ່ໝົດລິຂະສິດ ຫຼື ໄດ້ຮັບອະນຸຍາດ ແລະ ໃສ່ເຄຣດິດທຸກຊິ້ນ",   // DRAFT lo: needs native review
+  lg_meta: "ຮູບແຕ້ມຂອງຜູ້ວາງຮາກຖານສິລະປະ ຄັດເລືອກເທື່ອລະຊິ້ນ ໃສ່ເຄຣດິດທຸກຊິ້ນ ຍ່ານນີ້ບໍ່ມີປຸ່ມບໍລິຈາກ",   // DRAFT lo: needs native review
+  lg_lead: "ຮູບແຕ້ມຂອງຄົນທີ່ວາງຮາກຖານໃຫ້ສິລະປະ ຄັດເລືອກເທື່ອລະຊິ້ນໂດຍ circles ໃຊ້ສະເພາະຮູບທີ່ໝົດລິຂະສິດຈາກຄັງຮູບຂອງພິພິທະພັນ ແລະ ໃສ່ເຄຣດິດທຸກຊິ້ນ ຄຳຂອງນັກແຕ້ມໃນແຕ່ລະຫ້ອງເປັນຄຳຂອງເຂົາເອງພ້ອມທີ່ມາ ສ່ວນບັນທຶກປະຫວັດເປັນຄຳຂອງ circles",   // DRAFT lo: needs native review
   lg_nodon: "ຍ່ານນີ້ບໍ່ມີປຸ່ມບໍລິຈາກ ເພາະເຈົ້າຂອງຜົນງານຈາກໄປແລ້ວ ຖ້າຢາກສະໜັບສະໜູນສິລະປິນທີ່ຍັງເຮັດວຽກຢູ່ ໄປເບິ່ງໄຮໄລທ໌ປະຈຳອາທິດ",   // DRAFT lo: needs native review
   lg_go: "ໄປສະໜັບສະໜູນສິລະປິນທີ່ຍັງເຮັດວຽກຢູ່",   // DRAFT lo: needs native review
-  lg_flt: "ກັ່ນຕອງຕາມປະເພດ",   // DRAFT lo: needs native review
-  lg_all: "ທັງໝົດ",   // DRAFT lo: needs native review
-  lg_img: "ຮູບ",   // DRAFT lo: needs native review
-  lg_film: "ຮູບເງົາ",   // DRAFT lo: needs native review
-  lg_music: "ເພງ",   // DRAFT lo: needs native review
-  lg_sample: "ຊ່ອງຕົວຢ່າງ",   // DRAFT lo: needs native review
-  lg_f_title: "ຊື່ຜົນງານ",   // DRAFT lo: needs native review
-  lg_f_maker: "ຜູ້ສ້າງ · ປີ",   // DRAFT lo: needs native review
-  lg_f_own: "ຄຳຂອງຜູ້ສ້າງເອງ",   // DRAFT lo: needs native review
+  lg_img: "ຮູບແຕ້ມ",   // DRAFT lo: needs native review
+  lg_count: "{n} ຮູບຢູ່ເທິງຝາ",   // DRAFT lo: needs native review
+  lg_f_title: "ຊື່ຮູບ",   // DRAFT lo: needs native review
+  lg_f_maker: "ນັກແຕ້ມ · ປີ",   // DRAFT lo: needs native review
+  lg_f_own: "ແນວຄິດຂອງເຂົາ ໃນຄຳຂອງເຂົາເອງ",   // DRAFT lo: needs native review
   lg_f_src: "ທີ່ມາ",   // DRAFT lo: needs native review
-  lg_f_hist: "ບັນທຶກປະຫວັດ (ບໍ່ແມ່ນຄຳຂອງຜູ້ສ້າງ)",   // DRAFT lo: needs native review
+  lg_f_hist: "ບັນທຶກປະຫວັດ (ຄຳຂອງ circles ບໍ່ແມ່ນຄຳຂອງນັກແຕ້ມ)",   // DRAFT lo: needs native review
   lg_f_credit: "ເຄຣດິດໄຟລ໌ ແລະ ສັນຍາອະນຸຍາດ",   // DRAFT lo: needs native review
-  lg_p_title: "[ຊື່ຜົນງານ]",   // DRAFT lo: needs native review
-  lg_p_maker: "[ຊື່ຜູ້ສ້າງ] · [ປີ]",   // DRAFT lo: needs native review
-  lg_p_own: "“[ຄຳເວົ້າຈິງຂອງຜູ້ສ້າງ]”",   // DRAFT lo: needs native review
-  lg_p_src: "[ຈົດໝາຍ ປຶ້ມ ຫຼື ບົດສຳພາດ ແລະ ປີ]",   // DRAFT lo: needs native review
-  lg_p_hist: "[ຂໍ້ມູນສັ້ນໆວ່າຜົນງານນີ້ເກີດຂຶ້ນເມື່ອໃດ ແນວໃດ]",   // DRAFT lo: needs native review
-  lg_p_credit: "[ພິພິທະພັນ ຫຼື ຄັງ] · [CC0 ຫຼື ໝົດລິຂະສິດ]",   // DRAFT lo: needs native review
-  lg_ph_img: "[ຮູບຈາກພິພິທະພັນ]",   // DRAFT lo: needs native review
-  lg_ph_aud: "[ໄຟລ໌ສຽງ]",   // DRAFT lo: needs native review
-  lg_play: "ຫຼິ້ນ (ຍັງບໍ່ມີໄຟລ໌)",   // DRAFT lo: needs native review
-  lg_empty: "ຫ້ອງວ່າງ · {k}",   // DRAFT lo: needs native review
-  lg_empty_p: "ລໍຖ້າຜົນງານປະເພດ{k}ຊິ້ນຕໍ່ໄປ",   // DRAFT lo: needs native review
   sc_link: "ຊ່ວຍໃຫ້ circles ໄປຕໍ່",   // DRAFT lo: needs native review
   sc_title: "ຊ່ວຍ circles",   // DRAFT lo: needs native review
   sc_k: "ເງິນໃຫ້ circles",   // DRAFT lo: needs native review

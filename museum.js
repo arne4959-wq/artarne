@@ -143,7 +143,7 @@
     const w = document.getElementById('mus-world'); if (!w) return;
     const s = G.spots[cur];
     w.style.transform = camT(s);
-    document.querySelectorAll('#mus [data-d]').forEach(e => e.classList.toggle('mus-gone', +e.dataset.d < s.cam + 100 || (e.dataset.min && s.cam < +e.dataset.min)));   // behind the camera: fade out, never loom
+    document.querySelectorAll('#mus [data-d]').forEach(e => e.classList.toggle('mus-gone', +e.dataset.d < s.cam + 100 || (!!e.dataset.min && s.cam < +e.dataset.min)));   // behind the camera: fade out, never loom
     document.querySelectorAll('#mus [data-k]').forEach(e => e.classList.toggle('is-on', +e.dataset.k === cur));
     document.getElementById('mus-label').innerHTML = labelHtml(cur);
     document.getElementById('mus-cnt').textContent = `${cur + 1} / ${G.n}`;
