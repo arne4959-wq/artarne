@@ -2,14 +2,17 @@
    links: [[href, stringKey], …] before the language button; join: show the Join button; menu: [[href, stringKey], …] for the phone menu */
 import {useEffect, useRef, useState} from 'react';
 import {useLang} from '../lib/i18n.jsx';
-import {LANG_NEXT, LANG_BTN, LANG_NAME} from '../lib/lang.js';
+import {LANGS, LANG_BTN, LANG_NAME} from '../lib/lang.js';
 import {coinPlay} from '../lib/coin.js';
 import {useDialogs} from './Dialogs.jsx';
 import Coin from './Coin.jsx';
 
+/* all three languages side by side, the current one filled (see .lang-seg in circles.css) */
 export function LangButton() {
-  const {lang, setLang} = useLang(), nx = LANG_NEXT[lang];
-  return <button type="button" className="lang" id="lang" aria-label={`${LANG_BTN[nx]} — ${LANG_NAME[nx]}`} lang={nx} onClick={() => setLang(nx)}>{LANG_BTN[nx]}</button>;
+  const {lang, setLang, t} = useLang();
+  return <div className="lang-seg" id="lang" role="group" aria-label={t('lang_aria')}>
+    {LANGS.map(l => <button key={l} type="button" lang={l} aria-pressed={l === lang} aria-label={LANG_NAME[l]} onClick={() => l !== lang && setLang(l)}>{LANG_BTN[l]}</button>)}
+  </div>;
 }
 
 export default function Nav({links = [], join = false, menu = null, brandHref = 'index.html', id}) {
@@ -33,12 +36,12 @@ export default function Nav({links = [], join = false, menu = null, brandHref = 
       <div className="links">
         {withAll(links).map(([href, k]) => <a key={href + k} href={href} data-t={k}>{t(k)}</a>)}
         <LangButton/>
-        {join && <button type="button" className="join" onClick={() => dialogs.openJoin()}>Join</button>}
+        {join && <button type="button" className="join" onClick={() => dialogs.openJoin()}>{t('nav_join')}</button>}
         {menu && <button type="button" className="menu-btn" id="menu-btn" aria-label={t('menu_aria')} aria-expanded={open ? 'true' : 'false'} aria-controls="mnav"
           onClick={e => { e.stopPropagation(); setOpen(o => !o); }}><i></i><i></i></button>}
       </div>
       {menu && <div className={'mnav' + (open ? ' open' : '')} id="mnav" inert={!open} onClick={e => { if (e.target.closest('a')) setOpen(false); }}>
-        {withAll(menu).map(([href, k]) => <a key={href + k} href={href} data-t={k}>{t(k)}</a>)}
+        {withAll(menu).sort((a, b) => /join\.html$/.test(b[0]) - /join\.html$/.test(a[0])).map(([href, k]) => <a key={href + k} className={/join\.html$/.test(href) ? 'mn-join' : undefined} href={href} data-t={k}>{t(k)}</a>)}
       </div>}
     </nav>
   );

@@ -282,7 +282,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;',
 /* ---------- strings ---------- */
 const STR = {
 th: {
-  nav_city:'เมือง', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'Join', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
+  nav_city:'เมือง', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'ขอมีตึก', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
   wave:'คลื่นลูกใหม่', f_wave:'★ คลื่นลูกใหม่', fnote_wave:'ไฮไลต์ {n} ตึกคลื่นลูกใหม่ในแถบเมืองแล้ว',
   ld_top:'circles · เมืองของศิลปิน', ld_text:'กำลังสร้างเมือง…', ld_skip:'ข้ามการเปิดเรื่อง',
   legal_privacy:'นโยบายความเป็นส่วนตัว', legal_terms:'เงื่อนไขการใช้งาน',
@@ -315,8 +315,8 @@ th: {
   p1_h:'ตึกเป็นของคุณ', p1_p:'จัดห้อง วางงาน เปลี่ยนชั้นได้ตามใจ ตึกหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีใครมาแชร์ผนังด้วย',
   p2_h:'เงินเข้าคุณ 100%', p2_p:'รับเงินสนับสนุนตรงถึงมือ ไม่มีค่าคอมมิชชัน ไม่มีค่าฝากขาย ไม่มีใครหักก่อนถึงมือ',
   p3_h:'ไม่มีใครคัดงาน', p3_p:'ไม่มีคณะกรรมการ ไม่มีธีมประจำปี ไม่ถามว่าจบจากไหน ทำมาแล้วอยากให้คนเห็น ก็สร้างตึกได้เลย',
-  join_btn:'Join — ขอมีตึก →', jn_kick:'สำหรับศิลปิน', jn_cta:'เล่าให้เราฟังสั้น ๆ ว่าคุณทำงานแบบไหน แนบลิงก์ผลงาน แล้วเราจะติดต่อกลับทางอีเมล', jb_p:'รับการสนับสนุนตรง ไม่มีใครคัดงาน', jb_btn:'ดูรายละเอียด →', skip_main:'ข้ามไปที่เนื้อหา',
-  foot_h:'ศิลปะ<em>ไม่รอ</em>ใคร', foot_p:'อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง', foot_btn:'ขอเข้าร่วม →',
+  join_btn:'ขอมีตึก →', jn_kick:'สำหรับศิลปิน', jn_cta:'เล่าให้เราฟังสั้น ๆ ว่าคุณทำงานแบบไหน แนบลิงก์ผลงาน แล้วเราจะติดต่อกลับทางอีเมล', jb_p:'รับการสนับสนุนตรง ไม่มีใครคัดงาน', jb_btn:'ขอมีตึกของคุณ →', skip_main:'ข้ามไปที่เนื้อหา',
+  foot_h:'ศิลปะ<em>ไม่รอ</em>ใคร', foot_p:'อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง', foot_btn:'ขอมีตึก →',
   foot_menu:'เมนู', foot_social:'โซเชียล', foot_manifesto:'Manifesto', foot_how:'วิธีใช้งาน', foot_feat:'ผลงานเด่น', foot_map:'แผนที่เมือง', foot_join:'ขอมีตึก',
   news_label:'ข่าวจากเมือง ตึกใหม่ งานใหม่ ส่งตรงถึงกล่องอีเมล ไม่สแปม ไม่ขายต่อ', news_btn:'สมัคร →', foot_copy:'© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.',
   social_soon:'ลิงก์โซเชียลจะเปิดตอนเว็บขึ้นออนไลน์',
@@ -438,7 +438,7 @@ th: {
   sc_done_r_p:'ขอบคุณที่ช่วยดูแลเว็บ {m} ทีมงานจะเห็นยอดเมื่อเงินเข้าบัญชี circles เงินก้อนนี้ไม่ได้ไปถึงศิลปิน',
 },
 en: {
-  nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', menu_aria:'Menu', lang_aria:'Switch language',
+  nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Get a building', menu_aria:'Menu', lang_aria:'Switch language',
   wave:'NEW WAVE', f_wave:'★ New wave', fnote_wave:'Highlighted {n} new-wave building(s) in the strip',
   ld_top:'circles · a city of artists', ld_text:'Building the city…', ld_skip:'Skip intro',
   legal_privacy:'Privacy policy', legal_terms:'Terms of use',
@@ -471,8 +471,8 @@ en: {
   p1_h:'The building is yours', p1_p:"Arrange rooms, hang work, change floors however you like. One building, one artist. Nobody shares your walls.",
   p2_h:'You keep 100%', p2_p:'Get supported directly. No commission, no consignment fee, nobody skims before it reaches you.',
   p3_h:'No one judges the work', p3_p:"No committee, no yearly theme, nobody asks where you graduated. Made something you want people to see? You can build.",
-  join_btn:'Join — get a building →', jn_kick:'For artists', jn_cta:'Tell us briefly what you make and add a link to your work. We will get back to you by email.', jb_p:'Get supported directly, no jury.', jb_btn:'See how it works →', skip_main:'Skip to content',
-  foot_h:'Art <em>waits</em> for no one', foot_p:"Want a building in this city? Send us your work. We won't ask who you are, only what your work is like.", foot_btn:'Request to join →',
+  join_btn:'Get a building →', jn_kick:'For artists', jn_cta:'Tell us briefly what you make and add a link to your work. We will get back to you by email.', jb_p:'Get supported directly, no jury.', jb_btn:'Get your own building →', skip_main:'Skip to content',
+  foot_h:'Art <em>waits</em> for no one', foot_p:"Want a building in this city? Send us your work. We won't ask who you are, only what your work is like.", foot_btn:'Get a building →',
   foot_menu:'Menu', foot_social:'Social', foot_manifesto:'Manifesto', foot_how:'How it works', foot_feat:'Featured', foot_map:'City map', foot_join:'Get a building',
   news_label:'News from the city: new buildings, new work, straight to your inbox. No spam, never resold.', news_btn:'Subscribe →', foot_copy:'© 2026 CIRCLES · prototype · artists and works shown are examples · NO GALLERY. NO MIDDLEMAN.',
   social_soon:'Social links open when the site goes live',
@@ -749,10 +749,10 @@ lo: {
   spot_meta: "NO.01 · {d} · ຕັ້ງແຕ່ {y} · {c}",   // DRAFT lo: needs native review
   stats_aria: "ຕົວເລກຂອງເມືອງ",   // DRAFT lo: needs native review
   join_h: "ຢາກມີຕຶກຂອງຕົນເອງບໍ?",   // DRAFT lo: needs native review
-  join_btn: "Join — ຂໍມີຕຶກ →",   // DRAFT lo: needs native review
+  join_btn: "ຂໍມີຕຶກ →",   // DRAFT lo: needs native review
   foot_h: "ສິລະປະ<em>ບໍ່ລໍ</em>ໃຜ",   // DRAFT lo: needs native review
   foot_p: "ຢາກມີຕຶກໃນເມືອງນີ້ ສົ່ງຜົນງານມາໄດ້ເລີຍ ພວກເຮົາບໍ່ຖາມວ່າທ່ານເປັນໃຜ ພວກເຮົາເບິ່ງແຕ່ວ່າຜົນງານຂອງທ່ານເປັນແນວໃດ",   // DRAFT lo: needs native review
-  foot_btn: "ຂໍເຂົ້າຮ່ວມ →",   // DRAFT lo: needs native review
+  foot_btn: "ຂໍມີຕຶກ →",   // DRAFT lo: needs native review
   foot_menu: "ເມນູ",   // DRAFT lo: needs native review
   foot_social: "ໂຊຊຽວ",   // DRAFT lo: needs native review
   news_label: "ຂ່າວຈາກເມືອງ ຕຶກໃໝ່ ຜົນງານໃໝ່ ສົ່ງຕົງເຖິງກ່ອງອີເມວ ບໍ່ສະແປມ ບໍ່ຂາຍຕໍ່",   // DRAFT lo: needs native review
@@ -777,7 +777,7 @@ lo: {
   don_btn: "ສະໜັບສະໜູນ →",   // DRAFT lo: needs native review
   don_soon: "ໄວໆນີ້",   // DRAFT lo: needs native review
   mq: ["ສິລະປິນບໍ່ມີກົດ", "SUPPORT ART", "ສະໜັບສະໜູນກົງເຖິງຄົນເຮັດ", "NO MIDDLEMAN", "ເມືອງຂອງສິລະປິນ", "ART NOT SORRY"],   // DRAFT lo: needs native review
-  nav_join: "Join",   // DRAFT lo: needs native review
+  nav_join: "ຂໍມີຕຶກ",   // DRAFT lo: needs native review
   mani_k: "Manifesto",   // DRAFT lo: needs native review
   how_i: "3 steps",   // DRAFT lo: needs native review
   feat_i: "Featured",   // DRAFT lo: needs native review
@@ -842,7 +842,7 @@ lo: {
   jn_kick: "ສຳລັບສິລະປິນ",   // DRAFT lo: needs native review
   jn_cta: "ເລົ່າໃຫ້ພວກເຮົາຟັງສັ້ນໆວ່າທ່ານເຮັດງານແບບໃດ ແນບລິ້ງຜົນງານ ແລ້ວພວກເຮົາຈະຕິດຕໍ່ກັບທາງອີເມວ",   // DRAFT lo: needs native review
   jb_p: "ຮັບການສະໜັບສະໜູນໂດຍກົງ ບໍ່ມີໃຜຄັດງານ",   // DRAFT lo: needs native review
-  jb_btn: "ເບິ່ງລາຍລະອຽດ →",   // DRAFT lo: needs native review
+  jb_btn: "ຂໍມີຕຶກຂອງເຈົ້າ →",   // DRAFT lo: needs native review
   jd_title: "ຂໍມີ<em>ຕຶກ</em>ໃນເມືອງນີ້",   // DRAFT lo: needs native review
   jd_intro: "ເລົ່າໃຫ້ຟັງສັ້ນໆວ່າທ່ານເຮັດຫຍັງ ບໍ່ຕ້ອງມີປະຫວັດຍາວ ບໍ່ຕ້ອງມີໃຜຮັບຮອງ ພວກເຮົາເບິ່ງທີ່ຜົນງານ",   // DRAFT lo: needs native review
   jd_name: "ຊື່ / ນາມປາກກາ",   // DRAFT lo: needs native review
@@ -1054,7 +1054,7 @@ const titleL = p => (LANG === 'lo' && p.titleLo != null) ? p.titleLo : pk(p, 't'
 const bldgL = a => LANG === 'en' ? `${nameL(a)}'s building` : LANG === 'lo' ? 'ຕຶກຂອງ' + nameL(a) : 'ตึกของ' + a.name;   // "NO.04 · ตึกของ…" and the building's aria-label
 const fmtSize = p => p.s == null ? (LANG === 'lo' && p.sLo != null ? p.sLo : '') : LANG === 'en' ? p.s.replace('ซม.', 'cm').replace('สูง', 'H') : (LANG === 'lo' && p.sLo != null) ? p.sLo : p.s;   // a work may have no size
 /* the language button cycles TH -> EN -> ລາວ -> TH; it shows the language it will switch to */
-const LANG_NEXT = {th: 'en', en: 'lo', lo: 'th'}, LANG_BTN = {th: 'TH', en: 'EN', lo: 'ລາວ'}, LANG_NAME = {th: 'ภาษาไทย', en: 'English', lo: 'ພາສາລາວ'};
+const LANGS_ORDER = ['th', 'en', 'lo'], LANG_NEXT = {th: 'en', en: 'lo', lo: 'th'}, LANG_BTN = {th: 'TH', en: 'EN', lo: 'ລາວ'}, LANG_NAME = {th: 'ภาษาไทย', en: 'English', lo: 'ພາສາລາວ'};
 const langHooks = [];
 const onLang = fn => { langHooks.push(fn); };
 function applyLang() {
@@ -1064,9 +1064,22 @@ function applyLang() {
   document.querySelectorAll('[data-t-alt]').forEach(el => { el.setAttribute('alt', t(el.dataset.tAlt)); });
   document.querySelectorAll('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
   document.querySelectorAll('[data-t-ph]').forEach(el => { el.setAttribute('placeholder', t(el.dataset.tPh)); });
-  const lb = $('#lang'); if (lb) { const nx = LANG_NEXT[LANG]; lb.textContent = LANG_BTN[nx]; lb.setAttribute('aria-label', LANG_BTN[nx] + ' — ' + LANG_NAME[nx]); lb.setAttribute('lang', nx); }
+  langSeg();
   const mb = $('#menu-btn'); if (mb) mb.setAttribute('aria-label', t('menu_aria'));
   langHooks.forEach(fn => fn());
+}
+/* the language switch: all three languages side by side, the current one marked (replaces the old single button that showed the NEXT language) */
+function langSeg(build) {
+  let g = $('#lang');
+  if (build && g && g.tagName === 'BUTTON') {
+    const d = document.createElement('div'); d.className = 'lang-seg'; d.id = 'lang'; d.setAttribute('role', 'group');
+    d.innerHTML = LANGS_ORDER.map(l => `<button type="button" data-l="${l}" lang="${l}">${LANG_BTN[l]}</button>`).join('');
+    d.addEventListener('click', e => { const b = e.target.closest('button[data-l]'); if (b && b.dataset.l !== LANG) setLang(b.dataset.l); });
+    g.replaceWith(d); g = d;
+  }
+  if (!g || !g.classList.contains('lang-seg')) return;
+  g.setAttribute('aria-label', t('lang_aria'));
+  g.querySelectorAll('button').forEach(b => { const on = b.dataset.l === LANG; b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', LANG_NAME[b.dataset.l]); });
 }
 function setLang(l) {
   LANG = l; try { localStorage.setItem('circles-lang', l); } catch (e) {}
@@ -1248,7 +1261,8 @@ function wireNav() {
     const city = nav.querySelector('a[href$="#city"]'); if (!city || nav.querySelector('[data-all]')) return;
     const a = document.createElement('a'); a.href = city.getAttribute('href').replace(/#city$/, '#all-artists'); a.dataset.t = 'nav_all'; a.dataset.all = ''; a.textContent = t('nav_all'); city.after(a);
   });
-  const lb = $('#lang'); if (lb) lb.addEventListener('click', () => setLang(LANG_NEXT[LANG]));
+  langSeg(true);
+  document.querySelectorAll('#mnav').forEach(mn => { const j = mn.querySelector('a[href$="join.html"]'); if (j) { j.classList.add('mn-join'); mn.prepend(j); } });   // the artists' door goes first in the phone menu
   const mb = $('#menu-btn'), mn = $('#mnav'); if (!mb || !mn) return;
   const set = open => { mb.setAttribute('aria-expanded', open); mn.classList.toggle('open', open); mn.toggleAttribute('inert', !open); };
   set(false);

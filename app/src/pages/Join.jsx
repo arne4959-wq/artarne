@@ -26,7 +26,7 @@ export default function Join() {
       <div className="perks">
         {[1, 2, 3].map(i => <div className="perk" key={i}><b>{`0${i}`}</b><h3 data-t={`p${i}_h`}>{t(`p${i}_h`)}</h3><p data-t={`p${i}_p`}>{t(`p${i}_p`)}</p></div>)}
       </div>
-      <div className="jn-cta"><p data-t="jn_cta">{t('jn_cta')}</p><button type="button" className="btn" onClick={openJoin} data-t="join_btn">{t('join_btn')}</button></div>
+      <div className="jn-cta"><p data-t="jn_cta">{t('jn_cta')}</p><button type="button" className="btn pk" onClick={openJoin} data-t="join_btn">{t('join_btn')}</button></div>
     </main>
     <div className="jn-foot"><a href="index.html#city" data-t="cw_back">{t('cw_back')}</a><a href="privacy.html" data-t="legal_privacy">{t('legal_privacy')}</a><a href="terms.html" data-t="legal_terms">{t('legal_terms')}</a></div>
   </PageShell>;

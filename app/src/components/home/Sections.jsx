@@ -139,7 +139,7 @@ export function JoinBand() {
     <div><div className="sec-k reveal" data-t="jn_kick">{t('jn_kick')}</div>
       <h2 className="sec-t reveal"><span data-t="join_h">{t('join_h')}</span></h2>
       <p className="jb-p" data-t="jb_p">{t('jb_p')}</p></div>
-    <a className="btn" href="join.html" data-t="jb_btn">{t('jb_btn')}</a>
+    <a className="btn pk" href="join.html" data-t="jb_btn">{t('jb_btn')}</a>
   </section>;
 }
 
@@ -171,7 +171,7 @@ export function Footer() {
   return <footer className="foot reveal">
     <h3 data-t-html="foot_h" dangerouslySetInnerHTML={{__html: t('foot_h')}}/>
     <p data-t="foot_p">{t('foot_p')}</p>
-    <button type="button" className="btn" onClick={() => openJoin()} data-t="foot_btn">{t('foot_btn')}</button>
+    <button type="button" className="btn pk" onClick={() => openJoin()} data-t="foot_btn">{t('foot_btn')}</button>
     <details className="fold fold-foot"><summary><span data-t="fold_foot">{t('fold_foot')}</span></summary>
       <div className="foot-more">
         <div><h4 data-t="foot_menu">{t('foot_menu')}</h4><ul>{menu.map(([h, k]) => <li key={k}><a href={h} data-t={k}>{t(k)}</a></li>)}</ul></div>
