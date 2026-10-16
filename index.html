@@ -72,6 +72,9 @@ body{font-family:var(--thai);background:var(--bone);color:var(--black);overflow-
 .marquee div{display:inline-block;padding:.45rem 0;font:400 .75rem var(--anton);letter-spacing:.22em;text-transform:uppercase;animation:mq 36s linear infinite;}
 .marquee:hover div{animation-play-state:paused;}
 .marquee span{margin:0 1.2rem;}.marquee i{font-style:normal;color:var(--gold);}
+/* phones and reduced motion: no endless ticker; one still line (first slogan, star, second slogan) and the bar keeps its reserved height */
+@media(max-width:860px){.marquee div{animation:none;display:block;text-align:center;}.marquee span:nth-of-type(n+3),.marquee i:nth-of-type(n+2){display:none;}}
+@media(prefers-reduced-motion:reduce){.marquee div{animation:none;display:block;text-align:center;}.marquee span:nth-of-type(n+3),.marquee i:nth-of-type(n+2){display:none;}}
 
 /* nav */
 nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(244,241,232,.92);backdrop-filter:blur(10px);
@@ -135,7 +138,7 @@ nav.scrolled{padding:.55rem 2rem;box-shadow:0 8px 24px rgba(14,13,12,.14);}
   transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s;}
 .pager button:hover{background:var(--pink);transform:translate(3px,3px);box-shadow:1px 1px 0 var(--black);}
 
-.strip{overflow-x:auto;position:relative;padding-bottom:1.2rem;/* room for the hover drawer under the tag; taken out of .progress margin below */cursor:grab;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;user-select:none;}
+.strip{overflow-x:auto;overflow-y:hidden;/* overflow-x:auto alone makes y scroll too: a vertical swipe on the city scrolled the strip's own 180px first and the page seemed stuck */position:relative;padding-bottom:1.2rem;/* room for the hover drawer under the tag; taken out of .progress margin below */cursor:grab;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;user-select:none;}
 .strip::-webkit-scrollbar{display:none;}
 .strip.drag{cursor:grabbing;}
 .strip-in{position:relative;display:flex;align-items:flex-end;width:max-content;padding:2.5rem 4rem 175px;min-width:100%;}

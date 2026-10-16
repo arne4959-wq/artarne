@@ -18,6 +18,8 @@
 .mnav a:last-child{border-bottom:0;}
 @media(max-width:860px){.menu-btn{display:block;}.links{gap:.6rem;}}
 
+/* phone: pages with a menu button show their links only in the menu (page rules lost to the 44px tap-target rule above and the bar overflowed) */
+@media(max-width:860px){nav:has(.menu-btn) .links>a{display:none;}}
 /* language switch: three side-by-side buttons, the current language filled black (the page language is always visible; one tap to any language) */
 .lang-seg{display:inline-flex;border:2px solid var(--black);background:var(--paper);}
 .lang-seg button{font:400 .8rem var(--anton);letter-spacing:.1em;color:var(--black);background:transparent;border:0;padding:.3rem .5rem;min-width:44px;min-height:44px;cursor:pointer;}
@@ -307,3 +309,31 @@ html[lang=th] .pl-sign,html[lang=lo] .pl-sign{font-family:"Chonburi",var(--thai)
 
 /* phone: on the hand-written pages the menu button holds the links (the same list is in .mnav), so the bar itself shows only brand, language and menu: nothing spills past the screen */
 @media(max-width:860px){.pl-page nav .links>a{display:none;}}
+
+/* Thai / Lao tone marks and vowels need room: no small print under 14px (the sizes below were 12.8-13.9px) */
+html[lang=th] small,html[lang=lo] small,
+html[lang=th] dt,html[lang=lo] dt,
+html[lang=th] .wl,html[lang=lo] .wl,
+html[lang=th] .wv,html[lang=lo] .wv,
+html[lang=th] .ds,html[lang=lo] .ds,
+html[lang=th] .da,html[lang=lo] .da,
+html[lang=th] .dn,html[lang=lo] .dn,
+html[lang=th] .pa,html[lang=lo] .pa,
+html[lang=th] .pl-dist-k,html[lang=lo] .pl-dist-k,
+html[lang=th] .pf-tips-s,html[lang=lo] .pf-tips-s,
+html[lang=th] .news-c a,html[lang=lo] .news-c a,
+html[lang=th] .foot-c span,html[lang=lo] .foot-c span,
+html[lang=th] .foot-c a,html[lang=lo] .foot-c a,
+html[lang=th] .mini-foot a,html[lang=lo] .mini-foot a,
+html[lang=th] .meta,html[lang=lo] .meta,
+html[lang=th] .hint,html[lang=lo] .hint,
+html[lang=th] .mus-prof,html[lang=lo] .mus-prof,
+html[lang=th] .v-stamp,html[lang=lo] .v-stamp,
+html[lang=th] .v-note,html[lang=lo] .v-note,
+html[lang=th] .sn span,html[lang=lo] .sn span,
+html[lang=th] .sortl span,html[lang=lo] .sortl span,
+html[lang=th] .plaza span,html[lang=lo] .plaza span,
+html[lang=th] .v-tb span,html[lang=lo] .v-tb span,
+html[lang=th] .pf-say span,html[lang=lo] .pf-say span,
+html[lang=th] .sc-tag,html[lang=lo] .sc-tag,
+html[lang=th] .plaza > span,html[lang=lo] .plaza > span{font-size:.875rem;}

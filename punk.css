@@ -5,6 +5,7 @@
 
 /* ---------- 1. paper: a photocopy grain over the whole page (one fixed, static layer; it never repaints while scrolling) ---------- */
 #main::before{content:"";position:fixed;inset:0;z-index:40;pointer-events:none;background:var(--grain);opacity:.12;}
+@media(max-width:860px){#main::before{opacity:.06;}}   /* phones: half the grain so small Thai / Lao tone marks stay clean */
 
 /* ---------- 2. labels and titles that break the grid ---------- */
 .sec-k{rotate:-1.6deg;box-shadow:4px 4px 0 var(--pink);}
