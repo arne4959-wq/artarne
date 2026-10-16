@@ -123,6 +123,7 @@ let dragMoved = false, vel = 0, inertia = 0;
 function refreshCity() {     // fills every building tag in the current language
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
     const a = ARTISTS[i], nm = bd.querySelector('.nm');
+    bd.setAttribute('aria-label', `${bldgL(a)} · ${discL(a)}`);   // the link's own name (it used to be every tag word run together)
     bd.querySelector('.mon').setAttribute('aria-label', bldgL(a));
     bd.querySelector('.no').textContent = `NO.${String(i + 1).padStart(2, '0')} · ${t('works_n', {n: a.works.length})}`;
     nm.setAttribute('aria-label', nameL(a)); ransom(nm, nameL(a), i);
@@ -327,7 +328,7 @@ function mapSpans(n) {
 let curD = '', curQ = '';
 function renderMap() {
   const L = mapSpans(ARTISTS.length), n = ARTISTS.length;
-  $('#map-grid').innerHTML = ARTISTS.map((a, i) => `<button class="dist d${i % 6}${i === 0 || (i === n - 1 && n % 2 === 0) ? ' wide' : ''}" style="grid-column:span ${L.s[i]}" data-id="${a.id}" data-d="${esc(a.disc)}" data-w="${a.wave ? 1 : 0}" data-cur="ENTER"><span class="dn">NO.${String(i + 1).padStart(2, '0')} · ${esc(t('district'))}</span><span class="dd">${esc(discL(a))}</span><span class="da">${esc(nameL(a))} · ${esc(cityL(a))}</span><svg viewBox="0 0 120 80" aria-hidden="true">${PLAN[a.kind]}</svg></button>`).join('')
+  $('#map-grid').innerHTML = ARTISTS.map((a, i) => `<button class="dist d${i % 6}${i === 0 || (i === n - 1 && n % 2 === 0) ? ' wide' : ''}" style="grid-column:span ${L.s[i]}" data-id="${a.id}" data-d="${esc(a.disc)}" data-w="${a.wave ? 1 : 0}" data-cur="ENTER" aria-label="${esc(`NO.${String(i + 1).padStart(2, '0')} · ${discL(a)} · ${nameL(a)}`)}"><span class="dn">NO.${String(i + 1).padStart(2, '0')} · ${esc(t('district'))}</span><span class="dd">${esc(discL(a))}</span><span class="da">${esc(nameL(a))} · ${esc(cityL(a))}</span><svg viewBox="0 0 120 80" aria-hidden="true">${PLAN[a.kind]}</svg></button>`).join('')
     + (L.p ? `<div class="plaza" style="grid-column:span ${L.p}" aria-hidden="true"><span>${esc(t('plaza'))}</span><svg viewBox="0 0 120 80"><circle cx="60" cy="40" r="34"/><circle cx="60" cy="40" r="22"/><circle cx="60" cy="40" r="8"/><path d="M60,4 V76 M24,40 H96"/></svg></div>` : '') + `<div class="compass" aria-hidden="true">N ↑</div>`;
   $('#filters').innerHTML = [['', t('f_all')], ['*wave', t('f_wave')], ...[...new Map(ARTISTS.map(a => [a.disc, discL(a)]))]].map(([d, l]) => `<button type="button" class="fbtn" data-d="${esc(d)}" aria-pressed="false">${esc(l)}</button>`).join('');
   syncFilter(false);
@@ -411,21 +412,25 @@ wireNav(); applyLang(); langInit = true;
   let seen = false; try { seen = sessionStorage.getItem('circles-seen') === '1'; } catch (e) {}
   const small = matchMedia('(pointer:coarse)').matches || innerWidth < 768;   // phones and small screens: no 1.7 s count-up, the content shows at once (the loader stays on desktop)
   if (reduce || seen || small) { loader.remove(); boot(); return; }
-  const DUR = 1700, t0 = performance.now();
+  const DUR = 250, t0 = performance.now();
   const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
   const counted = new Promise(res => (function tick(now) {
-    const k = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - k, 3);
+    const k = Math.max(0, Math.min(1, (now - t0) / DUR)), e = 1 - Math.pow(1 - k, 3);
     countEl.textContent = String(Math.round(e * 100)).padStart(3, '0');
     k < 1 ? requestAnimationFrame(tick) : res();
   })(t0));
+  let gone = false;
   const go = () => {
+    if (gone) return; gone = true;
     try { sessionStorage.setItem('circles-seen', '1'); } catch (e) {}
     loader.classList.add('done');
-    setTimeout(boot, 520);
-    setTimeout(() => loader.remove(), 1400);
+    setTimeout(boot, 80);
+    setTimeout(() => loader.remove(), 320);
   };
+  const skip = document.getElementById('loader-skip');
+  if (skip) skip.addEventListener('click', () => { loader.classList.add('quick'); go(); });   // the visitor does not want the opening: straight in
   Promise.all([fontsReady, counted]).then(go);
-  setTimeout(go, 6000);                      // safety net
+  setTimeout(go, 3000);                      // safety net
 })();
 
 (function scrollLinked() {

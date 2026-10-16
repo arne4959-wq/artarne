@@ -283,7 +283,7 @@ const STR = {
 th: {
   nav_city:'เมือง', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'Join', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
   wave:'คลื่นลูกใหม่', f_wave:'★ คลื่นลูกใหม่', fnote_wave:'ไฮไลต์ {n} ตึกคลื่นลูกใหม่ในแถบเมืองแล้ว',
-  ld_top:'circles · เมืองของศิลปิน', ld_text:'กำลังสร้างเมือง…',
+  ld_top:'circles · เมืองของศิลปิน', ld_text:'กำลังสร้างเมือง…', ld_skip:'ข้ามการเปิดเรื่อง',
   legal_privacy:'นโยบายความเป็นส่วนตัว', legal_terms:'เงื่อนไขการใช้งาน',
   consent_form:'ส่งข้อความนี้แสดงว่าคุณรับทราบ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ข้อมูลของคุณจะถูกส่งถึงผู้รับที่ระบุเท่านั้น',
   news_consent:'สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ',
@@ -437,7 +437,7 @@ th: {
 en: {
   nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Join', menu_aria:'Menu', lang_aria:'Switch language',
   wave:'NEW WAVE', f_wave:'★ New wave', fnote_wave:'Highlighted {n} new-wave building(s) in the strip',
-  ld_top:'circles · a city of artists', ld_text:'Building the city…',
+  ld_top:'circles · a city of artists', ld_text:'Building the city…', ld_skip:'Skip intro',
   legal_privacy:'Privacy policy', legal_terms:'Terms of use',
   consent_form:'By sending this you accept the <a href="privacy.html">privacy policy</a>. Your details go only to the recipient named above.',
   news_consent:'By subscribing you accept the <a href="privacy.html">privacy policy</a>. Unsubscribe any time.',
@@ -856,6 +856,7 @@ lo: {
   desc_cw: "ຍ່າງເຂົ້າໄປໃນຕຶກຂອງ{a} ສິລະປິນສາຂາ{d} ເບິ່ງຜົນງານເທື່ອລະຊັ້ນ ແລ້ວສະໜັບສະໜູນກົງເຖິງສິລະປິນ",   // DRAFT lo: needs native review
   fnote_wave: "ໄຮໄລທ໌ {n} ຕຶກຄື້ນລູກໃໝ່ໃນແຖບເມືອງແລ້ວ",   // DRAFT lo: needs native review
   ld_top: "circles · ເມືອງຂອງສິລະປິນ",   // DRAFT lo: needs native review
+  ld_skip: "ຂ້າມການເປີດເລື່ອງ",   // DRAFT lo: needs native review
   ld_text: "ກຳລັງສ້າງເມືອງ…",   // DRAFT lo: needs native review
   pager_l: "ເລື່ອນຊ້າຍ",   // DRAFT lo: needs native review
   pager_r: "ເລື່ອນຂວາ",   // DRAFT lo: needs native review

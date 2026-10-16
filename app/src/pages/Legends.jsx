@@ -48,7 +48,6 @@ export default function Legends() {
         {[['all', 'lg_all'], ['img', 'lg_img'], ['film', 'lg_film'], ['music', 'lg_music']].map(([k, s]) => <button key={k} type="button" data-flt={k} aria-pressed={flt === k} onClick={() => setFlt(k)}>{t(s)}</button>)}</div>
       <ul className="pl-vitr" id="lg-list">{slots.filter(x => x.sample).concat(slots.filter(x => x.empty)).map((x, i) => <Piece key={i} x={x} hidden={flt !== 'all' && flt !== x.type}/>)}</ul>
     </div></main>
-    <div className="pl-foot"><a href="index.html#city">{t('cw_back')}</a><a href="privacy.html">{t('legal_privacy')}</a><a href="terms.html">{t('legal_terms')}</a></div>
     <Dist here="legends"/><MiniFoot/><div className="foot-tools"><ScLink/></div>
   </PageShell>;
 }

@@ -41,7 +41,7 @@
   <div class="pf-in-wrap">
     ${breadcrumbHtml([[t('bc_city'), 'index.html#city'], [name, '']])}
     <div class="pf-port pf-in pf-pop" style="--r:0deg;--pf-d:.1s" aria-hidden="true"><span class="pf-pic">${esc(chars(name)[0] || '')}</span><span class="pf-tp pf-tp-gold pf-tp-top"></span></div>
-    <h2 class="pf-name" id="pf-name"><span class="pf-sr">${esc(name)}</span>${letters}</h2>
+    <h1 class="pf-name" id="pf-name"><span class="pf-sr">${esc(name)}</span>${letters}</h1>
     <ul class="pf-tags" aria-label="${esc(t('lb_artist'))}">${tags}</ul>
     <div class="pf-works">
       <div class="pf-wh"><h3 class="bl bl-y"><span class="bl-t">${esc(t('pf_wh'))}</span></h3><span class="pf-hv">${esc(t('pf_hover'))}</span></div>

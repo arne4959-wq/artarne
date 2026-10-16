@@ -88,7 +88,7 @@ export default function Studio({id}) {
   const pre = /\/studio-[a-z0-9-]+\.html$/i.test(location.pathname) && !!A;   // the pre-built twin (studio-<id>.html): shown at once, no slide-in
   return <PageShell styles={styles} sprite={sprite} lead={<SkipLink/>}>
     <ZoomProvider>
-      <Nav links={[['index.html#city', 'nav_city'], ['index.html#manifesto', 'nav_about']]} join menu={MENU_FULL}/>
+      <Nav links={[['index.html#city', 'nav_city'], ['index.html#manifesto', 'nav_about']]} menu={MENU_FULL}/>
       <main id="main" tabIndex={-1} {...(pre ? {'data-pre': '1', 'data-studio': A.id} : {})}>{A ? <StudioBody key={A.id} A={A} pre={pre}/> : <NotFoundSection/>}</main>
       <MiniFoot/><div className="foot-tools">{A && <ShareFoot/>}<ScLink/></div>
       {A && <Fab A={A}/>}

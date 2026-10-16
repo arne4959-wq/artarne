@@ -58,8 +58,8 @@ function ProfileBody({A}) {
       {LOGOS.map((l, i) => <i key={i} className="pf-lg" style={{left: l[0] + '%', top: l[1] + '%', width: l[2] + 'px', height: l[2] + 'px', '--o': l[3], '--a': l[4] + 'deg', '--t': l[5] + 's', '--sp': 'pf-' + l[6], '--dx': l[7] + 'px'}}/>)}</div>
     <div className="pf-in-wrap">
       <div className="pf-port pf-in pf-pop" style={{'--r': '0deg', '--pf-d': '.1s'}} aria-hidden="true"><span className="pf-pic">{chars(name)[0] || ''}</span><span className="pf-tp pf-tp-gold pf-tp-top"></span></div>
-      <h2 className="pf-name" id="pf-name"><span className="pf-sr">{name}</span>{chars(name).map((c, i) =>
-        <span key={i} className={`pf-ltr pf-in pf-drop pf-l${i % 3}`} style={{'--r': [-3, 2, -1.5, 2.5][i % 4] + 'deg', '--pf-d': (.5 + i * .14).toFixed(2) + 's'}} aria-hidden="true">{c}</span>)}</h2>
+      <h1 className="pf-name" id="pf-name"><span className="pf-sr">{name}</span>{chars(name).map((c, i) =>
+        <span key={i} className={`pf-ltr pf-in pf-drop pf-l${i % 3}`} style={{'--r': [-3, 2, -1.5, 2.5][i % 4] + 'deg', '--pf-d': (.5 + i * .14).toFixed(2) + 's'}} aria-hidden="true">{c}</span>)}</h1>
       <ul className="pf-tags" aria-label={t('lb_artist')}>{[[L.discL(A), 'paper', -2], [L.cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>
         <li key={i} className={`pf-tag pf-in pf-pop pf-t-${x[1]}`} style={{'--r': x[2] + 'deg', '--pf-d': (1 + i * .1) + 's'}}>{x[0]}</li>)}</ul>
       {tagline || bio ? <div className="pf-note pf-in pf-rise" style={{'--r': '-.8deg', '--pf-d': '1.3s'}}><i className="pf-tp pf-tp-pink pf-tp-l"></i><i className="pf-tp pf-tp-pink pf-tp-r"></i>{tagline ? <p className="pf-tag1">“{tagline}”</p> : null}{bio ? <p className="pf-bio">{bio}</p> : null}</div> : null}
@@ -106,7 +106,7 @@ export default function Profile({id}) {
   const built = /\/profile-[a-z0-9-]+\.html$/i.test(location.pathname) && A ? {'data-pre': '1', 'data-profile': A.id} : {};
   // key: a language change rebuilds the profile (its entrance animation plays again), like the old render() did
   return <PageShell styles={styles} sprite={sprite} lead={<SkipLink/>}>
-    <Nav links={[['index.html#city', 'nav_city'], ['index.html#manifesto', 'nav_about']]} join menu={MENU_FULL}/>
+    <Nav links={[['index.html#city', 'nav_city'], ['index.html#manifesto', 'nav_about']]} menu={MENU_FULL}/>
     <main id="main" tabIndex={-1} {...built}>{A ? <>
       <div className="pf-marq" aria-hidden="true" key={'m' + lang}><div className="pf-marq-t">{t('pf_marq').repeat(10)}</div></div>
       <ProfileBody key={lang} A={A}/></> : <NotFoundSection/>}</main>

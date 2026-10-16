@@ -53,7 +53,7 @@ export async function run({url, check}) {
   await ev("document.getElementById('fnote-x').click()"); await sleep(500);
 
   // forms
-  await ev("document.querySelector('.links .join').click()"); await sleep(700);
+  await ev("document.querySelector('footer .btn[onclick*=openJoin]').click()"); await sleep(700);
   check('Join dialog opens (English)', (await ev("document.getElementById('dlg-join').open")) && (await ev("document.querySelector('#dlg-join h2').textContent")) === 'Request a building in this city');
   check('Join form links the privacy policy', (await ev("!!document.querySelector('#dlg-join .note a[href=\"privacy.html\"]')")));
   await ev("(()=>{const f=document.querySelector('#dlg-join form');f.name.value='New Artist';f.email.value='a@example.com';f.message.value='I make things.';f.requestSubmit()})()"); await sleep(800);

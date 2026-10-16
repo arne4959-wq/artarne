@@ -29,16 +29,16 @@ export default function Home() {
   useHeroEffects(); useCursor(); useLenis(); useCountUp([]);
   return <PageShell styles={styles} sprite={sprite} lead={<SkipLink/>}>
     <Loader/><CursorMarkup/><Curtain/><Marquee/>
-    <Nav id="nav" brandHref={null} links={LINKS} join menu={MENU}/>
+    <Nav id="nav" brandHref={null} links={LINKS} menu={MENU}/>
     <main id="main" tabIndex={-1}>
     <Hero/>
     <City artists={ARTISTS}/>
     <TapeWrap/>
-    <Manifesto/><Cycle/><How/>
-    <TapeWrap/>
     <Featured artists={ARTISTS}/>
     <TapeWrap r/>
     <Spotlight artists={ARTISTS}/>
+    <TapeWrap/>
+    <Manifesto/><Cycle/><How/>
     <Stats artists={ARTISTS}/><JoinBand/><Support/>
     </main>
     <Dist here="home"/><Footer/><div className="foot-tools"><ScLink/></div>

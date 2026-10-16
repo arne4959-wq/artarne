@@ -102,7 +102,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 .roof svg{position:absolute;pointer-events:none;}
 .room{position:relative;height:330px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 0,rgba(244,241,232,.17),transparent 70%),#161413;}
 .room::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(244,241,232,.05) 0 1px,transparent 1px 40px);pointer-events:none;}
-.fl{position:absolute;left:12px;top:12px;z-index:3;background:var(--paper);color:var(--black);font:400 .74rem var(--type);letter-spacing:.14em;padding:.25rem .6rem;border:2px solid var(--black);}
+.fl{position:absolute;left:12px;top:12px;z-index:3;background:var(--paper);color:var(--black);font:400 .75rem var(--type);letter-spacing:.14em;padding:.25rem .6rem;border:2px solid var(--black);}
 .slab{position:relative;height:30px;margin:0 -3px;background:var(--conc);border:var(--line) solid var(--black);z-index:1;}
 .slab::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;background:linear-gradient(180deg,rgba(14,13,12,.28),transparent);pointer-events:none;}
 .deco{position:absolute;pointer-events:none;stroke:var(--paper);fill:none;stroke-width:2;opacity:.5;}
@@ -120,7 +120,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 .work .art{position:relative;overflow:hidden;display:block;height:var(--h,180px);aspect-ratio:var(--ar);background:var(--art);border:6px solid var(--paper);outline:var(--line) solid var(--black);}
 .work .art img,.dlg-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 .work .tape{position:absolute;top:-12px;left:50%;width:74px;height:24px;margin-left:-37px;background:var(--pink);border:2px solid var(--black);transform:rotate(-4deg);z-index:2;}
-.work .cap{position:absolute;left:50%;bottom:-2.3rem;transform:translateX(-50%);white-space:nowrap;background:var(--paper);color:var(--black);border:2px solid var(--black);font:400 .74rem var(--type);letter-spacing:.08em;padding:.15rem .6rem;max-width:86vw;overflow:hidden;text-overflow:ellipsis;}
+.work .cap{position:absolute;left:50%;bottom:-2.3rem;transform:translateX(-50%);white-space:nowrap;background:var(--paper);color:var(--black);border:2px solid var(--black);font:400 .75rem var(--type);letter-spacing:.08em;padding:.15rem .6rem;max-width:86vw;overflow:hidden;text-overflow:ellipsis;}
 .ground{height:22px;background:var(--black);margin-top:0;}
 
 /* kinds */
@@ -234,7 +234,7 @@ body.noir{background-image:repeating-linear-gradient(90deg,rgba(244,241,232,.05)
 .k-collage .slab{background:var(--bone);}
 .ground{height:26px;background:var(--tartan);border-top:2px solid var(--gold);box-shadow:inset 0 3px 0 var(--black),inset 0 4px 0 rgba(232,183,48,.7);}
 /* brass door plaque on the ground floor */
-.plaque{position:absolute;left:14px;bottom:116px;z-index:2;background:var(--black);color:var(--gold);border:1px solid var(--gold);outline:1px solid var(--gold);outline-offset:2px;font:400 .62rem var(--anton);letter-spacing:.18em;padding:.18rem .5rem;pointer-events:none;}
+.plaque{position:absolute;left:14px;bottom:116px;z-index:2;background:var(--black);color:var(--gold);border:1px solid var(--gold);outline:1px solid var(--gold);outline-offset:2px;font:400 .75rem var(--anton);letter-spacing:.18em;padding:.18rem .5rem;pointer-events:none;}
 @media(max-width:860px){.noir .cut-head::after{left:1.2rem;right:1.2rem;}.plaque{bottom:92px;left:8px;}}
 
 /* touch screens have no real hover */
@@ -291,7 +291,7 @@ body.noir{background-image:repeating-linear-gradient(90deg,rgba(244,241,232,.05)
 .work:hover .beam,.work:focus-visible .beam{opacity:1;}
 .lbl{position:relative;display:grid;gap:.35rem;justify-items:start;text-align:left;width:212px;background:var(--paper);color:var(--black);border:2px solid var(--black);box-shadow:0 0 0 3px var(--paper),0 0 0 4px var(--gold);padding:.85rem .9rem .8rem;}
 .lbl .tape{position:absolute;top:-11px;left:-14px;width:54px;height:20px;margin:0;background:var(--pink);border:2px solid var(--black);transform:rotate(-14deg);}
-.lbl small{font:400 .72rem var(--type);letter-spacing:.06em;color:var(--tartan-red);}
+.lbl small{font:400 .75rem var(--type);letter-spacing:.06em;color:var(--tartan-red);}
 .lbl b{font:400 1.05rem/1.35 "Chonburi",var(--thai);}
 .lbl .q{font:400 .8rem/1.5 var(--thai);color:#4a4642;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 html[lang=en] .lbl .q{font:italic 400 .86rem/1.4 "Playfair Display",Georgia,serif;}
@@ -310,6 +310,12 @@ dialog.work-dlg{width:min(1120px,95vw);padding:0 12px;background:var(--a-conc);b
 .dlg-art::before{content:none;}
 .dlg-art .frame{position:relative;width:min(100%,520px,calc(66vh * var(--arn,1)));aspect-ratio:var(--ar);margin:0 auto;background:var(--art);box-shadow:0 0 0 clamp(10px,1.6vw,16px) var(--paper),0 0 0 calc(clamp(10px,1.6vw,16px) + 3px) var(--black),8px 10px 0 calc(clamp(10px,1.6vw,16px) + 3px) rgba(14,13,12,.28);}
 .dlg-art .frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+/* wide window: the concrete wall is a full-height cell (::before) and the picture pane is sticky inside it, so the picture stays in the middle of what you can see (it used to hang at the bottom of a tall window and leave empty grey above) */
+@media(min-width:861px){
+  .dlg-in::before{content:"";grid-column:1;grid-row:1;background:var(--a-conc);box-shadow:inset 10px 10px 0 rgba(14,13,12,.3);border-right:4px solid var(--black);}
+  .dlg-in > .dlg-art{grid-column:1;grid-row:1;align-self:start;position:sticky;top:112px;height:100%;max-height:calc(92vh - 112px - 30px);background:none;box-shadow:none;border-right:0;min-height:0;}
+  .dlg-in > .dlg-body{grid-column:2;grid-row:1;}
+}
 .dlg-tape{position:absolute;top:-30px;left:50%;width:84px;height:26px;margin-left:-42px;background:var(--pink);border:2px solid var(--black);transform:rotate(-3deg);z-index:2;pointer-events:none;}
 .dlg-body{padding:2rem 1.8rem 1.6rem;gap:.9rem;}
 .dlg-body h2{font-size:clamp(1.8rem,3.6vw,2.4rem);padding-right:3rem;}
@@ -317,7 +323,7 @@ dialog.work-dlg{width:min(1120px,95vw);padding:0 12px;background:var(--a-conc);b
 .dlg-by b{font-weight:600;color:var(--black);}
 .dlg-story{display:grid;gap:.4rem;padding:.1rem 0 .1rem 1rem;border-left:4px solid var(--pink);}
 .dlg-story[hidden]{display:none;}
-.dlg-story small{font:400 .72rem var(--type);letter-spacing:.14em;text-transform:uppercase;color:var(--tartan-red);}
+.dlg-story small{font:400 .75rem var(--type);letter-spacing:.14em;text-transform:uppercase;color:var(--tartan-red);}
 html[lang=th] .dlg-story small{font:600 .8rem var(--thai);letter-spacing:.01em;}
 .dlg-story blockquote{font:400 1.08rem/1.5 "Chonburi",var(--thai);text-wrap:balance;}
 html[lang=en] .dlg-story blockquote{font:italic 500 1.2rem/1.35 "Playfair Display",Georgia,serif;}
@@ -362,7 +368,7 @@ html[lang=en] .v-say{font:italic 500 1.3rem/1.45 "Playfair Display",Georgia,seri
 .v-rows dt{padding:.7rem .8rem;background:var(--bone);border-right:2px solid var(--black);font:600 .8rem/1.5 var(--thai);color:var(--tartan-red);}
 .v-rows dt b{display:block;margin-bottom:.15rem;font:400 1.35rem/1.2 var(--anton);color:var(--black);}
 .v-rows dd{margin:0;padding:.7rem .9rem;font:400 1rem/1.8 var(--thai);}
-.v-tb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);font:400 .74rem/1.5 var(--type);letter-spacing:.08em;text-transform:uppercase;color:#3a3733;}
+.v-tb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);font:400 .75rem/1.5 var(--type);letter-spacing:.08em;text-transform:uppercase;color:#3a3733;}
 .v-tb span{padding:.45rem .8rem;}.v-tb span+span{border-left:2px solid var(--black);}
 .v-tb b{display:block;font:600 .95rem/1.5 var(--thai);letter-spacing:0;text-transform:none;color:var(--black);}
 .v-note{margin:.7rem 0 0;font:400 .8rem/1.7 var(--type);color:#3a3733;}
@@ -425,7 +431,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 .dlg-stt{font:600 .92rem/1.5 var(--thai);}
 .dlg-deal a.btn{text-align:center;}
 .dlg-deal .btn.ghost{background:var(--paper);color:var(--black);font-size:.95rem;padding:.6rem 1rem;box-shadow:4px 4px 0 var(--black);}
-.dlg-paynote{font:400 .74rem/1.5 var(--thai);color:#5a5650;}
+.dlg-paynote{font:400 .75rem/1.5 var(--thai);color:#5a5650;}
 .dlg-deal [hidden]{display:none!important;}
 /* phone / touch: a short head, so the hall (the first picture and its light) is on the first screen without scrolling */
 @media(max-width:700px),(pointer:coarse){
@@ -438,7 +444,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
   .cut-head .est{display:none;}
   .cut-head .meta{font-size:.78rem;letter-spacing:.08em;}
   .cut-head p{font-size:.9rem;line-height:1.6;border-left-width:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .hint{font-size:.74rem;line-height:1.45;letter-spacing:.04em;}
+  .hint{font-size:.75rem;line-height:1.45;letter-spacing:.04em;}
   .tower-wrap{padding-top:.6rem;}
 }
 </style>
@@ -451,7 +457,7 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 
 <nav>
   <a class="brand" href="index.html"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#orb-s"/></svg>CIRCLES</a>
-  <div class="links"><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="join" onclick="openJoin()">Join</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
+  <div class="links"><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#manifesto" data-t="nav_about">เกี่ยวกับ</a><button type="button" class="lang" id="lang" aria-label="Switch language">EN</button><button type="button" class="menu-btn" id="menu-btn" aria-label="เมนู" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button></div>
   <div class="mnav" id="mnav" inert><a href="index.html#city" data-t="nav_city">เมือง</a><a href="index.html#manifesto" data-t="foot_manifesto">Manifesto</a><a href="index.html#how" data-t="foot_how">วิธีใช้งาน</a><a href="index.html#featured" data-t="foot_feat">ผลงานเด่น</a><a href="index.html#map" data-t="foot_map">แผนที่เมือง</a><a href="join.html" data-t="foot_join">ขอมีตึก</a></div>
 </nav>
 

@@ -41,12 +41,12 @@ export async function run({url, check}) {
   }
   check('the city scales with the screen height (taller screen, bigger buildings)', widths['1080d'] > widths['800d'], widths);
 
-  /* 4 — a visible break between the tartan street and the tartan Manifesto */
+  /* 4 — a visible break under the tartan street; the work cards and the artist of the week now come before the Manifesto, which keeps its own tape above it */
   for (const [w, h, touch] of [[1440, 900, false], [375, 812, true]]) {
     b = await launch(); await b.lang('th'); await b.view(w, h, touch);
     await b.go(`${url}/index.html`, 4500);
-    const r = await b.ev(`(()=>{const g=document.querySelector('.ground').getBoundingClientRect(),p=document.getElementById('progress').getBoundingClientRect(),t=document.querySelector('.tape-wrap'),tr=t.getBoundingClientRect(),m=document.getElementById('manifesto').getBoundingClientRect();return {adjacent:t.nextElementSibling===document.getElementById('manifesto')&&t.previousElementSibling.classList.contains('city'),gap:Math.round(tr.top-g.bottom),aboveProgress:Math.round(tr.top-p.bottom),overlapsManifesto:Math.round(m.top-tr.top)}})()`);
-    check(`${w}px: hazard tape between the street and the Manifesto, with a gap`, r.adjacent && r.gap >= 24 && r.aboveProgress >= 6 && r.overlapsManifesto > 0, r);
+    const r = await b.ev(`(()=>{const g=document.querySelector('.ground').getBoundingClientRect(),p=document.getElementById('progress').getBoundingClientRect(),t=document.querySelector('.tape-wrap'),tr=t.getBoundingClientRect(),m=document.getElementById('featured').getBoundingClientRect();return {adjacent:t.nextElementSibling===document.getElementById('featured')&&t.previousElementSibling.classList.contains('city')&&document.getElementById('manifesto').previousElementSibling.classList.contains('tape-wrap'),gap:Math.round(tr.top-g.bottom),aboveProgress:Math.round(tr.top-p.bottom),overlapsManifesto:Math.round(m.top-tr.top)}})()`);
+    check(`${w}px: hazard tape between the street and the cards (and another one before the Manifesto), with a gap`, r.adjacent && r.gap >= 24 && r.aboveProgress >= 6 && r.overlapsManifesto > 0, r);
     b.close();
   }
   /* 5 — the new colour: map icons never sit on the text, patterns exist (the card tapes are hidden now: their old check is gone) */

@@ -74,7 +74,6 @@ export default function Highlights() {
       {TABS.map(([id], i) => <div key={id} className="pl-panel" role="tabpanel" id={'pan-' + id} aria-labelledby={'tab-' + id} tabIndex={0} hidden={tab !== i}>
         {id === 'w' ? <Works L={L} rows={rows}/> : id === 'c' ? <Concepts L={L} rows={rows}/> : <Newcomers L={L}/>}</div>)}
     </div></main>
-    <div className="pl-foot"><a href="index.html#city">{t('cw_back')}</a><a href="privacy.html">{t('legal_privacy')}</a><a href="terms.html">{t('legal_terms')}</a></div>
     <Dist here="highlights"/><MiniFoot/><div className="foot-tools"><ScLink/></div>
   </PageShell>;
 }
