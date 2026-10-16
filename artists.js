@@ -13,6 +13,17 @@
      timeline:[{y,t,tEn}]  the dashed ticket             instagram:'https://instagram.com/...'  (https only)
 */
 const ARTISTS = [
+  /* ---- Arne: the maker of the city, with a building of his own. Only facts Arne has told us are written here. say/why/look (first-person words per picture) are left EMPTY on purpose: Arne writes those himself, the rows stay hidden until then. y (year) and m (medium) are best guesses: please correct them. ---- */
+  { id:'arne', name:'Arne', nameEn:'Arne', disc:'คอลลาจ', scale:1.08, kind:'collage', works:['#00FF3A','#F00FA8','#1B2B2A'], titles:['ART ART','สาธุ','ศิลปะคือทางออก'],
+    nameLo:"Arne",
+    since:2026, city:'เวียงจันทน์',
+    bio:'Arne เป็นนักศึกษาไอทีปีหนึ่งที่เวียงจันทน์ สร้างเมืองนี้ขึ้นมาเอง และทำงานตัดแปะซ้อนภาพ ใส่ดาวแดงลงไปเอง ตึกนี้เป็นตึกหลังแรกของเมือง ก่อนที่ศิลปินคนอื่นจะเข้ามา',
+    bioEn:'Arne is a first-year IT student in Vientiane who built this city himself and makes collages: layered images with red stars he adds by hand. This is the first building in the city, before the other artists arrive.',
+    bioLo:"Arne ເປັນນັກສຶກສາໄອທີປີໜຶ່ງຢູ່ວຽງຈັນ ສ້າງເມືອງນີ້ຂຶ້ນມາເອງ ແລະເຮັດງານຕັດແປະຊ້ອນຮູບ ໃສ່ດາວແດງລົງໄປເອງ ຕຶກນີ້ເປັນຕຶກຫຼັງທຳອິດຂອງເມືອງ ກ່ອນທີ່ສິລະປິນຄົນອື່ນຈະເຂົ້າມາ",   // DRAFT lo: needs native review
+    pieces:[
+      {t:'ART ART',tEn:'ART ART',titleLo:"ART ART",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'992 × 720 px',ar:'992/720',img:'art/arne/arne-1-art-art.webp'},
+      {t:'สาธุ',tEn:'Sathu',titleLo:"ສາທຸ",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'404 × 612 px',ar:'404/612',img:'art/arne/arne-2-star-horse.webp'},
+      {t:'ศิลปะคือทางออก',tEn:'Art Is the Way Out',titleLo:"ສິລະປະຄືທາງອອກ",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'1001 × 550 px',ar:'1001/550',img:'art/arne/arne-3-green-crown.webp'}] },   // DRAFT lo: needs native review
   { id:'napha', name:'นภา', nameEn:'Napha', disc:'จิตรกรรม', scale:1.12, kind:'arch', works:['#C4958A','#7A4A40','#D4CFCA'], titles:['เช้าหมอก','เงาใต้ต้นไม้','ห้องว่าง'],
     nameLo:"ນະພາ",   // DRAFT lo: needs native review
     since:2014, city:'เชียงใหม่', email:'napha@circles.example',
@@ -120,7 +131,7 @@ const ARTISTS = [
       {t:'ผิวที่หายใจ',tEn:'Breathing Skin',say:"งานศิลปะที่ยังมีชีวิต และยังโตอยู่",sayEn:"Art that is still alive, and still growing.",why:"แผงเส้นใยเห็ดที่ยังมีชีวิต ผิวจะค่อย ๆ เปลี่ยนสีและพองตามความชื้นของบ้านใหม่ เราอยากได้งานที่ไม่มีวันเสร็จ โตไปพร้อมกับเจ้าของ (รดน้ำเดือนละครั้ง)",whyEn:"A living mycelium panel whose surface slowly changes colour and swells with the humidity of its new home. I wanted a piece that is never finished, one that grows along with its owner. (Water it once a month.)",look:"ถ่ายรูปไว้ทุกเดือนจากมุมเดิม แล้วเอามาเรียงดู",lookEn:"Take a photo from the same corner every month, then line them up.",titleLo:"ຜິວທີ່ຫາຍໃຈ",y:2026,m:'วัสดุชีวภาพจากเส้นใยเห็ด ยังมีชีวิต',mEn:'Living mycelium bio-composite',mLo:"ວັດສະດຸຊີວະພາບຈາກເສັ້ນໃຍເຫັດ ຍັງມີຊີວິດ",s:'50 × 40 ซม.',sLo:"50 × 40 ຊມ.",ar:'5/4',img:'art/pan-3.svg',q:"งานศิลปะที่ยังมีชีวิต และยังโตต่อได้",qEn:"Art that's still alive, and still growing.",qLo:"ງານສິລະປະທີ່ຍັງມີຊີວິດ ແລະ ຍັງໂຕຕໍ່ໄດ້",st:"แผ่นเส้นใยเห็ดที่ยังมีชีวิต ผิวจะค่อย ๆ เปลี่ยนสีและนูนขึ้นตามความชื้นในบ้านของคนซื้อ ป่านอยากให้งานชิ้นนี้ไม่มีวันเสร็จ แต่เติบโตไปพร้อมกับเจ้าของ (รดน้ำเดือนละครั้ง)",stEn:"A living mycelium panel whose surface slowly changes colour and swells with the humidity of its new home. Pan wanted a piece that is never finished, one that grows along with its owner. (Water once a month.)"}] },   // DRAFT lo: needs native review
 ];
 const DISC_EN = {'จิตรกรรม':'Painting','ภาพถ่าย':'Photography','ภาพประกอบ':'Illustration','เซรามิก':'Ceramics','สิ่งทอ':'Textiles','คอลลาจ':'Collage','ริโซกราฟ':'Risograph','ศิลปะเจเนอเรทีฟ':'Generative art','กลิตช์อาร์ต':'Glitch art','ไบโออาร์ต':'Bio art'};
-const CITY_EN = {'เชียงใหม่':'Chiang Mai','กรุงเทพฯ':'Bangkok','ขอนแก่น':'Khon Kaen','ราชบุรี':'Ratchaburi','น่าน':'Nan','ภูเก็ต':'Phuket','เชียงราย':'Chiang Rai','โคราช':'Korat','สงขลา':'Songkhla'};
+const CITY_EN = {'เชียงใหม่':'Chiang Mai','กรุงเทพฯ':'Bangkok','ขอนแก่น':'Khon Kaen','ราชบุรี':'Ratchaburi','น่าน':'Nan','ภูเก็ต':'Phuket','เชียงราย':'Chiang Rai','โคราช':'Korat','สงขลา':'Songkhla','เวียงจันทน์':'Vientiane'};
 // DRAFT lo: needs native review (transliterations of the discipline and city names)
 const DISC_LO = {"จิตรกรรม": "ຈິດຕະກຳ", "ภาพถ่าย": "ການຖ່າຍຮູບ", "ภาพประกอบ": "ຮູບປະກອບ", "เซรามิก": "ເຊຣາມິກ", "สิ่งทอ": "ເຄື່ອງຖັກທໍ", "คอลลาจ": "ຄໍລາຈ", "ริโซกราฟ": "ຣິໂຊກຣາຟ", "ศิลปะเจเนอเรทีฟ": "ສິລະປະເຈເນີເຣທີຟ", "กลิตช์อาร์ต": "ສິລະປະກລິດຊ໌", "ไบโออาร์ต": "ໄບໂອອາດ"};
-const CITY_LO = {"เชียงใหม่": "ຊຽງໃໝ່", "กรุงเทพฯ": "ກຸງເທບ", "ขอนแก่น": "ຂອນແກ່ນ", "ราชบุรี": "ຣາຊະບຸລີ", "น่าน": "ນ່ານ", "ภูเก็ต": "ພູເກັດ", "เชียงราย": "ຊຽງຮາຍ", "โคราช": "ໂຄຣາດ", "สงขลา": "ສົງຂລາ"};
+const CITY_LO = {"เชียงใหม่": "ຊຽງໃໝ່", "กรุงเทพฯ": "ກຸງເທບ", "ขอนแก่น": "ຂອນແກ່ນ", "ราชบุรี": "ຣາຊະບຸລີ", "น่าน": "ນ່ານ", "ภูเก็ต": "ພູເກັດ", "เชียงราย": "ຊຽງຮາຍ", "โคราช": "ໂຄຣາດ", "สงขลา": "ສົງຂລາ", "เวียงจันทน์": "ວຽງຈັນ"};

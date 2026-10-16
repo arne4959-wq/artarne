@@ -117,6 +117,15 @@
         <p class="sc-lead">${esc(L('กดดูภาพ แล้วอ่านว่าเขาเป็นศิลปินแบบไหนในช่วงปีนั้น', 'Open a picture to read who he was as an artist that year'))}</p>
         <div class="sc-works"><article class="sc-card sc-work sc-in" style="--i:1;--r:-.8deg">${tape(22, -4, true)}<img class="gm-${idOf(x)}" src="${esc(x.file)}" width="${x.w}" height="${x.h}" alt="${esc(pk(x, 'title'))}" loading="lazy"><span class="sc-tag">${esc(x.year)} · ${esc(pk(x, 'sign'))}</span><h3>${esc(pk(x, 'title'))}</h3><small>${esc(who)}</small><a class="sc-btn" href="legend-work.html?id=${id}&k=0">${esc(L('ดูช่วงชีวิตตอนวาดภาพนี้ →', 'Who he was when he painted this →'))}</a></article></div></section>
     </div>` + hazard);
+    LG.more(id).then(list => {
+      if (!list.length || document.body.dataset.lg !== id) return;
+      const sec = document.getElementById('works'); if (!sec) return;
+      const g = document.createElement('div'); g.className = 'sc-gal';
+      g.innerHTML = '<h3 class="sc-h3">' + esc(L('ภาพอื่น ๆ ของเขา', 'More of his pictures')) + '</h3><div class="sc-gal-grid">' + list.map((m, i) =>
+        `<figure class="sc-gal-i" style="--r:${(i % 2 ? 1 : -1) * (.6 + i % 3 * .4)}deg"><img class="gm-${id}" src="${esc(m.file)}" width="${m.w}" height="${m.h}" alt="${esc(pk(m, 'title'))}" loading="lazy"><span class="sc-gal-sign">${esc(pk(x, 'sign'))}</span><figcaption><b>${esc(pk(m, 'title'))}</b> · ${esc(m.year)}<br><small>${esc(m.place)}</small><p>${esc(pk(m, 'note'))}</p></figcaption></figure>`).join('') + '</div>' +
+        '<p class="sc-src" style="color:#4a4943">' + esc(L('ภาพวาดเป็นสาธารณสมบัติ ภาพถ่ายจากคลังเปิดของพิพิธภัณฑ์ที่ระบุไว้', 'Paintings are public domain; images from the named museum’s open-access archive')) + '</p>';
+      sec.appendChild(g);
+    });
   }
 
   /* ---------- legend-work.html : one picture, and the artist in that period ---------- */

@@ -40,7 +40,7 @@
     ${LOGOS.map(l => `<i class="pf-lg" style="left:${l[0]}%;top:${l[1]}%;width:${l[2]}px;height:${l[2]}px;--o:${l[3]};--a:${l[4]}deg;--t:${l[5]}s;--sp:pf-${l[6]};--dx:${l[7]}px"></i>`).join('')}</div>
   <div class="pf-in-wrap">
     ${breadcrumbHtml([[t('bc_city'), 'index.html#city'], [name, '']])}
-    <div class="pf-port pf-in pf-pop" style="--r:0deg;--pf-d:.1s" aria-hidden="true"><span class="pf-pic">${esc(chars(name)[0] || '')}</span><span class="pf-tp pf-tp-gold pf-tp-top"></span></div>
+    <div class="pf-port pf-in pf-pop" style="--r:0deg;--pf-d:.1s" aria-hidden="true"><span class="pf-pic">${A.photo && https(A.photo) ? `<img src="${esc(A.photo)}" alt="" decoding="async" draggable="false">` : esc(chars(name)[0] || '')}</span><span class="pf-tp pf-tp-gold pf-tp-top"></span></div>
     <h1 class="pf-name" id="pf-name"><span class="pf-sr">${esc(name)}</span>${letters}</h1>
     <ul class="pf-tags" aria-label="${esc(t('lb_artist'))}">${tags}</ul>
     <div class="pf-works">

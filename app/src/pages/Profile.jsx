@@ -57,7 +57,7 @@ function ProfileBody({A}) {
     <div className="pf-bg" aria-hidden="true">{['a', 'b', 'c', 'd'].map((c, i) => <i key={c} className={`pf-ring pf-ring-${c}`} style={{'--pf-d': i * 1.6 + 's'}}/>)}<i className="pf-star"></i><i className="pf-dotb"></i>
       {LOGOS.map((l, i) => <i key={i} className="pf-lg" style={{left: l[0] + '%', top: l[1] + '%', width: l[2] + 'px', height: l[2] + 'px', '--o': l[3], '--a': l[4] + 'deg', '--t': l[5] + 's', '--sp': 'pf-' + l[6], '--dx': l[7] + 'px'}}/>)}</div>
     <div className="pf-in-wrap">
-      <div className="pf-port pf-in pf-pop" style={{'--r': '0deg', '--pf-d': '.1s'}} aria-hidden="true"><span className="pf-pic">{chars(name)[0] || ''}</span><span className="pf-tp pf-tp-gold pf-tp-top"></span></div>
+      <div className="pf-port pf-in pf-pop" style={{'--r': '0deg', '--pf-d': '.1s'}} aria-hidden="true"><span className="pf-pic">{A.photo && /^https:\/\/[^\s]+\.[^\s]+$/.test(A.photo) ? <img src={A.photo} alt="" decoding="async" draggable={false}/> : (chars(name)[0] || '')}</span><span className="pf-tp pf-tp-gold pf-tp-top"></span></div>
       <h1 className="pf-name" id="pf-name"><span className="pf-sr">{name}</span>{chars(name).map((c, i) =>
         <span key={i} className={`pf-ltr pf-in pf-drop pf-l${i % 3}`} style={{'--r': [-3, 2, -1.5, 2.5][i % 4] + 'deg', '--pf-d': (.5 + i * .14).toFixed(2) + 's'}} aria-hidden="true">{c}</span>)}</h1>
       <ul className="pf-tags" aria-label={t('lb_artist')}>{[[L.discL(A), 'paper', -2], [L.cityL(A), 'gold', 1.5]].filter(x => x[0]).map((x, i) =>

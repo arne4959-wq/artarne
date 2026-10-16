@@ -65,3 +65,24 @@ test('file keys fit the database rule for storage paths', () => {
   for (let i = 0; i < 20; i++) assert.match(`napha/${fileKey('webp')}`, /^[a-z0-9-]+\/[A-Za-z0-9._-]+$/);
   assert.ok(isHttps('https://pay.example.com') && !isHttps('https://x') && !isHttps('javascript:alert(1)'));
 });
+
+test('profile: photo, building look and timeline are checked and sent', () => {
+  const ok = formToProfile({...goodProfile(), photo: 'https://x.supabase.co/storage/v1/object/public/art/a/p.webp', kind: 'collage', scale: '1.2',
+    colors: ['#00ff3a', '#F00FA8', '#1B2B2A'], timeline: [{y: '2026', t: 'เริ่มทำเมือง', tEn: 'Started the city'}, {y: '', t: '', tEn: ''}]}).update;
+  assert.equal(ok.photo, 'https://x.supabase.co/storage/v1/object/public/art/a/p.webp');
+  assert.equal(ok.kind, 'collage'); assert.equal(ok.scale, 1.2); assert.deepEqual(ok.colors, ['#00FF3A', '#F00FA8', '#1B2B2A']);
+  assert.deepEqual(ok.timeline, [{y: 2026, t: 'เริ่มทำเมือง', tEn: 'Started the city'}]);   // the empty row is dropped
+  assert.equal(formToProfile({...goodProfile(), photo: 'http://x.co/a.jpg'}).errors.photo, 'er_https');
+  assert.equal(formToProfile({...goodProfile(), scale: '3'}).errors.scale, 'er_scale');
+  assert.equal(formToProfile({...goodProfile(), timeline: [{y: '99', t: 'x', tEn: ''}]}).errors.tl0, 'er_year');
+  assert.equal(formToProfile({...goodProfile(), timeline: [{y: '2020', t: '', tEn: ''}]}).errors.tl0, 'er_required');
+  const bad = formToProfile({...goodProfile(), kind: 'rocket', colors: ['red', 'x', 'y']}).update;
+  assert.equal(bad.kind, 'arch'); assert.equal(bad.colors.length, 3); assert.ok(bad.colors.every(c => /^#[0-9A-F]{6}$/.test(c)));
+});
+
+test('profile form round-trip keeps photo, look and timeline', () => {
+  const a = {name: 'A', disc: 'd', city: 'c', photo: 'https://x.co/p.jpg', kind: 'vase', scale: 0.9, colors: ['#111111', '#222222', '#333333'], timeline: [{y: 2020, t: 'ก', tEn: 'a'}]};
+  const {update} = formToProfile(profileToForm(a));
+  assert.equal(update.photo, a.photo); assert.equal(update.kind, 'vase'); assert.equal(update.scale, 0.9);
+  assert.deepEqual(update.timeline, [{y: 2020, t: 'ก', tEn: 'a'}]);
+});

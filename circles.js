@@ -388,7 +388,8 @@ th: {
   lg_go:'ไปสนับสนุนศิลปินที่ยังทำงานอยู่', lg_open:'ดูประวัติและผลงานของเขา →',
   lg_img:"ภาพวาด",
   lg_count:"{n} ภาพบนผนัง",
-  nav_don:'บริจาค', foot_report:'แจ้งปัญหา',
+  foot_set:'ตั้งค่า (ศิลปิน)',   nav_don:'บริจาค', foot_report:'แจ้งปัญหา',
+  mk_go:'เข้าไปในตึกของผม →',   mk_k:'จากคนสร้างเมือง', mk_h:'งานของผม', mk_p:'เมืองนี้เริ่มจากงานเล็ก ๆ ที่ผมทำเอง ตัดแปะ ซ้อนภาพ ใส่ดาวแดง ผมเป็นนักศึกษาไอทีปีหนึ่งที่เวียงจันทน์ ภาพเหล่านี้เป็นฝีมือผม ใช้เป็นเสียงของเมืองไปก่อนที่ศิลปินคนอื่นจะเข้ามา', mk_a1:'ภาพตัดแปะภาพวาดสระบัวและคำว่า ART ซ้ำ ๆ มีดาวแดงลอยทับ', mk_a2:'ภาพม้าขาวสีเทา มีดาวแดงบนหน้าผาก', mk_a3:'ภาพตัดแปะสีเขียวสะท้อนแสง มีดาวสีชมพูและจุดสีส้ม',
   lg_f_title:"ชื่อภาพ",
   lg_f_maker:"จิตรกร · ปี",
   lg_f_own:"แนวคิดของเขา ในคำของเขาเอง",
@@ -542,7 +543,8 @@ en: {
   lg_go:'Support living artists',
   lg_img:"Paintings",
   lg_count:"{n} paintings on the walls",
-  nav_don:'Donate', foot_report:'Report a problem',
+  foot_set:'Settings (artists)',   nav_don:'Donate', foot_report:'Report a problem',
+  mk_go:'Walk into my building →',   mk_k:'From the city’s maker', mk_h:'My own work', mk_p:'This city started from small things I made myself: collage, layered images, red stars. I am a first-year IT student in Vientiane. These pieces are mine, and they are the voice of the city until other artists arrive.', mk_a1:'Collage of a water-lily pond painting with the word ART repeated and red stars floating over it', mk_a2:'Grey-toned white horse with a red star on its forehead', mk_a3:'Neon green collage with pink stars and orange dots',
   lg_f_title:"Title",
   lg_f_maker:"Painter · year",
   lg_f_own:"His concept, in his own words",
@@ -944,7 +946,9 @@ lo: {
   desc_pf: "ຮູ້ຈັກ{a} ສິລະປິນສາຂາ{d} ແນວຄິດຂອງງານ ຜົນງານໃນພິພິທະພັນ ແລະຊ່ອງທາງສະໜັບສະໜູນ",   // DRAFT lo: needs native review
   cy_p: "ຊື່ Circles ມາຈາກຄວາມເຊື່ອວ່າງານສິລະປະບໍ່ມີວັນຈົບ ສິລະປິນເຮັດຊິ້ນໜຶ່ງສຳເລັດ ກໍມີຊິ້ນຕໍ່ໄປລໍຢູ່ສະເໝີ ການສະໜັບສະໜູນຈາກຄົນເບິ່ງບໍ່ແມ່ນຈຸດສິ້ນສຸດ ແຕ່ເປັນແຮງໃຫ້ເຮັດຕໍ່ ແລະເມືອງນີ້ກໍວຽນໄປແບບນັ້ນເລື້ອຍໆ",   // DRAFT lo: needs native review
   lg_open: "ເບິ່ງປະຫວັດແລະຜົນງານຂອງເຂົາ →",   // DRAFT lo: needs native review
+  foot_set: "ຕັ້ງຄ່າ (ສິລະປິນ)",   // DRAFT lo: needs native review
   nav_don: "ບໍລິຈາກ",   // DRAFT lo: needs native review
+  mk_go: 'ເຂົ້າໄປໃນຕຶກຂອງຂ້ອຍ →',   mk_k: 'ຈາກຜູ້ສ້າງເມືອງ', mk_h: 'ຜົນງານຂອງຂ້ອຍ', mk_p: 'ເມືອງນີ້ເລີ່ມຈາກງານນ້ອຍໆທີ່ຂ້ອຍເຮັດເອງ ຕັດແປະ ຊ້ອນຮູບ ໃສ່ດາວແດງ ຂ້ອຍເປັນນັກສຶກສາໄອທີປີໜຶ່ງຢູ່ວຽງຈັນ ຮູບເຫຼົ່ານີ້ເປັນຝີມືຂ້ອຍ ເປັນສຽງຂອງເມືອງກ່ອນທີ່ສິລະປິນຄົນອື່ນຈະເຂົ້າມາ', mk_a1: 'ຮູບຕັດແປະຮູບແຕ້ມສະນ້ຳດອກບົວແລະຄຳວ່າ ART ຊ້ຳໆ ມີດາວແດງລອຍທັບ', mk_a2: 'ຮູບມ້າຂາວສີເທົາ ມີດາວແດງເທິງໜ້າຜາກ', mk_a3: 'ຮູບຕັດແປະສີຂຽວສະທ້ອນແສງ ມີດາວສີບົວແລະຈຸດສີສົ້ມ',   // DRAFT lo: needs native review
   foot_report: "ແຈ້ງບັນຫາ",   // DRAFT lo: needs native review
   lg_f_title: "ຊື່ຮູບ",   // DRAFT lo: needs native review
   lg_f_maker: "ນັກແຕ້ມ · ປີ",   // DRAFT lo: needs native review
@@ -1055,6 +1059,7 @@ function applyLang() {
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
   document.querySelectorAll('[data-t-html]').forEach(el => { el.innerHTML = t(el.dataset.tHtml); });
+  document.querySelectorAll('[data-t-alt]').forEach(el => { el.setAttribute('alt', t(el.dataset.tAlt)); });
   document.querySelectorAll('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.tAria)); });
   document.querySelectorAll('[data-t-ph]').forEach(el => { el.setAttribute('placeholder', t(el.dataset.tPh)); });
   const lb = $('#lang'); if (lb) { const nx = LANG_NEXT[LANG]; lb.textContent = LANG_BTN[nx]; lb.setAttribute('aria-label', LANG_BTN[nx] + ' — ' + LANG_NAME[nx]); lb.setAttribute('lang', nx); }

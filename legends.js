@@ -92,6 +92,18 @@
   const ready = Promise.all(ALL.slice(2).map(probe)).then(a => { a.forEach(x => x && LEGENDS.push(x)); });
   const idOf = x => x.file.split('/').pop().split('-')[0];
 
+  /* More pictures per legend. Each appears in the gallery on the legend page only when its file is really in legends/
+     (run  npm run pictures  to download them from the museums' open-access archives). Titles/years/places: museum records. */
+  const MORE = [
+    {id:'vangogh', file:'legends/vangogh-irises.jpg', year:'1890', title:'ดอกไอริส', titleEn:'Irises', place:'The Metropolitan Museum of Art', note:"วาดในสวนของสถานพักฟื้นที่ Saint-Rémy ปี 1890 เส้นขอบหนาและสีจัดแบบภาพพิมพ์ญี่ปุ่นที่เขาสะสม ดอกไม้ธรรมดาถูกวาดด้วยแรงของคนที่ต้องการให้สีพูดแทนความรู้สึก", noteEn:"Painted in the asylum garden at Saint-Rémy in 1890: thick outlines and flat saturated colour from the Japanese prints he collected. An ordinary flower, drawn with the force of someone who wants colour to speak for feeling."},
+    {id:'vangogh', file:'legends/vangogh-bedroom-in-arles.jpg', year:'1889', title:'ห้องนอนที่อาร์ล', titleEn:'The Bedroom', place:'Art Institute of Chicago', note:"เขาวาดห้องนอนตัวเองที่อาร์ลไว้สามเวอร์ชัน ภาพนี้เป็นเวอร์ชันปี 1889 สีเรียบแบน เส้นขอบชัด และมุมมองเอียงตามแบบของเขา ไม่ใช่ห้องที่ตรงเป๊ะ แต่เป็นห้องที่รู้สึกว่าได้พัก", noteEn:"He painted his own bedroom in Arles three times; this is the 1889 version. Flat colour, firm outlines, a tilted view: not a perfectly correct room, but a room that feels like rest."},
+    {id:'monet', file:'legends/monet-water-lilies.jpg', year:'1906', title:'ดอกบัวในสระ', titleEn:'Water Lilies', place:'Art Institute of Chicago', note:"ในสวนน้ำที่ Giverny เขาหันมาวาดผิวสระกับเงาสะท้อนเป็นตัวเอก แทนที่จะวาดฉากทั้งฉาก แสงบนน้ำเปลี่ยนไปทุกชั่วโมง เขาจึงวาดซ้ำเป็นชุดยาวหลายสิบปี", noteEn:"In his water garden at Giverny he made the surface and reflections the subject rather than a whole scene. The light on water changes by the hour, so he kept repainting it for decades."},
+    {id:'monet', file:'legends/monet-bridge-water-lilies.jpg', year:'1899', title:'สะพานข้ามสระดอกบัว', titleEn:'Bridge over a Pond of Water Lilies', place:'The Metropolitan Museum of Art', note:"สะพานญี่ปุ่นในสวนน้ำของเขาเอง ปี 1899 เขาวาดสะพานนี้เป็นชุดเดียวกันหลายภาพ ทุกภาพคือสถานที่เดิมในแสงต่างกัน", noteEn:"The Japanese footbridge in his own water garden, 1899. He painted it as a series: the same place, each time in different light."},
+    {id:'hokusai', file:'legends/hokusai-fine-wind-clear-morning.jpg', year:'c.1830–32', title:'ลมใต้ ฟ้าใส (ฟูจิแดง)', titleEn:'South Wind, Clear Sky (Red Fuji)', place:'The Metropolitan Museum of Art', note:"ฟูจิสีแดงในแสงเช้า อยู่ในชุดเดียวกับคลื่นใหญ่ คือชุดสามสิบหกทัศนียภาพภูเขาฟูจิ ใช้สีน้อย รูปทรงเรียบ เส้นคม ภูเขาเดียวกันแต่ให้ความรู้สึกต่างจากคลื่นโดยสิ้นเชิง", noteEn:"Fuji in red morning light, from the same series as the Great Wave: Thirty-six Views of Mount Fuji. Few colours, simple shapes, sharp lines; the same mountain, a completely different feeling from the wave."},
+    {id:'seurat', file:'legends/seurat-circus-sideshow.jpg', year:'1887–88', title:'ละครสัตว์หน้าโรง', titleEn:'Circus Sideshow (Parade de cirque)', place:'The Metropolitan Museum of Art', note:"เขาวาดความสว่างของไฟแก๊สตอนกลางคืนหน้าโรงละครสัตว์ด้วยจุดสีเล็ก ๆ คนยืนนิ่งเป็นรูปทรงเรขาคณิต ทุกอย่างถูกคิดและจัดวางไว้ ไม่ใช่วาดตามอารมณ์", noteEn:"Gaslight at night outside a circus, built from small dots of colour. The figures stand still like geometric shapes: everything planned and placed, not painted on impulse."},
+  ];
+  const more = id => Promise.all(MORE.filter(m => m.id === id).map(probe)).then(a => a.filter(Boolean));
+
   /* Each painter's own trick, on his picture. CSS only; all motion is off when the visitor asks for reduced motion.
      monet: the light moves through a day | vangogh: the paint swirls under the pointer | hokusai: the wave rolls in | seurat: the dots grow into the picture */
   (function gimmicks() {
@@ -132,5 +144,5 @@
       $('#lg-list').innerHTML = LEGENDS.map(piece).join('');
     });
   }
-  window.LG = {render, LEGENDS, ready};
+  window.LG = {render, LEGENDS, ready, more};
 })();

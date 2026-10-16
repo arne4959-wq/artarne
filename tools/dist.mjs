@@ -18,6 +18,15 @@ const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isF
 for (const n of [...top, ...FILES]) if (fs.existsSync(path.join(root, n))) copy(path.join(root, n), path.join(out, n));
 for (const d of DIRS) if (fs.existsSync(path.join(root, d))) copy(path.join(root, d), path.join(out, d));
 
+// The artists' settings page (manage.html) is built by the React app (npm run app:build). If that build exists, ship it with its scripts:
+// the page and app/dist/assets/ are copied next to the plain-HTML site, so the "Settings" links on the site work.
+const appDist = path.join(root, 'app', 'dist');
+if (fs.existsSync(path.join(appDist, 'manage.html')) && fs.existsSync(path.join(appDist, 'assets'))) {
+  copy(path.join(appDist, 'manage.html'), path.join(out, 'manage.html'));
+  copy(path.join(appDist, 'assets'), path.join(out, 'assets'));
+  console.log('manage.html (artist settings) included from app/dist');
+} else console.log('NOTE: app/dist/manage.html not found, so the artist settings page is NOT in dist/. Run: npm run app:build   then   npm run dist');
+
 // every local file the pages point at must exist in dist/
 const missing = new Set();
 for (const n of fs.readdirSync(out).filter(n => n.endsWith('.html') || n.endsWith('.css'))) {

@@ -13,9 +13,18 @@ export const PROFILE_TEXT = [   // [column, max length]
   ['name', 80], ['name_en', 80], ['name_lo', 80], ['disc', 60], ['city', 60], ['tagline', 200], ['tagline_en', 200],
   ['concept', 400], ['concept_en', 400], ['bio', 2000], ['bio_en', 2000], ['bio_lo', 2000]];
 
+/* ---- how the artist's building looks + photo + timeline (all optional) ---- */
+export const KIND_LIST = ['arch', 'lens', 'tower', 'vase', 'shell', 'collage', 'dome', 'pixel', 'spore', 'stack'];   // the building shapes cutaway.html can draw
+export const DEFAULT_COLORS = ['#C4958A', '#7A4A40', '#D4CFCA'];
+export const MAX_TIMELINE = 12;
+const isHex = c => /^#[0-9a-fA-F]{6}$/.test(s(c));
+
 export function profileToForm(a) {
-  const f = {since: s(a.since), instagram: s(a.instagram)};
+  const f = {since: s(a.since), instagram: s(a.instagram), photo: s(a.photo), kind: s(a.kind) || 'arch', scale: s(a.scale == null ? 1 : a.scale)};
   for (const [k] of PROFILE_TEXT) f[k] = s(a[k]);
+  const cols = Array.isArray(a.colors) && a.colors.length >= 3 ? a.colors : DEFAULT_COLORS;
+  f.colors = [0, 1, 2].map(i => (isHex(cols[i]) ? cols[i] : DEFAULT_COLORS[i]));
+  f.timeline = (Array.isArray(a.timeline) ? a.timeline : []).slice(0, MAX_TIMELINE).map(x => ({y: s(x && x.y), t: s(x && x.t), tEn: s(x && x.tEn)}));
   return f;
 }
 
@@ -30,6 +39,25 @@ export function formToProfile(f) {
   if (since !== null && !(Number.isInteger(since) && since >= 1900 && since <= 2100)) errors.since = 'er_year'; else update.since = since;
   const ig = s(f.instagram).trim();
   if (ig && !isHttps(ig)) errors.instagram = 'er_https'; else update.instagram = ig || null;
+  const photo = s(f.photo).trim();
+  if (photo && (!isHttps(photo) || photo.length > 500)) errors.photo = 'er_https'; else update.photo = photo || null;
+  // building look
+  update.kind = KIND_LIST.includes(f.kind) ? f.kind : 'arch';
+  const sc = Number(f.scale == null || f.scale === '' ? 1 : f.scale);
+  if (!(sc >= 0.6 && sc <= 1.5)) errors.scale = 'er_scale'; else update.scale = Math.round(sc * 100) / 100;
+  const cols = Array.isArray(f.colors) ? f.colors.slice(0, 3) : [];
+  update.colors = cols.length === 3 && cols.every(isHex) ? cols.map(c => c.toUpperCase()) : DEFAULT_COLORS;
+  // timeline: empty rows are dropped; a row needs a year and a line of words
+  const rows = [];
+  (Array.isArray(f.timeline) ? f.timeline : []).forEach((x, i) => {
+    const y = s(x && x.y).trim(), t = text(x && x.t, 120), tEn = text(x && x.tEn, 120);
+    if (!y && !t && !tEn) return;
+    const yn = Number(y);
+    if (!Number.isInteger(yn) || yn < 1900 || yn > 2100) { errors['tl' + i] = 'er_year'; return; }
+    if (!t && !tEn) { errors['tl' + i] = 'er_required'; return; }
+    const row = {y: yn}; if (t) row.t = t; if (tEn) row.tEn = tEn; rows.push(row);
+  });
+  if (rows.length > MAX_TIMELINE) errors.timeline = 'er_too_many'; else update.timeline = rows;
   return Object.keys(errors).length ? {errors} : {update};
 }
 

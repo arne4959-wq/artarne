@@ -8,6 +8,7 @@
     "start": "python3 serve.py",
     "build": "node tools/build.mjs",
     "dist": "node tools/dist.mjs",
+    "pictures": "node tools/get-pictures.mjs",
     "check": "node tools/check-release.mjs",
     "check:live": "node tools/check-release.mjs --strict",
     "test": "node tests-legacy/run.mjs",

@@ -175,3 +175,21 @@ body[data-lg="seurat"]{--pink:#e0792b;--gold:#f1d38a;--tartan-red:#2f5fa8;--lg-v
 @keyframes lgSway{from{transform:translateX(-14px);}to{transform:translateX(14px);}}
 
 @media(max-width:860px){.sc-ransom.long span{--sz:min(3rem,6.6vw);}}
+
+/* gallery: more pictures of the legend */
+.sc-gal{margin-top:3rem;}
+.sc-h3{font-family:var(--display,inherit);font-size:1.5rem;text-transform:uppercase;margin:0 0 1rem;}
+.sc-gal-grid{columns:3 260px;column-gap:1.6rem;}
+.sc-gal-i{break-inside:avoid;margin:0 0 1.6rem;background:#f4f1e8;border:3px solid #111;padding:.6rem .6rem .5rem;box-shadow:6px 6px 0 #111;transform:rotate(var(--r,0deg));}
+.sc-gal-i img{display:block;width:100%;height:auto;background:#d8d0bd;}
+.sc-gal-i figcaption{font-size:.9rem;margin-top:.5rem;line-height:1.35;}
+.sc-gal-i small{opacity:.75;}
+@media (prefers-reduced-motion:no-preference){.sc-gal-i{transition:transform .25s;}.sc-gal-i:hover{transform:rotate(0) scale(1.02);}}
+
+/* the legend's own identity on the gallery frames: his palette + his one word */
+.sc-gal-i{position:relative;box-shadow:6px 6px 0 var(--gold,#111);}
+.sc-gal-i p{margin:.5rem 0 0;font-size:.88rem;line-height:1.5;}
+.sc-gal-sign{position:absolute;top:-.7rem;left:.6rem;background:var(--pink,#111);color:#fff;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;padding:.2rem .5rem;border:2px solid #111;}
+/* gallery sits on a paper panel so the heading and notes stay readable over the painting background */
+.sc-gal{background:rgba(244,241,232,.94);border:3px solid #111;padding:1.2rem 1.2rem .6rem;}
+.sc-gal .sc-src{color:#4a4943;}

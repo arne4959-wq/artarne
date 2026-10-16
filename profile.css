@@ -189,3 +189,5 @@ html.lite .pf-ring,html.lite .pf-star,html.lite .pf-dotb{display:none;}
 .pf-sbox::before{content:"";position:absolute;left:-5px;right:-5px;top:-5px;height:30px;border:5px solid var(--black);background:var(--a-rivets),var(--a-conc);}
 .pf-sbox::after{content:"";position:absolute;left:-5px;right:-5px;bottom:-5px;height:24px;border:5px solid var(--black);background:var(--a-hazard);}
 @media(max-width:560px){.pf-sbox{padding-top:calc(1.6rem + 22px);padding-bottom:calc(1.6rem + 16px);}}
+
+.pf-pic img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;}

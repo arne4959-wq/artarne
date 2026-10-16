@@ -63,3 +63,11 @@ test('bank details become `support` (QR as a public Storage URL); no account and
   assert.equal(payToSupport({bank: 'BCEL', account_name: null, account_no: null, qr_path: null}, base), null);
   assert.equal(payToSupport({bank: 'BCEL', account_no: '1', qr_path: '../evil/x'}, base).qr, undefined);   // a path that is not <artist_id>/<file> is ignored
 });
+
+test('merge: a live artist replaces the hand-written sample with the same id, and the photo travels', () => {
+  const demo = [{id: 'arne', sample: true}, {id: 'dao'}], live = [{id: 'arne', live: true}];
+  assert.deepEqual(mergeArtists(demo, {artists: live}).map(a => a.id + (a.sample ? '*' : '')), ['arne', 'dao']);
+  assert.ok(/(^|,)photo(,|$)/.test(ARTIST_COLUMNS));
+  const a = rowsToArtists([artist({photo: 'https://x.co/p.webp'})], [{artist_id: 'mali', position: 0, title: 't', ar: '1/1'}])[0];
+  assert.equal(a.photo, 'https://x.co/p.webp');
+});

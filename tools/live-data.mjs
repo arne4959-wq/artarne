@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /* the columns the public may read (supabase/migrations/001_init.sql: user_id is not one of them, and there is no e-mail column at all) */
-export const ARTIST_COLUMNS = 'id,name,name_en,name_lo,disc,city,since,bio,bio_en,bio_lo,tagline,tagline_en,concept,concept_en,instagram,timeline,scale,kind,colors,created_at';
+export const ARTIST_COLUMNS = 'id,name,name_en,name_lo,disc,city,since,bio,bio_en,bio_lo,tagline,tagline_en,concept,concept_en,instagram,photo,timeline,scale,kind,colors,created_at';
 export const WORK_COLUMNS = 'artist_id,position,title,title_en,title_lo,year,medium,medium_en,medium_lo,size,size_lo,ar,img,quote,quote_en,quote_lo,story,story_en,story_lo,say,say_en,say_lo,why,why_en,why_lo,look,look_en,look_lo,concept';
 const DEFAULT_COLORS = ['#C4958A', '#7A4A40', '#D4CFCA'];   // the building's three colours when the artist has set none
 
@@ -45,7 +45,7 @@ export function rowToArtist(a, works, pay, baseUrl) {
   o.email = '';   // never public: buyers' messages reach the artist through the site (circles.js uses CONFIG.contact until then)
   put(o, 'concept', a.concept); put(o, 'conceptEn', a.concept_en);
   put(o, 'bio', a.bio); put(o, 'bioEn', a.bio_en); put(o, 'bioLo', a.bio_lo);
-  put(o, 'tagline', a.tagline); put(o, 'taglineEn', a.tagline_en); put(o, 'instagram', a.instagram);
+  put(o, 'tagline', a.tagline); put(o, 'taglineEn', a.tagline_en); put(o, 'instagram', a.instagram); put(o, 'photo', a.photo);
   if (Array.isArray(a.timeline) && a.timeline.length) o.timeline = a.timeline;
   o.pieces = mine.map(workToPiece);
   const sup = payToSupport((pay || []).find(x => x.artist_id === a.id), baseUrl); if (sup) o.support = sup;
@@ -60,7 +60,8 @@ export const rowsToArtists = (artistRows, workRows, payRows = [], baseUrl = '') 
 /* real artists first, then the sample ones. hideDemo only counts once there is at least one real artist (an empty city would be worse). */
 export function mergeArtists(demo, live) {
   const real = (live && live.artists) || [];
-  return live && live.hideDemo && real.length ? real : [...real, ...demo];
+  const mine = new Set(real.map(a => a.id));   // a hand-written entry in artists.js (like the city maker's own building) gives way to the same id coming live from Supabase
+  return live && live.hideDemo && real.length ? real : [...real, ...demo.filter(a => !mine.has(a.id))];
 }
 
 /* artists.live.json next to artists.js (or in `dir`): {artists: [...], hideDemo, pulledAt}; a missing file means "no real artists yet" */
