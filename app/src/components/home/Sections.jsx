@@ -81,7 +81,7 @@ export function Featured({artists}) {
     </div>
     <div className="masonry" id="masonry">
       {list.map(({a, p, k}, n) => <div key={`${round}:${a.id}:${k}`} className={mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal'} style={{'--i': mode === 'init' ? n % 3 : n}}>
-        <a className="card" href={`studio-${a.id}.html?work=${k}`} draggable="false" data-id={a.id} data-k={k} data-cur="VIEW" aria-label={t('card_aria', {t: titleL(p), a: nameL(a)})}
+        <a className="card" href={`studio-${a.id}.html?work=${k}`} draggable="false" data-id={a.id} data-k={k} data-cur="VIEW" aria-label={t('card_aria', {t: titleL(p), a: nameL(a), p: p.y})}
           onClick={e => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(a.id, k, reduce); }}>
           <i className="tape" style={{'--tr': TAPE[n % TAPE.length] + 'deg'}}></i>
           <span className="art" style={{'--ar': p.ar, '--art': artBg(a.works, k)}}><ArtImg a={a} k={k}/></span>

@@ -293,7 +293,7 @@ function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
-    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: titleL(p), a: nameL(a)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}</span><span class="plate"><span class="pn">${esc(titleL(p))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp">${esc(p.y)}</span></span></a></div>`;
+    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: titleL(p), a: nameL(a), p: p.y}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}</span><span class="plate"><span class="pn">${esc(titleL(p))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp">${esc(p.y)}</span></span></a></div>`;
   }).join('');
   $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('feat_count', {n: list.length});

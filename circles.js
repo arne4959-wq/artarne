@@ -38,7 +38,7 @@ function supportBtn(el, A) {   // turn an existing button into the support-the-a
 }
 function openSupport(info, who) {
   const d = mountDialog('dlg-support'), row = (k, v) => v ? `<div><dt>${esc(t(k))}</dt><dd>${esc(v)}</dd></div>` : '';
-  d.innerHTML = dlgShell(esc(t('sup_qr_t', {a: who})), `<div class="sup-dlg">`
+  shell(d, esc(t('sup_qr_t', {a: who})), `<div class="sup-dlg">`
     + (info.sample ? `<p class="sup-sample" role="note">${esc(t('sup_sample'))}</p>` : '')
     + (info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sup_qr_t', {a: who}))}" width="240" height="240">` : '')
     + `<dl class="sup-dl">${row('sup_bank', info.bank)}${row('sup_acc_name', info.name)}${row('sup_acc_no', info.no)}</dl>`
@@ -121,7 +121,7 @@ function openDonate(A, usd, forTitle) {
   const close = '<button type="button" class="btn ghost" data-close>' + esc(t('close')) + '</button>', wireClose = () => d.querySelectorAll('[data-close]').forEach(b => b.onclick = () => d.close());
   const forNote = forTitle ? `<p class="sm-for">${esc(t('don_for', {t: forTitle}))}</p>` : '';
   const step0 = () => {
-    d.innerHTML = dlgShell(title(), `<div class="sup-dlg">${forNote}<p class="sm-amt">${esc(t('tip_h'))}</p><div class="pf-tips-r">${DON_AMOUNTS.map(n => `<button type="button" class="pf-amt" data-amt="${n}">${esc(money(n))}</button>`).join('')}</div>
+    shell(d, title(), `<div class="sup-dlg">${forNote}<p class="sm-amt">${esc(t('tip_h'))}</p><div class="pf-tips-r">${DON_AMOUNTS.map(n => `<button type="button" class="pf-amt" data-amt="${n}">${esc(money(n))}</button>`).join('')}</div>
       <form class="pf-tipf" novalidate><label for="don-n">${esc(t('tip_other'))}</label><input id="don-n" name="n" type="number" inputmode="numeric" min="1" max="1000" step="1" placeholder="12"><button type="submit" class="btn pk">${esc(t('tip_go'))}</button></form>
       <p class="pf-tiperr" role="alert" hidden>${esc(t('tip_bad'))}</p><div class="act">${close}</div></div>`, [1, 4, '1']);
     wireClose();
@@ -131,17 +131,17 @@ function openDonate(A, usd, forTitle) {
     inp.addEventListener('input', () => { err.hidden = true; });
   };
   const step1 = () => {
-    d.innerHTML = dlgShell(title(), samplePayHtml(A, usd, who).replace('<dl class="sup-dl">', `${forNote}<p class="note">${esc(t('don_how'))}</p><dl class="sup-dl">`)
+    shell(d, title(), samplePayHtml(A, usd, who).replace('<dl class="sup-dl">', `${forNote}<p class="note">${esc(t('don_how'))}</p><dl class="sup-dl">`)
       + `<div class="sup-dlg sm-act"><div class="act"><button type="button" class="btn pk" data-sm-sent>${esc(t('tip_sent'))}</button>${close}</div></div>`, [2, 4, '2']);
     wireClose(); d.querySelector('[data-sm-sent]').onclick = step2;
   };
   const step2 = () => {
-    d.innerHTML = dlgShell(esc(t('pay_notice_h')), sampleNoticeHtml(), [3, 4, '3']); wireClose();
+    shell(d, esc(t('pay_notice_h')), sampleNoticeHtml(), [3, 4, '3']); wireClose();
     sampleNoticeWire(d, step3, step1); d.querySelector('input[name=name]').focus();
   };
   const step3 = () => {
     smTip(A.id, usd);
-    d.innerHTML = dlgShell(esc(t('pay_done_h')), `<div class="cdlg-done" role="status"><div class="stone" aria-hidden="true"><span class="st-h">♥</span><b>${esc(money(usd))}</b><span class="st-l">${esc(who)} · ${new Date().getFullYear()}</span></div><p class="intro">${esc(t('pay_done_tip', {a: who, m: money(usd)}))}</p><p class="sup-sample">${esc(t('sm_banner'))}</p>`
+    shell(d, esc(t('pay_done_h')), `<div class="cdlg-done" role="status"><div class="stone" aria-hidden="true"><span class="st-h">♥</span><b>${esc(money(usd))}</b><span class="st-l">${esc(who)} · ${new Date().getFullYear()}</span></div><p class="intro">${esc(t('pay_done_tip', {a: who, m: money(usd)}))}</p><p class="sup-sample">${esc(t('sm_banner'))}</p>`
       + `<div class="after"><h3>${esc(t('af_h'))}</h3><p>${esc(t('af_p'))}</p><button type="button" class="btn ghost" data-sc>${esc(t('af_btn'))}</button></div><div class="act">${close}</div></div>`, [4, 4, '4']);
     wireClose(); d.querySelector('[data-close]').focus();
   };
@@ -158,7 +158,7 @@ function openSupportCircles() {
   const plate = `<p class="sc-plate"><b>${esc(t('sc_k'))}</b>${esc(t('sc_not'))}</p>`, banner = real ? '' : `<p class="sup-sample" role="note">${esc(t('sm_banner'))}</p>`;
   let usd = 0;
   const step0 = () => {
-    d.innerHTML = dlgShell(esc(t('sc_title')), `<div class="sup-dlg">${plate}${banner}<p class="sm-amt">${esc(t('sc_pick'))}</p><div class="pf-tips-r">${SC_AMOUNTS.map(n => `<button type="button" class="pf-amt" data-amt="${n}">${esc(money(n))}</button>`).join('')}</div>
+    shell(d, esc(t('sc_title')), `<div class="sup-dlg">${plate}${banner}<p class="sm-amt">${esc(t('sc_pick'))}</p><div class="pf-tips-r">${SC_AMOUNTS.map(n => `<button type="button" class="pf-amt" data-amt="${n}">${esc(money(n))}</button>`).join('')}</div>
       <form class="pf-tipf" novalidate><label for="sc-n">${esc(t('tip_other'))}</label><input id="sc-n" name="n" type="number" inputmode="numeric" min="1" max="1000" step="1" placeholder="2"><button type="submit" class="btn pk">${esc(t('tip_go'))}</button></form>
       <p class="pf-tiperr" role="alert" hidden>${esc(t('tip_bad'))}</p><div class="act">${close}</div></div>`, [1, 3, '1']);
     wireClose();
@@ -168,7 +168,7 @@ function openSupportCircles() {
     inp.addEventListener('input', () => { err.hidden = true; });
   };
   const step1 = () => {
-    d.innerHTML = dlgShell(esc(t('sc_title')), `<div class="sup-dlg sm-pay"><p class="sm-amt">${esc(t('sc_total', {m: money(usd)}))}</p>${plate}${banner}
+    shell(d, esc(t('sc_title')), `<div class="sup-dlg sm-pay"><p class="sm-amt">${esc(t('sc_total', {m: money(usd)}))}</p>${plate}${banner}
       <div class="qr-plate">${real && info.qr ? `<img class="sup-qr" src="${esc(info.qr)}" alt="${esc(t('sc_qr_t'))}" width="240" height="240">` : sampleQrSvg('circles:' + usd, t('sm_qr_alt'))}</div><p class="note">${esc(t('sc_how'))}</p>
       <dl class="sup-dl">${row('sup_bank', real ? info.bank : '')}${row('sup_acc_name', real ? info.name : t('sc_acc'))}${row('sup_acc_no', real ? info.no : '')}</dl>
       <div class="act"><button type="button" class="btn pk" data-sc-sent>${esc(t('sc_sent'))}</button>${close}</div><button type="button" class="linkish" data-sc-back>${esc(t('change_amt'))}</button></div>`, [2, 3, '2']);
@@ -176,7 +176,7 @@ function openSupportCircles() {
   };
   const step2 = () => {
     const o = smGet(); smPut({...o, circles: [...(o.circles || []), {u: usd, at: Date.now()}].slice(-20)});
-    d.innerHTML = dlgShell(esc(t(real ? 'sc_done_r_h' : 'sc_done_h')), `<div class="cdlg-done" role="status"><div class="stone" aria-hidden="true"><span class="st-h">♥</span><b>${esc(money(usd))}</b><span class="st-l">circles · ${new Date().getFullYear()}</span></div>
+    shell(d, esc(t(real ? 'sc_done_r_h' : 'sc_done_h')), `<div class="cdlg-done" role="status"><div class="stone" aria-hidden="true"><span class="st-h">♥</span><b>${esc(money(usd))}</b><span class="st-l">circles · ${new Date().getFullYear()}</span></div>
       <p class="intro">${esc(t(real ? 'sc_done_r_p' : 'sc_done_p', {m: money(usd)}))}</p>${real ? '' : `<p class="sup-sample">${esc(t('sm_banner'))}</p>`}<div class="act">${close}</div></div>`, [3, 3, '4']);
     wireClose(); d.querySelector('[data-close]').focus();
   };
@@ -1170,9 +1170,14 @@ function floorHtml(n, of, label) {
 function dlgShell(title, inner, floor) {
   return `<div class="cdlg-h"><div class="cdlg-t"><h2>${title}</h2></div>${floor ? floorHtml(floor[0], floor[1], t('fl_' + floor[2])) : ''}<button type="button" class="cdlg-x" data-close aria-label="${esc(t('close'))}">✕</button></div><div class="cdlg-b">${inner}</div><div class="cdlg-foot" aria-hidden="true"></div>`;
 }
+/* every window is named by its heading: sets the content, then points aria-labelledby at the h2 */
+function shell(d, ...args) {
+  d.innerHTML = dlgShell(...args);
+  const h = d.querySelector('.cdlg-t h2'); if (h) { h.id = d.id + '-t'; d.setAttribute('aria-labelledby', h.id); }
+}
 function showDone(d, res, to) {
   const ok = res.mode === 'sent', fail = res.mode === 'fail';
-  d.innerHTML = dlgShell(esc(t(ok ? 'done_sent' : fail ? 'news_fail' : 'done_mail')),
+  shell(d, esc(t(ok ? 'done_sent' : fail ? 'news_fail' : 'done_mail')),
     `<div class="cdlg-done" role="status"><p class="intro">${esc(t(ok ? 'done_sent_p' : fail ? 'news_fail' : 'done_mail_p'))}</p>` +
     (ok ? '' : `<p class="note">${esc(t('to_label'))}: ${esc(to)}</p><pre id="done-pre">${esc(res.body)}</pre>`) +
     `<div class="act">${ok ? '' : `<button type="button" class="btn" data-copy>${esc(t('copy_msg'))}</button>`}<button type="button" class="btn ghost" data-close>${esc(t('close'))}</button></div></div>`);
@@ -1209,7 +1214,7 @@ function mountTurnstile(form) {
 function openJoin() {
   const d = mountDialog('dlg-join');
   const opts = [...new Set(ARTISTS.map(a => a.disc))].map(x => `<option value="${esc(x)}">${esc(LANG === 'en' ? (DISC_EN[x] || x) : LANG === 'lo' ? (DISC_LO[x] || x) : x)}</option>`).join('') + `<option value="other">${esc(t('jd_other'))}</option>`;
-  d.innerHTML = dlgShell(t('jd_title'),
+  shell(d, t('jd_title'),
     `<form><p class="intro">${esc(t('jd_intro'))}</p>
       <div class="row"><label>${esc(t('jd_name'))}<input name="name" required maxlength="80" autocomplete="name"></label><label>${esc(t('jd_email'))}<input name="email" type="email" required maxlength="120" autocomplete="email"></label></div>
       <label>${esc(t('jd_disc'))}<select name="discipline">${opts}</select></label>

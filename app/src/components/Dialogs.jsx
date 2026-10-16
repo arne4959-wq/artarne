@@ -21,6 +21,9 @@ export const captchaOn = () => !!(CONFIG.endpoint && CONFIG.turnstileSiteKey);
 function Dialog({id, seq, children}) {
   const ref = useRef(null);
   useEffect(() => { const d = ref.current; if (d && seq && !d.open) d.showModal(); }, [seq]);
+  useEffect(() => {   // the window is named by its heading (a11y: a dialog needs a name)
+    const d = ref.current, h = d && d.querySelector('.cdlg-t h2'); if (h) { h.id = id + '-t'; d.setAttribute('aria-labelledby', h.id); }
+  });
   return createPortal(<dialog ref={ref} id={id} className="cdlg" onClick={e => { if (e.target === ref.current) ref.current.close(); }}>{children}</dialog>, document.body);
 }
 const close = e => e.currentTarget.closest('dialog').close();
