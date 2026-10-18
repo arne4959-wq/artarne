@@ -135,6 +135,7 @@ try {
   const fill = (name, content) => { const re = new RegExp(`<!--pre:${name}-->[\\s\\S]*?<!--/pre:${name}-->`); if (!re.test(idx)) throw new Error('marker missing: ' + name); idx = idx.replace(re, () => `<!--pre:${name}-->${content}<!--/pre:${name}-->`); };
   fill('masonry', clean(frag.masonry)); fill('filters', clean(frag.filters)); fill('map', clean(frag.map)); fill('strip', list);
   if (SITE) idx = idx.replace(/(<meta property="og:image" content=")[^"]*(")/, (_, a, c) => a + abs('og.png') + c).replace(/(<meta name="twitter:image" content=")[^"]*(")/, (_, a, c) => a + abs('og.png') + c);
+  if (SITE && !idx.includes('rel="canonical"')) idx = idx.replace('</head>', () => `<link rel="canonical" href="${abs('')}">\n<meta property="og:url" content="${abs('')}">\n</head>`);   // the home page too (studio/profile pages get theirs above)
   write('index.html', idx);
   console.log('  updated index.html (pre-rendered blocks)');
 

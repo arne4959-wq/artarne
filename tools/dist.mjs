@@ -24,7 +24,11 @@ const appDist = path.join(root, 'app', 'dist');
 if (fs.existsSync(path.join(appDist, 'manage.html')) && fs.existsSync(path.join(appDist, 'assets'))) {
   copy(path.join(appDist, 'manage.html'), path.join(out, 'manage.html'));
   copy(path.join(appDist, 'assets'), path.join(out, 'assets'));
-  console.log('manage.html (artist settings) included from app/dist');
+  // the footer "Settings" link stays hidden (CONFIG.manage = false in circles.js) unless the page it points at is really in this folder
+  const cj = path.join(out, 'circles.js'), src = fs.readFileSync(cj, 'utf8');
+  if (!/manage: false,/.test(src)) throw new Error('circles.js: CONFIG.manage not found, cannot show the Settings link');
+  fs.writeFileSync(cj, src.replace('manage: false,', 'manage: true,'));
+  console.log('manage.html (artist settings) included from app/dist, Settings link switched on');
 } else console.log('NOTE: app/dist/manage.html not found, so the artist settings page is NOT in dist/. Run: npm run app:build   then   npm run dist');
 
 // every local file the pages point at must exist in dist/

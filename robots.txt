@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-# Sitemap: https://YOUR-DOMAIN/sitemap.xml   (add once you have a domain)
+Sitemap: https://arne4959-wq.github.io/artarne/sitemap.xml

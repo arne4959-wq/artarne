@@ -252,6 +252,7 @@ html[lang=lo]{--thai:"IBM Plex Sans Thai","Noto Sans Lao","Noto Sans Lao UI","Ph
 .cdlg .pf-tips-r{justify-content:center;}
 .cdlg .pf-tipf input{width:7.5rem;}
 .sm-for{margin:0;font:700 .95rem var(--thai);}
+.cdlg .don-trust,.cdlg .don-check{font-weight:700;color:var(--black);border-left:4px solid var(--gold);padding-left:.7rem;text-align:left;justify-self:stretch;}   /* the two sentences that decide whether a donor trusts the screen */
 
 /* ===== punk x architecture: donation / support windows, forms, street signs =====
    One language everywhere: board-formed concrete, a row of rivets, a yellow/black hazard footing, a black name plate taped with pink. Palette tokens only (concrete = --concrete lightened with paper).

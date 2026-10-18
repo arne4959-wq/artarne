@@ -11,13 +11,13 @@
 <meta property="og:site_name" content="circles">
 <meta property="og:title" content="circles — เมืองของศิลปิน สนับสนุนตรงถึงคนทำ">
 <meta property="og:description" content="circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วสนับสนุนตรงถึงคนทำ">
-<meta property="og:image" content="og.png">
+<meta property="og:image" content="https://arne4959-wq.github.io/artarne/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="circles — เมืองของศิลปิน สนับสนุนตรงถึงคนทำ">
 <meta name="twitter:description" content="circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วสนับสนุนตรงถึงคนทำ">
-<meta name="twitter:image" content="og.png">
+<meta name="twitter:image" content="https://arne4959-wq.github.io/artarne/og.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"circles","description":"A city of artists: one concrete building, one artist. No gallery, no middleman.","inLanguage":["th","en"]}</script>
 <link rel="stylesheet" href="circles.css">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -422,6 +422,7 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .st:first-child{border-left:0;padding-left:0;}
 .st b{display:block;font:400 clamp(3.2rem,7.4vw,6.6rem)/1.05 var(--anton);font-variant-numeric:tabular-nums;}
 .st span{display:block;font:400 .92rem var(--type);letter-spacing:.1em;margin-top:.4rem;}
+.st-note{margin:3.6rem 0 0;max-width:46ch;font:400 .82rem/1.7 var(--type);letter-spacing:.04em;}   /* below the NO MIDDLEMAN sticker, which hangs under the grid */
 
 /* 7 join */
 .join-sec{background:var(--bone);}
@@ -584,6 +585,10 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .sup-w li{display:grid;grid-template-columns:1fr auto;gap:.35rem 1rem;align-items:end;font:400 .98rem/1.5 var(--thai);}
 .sup-bar{grid-column:1 / -1;height:16px;border:2px solid var(--black);background:repeating-linear-gradient(135deg,var(--black) 0 10px,var(--gold) 10px 20px);}
 .sup-v{font:400 1.6rem/1 var(--anton);letter-spacing:.04em;}
+.sup-led{margin:1.2rem 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;border-top:2px solid var(--black);padding-top:.9rem;}
+.sup-led div{display:grid;gap:.2rem;}
+.sup-led dt{font:700 .78rem var(--type);letter-spacing:.08em;}
+.sup-led dd{margin:0;font:700 1rem/1.3 var(--thai);}
 .sup-note{margin-top:1.1rem;font:400 .85rem/1.7 var(--type);color:#4F4A40;}
 @media(max-width:860px){.sup{grid-template-columns:1fr;padding:3rem 1.2rem;}}
 
@@ -646,6 +651,8 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
 /* ===== works-img:end ===== */
 </style>
 <link rel="stylesheet" href="punk.css">
+<link rel="canonical" href="https://arne4959-wq.github.io/artarne/">
+<meta property="og:url" content="https://arne4959-wq.github.io/artarne/">
 </head>
 <body>
 <script>document.documentElement.classList.add('js','pre');try{if(matchMedia('(pointer:coarse)').matches||innerWidth<768)document.documentElement.classList.add('noload')}catch(e){}</script>
@@ -734,6 +741,34 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
 
 <div class="tape-wrap" aria-hidden="true"><div class="tape-bar"></div></div>
 
+<section class="sec bp" id="how">
+  <div class="sec-k reveal">How it works</div>
+  <h2 class="sec-t reveal"><span data-t="how_h">วิธีใช้งาน</span></h2>
+  <div class="bp-grid">
+    <article class="room reveal" style="--i:0">
+      <span class="room-no">FL.01 — ROOM A</span>
+      <svg viewBox="0 0 200 92" aria-hidden="true"><path d="M8,86 H192"/><rect x="18" y="44" width="40" height="42"/><rect x="70" y="22" width="44" height="64"/><path d="M130,86 V50 a20,20 0 0 1 40,0 V86"/><circle cx="92" cy="54" r="38" stroke-dasharray="4 4" style="stroke:var(--gold)"/></svg>
+      <div class="room-n">01</div><h3 data-t="s1_h">เลือกตึก</h3>
+      <p data-t="s1_p">ลากเดินผ่านเมือง ตึกหนึ่งหลังคือศิลปินหนึ่งคน เห็นรูปทรงแล้วถูกใจหลังไหน ก็ชี้หลังนั้น ไม่ต้องมีใครแนะนำ</p>
+      <span class="room-dim">4.00 M</span>
+    </article>
+    <article class="room reveal" style="--i:1">
+      <span class="room-no">FL.02 — ROOM B</span>
+      <svg viewBox="0 0 200 92" aria-hidden="true"><rect x="20" y="8" width="160" height="76"/><path d="M80,84 V54 a20,20 0 0 1 40,0 V84"/><path d="M100,92 V30" stroke-dasharray="4 4" style="stroke:var(--gold)"/><circle cx="100" cy="30" r="4" style="stroke:var(--gold)"/><path d="M44,24 H64 M136,24 H156 M44,40 H64 M136,40 H156"/></svg>
+      <div class="room-n">02</div><h3 data-t="s2_h">เดินเข้าไปดูงาน</h3>
+      <p data-t="s2_p">เปิดประตูตึก ไล่ดูทีละชั้น ทีละห้อง ผลงานแขวนอยู่บนผนังคอนกรีตจริง ๆ จับไม่ได้ แต่ดูได้นานเท่าที่อยากดู</p>
+      <span class="room-dim">6.00 M</span>
+    </article>
+    <article class="room reveal" style="--i:2">
+      <span class="room-no">FL.03 — ROOM C</span>
+      <svg viewBox="0 0 200 92" aria-hidden="true"><rect x="14" y="28" width="48" height="38"/><rect x="138" y="28" width="48" height="38"/><path d="M62,47 H138"/><path d="M126,38 l12,9 l-12,9"/><circle cx="100" cy="47" r="15" style="stroke:var(--gold)"/><text x="100" y="53" text-anchor="middle" style="fill:var(--gold);stroke:none;font:400 17px Anton,sans-serif">$</text></svg>
+      <div class="room-n">03</div><h3 data-t="s3_h">สนับสนุนตรงถึงศิลปิน</h3>
+      <p data-t="s3_p">เจอชิ้นที่ตามไปถึงในฝัน ก็ขอบคุณคนทำโดยตรง สนับสนุนเท่าที่อยากให้ เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน</p>
+      <span class="room-dim">5.00 M</span>
+    </article>
+  </div>
+</section>
+
 <section class="sec feat" id="featured">
   <span class="stk" aria-hidden="true">NEW EVERY WEEK ★</span>
   <div class="sec-k reveal">This week</div>
@@ -809,34 +844,6 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   </div>
 </section>
 
-<section class="sec bp" id="how">
-  <div class="sec-k reveal">How it works</div>
-  <h2 class="sec-t reveal"><span data-t="how_h">วิธีใช้งาน</span></h2>
-  <div class="bp-grid">
-    <article class="room reveal" style="--i:0">
-      <span class="room-no">FL.01 — ROOM A</span>
-      <svg viewBox="0 0 200 92" aria-hidden="true"><path d="M8,86 H192"/><rect x="18" y="44" width="40" height="42"/><rect x="70" y="22" width="44" height="64"/><path d="M130,86 V50 a20,20 0 0 1 40,0 V86"/><circle cx="92" cy="54" r="38" stroke-dasharray="4 4" style="stroke:var(--gold)"/></svg>
-      <div class="room-n">01</div><h3 data-t="s1_h">เลือกตึก</h3>
-      <p data-t="s1_p">ลากเดินผ่านเมือง ตึกหนึ่งหลังคือศิลปินหนึ่งคน เห็นรูปทรงแล้วถูกใจหลังไหน ก็ชี้หลังนั้น ไม่ต้องมีใครแนะนำ</p>
-      <span class="room-dim">4.00 M</span>
-    </article>
-    <article class="room reveal" style="--i:1">
-      <span class="room-no">FL.02 — ROOM B</span>
-      <svg viewBox="0 0 200 92" aria-hidden="true"><rect x="20" y="8" width="160" height="76"/><path d="M80,84 V54 a20,20 0 0 1 40,0 V84"/><path d="M100,92 V30" stroke-dasharray="4 4" style="stroke:var(--gold)"/><circle cx="100" cy="30" r="4" style="stroke:var(--gold)"/><path d="M44,24 H64 M136,24 H156 M44,40 H64 M136,40 H156"/></svg>
-      <div class="room-n">02</div><h3 data-t="s2_h">เดินเข้าไปดูงาน</h3>
-      <p data-t="s2_p">เปิดประตูตึก ไล่ดูทีละชั้น ทีละห้อง ผลงานแขวนอยู่บนผนังคอนกรีตจริง ๆ จับไม่ได้ แต่ดูได้นานเท่าที่อยากดู</p>
-      <span class="room-dim">6.00 M</span>
-    </article>
-    <article class="room reveal" style="--i:2">
-      <span class="room-no">FL.03 — ROOM C</span>
-      <svg viewBox="0 0 200 92" aria-hidden="true"><rect x="14" y="28" width="48" height="38"/><rect x="138" y="28" width="48" height="38"/><path d="M62,47 H138"/><path d="M126,38 l12,9 l-12,9"/><circle cx="100" cy="47" r="15" style="stroke:var(--gold)"/><text x="100" y="53" text-anchor="middle" style="fill:var(--gold);stroke:none;font:400 17px Anton,sans-serif">$</text></svg>
-      <div class="room-n">03</div><h3 data-t="s3_h">สนับสนุนตรงถึงศิลปิน</h3>
-      <p data-t="s3_p">เจอชิ้นที่ตามไปถึงในฝัน ก็ขอบคุณคนทำโดยตรง สนับสนุนเท่าที่อยากให้ เงินทุกบาทเข้ากระเป๋าคนวาด ไม่มีใครหักก่อน</p>
-      <span class="room-dim">5.00 M</span>
-    </article>
-  </div>
-</section>
-
 <section class="stats" id="stats" data-t-aria="stats_aria" aria-label="ตัวเลขของเมือง">
   <div class="stats-g">
     <div class="st reveal" style="--i:0"><b id="c-art" data-count="0">0</b><span data-t="st1">ศิลปินในเมือง</span></div>
@@ -844,12 +851,13 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
     <div class="st reveal" style="--i:2"><b id="c-disc" data-count="0">0</b><span data-t="st3">สาขาศิลปะ</span></div>
     <div class="st reveal" style="--i:3"><b data-count="100" data-suf="%">0</b><span data-t="st4">เงินที่ถึงมือศิลปิน</span></div>
   </div>
+  <p class="st-note" data-t="st_note">circles ไม่หักค่าธรรมเนียม ค่าธรรมเนียมธนาคาร (ถ้ามี) เป็นไปตามธนาคารของผู้โอน</p>
 </section>
 
 <section class="sec join-band" id="join">
   <div><div class="sec-k reveal" data-t="jn_kick">สำหรับศิลปิน</div>
   <h2 class="sec-t reveal"><span data-t="join_h">อยากมีตึกของตัวเอง?</span></h2>
-  <p class="jb-p" data-t="jb_p">รับการสนับสนุนตรง ไม่มีใครคัดงาน</p></div>
+  <p class="jb-p" data-t="jb_p">รับการสนับสนุนตรง ไม่มีใครคัดงาน ขอแค่ยืนยันว่าบัญชีรับเงินเป็นของคุณ</p></div>
   <a class="btn pk" href="join.html" data-t="jb_btn">ขอมีตึกของคุณ →</a>
 </section>
 
@@ -867,6 +875,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
       <li><span data-t="sup_r2">การดูแลและพัฒนาเว็บ</span><b class="sup-v">·</b><i class="sup-bar" aria-hidden="true"></i></li>
       <li><span data-t="sup_r3">กิจกรรมและพื้นที่ใหม่สำหรับศิลปิน</span><b class="sup-v">·</b><i class="sup-bar" aria-hidden="true"></i></li>
     </ul>
+    <dl class="sup-led"><div><dt data-t="sup_led_in">รับแล้ว</dt><dd data-t="sup_led_none">ยังไม่มี</dd></div><div><dt data-t="sup_led_out">ใช้ไปแล้ว</dt><dd data-t="sup_led_none">ยังไม่มี</dd></div><div><dt data-t="sup_led_left">คงเหลือ</dt><dd data-t="sup_led_none">ยังไม่มี</dd></div></dl>
     <p class="sup-note" data-t="sup_note">ยังไม่มีการกำหนดสัดส่วน เราจะประกาศรายรับและรายจ่ายจริงเมื่อมีเงินสนับสนุนเข้ามา เงินที่คุณให้ศิลปินผ่านปุ่ม “สนับสนุน” ของแต่ละงานโอนตรงเข้าบัญชีของศิลปิน ไม่ผ่านมือ circles และไม่มีการหักค่าธรรมเนียม</p>
   </div>
 </section>
@@ -874,7 +883,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
 
 <footer class="foot reveal">
   <h3 data-t-html="foot_h">ศิลปะ<em>ไม่รอ</em>ใคร</h3>
-  <p data-t="foot_p">อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง</p>
+  <p data-t="foot_p">อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง ขอแค่บัญชีรับเงินเป็นของคุณจริง</p>
   <button type="button" class="btn pk" onclick="openJoin()" data-t="foot_btn">ขอมีตึก →</button>
   <details class="fold fold-foot"><summary><span data-t="fold_foot">เมนู โซเชียล และจดหมายข่าว</span></summary>
   <div class="foot-more">
