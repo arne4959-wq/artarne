@@ -115,9 +115,11 @@ test('every old page has CSS for its route, in the old order', async () => {
   const pages = {home: 'index', studio: 'cutaway', profile: 'profile', join: 'join', privacy: 'privacy', terms: 'terms', notFound: '404'};
   for (const [mod, html] of Object.entries(pages)) {
     const list = (await vite.ssrLoadModule(`/src/styles/${mod}.js`)).default, src = read(html + '.html');
-    const links = [...src.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(m => m[1]).filter(h => h !== 'fonts/fonts.css');
-    const want = [...links.map(h => read(h)), src.match(/<style[^>]*>([\s\S]*?)<\/style>/)[1]];
-    // index.html links circles.css before fonts.css, the others after: either way circles.css comes before the page's own <style>
+    // the order the browser applies them: every <link rel="stylesheet"> and the page's first <style>, as they stand in the HTML
+    // (index.html links punk.css AFTER its <style>; the other pages link everything before it)
+    const first = src.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+    const links = [...src.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].filter(m => m[1] !== 'fonts/fonts.css').map(m => ({at: m.index, css: read(m[1])}));
+    const want = [...links, {at: first.index, css: first[1]}].sort((a, b) => a.at - b.at).map(x => x.css);
     assert.deepEqual(list, want, `${mod} (${html}.html)`);
   }
 });
