@@ -1,6 +1,6 @@
 # circles — Brutalist Punk
 
-A city of artists: one concrete building = one artist, the work is set into the building, you buy straight from the maker.
+A city of artists: one concrete building = one artist, the work is set into the building, you support the maker directly. Nothing is for sale: the site shows work and takes donations.
 Plain HTML / CSS / JS. No framework, no bundler. Thai + English. Nothing is loaded from other websites (fonts and the scroll library are in this folder).
 
 ## Run it locally
@@ -23,19 +23,19 @@ Stop with `Ctrl+C`. Edit a file, refresh the browser.
 | `studio-<id>.html` | one page per artist, **generated** by `tools/build.mjs` (full content in the HTML, meta tags, JSON-LD) |
 | `cutaway.html` | the template those pages come from. It also works on its own as `cutaway.html?id=napha`, which is the fallback for a studio you have not built yet. `?work=1` opens a piece |
 | `cutaway-napha.html` | old address → redirects to `studio-napha.html` |
-| `artists.js` | **all artists, buildings and artworks** (names, bios, prices, sizes, image paths, EN texts) |
+| `artists.js` | **all artists, buildings and artworks** (names, bios, sizes, image paths, EN texts; `p:`/`status:` are old selling data that no page shows any more) |
 | `circles.js`, `circles.css` | shared: TH/EN strings, language switch, forms, toast, ransom type, mobile menu, dialogs |
 | `privacy.html`, `terms.html`, `legal.css` | privacy policy and terms of use (TH + EN) — **templates, see "Before you go live"** |
 | `art/*.svg` | 30 generated artworks (placeholders for real photos). `python3 tools/genart.py` regenerates them |
 | `og.png`, `og/<id>.png` | share images (site, and one per artist, generated) |
 | `fonts/`, `vendor/` | self-hosted fonts (SIL OFL) and Lenis (MIT) |
 | `tools/build.mjs`, `tools/browser.mjs` | the build step and a tiny Chrome driver |
-| `tests/` | the test suite (`node tests/run.mjs`) |
+| `tests-legacy/` | the tests of the old plain-HTML site (`node tests-legacy/run.mjs`) |
 | `404.html`, `robots.txt`, `.nojekyll`, `serve.py` | hosting helpers |
 
 ## Common edits
 
-**Change a price, text, or add a piece** → `artists.js`, then run `node tools/build.mjs` (it refreshes the generated pages).
+**Change a text, or add a piece** → `artists.js`, then run `node tools/build.mjs` (it refreshes the generated pages).
 
 **Use real photos instead of the generated art** → put the files in `art/` and change each piece's `img:` in `artists.js`.
 Keep `ar:` (width/height, e.g. `'4/3'`) in step with the photo. `.jpg`, `.webp`, `.png`, `.svg` all work.
@@ -47,6 +47,8 @@ The coloured placeholder behind each image comes from the artist's own colours (
 **Change the Thai / English wording** → `STR` in `circles.js` (`th:` and `en:`, same keys). Text in the HTML carries `data-t="key"`.
 
 ## Build step (crawlers, link previews, no-JavaScript visitors)
+
+**Edit the template (`cutaway.html`, `profile.html`) or `artists.js`, then run `npm run build`** — that one command regenerates every `studio-` and `profile-` page, `og/` images and the home-page blocks. Never edit the generated pages by hand; the tests fail when they are out of date.
 
 Search engines and link previews do not run the page's JavaScript reliably. So the content is also written into plain HTML:
 
@@ -62,9 +64,9 @@ It does not duplicate rendering logic: what it saves is what the browser shows. 
 ## Tests
 
 ```bash
-node tests/run.mjs          # build freshness + smoke + flow  (~8 min)
-node tests/run.mjs perf     # frame rates, normal and with the CPU 4x slower
-node tests/run.mjs all
+node tests-legacy/run.mjs          # build freshness + smoke + flow  (~8 min)
+node tests-legacy/run.mjs perf     # frame rates, normal and with the CPU 4x slower
+node tests-legacy/run.mjs all
 ```
 
 `smoke` opens every page in both languages at 1280px and 375px and checks errors, overflow, accessible names, leftover Thai in English mode and broken images.
@@ -75,7 +77,7 @@ No packages to install (it drives Chrome directly).
 
 Right now nothing is sent to a server (there isn't one):
 
-- **Buy / inquiry** and **Join** open the visitor's email app (`mailto:`) with the message filled in, plus a copy-to-clipboard fallback.
+- **Join** open the visitor's email app (`mailto:`) with the message filled in, plus a copy-to-clipboard fallback.
 - **Newsletter** is saved in the visitor's own browser only (`localStorage`).
 - Artist emails in `artists.js` and `contact` in `circles.js` use the reserved `*.example` domain, so no real mailbox can receive them by accident.
 
@@ -90,7 +92,7 @@ With an endpoint set, the dialogs say "sent" instead of opening the email app.
 `turnstileSiteKey` is optional: a free Cloudflare Turnstile key adds a CAPTCHA to the Join and inquiry forms (it loads Cloudflare's script only then). Your endpoint must verify the `captcha` token on the server.
 Every form also has a hidden honeypot field against simple bots.
 
-**All names, prices, visitor numbers, social handles and emails in this prototype are sample data.**
+**All names, visitor numbers, social handles and emails in this prototype are sample data.**
 
 ## Before you go live
 
@@ -114,14 +116,14 @@ Four artists work in styles that are only now finding an audience, and carry `wa
 **Mali** (risograph, `kind:'stack'`), **Phop** (generative / pen-plotter art, `'dome'`), **Phrae** (glitch art, `'pixel'`), **Pan** (bio art / living mycelium, `'spore'`).
 Each has a bio, 3 works with year / medium / size / price (USD) and a TH + EN text, a studio page, a map district and a hand-drawn concrete building. To add another: copy one of these objects, give it a new `kind` and a building in `monument()` in `site.js`, a footprint in `PLAN`, and a floor shape in `KINDS` in `cutaway.html`, then `node tools/build.mjs`.
 Artwork images are generated placeholders in the same spirit (halftone overprint, plotter lines, glitch slices, spores); swap in real photos via `img:`.
-`node tests/run.mjs newwave` checks the data, the labels, the filter and every new studio. The other suites now read the artist list from `artists.js`, so adding an artist does not break them.
+`node tests-legacy/run.mjs newwave` checks the data, the labels, the filter and every new studio. The other suites now read the artist list from `artists.js`, so adding an artist does not break them.
 
 ## Patterns: checker and tartan
 
 Two patterns carry the colour, both made only from the site palette (defined once in `:root` in `index.html`):
 - `--checker` — a black/paper 2-tone checker (`repeating-conic-gradient`, no image). Used on the edges of the numbers band and the footer, the kerb of two map districts, the gold/black floor under the Spotlight, and (faint) the floor tiles in every studio room.
 - `--tt-red` (the original tartan), `--tt-pink`, `--tt-gold`, `--tt-black` — small 30px tartans in four colourways. Used as washi tape on the artwork cards and the "join" cards, and as the kerb along the foot of each map district. The big red tartan stays on the Hero, the street and the Manifesto.
-To add a colourway, copy one `--tt-*` line and change the base / band / line colours (only palette colours). `node tests/run.mjs layout` checks that the tapes are whole and the map icons never sit on text.
+To add a colourway, copy one `--tt-*` line and change the base / band / line colours (only palette colours). `node tests-legacy/run.mjs layout` checks that the tapes are whole and the map icons never sit on text.
 
 ## HD-2D city strip (Octopath Traveler look, no 3D)
 
@@ -129,12 +131,12 @@ The city strip is built as three planes that move at different speeds when you d
 On top of it: pixel-art people and birds (16×16 canvases drawn in `hd2d.js`, scaled up with `image-rendering: pixelated`, colours from the site palette only), diagonal light shafts and slow dust in a screen-fixed overlay in front of the city.
 Only `transform` and `opacity` animate (frame swaps are `opacity` with `steps()`), so the compositor does the work. With `prefers-reduced-motion` the scene stays but nothing moves: people stand on their first frame, dust is hidden, the light is static, there is no parallax.
 To change it: depth speeds are `--d` on `.far` / `.mid` / `.sky` in `index.html`; the blur is the `filter` on `.far` / `.mid`; who walks and how fast is the `WALKERS` list in `hd2d.js`; the sprites are the character strings at the top of that file (`.` = transparent).
-`node tests/run.mjs hd2d` checks all of it (speeds, blur, 16×16 pixelated sprites, palette, only transform/opacity, reduced motion, 375 px).
+`node tests-legacy/run.mjs hd2d` checks all of it (speeds, blur, 16×16 pixelated sprites, palette, only transform/opacity, reduced motion, 375 px).
 A pixel person also stands at the door of every building (replacing the old vector silhouette; `STAND` in `hd2d.js`, two-frame "breathing", lifts with the building on hover).
 
 **Sizing:** `--bw` (the building width unit) comes from the screen height, so the tallest building + its name tag + the street always fit one screen under the nav: `(100svh − 300px) / --bk`. `--bk` is set from `artists.js` (the largest `scale` × 1.4), so a taller building cannot overflow. Taller screen = bigger city.
 **Ransom text:** `ransom(el, text, seed, true)` wraps every word in an unbreakable `.rw`. A line can only break between words. Thai has no spaces, so the Thai Manifesto lines carry U+200B ("may break here") between words in `STR` (`mani1`…`mani4`).
-`node tests/run.mjs layout` checks these, and the hazard tape that separates the tartan street from the tartan Manifesto.
+`node tests-legacy/run.mjs layout` checks these, and the hazard tape that separates the tartan street from the tartan Manifesto.
 
 ## Art Deco + noir (only two places)
 
@@ -146,7 +148,23 @@ The CSS is the blocks marked `noir + art deco` in `cutaway.html` and `spotlight:
 ## Performance notes
 
 - Animations use `transform` and `opacity` only. The hover shadow of each building is its own flat layer; the concrete grain is one canvas-rendered tile reused as an SVG pattern; the Hero's drifting tartan is a transformed layer.
-- `node tests/run.mjs perf` measures frames in headless Chrome: about 60 fps while scrolling, dragging the city and hovering; with the CPU throttled 4× slower it stays above 50.
+- `node tests-legacy/run.mjs perf` measures frames in headless Chrome: about 60 fps while scrolling, dragging the city and hovering; with the CPU throttled 4× slower it stays above 50.
 - The loader's 1.7 s count-up (first visit of a session) is part of the design, and it is why a first-visit Lighthouse LCP is ~4 s on throttled mobile.
 - `prefers-reduced-motion` is respected everywhere. Tested at 375 px wide.
 
+
+## Donation-only, sample mode and search
+
+- **No selling.** There are no prices, buy buttons, sold / reserved labels, shipping terms or buy pages. Old `buy-<id>-<k>.html` and `buy.html?id=` addresses are caught by `404.html` and land on the artist's donation block (`profile-<id>.html#pf-tips`). `CONFIG.shop` stays `false`.
+- **Donating.** Every "Support <artist>" button (profile block, the open work in a studio, the label in the museum hall) opens one dialog, `openDonate()` in `circles.js`: amount ($3 / $5 / $10 or 1-1000 custom) → QR and account, how to donate, "money goes straight to the artist, no fee for now" → "I've donated" notice (name, e-mail, optional image slip up to 2 MB) → thank-you. From an open work the dialog names the work that inspired it; the money still goes to the artist. The site's own "Support Circles" button uses `CONFIG.support`.
+- **Sample mode.** While there is no real payment data (no `supabaseUrl`/`supabaseKey` in `CONFIG`, or the artist has no `live` flag) the QR is generated and labelled SAMPLE / ตัวอย่าง, the notice form is a demo, and nothing is sent or read (the only trace is `localStorage` key `circles-sample-v1`, the donations "sent" in this browser). Real artists need `support:{bank,name,no,qr}` in `artists.js` (without `sample:true`).
+- **Search** on the home page (`#city-q`) filters artists by name, discipline and city in Thai, English and Lao, together with the filter buttons and the map; `Esc` clears it.
+- **Fullscreen zoom** (`zoomBtnHtml()` / `openZoom()` in `circles.js`) on the open work of a studio.
+- Phones and small screens skip the first-visit loader. Shared pixel-people PNGs live in `people/` (`node tools/make-sprites.mjs` regenerates them); `favicon.svg` is shared.
+
+
+## Windows, artists' words, highlights, Legends
+- Every window is a concrete building (beam, rivets, floor sign, hazard footing): `dlgShell()` in circles.js + the `.cdlg-*` rules at the end of circles.css. The artwork window is in cutaway.html.
+- "Artist tells it": `say / why / look` (+En) per work in artists.js; fields in the artist dashboard (supabase/migrations/004_artist_tells.sql).
+- highlights.html (ranked by "Resonated" taps, views break ties, never donations; sample numbers) and legends.html (paintings only: Claude Monet and Vincent van Gogh, with their own words, sources and CC0 credits; no donate button). "Support circles" is a separate window with its own sample QR.
+- Edit the template + artists.js, then run `node tools/build.mjs`. Screenshots: `node tools/shots.mjs`. New suite: `node tests-legacy/run.mjs places`.

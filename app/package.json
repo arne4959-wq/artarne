@@ -1,0 +1,24 @@
+{
+  "name": "circles-app",
+  "private": true,
+  "description": "circles in React (Vite). During the migration it reads artists.js, the strings in circles.js and the CSS from the plain-HTML site in the folder above.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/pages.mjs",
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.2",
+    "vite": "^8.3.4"
+  }
+}

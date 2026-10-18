@@ -60,7 +60,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
   <h2>2. ข้อมูลที่เราเก็บ</h2>
   <table>
     <tr><th>เมื่อ</th><th>ข้อมูล</th></tr>
-    <tr><td>คุณส่งข้อความหาศิลปิน (ซื้อ / สอบถามผลงาน)</td><td>ชื่อ อีเมล ข้อความ ชื่อผลงานและราคาที่สนใจ</td></tr>
+    <tr><td>คุณส่งข้อความหาศิลปิน หรือแจ้งว่าสนับสนุนแล้ว</td><td>ชื่อ อีเมล ข้อความ ผลงานที่สนใจ (ถ้ามี) และรูปสลิป (ถ้าคุณแนบ)</td></tr>
     <tr><td>คุณขอมีตึกในเมือง (Join)</td><td>ชื่อหรือนามปากกา อีเมล สาขา ลิงก์ผลงาน ข้อความแนะนำตัว</td></tr>
     <tr><td>คุณสมัครรับข่าว</td><td>อีเมล</td></tr>
     <tr><td>คุณเปิดเว็บ</td><td>เว็บไซต์นี้ไม่ติดตั้งคุกกี้ ไม่ใช้เครื่องมือวิเคราะห์ผู้เข้าชม และไม่มีโฆษณา ผู้ให้บริการโฮสติ้งอาจเก็บบันทึกการเข้าถึงตามปกติ (เช่น IP, เวลา) เพื่อความปลอดภัยของระบบ</td></tr>
@@ -69,12 +69,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 
   <h2>3. เราใช้ข้อมูลเพื่ออะไร</h2>
   <ul>
-    <li>ส่งข้อความของคุณถึงศิลปินที่คุณระบุ เพื่อให้ศิลปินตอบกลับและตกลงซื้อขายกับคุณโดยตรง</li>
+    <li>ส่งข้อความของคุณถึงศิลปินที่คุณระบุ เพื่อให้ศิลปินตอบกลับและขอบคุณคุณโดยตรง</li>
     <li>พิจารณาและตอบคำขอมีตึกของคุณ</li>
     <li>ส่งข่าวจากเมืองให้คุณ เฉพาะเมื่อคุณสมัครรับข่าวเอง</li>
     <li>รักษาความปลอดภัยของเว็บไซต์ และป้องกันสแปม</li>
   </ul>
-  <p>ฐานทางกฎหมาย: การปฏิบัติตามคำขอของคุณ (ตอบข้อความ ซื้อขาย) ความยินยอมของคุณ (จดหมายข่าว) และประโยชน์โดยชอบด้วยกฎหมาย (ความปลอดภัย)</p>
+  <p>ฐานทางกฎหมาย: การปฏิบัติตามคำขอของคุณ (ตอบข้อความ รับแจ้งการสนับสนุน) ความยินยอมของคุณ (จดหมายข่าว) และประโยชน์โดยชอบด้วยกฎหมาย (ความปลอดภัย)</p>
 
   <h2>4. เราเปิดเผยข้อมูลให้ใคร</h2>
   <ul>
@@ -109,7 +109,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
   <h2>2. What we collect</h2>
   <table>
     <tr><th>When</th><th>Data</th></tr>
-    <tr><td>You message an artist (buy / ask about a work)</td><td>Name, email, message, the work and price you asked about</td></tr>
+    <tr><td>You message an artist or tell them you have donated</td><td>Name, email, message, the work you asked about (if any) and a slip image (if you attach one)</td></tr>
     <tr><td>You request a building (Join)</td><td>Name or pen name, email, discipline, link to your work, introduction</td></tr>
     <tr><td>You subscribe to the newsletter</td><td>Email address</td></tr>
     <tr><td>You browse the site</td><td>This site sets no cookies, runs no analytics and shows no ads. Our hosting provider may keep ordinary access logs (e.g. IP address, time) for security.</td></tr>
@@ -118,12 +118,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 
   <h2>3. Why we use it</h2>
   <ul>
-    <li>To pass your message to the artist you named, so they can reply and agree a sale with you directly</li>
+    <li>To pass your message to the artist you named, so they can reply and thank you directly</li>
     <li>To review and answer your building request</li>
     <li>To send news from the city, only if you subscribed</li>
     <li>To keep the site secure and stop spam</li>
   </ul>
-  <p>Legal bases: carrying out your request (replies, sales), your consent (newsletter) and legitimate interests (security).</p>
+  <p>Legal bases: carrying out your request (replies, donation notices), your consent (newsletter) and legitimate interests (security).</p>
 
   <h2>4. Who we share it with</h2>
   <ul>
@@ -149,7 +149,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 <script src="artists.js"></script>
 <script src="circles.js"></script>
 <script>
-function legalTitle() { const th = LANG === 'th'; setMeta((th ? 'นโยบายความเป็นส่วนตัว' : 'Privacy policy') + ' — circles', th ? 'circles เก็บข้อมูลอะไร ใช้ทำอะไร ส่งให้ใคร และสิทธิของคุณ' : 'What circles collects, why, who sees it, and your rights'); }
+function legalTitle() { const th = LANG !== 'en'; setMeta((th ? 'นโยบายความเป็นส่วนตัว' : 'Privacy policy') + ' — circles', th ? 'circles เก็บข้อมูลอะไร ใช้ทำอะไร ส่งให้ใคร และสิทธิของคุณ' : 'What circles collects, why, who sees it, and your rights'); }
 onLang(legalTitle); wireNav(); applyLang();
 </script>
 </body>

@@ -19,7 +19,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def send_error(self, code, message=None, explain=None):
         """Show the site's own 404.html (like GitHub Pages / Netlify do) instead of the plain Python error page."""
         if code == 404 and os.path.exists("404.html"):
-            body = open("404.html", "rb").read()
+            with open("404.html", "rb") as f:
+                body = f.read()
             self.send_response(404)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
@@ -30,8 +31,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             super().send_error(code, message, explain)
 
 
-socketserver.TCPServer.allow_reuse_address = True
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
+socketserver.ThreadingTCPServer.allow_reuse_address = True
+with socketserver.ThreadingTCPServer(("127.0.0.1", PORT), Handler) as httpd:   # this machine only: the folder holds .git and the original artwork
     url = f"http://localhost:{PORT}"
     print(f"Serving circles at {url}  (Ctrl+C to stop)")
     threading.Timer(0.5, lambda: webbrowser.open(url)).start()

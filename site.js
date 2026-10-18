@@ -123,12 +123,14 @@ let dragMoved = false, vel = 0, inertia = 0;
 function refreshCity() {     // fills every building tag in the current language
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
     const a = ARTISTS[i], nm = bd.querySelector('.nm');
-    bd.querySelector('.mon').setAttribute('aria-label', LANG === 'en' ? `${nameL(a)}'s building` : `ตึกของ${a.name}`);
+    bd.setAttribute('aria-label', `${bldgL(a)} · ${discL(a)}`);   // the link's own name (it used to be every tag word run together)
+    bd.querySelector('.mon').setAttribute('aria-label', bldgL(a));
     bd.querySelector('.no').textContent = `NO.${String(i + 1).padStart(2, '0')} · ${t('works_n', {n: a.works.length})}`;
     nm.setAttribute('aria-label', nameL(a)); ransom(nm, nameL(a), i);
     bd.querySelector('.ds').textContent = discL(a);
     let wv = bd.querySelector('.wv'); if (a.wave) { if (!wv) { wv = document.createElement('i'); wv.className = 'wv'; bd.querySelector('.tag').appendChild(wv); } wv.textContent = '★ ' + t('wave'); }
-    bd.querySelector('.wl').textContent = a.pieces.map(p => pk(p, 't')).join(' · ');
+    bd.querySelector('.wl').textContent = a.pieces.map(p => titleL(p)).join(' · ');
+    bd.querySelectorAll('.tile title').forEach(el => { if (el.dataset.k == null) el.dataset.k = a.titles.indexOf(el.textContent); const k = +el.dataset.k; if (k >= 0) el.textContent = LANG === 'lo' ? titleL(a.pieces[k]) : a.titles[k]; });   // hover tooltips of the tiles: Lao gets titleLo, th / en keep the Thai title as before
   });
 }
 function renderCity() {
@@ -283,17 +285,15 @@ let showAll = false, sortBy = 'cur';
 const allWorks = () => ARTISTS.flatMap(a => a.pieces.map((p, k) => ({a, p, k})));
 function worksList() {
   let l = showAll ? allWorks() : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
-  if (sortBy === 'low') l = [...l].sort((x, y) => x.p.p - y.p.p);
-  else if (sortBy === 'high') l = [...l].sort((x, y) => y.p.p - x.p.p);
-  else if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y || y.p.p - x.p.p);
-  return [...l.filter(x => workStatus(x.p) !== 'sold'), ...l.filter(x => workStatus(x.p) === 'sold')];   // sold works go last
+  if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y);
+  return l;
 }
 /* mode: 'init' = revealed on scroll, 'pop' = animated re-sort, 'still' = language switch (no animation) */
 function renderFeatured(mode) {
   const list = worksList(), total = allWorks().length;
   $('#masonry').innerHTML = list.map(({a, p, k}, n) => {
     const cls = mode === 'pop' ? 'mi pop' : mode === 'still' ? 'mi reveal in' : 'mi reveal';
-    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: pk(p, 't'), a: nameL(a), p: usd(p.p)}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}${stampHtml(p)}</span><span class="plate"><span class="pn">${esc(pk(p, 't'))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp${workStatus(p) ? ' strike' : ''}">${usd(p.p)}</span>${statusChip(p)}</span></a></div>`;
+    return `<div class="${cls}" style="--i:${mode === 'init' ? n % 3 : n}"><a class="card" href="studio-${a.id}.html?work=${k}" draggable="false" data-id="${a.id}" data-k="${k}" data-cur="VIEW" aria-label="${esc(t('card_aria', {t: titleL(p), a: nameL(a), p: p.y}))}"><i class="tape" style="--tr:${TAPE[n % TAPE.length]}deg"></i><span class="art" style="--ar:${p.ar};--art:${artBg(a.works, k)}">${artImg(a, k)}</span><span class="plate"><span class="pn">${esc(titleL(p))}</span><span class="pa">${esc(nameL(a))} · ${esc(discL(a))}</span><span class="pp">${esc(p.y)}</span></span></a></div>`;
   }).join('');
   $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('feat_count', {n: list.length});
@@ -325,10 +325,10 @@ function mapSpans(n) {
   if (rest === 1) { s.push(3); p = 3; } else if (rest === 2) { s.push(2, 2); p = 2; }
   return {s, p};
 }
-let curD = '';
+let curD = '', curQ = '';
 function renderMap() {
   const L = mapSpans(ARTISTS.length), n = ARTISTS.length;
-  $('#map-grid').innerHTML = ARTISTS.map((a, i) => `<button class="dist d${i % 6}${i === 0 || (i === n - 1 && n % 2 === 0) ? ' wide' : ''}" style="grid-column:span ${L.s[i]}" data-id="${a.id}" data-d="${esc(a.disc)}" data-w="${a.wave ? 1 : 0}" data-cur="ENTER"><span class="dn">NO.${String(i + 1).padStart(2, '0')} · ${esc(t('district'))}</span><span class="dd">${esc(discL(a))}</span><span class="da">${esc(nameL(a))} · ${esc(cityL(a))}</span><svg viewBox="0 0 120 80" aria-hidden="true">${PLAN[a.kind]}</svg></button>`).join('')
+  $('#map-grid').innerHTML = ARTISTS.map((a, i) => `<button class="dist d${i % 6}${i === 0 || (i === n - 1 && n % 2 === 0) ? ' wide' : ''}" style="grid-column:span ${L.s[i]}" data-id="${a.id}" data-d="${esc(a.disc)}" data-w="${a.wave ? 1 : 0}" data-cur="ENTER" aria-label="${esc(`NO.${String(i + 1).padStart(2, '0')} · ${discL(a)} · ${nameL(a)}`)}"><span class="dn">NO.${String(i + 1).padStart(2, '0')} · ${esc(t('district'))}</span><span class="dd">${esc(discL(a))}</span><span class="da">${esc(nameL(a))} · ${esc(cityL(a))}</span><svg viewBox="0 0 120 80" aria-hidden="true">${PLAN[a.kind]}</svg></button>`).join('')
     + (L.p ? `<div class="plaza" style="grid-column:span ${L.p}" aria-hidden="true"><span>${esc(t('plaza'))}</span><svg viewBox="0 0 120 80"><circle cx="60" cy="40" r="34"/><circle cx="60" cy="40" r="22"/><circle cx="60" cy="40" r="8"/><path d="M60,4 V76 M24,40 H96"/></svg></div>` : '') + `<div class="compass" aria-hidden="true">N ↑</div>`;
   $('#filters').innerHTML = [['', t('f_all')], ['*wave', t('f_wave')], ...[...new Map(ARTISTS.map(a => [a.disc, discL(a)]))]].map(([d, l]) => `<button type="button" class="fbtn" data-d="${esc(d)}" aria-pressed="false">${esc(l)}</button>`).join('');
   syncFilter(false);
@@ -337,26 +337,34 @@ function syncFilter(scrollStrip) {
   const d = curD;
   $('#map-grid').classList.toggle('f', !!d);
   const wave = d === '*wave';
-  document.querySelectorAll('.dist').forEach(el => { const on = wave ? el.dataset.w === '1' : el.dataset.d === d; el.classList.toggle('on', on); });
+  const q = curQ, nameHit = a => !q || [a.name, a.nameEn, a.nameLo, a.disc, discL(a), a.city, cityL(a)].some(x => x && String(x).toLowerCase().includes(q)), ok = a => (!d || (wave ? !!a.wave : a.disc === d)) && nameHit(a);
+  document.querySelectorAll('.dist').forEach(el => { const A = ARTISTS.find(x => x.id === el.dataset.id), on = !!A && (d || q) && ok(A); el.classList.toggle('on', on); });
+  $('#map-grid').classList.toggle('f', !!(d || q));
   document.querySelectorAll('.fbtn[data-d]').forEach(b => { if (b.id === 'all-btn') return; const on = b.dataset.d === d; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
   let first = null, n = 0, only = null;
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
-    const hit = !d || (wave ? !!ARTISTS[i].wave : ARTISTS[i].disc === d);
+    const hit = ok(ARTISTS[i]), act = !!(d || q);
     bd.style.transitionDelay = '0s';
-    bd.classList.toggle('lit', !!d && hit); bd.classList.toggle('dim', !!d && !hit);
-    if (d && hit) { n++; only = ARTISTS[i]; if (!first) first = bd; }
+    bd.classList.toggle('lit', act && hit); bd.classList.toggle('dim', act && !hit);
+    if (act && hit) { n++; only = ARTISTS[i]; if (!first) first = bd; }
   });
   if (scrollStrip && first) strip.scrollTo({left: Math.max(0, first.offsetLeft - 80), behavior: reduce ? 'auto' : 'smooth'});
   /* the strip sits far above the map, so say so in a bar that follows the reader down the map */
   const note = $('#fnote'), go = $('#fnote-in');
-  if (d) $('#fnote-t').textContent = wave ? t('fnote_wave', {n}) : t('fnote', {n, d: discL(ARTISTS.find(a => a.disc === d))});
-  note.classList.toggle('off', !d); note.toggleAttribute('inert', !d);
-  go.hidden = !(d && n === 1); if (!go.hidden) { go.dataset.id = only.id; go.href = 'studio-' + only.id + '.html'; }
+  const act = !!(d || q);
+  if (act) $('#fnote-t').textContent = !n ? t('fnote_q0') : q ? t('fnote_q', {n}) : wave ? t('fnote_wave', {n}) : t('fnote', {n, d: discL(ARTISTS.find(a => a.disc === d))});
+  note.classList.toggle('off', !act); note.toggleAttribute('inert', !act);
+  go.hidden = !(act && n === 1); if (!go.hidden) { go.dataset.id = only.id; go.href = 'studio-' + only.id + '.html'; }
 }
 function setFilter(d) { curD = d; syncFilter(true); }
 $('#filters').addEventListener('click', e => { const b = e.target.closest('.fbtn[data-d]'); if (b) setFilter(b.dataset.d); });
 $('#map-grid').addEventListener('click', e => { const b = e.target.closest('.dist'); if (b) openStudio(b.dataset.id); });   // a district on the map = that artist's building
-$('#fnote-x').addEventListener('click', () => setFilter(''));
+$('#fnote-x').addEventListener('click', () => { const i = $('#city-q'); if (i) i.value = ''; curQ = ''; setFilter(''); });
+(function () {   // search by name, discipline or city
+  const i = $('#city-q'); if (!i) return; let timer = 0;
+  i.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { curQ = i.value.trim().toLowerCase(); syncFilter(true); }, 150); });
+  i.addEventListener('keydown', e => { if (e.key === 'Escape') { i.value = ''; curQ = ''; syncFilter(false); } });
+})();
 $('#fnote-in').addEventListener('click', e => { e.preventDefault(); openStudio(e.currentTarget.dataset.id); });
 
 /* spotlight */
@@ -364,8 +372,8 @@ function renderSpot() {
   const N = ARTISTS[0], p = N.pieces[0], im = $('#afr-img');
   $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
   if (p.img && !im.getAttribute('src')) im.src = p.img;
-  im.alt = pk(p, 't');
-  $('#afr-cap').innerHTML = `<b>${esc(pk(p, 't'))}</b><span>${esc(nameL(N))} · ${p.y} · ${usd(p.p)}</span>`;
+  im.alt = titleL(p);
+  $('#afr-cap').innerHTML = `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y}</span>`;
   $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
 }
 
@@ -402,22 +410,27 @@ wireNav(); applyLang(); langInit = true;
   const root = document.documentElement, loader = document.getElementById('loader'), countEl = document.getElementById('loader-count');
   const boot = () => root.classList.remove('pre');
   let seen = false; try { seen = sessionStorage.getItem('circles-seen') === '1'; } catch (e) {}
-  if (reduce || seen) { loader.remove(); boot(); return; }
-  const DUR = 1700, t0 = performance.now();
+  const small = matchMedia('(pointer:coarse)').matches || innerWidth < 768;   // phones and small screens: no 1.7 s count-up, the content shows at once (the loader stays on desktop)
+  if (reduce || seen || small) { loader.remove(); boot(); return; }
+  const DUR = 250, t0 = performance.now();
   const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
   const counted = new Promise(res => (function tick(now) {
-    const k = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - k, 3);
+    const k = Math.max(0, Math.min(1, (now - t0) / DUR)), e = 1 - Math.pow(1 - k, 3);
     countEl.textContent = String(Math.round(e * 100)).padStart(3, '0');
     k < 1 ? requestAnimationFrame(tick) : res();
   })(t0));
+  let gone = false;
   const go = () => {
+    if (gone) return; gone = true;
     try { sessionStorage.setItem('circles-seen', '1'); } catch (e) {}
     loader.classList.add('done');
-    setTimeout(boot, 520);
-    setTimeout(() => loader.remove(), 1400);
+    setTimeout(boot, 80);
+    setTimeout(() => loader.remove(), 320);
   };
+  const skip = document.getElementById('loader-skip');
+  if (skip) skip.addEventListener('click', () => { loader.classList.add('quick'); go(); });   // the visitor does not want the opening: straight in
   Promise.all([fontsReady, counted]).then(go);
-  setTimeout(go, 6000);                      // safety net
+  setTimeout(go, 3000);                      // safety net
 })();
 
 (function scrollLinked() {

@@ -3,8 +3,10 @@ dist/
 .carbon/
 .claude-snapshot.tgz
 *.tgz
-.DS_Store
-.carbon/
 screenshots/
-tests/
+tests-legacy/out/
 _preview/
+app/node_modules/
+app/dist/
+app/tests/out/
+lao-review.csv

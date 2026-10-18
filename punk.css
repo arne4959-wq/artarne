@@ -1,0 +1,146 @@
+/* punk.css — the "more art-school, less tidy" layer for the Home page (index.html only; punk.js adds the micro-interactions).
+   Rules of the house: palette tokens only (--black --bone --paper --pink --gold --tartan-red), the 5 site fonts, nothing is added to the HTML structure.
+   Only transform / opacity / translate / rotate are ever animated. Hover tilts use the individual `translate` and `rotate` properties,
+   so they never fight the .reveal / .rise / .drop animations that own `transform`. Everything here is decoration: aria-hidden or pseudo-elements. */
+
+/* ---------- 1. paper: a photocopy grain over the whole page (one fixed, static layer; it never repaints while scrolling) ---------- */
+#main::before{content:"";position:fixed;inset:0;z-index:40;pointer-events:none;background:var(--grain);opacity:.12;}
+@media(max-width:860px){#main::before{opacity:.06;}}   /* phones: half the grain so small Thai / Lao tone marks stay clean */
+
+/* ---------- 2. labels and titles that break the grid ---------- */
+.sec-k{rotate:-1.6deg;box-shadow:4px 4px 0 var(--pink);}
+.sec:nth-of-type(even) .sec-k{rotate:1.2deg;}
+.mani .sec-k{box-shadow:4px 4px 0 var(--gold);}
+/* marker pen under the big titles on the light sections (static background, never animated) */
+.cy .sec-t span,.join-band .sec-t span,.sup .sec-t span,.feat .sec-t span,.mk-h{
+  background:linear-gradient(transparent 60%,var(--gold) 60% 91%,transparent 91%);-webkit-box-decoration-break:clone;box-decoration-break:clone;}
+.mk-h{width:max-content;max-width:100%;}
+/* hard pink offset on the dark sections' titles */
+.bp .sec-t,.spot .sec-t{text-shadow:clamp(2px,.6vw,5px) clamp(2px,.6vw,5px) 0 var(--pink);}
+.foot h3 em{display:inline-block;rotate:-4deg;background:var(--pink);color:var(--black);padding:0 .22em;margin:0 .06em;}
+
+/* ---------- 3. tape, everywhere: things look stuck on with whatever was lying around ---------- */
+.mani-note::before,.sup-w::before,.afr::before,.room::after,.mk-f::before,.mk-f::after{content:"";position:absolute;z-index:4;pointer-events:none;
+  width:92px;height:26px;background:var(--pink);border:2px solid var(--black);opacity:.95;}
+.mani-note{position:relative;}
+.mani-note::before{top:-15px;left:1.4rem;rotate:-5deg;}
+.sup-w::before{top:-15px;right:2rem;background:var(--gold);rotate:4deg;}
+.afr::before{top:-12px;left:50%;margin-left:-62px;width:124px;background:var(--gold);rotate:-3deg;}
+.room::after{top:-13px;right:1.2rem;background:var(--gold);rotate:5deg;width:74px;}
+.room:nth-child(2)::after{background:var(--pink);rotate:-4deg;}
+.mk-f::before{top:-13px;left:12%;rotate:-7deg;}
+.mk-f:nth-child(2)::before{left:auto;right:8%;background:var(--gold);rotate:6deg;}
+.mk-f:nth-child(3)::before{left:34%;rotate:-2deg;}
+.mk-f::after{content:none;}
+
+/* ---------- 4. stickers slapped on the sections (decorative English slogans, like the existing ART NOT SORRY) ---------- */
+.maker::after,.stats-g::after,.cy-fig::after,.sup::after{position:absolute;z-index:5;pointer-events:none;font:400 .95rem var(--anton);letter-spacing:.12em;
+  background:var(--pink);color:var(--black);border:var(--line) solid var(--black);padding:.25rem .7rem;box-shadow:4px 4px 0 var(--black);white-space:nowrap;
+  transition:transform .5s var(--ease);}
+.maker::after{content:"CUT & PASTE ✱";content:"CUT & PASTE ✱" / "";right:3rem;top:2rem;rotate:6deg;}
+.stats-g::after{content:"NO MIDDLEMAN";content:"NO MIDDLEMAN" / "";right:0;bottom:-3.2rem;rotate:-4deg;background:var(--paper);}
+.cy-fig::after{content:"AGAIN ↻";content:"AGAIN ↻" / "";right:0;bottom:2%;rotate:-7deg;background:var(--gold);}
+.sup::after{content:"THANK YOU ✱";content:"THANK YOU ✱" / "";right:3rem;bottom:1.6rem;rotate:5deg;background:var(--gold);}
+.maker:hover::after,.stats:hover .stats-g::after,.cy-fig:hover::after,.sup:hover::after{transform:rotate(-5deg) scale(1.08);}
+.stats-g,.sup,.cy-fig{position:relative;}
+.sup::after{z-index:1;}
+
+/* ---------- 5. layered, overlapping layouts ---------- */
+/* maker: three photos pasted over each other */
+.mk-row{gap:0;padding:1.2rem 0 1.4rem;}
+.mk-f{position:relative;margin-left:-1.8rem;transition:transform .45s var(--ease);}
+.mk-f:first-child{margin-left:0;margin-top:1.4rem;}
+.mk-f:nth-child(2){z-index:2;}
+.mk-f:nth-child(3){margin-top:3.4rem;z-index:3;}
+@media(hover:hover){.mk-f:hover{z-index:6;transform:rotate(0deg) scale(1.035);}}
+@media(max-width:640px){
+  .mk-row{display:block;}
+  .mk-f{margin:0 0 -1rem;width:86%;max-width:none;}
+  .mk-f:nth-child(2){width:58%;margin:-1.6rem 0 0 auto;}
+  .mk-f:nth-child(3){width:80%;margin:-1.3rem 0 0 6%;}
+  .mk-go{margin-top:2.6rem;}
+  .maker::after{right:1rem;top:1.2rem;}
+}
+/* how-it-works: the three rooms are not on one line any more */
+.bp-grid{padding-bottom:1.4rem;}
+@media(min-width:861px){
+  .room:nth-child(1){rotate:-.7deg;}
+  .room:nth-child(2){margin-top:2.6rem;rotate:.6deg;}
+  .room:nth-child(3){margin-top:1.1rem;rotate:-.4deg;}
+}
+.room-n{display:inline-block;rotate:-4deg;text-shadow:3px 3px 0 var(--gold);}
+.room.reveal.in{transition:transform .35s var(--ease),opacity .9s var(--ease);}
+@media(hover:hover){.room.reveal.in:hover{transform:translate(-4px,-4px);transition-delay:0s;box-shadow:8px 8px 0 var(--pink);}}
+/* the zigzag where the dark section bites into the light one above it */
+.bp::before{content:"";position:absolute;left:0;right:0;top:-13px;height:14px;pointer-events:none;
+  background:linear-gradient(135deg,transparent 50%,var(--black) 50%) 0 0/22px 14px,linear-gradient(225deg,transparent 50%,var(--black) 50%) 0 0/22px 14px;}
+/* the masonry cards hang slightly crooked, like prints pinned up by different people */
+.mi:nth-child(3n+1){rotate:-.9deg;}
+.mi:nth-child(3n+2){rotate:.7deg;}
+.mi:nth-child(3n){rotate:-.3deg;}
+/* manifesto note overlaps the last line of the ransom note */
+@media(min-width:861px){.mani-note{margin-top:-.4rem;margin-left:clamp(0rem,14vw,12rem);}}
+.hl{transition:translate .3s var(--ease),rotate .3s var(--ease);}
+@media(hover:hover){.hl:hover{translate:10px 0;rotate:-1.2deg;}.hl.pink:hover{translate:-6px 0;rotate:1deg;}}
+/* two bits of tape crossed over each other at the bottom of the hero */
+.hero-tape::after{content:"";position:absolute;left:10%;right:-6%;top:-5px;height:30px;rotate:3deg;
+  background:repeating-linear-gradient(135deg,var(--black) 0 16px,var(--pink) 16px 32px);opacity:.96;}
+
+/* ---------- 6. type that ignores the rules: huge outlined words bleeding off the edge, behind the content ---------- */
+.join-band,.cy{overflow:hidden;}
+.join-band>*,.cy>*{position:relative;z-index:1;}
+.join-band::before,.cy::before{content:"";position:absolute;left:-2%;white-space:nowrap;pointer-events:none;z-index:0;
+  font:400 clamp(6rem,19vw,17rem)/1 var(--anton);color:transparent;-webkit-text-stroke:2px rgba(14,13,12,.15);}
+.join-band::before{content:"BUILD ✱ BUILD ✱ BUILD";content:"BUILD ✱ BUILD ✱ BUILD" / "";bottom:-.2em;rotate:-2deg;}
+.cy::before{content:"ROUND & ROUND";content:"ROUND & ROUND" / "";top:-.12em;left:auto;right:-3%;rotate:2deg;-webkit-text-stroke-color:rgba(163,24,44,.17);}
+/* halftone dots down the right edge of the numbers */
+.stats{position:relative;overflow:hidden;}
+.st{position:relative;z-index:1;}
+.stats-g::before{content:"";position:absolute;right:-3rem;top:-4.5rem;bottom:-4.5rem;width:clamp(70px,12vw,170px);z-index:0;pointer-events:none;opacity:.3;
+  background:radial-gradient(var(--black) 24%,transparent 26%) 0 0/12px 12px;-webkit-mask-image:linear-gradient(270deg,#000,transparent);mask-image:linear-gradient(270deg,#000,transparent);}
+.st:nth-child(odd) b{rotate:-1.5deg;}
+.st:nth-child(even){translate:0 .9rem;}
+.st:nth-child(even) b{rotate:1.2deg;}
+
+/* ---------- 7. micro-interactions ---------- */
+@keyframes pk-jit{0%{translate:0 0;}20%{translate:-4px 1px;}40%{translate:4px -2px;}60%{translate:-3px -1px;}80%{translate:3px 2px;}100%{translate:0 0;}}
+/* numbers glitch with a red/black split when you hover or tap them */
+.st b,.room-n{cursor:default;}
+.st b:hover,.room-n:hover,.st b:active,.room-n:active{text-shadow:-3px 0 var(--tartan-red),3px 0 var(--pink);animation:pk-jit .4s steps(1) 2;}
+.room-n:hover,.room-n:active{text-shadow:-3px 0 var(--gold),3px 0 var(--paper);}
+/* ransom-note letters: .pk-gl is put on a whole line for a moment by punk.js */
+.rn.pk-gl span{box-shadow:-4px 0 0 var(--pink),4px 0 0 var(--gold);}
+.rn.pk-gl span:nth-child(even){box-shadow:4px 0 0 var(--pink),-4px 0 0 var(--black);}
+/* paint splats on click / tap */
+.pk-splat{position:fixed;left:0;top:0;z-index:640;width:var(--s,24px);height:var(--s,24px);margin:calc(var(--s,24px) / -2) 0 0 calc(var(--s,24px) / -2);
+  pointer-events:none;border-radius:50%;background:var(--c,var(--pink));border:2px solid var(--black);animation:pk-splat .7s var(--ease) forwards;}
+.pk-splat.star{background:none;border:0;border-radius:0;display:grid;place-items:center;font:400 var(--s,24px)/1 var(--anton);color:var(--c,var(--pink));-webkit-text-stroke:1.5px var(--black);}
+@keyframes pk-splat{0%{transform:scale(.2) rotate(0);opacity:1;}35%{transform:scale(1.15) rotate(25deg);opacity:1;}100%{transform:scale(1.55) rotate(60deg);opacity:0;}}
+
+/* scroll speed sways the big titles and the pasted-up bits (punk.js sets --v on each one while the page is moving, then it settles back to 0) */
+.sec-t,.mk-h{rotate:calc(var(--v,0) * .5deg);}
+.mani-note{rotate:calc(var(--v,0) * -.6deg);}
+.mk-f{rotate:calc(var(--v,0) * .7deg);}
+.sec-t.pk-gl,.mk-h.pk-gl{text-shadow:-3px 0 var(--pink),3px 0 var(--gold);}
+
+/* ---------- 8. scroll: stickers and photos drift at different speeds (CSS scroll-driven animation; browsers without it just show them still) ---------- */
+@supports (animation-timeline:view()){
+  @keyframes pk-drift-a{from{translate:0 34px;}to{translate:0 -34px;}}
+  @keyframes pk-drift-b{from{translate:0 -26px;}to{translate:0 26px;}}
+  .mk-f:nth-child(odd),.room:nth-child(odd),.afr{animation:pk-drift-a linear both;animation-timeline:view();animation-range:cover 0% cover 100%;}
+  .mk-f:nth-child(even),.room:nth-child(even),.sup-w{animation:pk-drift-b linear both;animation-timeline:view();animation-range:cover 0% cover 100%;}
+}
+
+/* ---------- 9. phones and reduced motion ---------- */
+@media(max-width:860px){
+  .st:nth-child(even){translate:none;}
+  .stats-g::after{right:.2rem;bottom:-3rem;}
+  .sup::after{position:relative;right:auto;bottom:auto;justify-self:start;display:block;width:max-content;}
+  .join-band::before,.cy::before{font-size:5.4rem;}
+}
+@media(prefers-reduced-motion:reduce){
+  .mk-f,.mk-f:hover,.room,.hl{animation:none!important;transition:none!important;}
+  .st b:hover,.room-n:hover,.st b:active,.room-n:active{animation:none;}
+  .pk-splat{display:none;}
+  *{animation-timeline:auto!important;}
+}

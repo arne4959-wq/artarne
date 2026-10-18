@@ -7,12 +7,13 @@ html[lang="th"] .en{display:none;}
 .legal .upd{font:400 .85rem var(--type);letter-spacing:.12em;color:var(--tartan-red);}
 .legal .draft{background:var(--gold);border:var(--line) solid var(--black);padding:.8rem 1rem;font:400 .9rem/1.7 var(--type);}
 .legal h2{font:400 1.45rem/1.4 "Chonburi",var(--thai);margin:2.2rem 0 .6rem;border-left:6px solid var(--pink);padding-left:.8rem;}
-.legal p,.legal li{font:300 1.02rem/1.9 var(--thai);}
+.legal p,.legal li{font:400 1.02rem/1.9 var(--thai);}
 .legal ul{padding-left:1.4rem;display:grid;gap:.3rem;margin:.4rem 0 .8rem;}
 .legal a{color:var(--black);text-decoration:none;border-bottom:3px solid var(--pink);}
-.legal table{border-collapse:collapse;width:100%;margin:.6rem 0 1rem;font:300 .95rem/1.7 var(--thai);}
+.legal table{border-collapse:collapse;width:100%;margin:.6rem 0 1rem;font:400 .95rem/1.7 var(--thai);}
 .legal th,.legal td{border:2px solid var(--black);padding:.5rem .7rem;text-align:left;vertical-align:top;}
 .legal th{background:var(--black);color:var(--paper);font:400 .8rem var(--type);letter-spacing:.1em;}
 .legal-foot{max-width:820px;margin:0 auto;padding:0 2rem 4rem;display:flex;flex-wrap:wrap;gap:1.2rem;font:400 .85rem var(--type);letter-spacing:.08em;}
 .legal-foot a{color:var(--black);text-decoration:none;border-bottom:3px solid var(--pink);}
 @media(max-width:860px){.legal{padding:2.2rem 1.2rem 3rem;}.legal-foot{padding:0 1.2rem 3rem;}.legal table{display:block;overflow-x:auto;}}
+html[lang="lo"] .en{display:none;}   /* Lao mode shows the Thai text (the legal pages have no Lao version) */

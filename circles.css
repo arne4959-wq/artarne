@@ -18,6 +18,26 @@
 .mnav a:last-child{border-bottom:0;}
 @media(max-width:860px){.menu-btn{display:block;}.links{gap:.6rem;}}
 
+/* phone: pages with a menu button show their links only in the menu (page rules lost to the 44px tap-target rule above and the bar overflowed) */
+@media(max-width:860px){nav:has(.menu-btn) .links>a{display:none;}}
+/* pages with no menu button (privacy, terms): keep only the first link on a phone; the other one is repeated at the foot of the page */
+@media(max-width:860px){nav:not(:has(.menu-btn)) .links>a:not(:first-child){display:none;}}
+/* language switch: three side-by-side buttons, the current language filled black (the page language is always visible; one tap to any language) */
+.lang-seg{display:inline-flex;border:2px solid var(--black);background:var(--paper);}
+.lang-seg button{font:400 .8rem var(--anton);letter-spacing:.1em;color:var(--black);background:transparent;border:0;padding:.3rem .5rem;min-width:44px;min-height:44px;cursor:pointer;}
+.lang-seg button + button{border-left:2px solid var(--black);}
+.lang-seg button[aria-pressed="true"]{background:var(--black);color:var(--paper);}
+@media(max-width:340px){.lang-seg button{min-width:40px;padding:.3rem .3rem;}}   /* 320px (400% zoom): the bar must not be wider than the screen; targets stay well above the 24px AA minimum */
+.lang-seg button:focus-visible{outline:3px solid var(--pink);outline-offset:-3px;}
+/* phone menu: the artists' door ("ขอมีตึก") first, as a gold slab */
+.mnav a.mn-join{background:var(--gold);border:var(--line) solid var(--black);justify-content:center;margin:.5rem 0 .4rem;box-shadow:5px 5px 0 var(--black);}
+/* secondary button: outline only, no shadow (primary = black or .pk with shadow) */
+.btn.ghost{background:transparent;color:var(--black);box-shadow:none;}
+.btn.ghost:hover{background:var(--black);color:var(--paper);box-shadow:none;}
+/* Thai / Lao have no capitals and need their marks close: no wide tracking, a font with the glyphs */
+html[lang=th] .btn,html[lang=lo] .btn,html[lang=th] .lang-seg button,html[lang=lo] .lang-seg button,html[lang=th] .mnav a.mn-join,html[lang=lo] .mnav a.mn-join{letter-spacing:.03em;text-transform:none;font-family:"Chonburi","IBM Plex Sans Thai",sans-serif;line-height:1.5;}
+html[lang=th] .lang-seg button,html[lang=lo] .lang-seg button{font-size:.85rem;}
+
 /* dialogs (join / inquiry) */
 .cdlg{margin:auto;border:var(--line) solid var(--black);padding:0;background:var(--paper);color:var(--black);width:min(620px,94vw);max-height:92vh;overflow:auto;box-shadow:12px 12px 0 var(--pink);}
 .cdlg::backdrop{background:rgba(14,13,12,.78);}
@@ -28,7 +48,7 @@
 .cdlg-h h2 em{font-style:normal;color:var(--pink);}
 .cdlg-x{flex:none;width:44px;height:44px;border:var(--line) solid var(--paper);background:var(--gold);color:var(--black);font:400 1.1rem var(--anton);cursor:pointer;}
 .cdlg form,.cdlg .cdlg-done{padding:1.4rem 1.6rem 1.7rem;display:grid;gap:1rem;}
-.cdlg p.intro{font:300 1rem/1.8 var(--thai);}
+.cdlg p.intro{font:400 1rem/1.8 var(--thai);}
 .cdlg label{display:grid;gap:.35rem;font:400 .78rem var(--type);letter-spacing:.12em;color:var(--tartan-red);text-transform:uppercase;}
 .cdlg input,.cdlg select,.cdlg textarea{font:400 1rem/1.5 var(--thai);color:var(--black);background:var(--bone);border:var(--line) solid var(--black);padding:.65rem .8rem;width:100%;border-radius:0;}
 .cdlg textarea{min-height:120px;resize:vertical;}
@@ -37,7 +57,7 @@
 .cdlg .act{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;}
 .cdlg .btn.ghost{background:var(--paper);color:var(--black);box-shadow:6px 6px 0 var(--black);}
 .cdlg .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
-.cdlg .note{font:400 .8rem/1.7 var(--type);color:#6E685C;}
+.cdlg .note{font:400 .8rem/1.7 var(--type);color:#5C574C;}
 .cdlg .note a{color:var(--black);text-decoration:none;border-bottom:2px solid var(--pink);}
 .cdlg-done h3{font:400 1.6rem/1.4 "Chonburi",var(--thai);}
 .cdlg-done pre{font:400 .85rem/1.7 var(--type);background:var(--bone);border:2px dashed var(--black);padding:.8rem 1rem;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow:auto;}
@@ -90,7 +110,7 @@ html.pgc-in::after{content:"";position:fixed;inset:0;background:#0E0D0C;z-index:
 .stamp{position:absolute;left:50%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-12deg);font:400 clamp(.85rem,2.2vw,1.4rem)/1 "Anton","Chonburi",Impact,sans-serif;font-style:normal;letter-spacing:.14em;text-transform:uppercase;padding:.35em .75em .3em;border:4px double currentColor;background:rgba(244,241,232,.9);pointer-events:none;white-space:nowrap;box-shadow:3px 3px 0 rgba(14,13,12,.35);}
 .stamp.sold{color:#A3182C;}
 .stamp.reserved{color:#0E0D0C;background:rgba(232,183,48,.94);}
-.chip{display:inline-block;font:400 .72rem/1.2 "Anton","Chonburi",Impact,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .45rem;border:2px solid #0E0D0C;vertical-align:middle;margin-left:.45rem;}
+.chip{display:inline-block;font:400 .75rem/1.2 "Anton","Chonburi",Impact,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .45rem;border:2px solid #0E0D0C;vertical-align:middle;margin-left:.45rem;}
 .chip.sold{background:#A3182C;color:#F4F1E8;}
 .chip.reserved{background:#E8B730;color:#0E0D0C;}
 .strike{text-decoration:line-through;text-decoration-thickness:3px;opacity:.55;}
@@ -105,3 +125,218 @@ html.lite .fx{display:none!important;}
 html.lite .stand .spr canvas{animation:none!important;}
 html.lite .stand .spr canvas:first-child{opacity:1;}
 /* ===== lite:end ===== */
+
+/* ===== tap targets: at least 44px everywhere (desktop too), only min-size / padding ===== */
+@media all{
+  nav .brand,nav .lang,nav .links .join,#sort{min-height:44px;}
+  nav .links a,.mnav a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;}
+  .bc li a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:0 .6rem;margin:0 -.6rem;border-bottom:0;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px;}   /* wider hit area without moving the text */
+  nav .menu-btn,.pf-more,.cut-head .more{min-width:44px;min-height:44px;}
+  footer.mini-foot a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;justify-content:center;border-bottom:0;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px;text-decoration-color:var(--gold);}
+  footer.mini-foot a::after{content:none;}
+  .mus-don,.mus-more{min-height:44px;display:inline-flex;align-items:center;}
+  .jn-foot a,.pl-vt-own a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;}
+  .cut-head .back{display:inline-flex;align-items:center;min-height:44px;}
+  .foot-more li a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;}
+  .news-c a,.foot-c a{padding-block:1rem;}      /* inline links in a sentence (underlined by text-decoration): more hit area above and below, the line itself does not move */
+  .mini-foot a,.cdlg .note a{position:relative;}  /* these carry a pink border-bottom, so the extra hit area is an invisible ::after instead of padding */
+  .mini-foot a::after,.cdlg .note a::after{content:"";position:absolute;left:-6px;right:-6px;top:-16px;bottom:-16px;}
+  .work-dlg .dlg-nav > button{width:44px;height:44px;}
+}
+
+/* ===== fold: <details class="fold"> collapsible sections (index: spotlight interview, footer columns). New .fold- rules only ===== */
+.fold>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:44px;padding:.7rem 1rem;cursor:pointer;font:600 1rem var(--thai);letter-spacing:.04em;color:inherit;border:3px solid currentColor;}
+.fold>summary::-webkit-details-marker{display:none;}
+.fold>summary::after{content:"+";font:400 1.5rem/1 var(--anton);}
+.fold[open]>summary::after{content:"\2212";}
+.fold>summary:hover{background:var(--gold);border-color:var(--gold);color:var(--black);}
+.fold>summary:focus-visible{outline:3px solid var(--pink);outline-offset:4px;}
+.fold-body{padding-top:1.4rem;}
+.fold-spot{margin:0 0 1.8rem;}
+.fold-foot{flex:1 0 100%;border-top:2px dashed rgba(244,241,232,.3);padding-top:1.6rem;}
+.fold-foot .foot-more{border-top:0;padding-top:2rem;}
+.fold-foot+.foot-c{flex:1 0 100%;padding-top:1.4rem;}
+
+/* small dollar price next to the kip price (shown only when CONFIG.lakPerUsd is set) */
+.mny-s{margin-left:.5em;font:400 .5em/1 var(--type);letter-spacing:.04em;white-space:nowrap;text-decoration:none;opacity:.85;}
+
+/* Lao mode: Lao has no capitals and no wide tracking, so translated text and buttons get normal letter-spacing (like the html[lang=th] rules) */
+html[lang=lo] [data-t],html[lang=lo] [data-t-html],html[lang=lo] button,html[lang=lo] .btn{letter-spacing:.01em;text-transform:none;}
+
+/* Support dialog (bank QR) */
+.sup-dlg{padding:1.4rem 1.6rem 1.6rem;display:grid;gap:1rem;justify-items:center;}
+.sup-qr{width:min(240px,70vw);height:auto;border:var(--line) solid var(--black);background:#fff;}
+.sup-dl{width:100%;display:grid;gap:.5rem;margin:0;}
+.sup-dl div{display:flex;justify-content:space-between;gap:1rem;border-bottom:2px solid var(--black);padding-bottom:.4rem;}
+.sup-dl dt{font-weight:700;}.sup-dl dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;word-break:break-all;}
+.sup-sample{background:var(--black);color:var(--paper);padding:.4rem .8rem;font-weight:700;margin:0;}
+.sup-dlg .act{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.jd-pay{border:2px dashed var(--black);padding:.8rem 1rem 1rem;margin:0;display:grid;gap:.7rem;min-width:0;}
+.jd-pay legend{font-weight:700;padding:0 .4rem;}
+
+/* ---- ease of use ---- */
+/* focus ring in two tones (white inside, black outside) so it shows on every colour of the site, pink and gold included */
+:focus-visible{outline:3px solid #0E0D0C!important;outline-offset:3px!important;box-shadow:0 0 0 3px #fff!important;}
+.skip{position:fixed;left:.6rem;top:-5rem;z-index:3000;background:var(--black);color:var(--paper);padding:.8rem 1.1rem;font:700 1rem/1.2 var(--anton,sans-serif);border:3px solid var(--paper);text-decoration:none;transition:top .15s;}
+.skip:focus{top:.6rem;}
+.calm{display:inline-flex;align-items:center;gap:.3rem;min-height:44px;padding:.5rem .9rem;background:var(--paper);color:var(--black);border:3px solid var(--black);font:700 .85rem/1.1 var(--anton,sans-serif);letter-spacing:.04em;cursor:pointer;box-shadow:4px 4px 0 var(--black);}   /* in the footer row, not floating */
+.foot-tools{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;align-items:center;padding:.9rem 1rem 1.2rem;position:relative;z-index:2;}
+html.has-fab footer{padding-bottom:calc(76px + env(safe-area-inset-bottom));}   /* room for the one floating Donate button */
+html[data-calm="1"] *,html[data-calm="1"] *::before,html[data-calm="1"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+.fab-wrap{position:fixed;right:.8rem;bottom:.8rem;z-index:900;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100vw - 1.6rem);}
+.fab-wrap .btn{min-height:44px;box-shadow:4px 4px 0 var(--black);}
+.fab-wrap .fab-sup.away{display:none;}
+
+@media(max-width:900px){.calm-t{display:inline;}}
+@media(max-width:600px){.fab-wrap{right:.5rem;bottom:.5rem;max-width:calc(100vw - 4rem);}.fab-wrap .btn{min-height:48px;padding:.55rem .95rem;font-size:.95rem;letter-spacing:.05em;}}
+.sup-q{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
+.city-search{flex:1 1 220px;min-width:0;min-height:44px;padding:.5rem .9rem;border:var(--line,3px) solid var(--black);background:var(--paper);color:var(--black);font:400 1rem var(--sans,inherit);}
+
+/* sample payment mode (tip dialog, buy page): small helpers on top of the Support dialog styles */
+.sm-pay{padding-bottom:.4rem;}
+.sm-act{padding-top:0;}
+.sm-amt{margin:0;font:400 1.5rem "Chonburi",var(--thai);}
+.sm-qr{display:block;}
+.cdlg .sm-form p.sm-err,.sm-form p.sm-err{background:var(--black);color:var(--paper);padding:.3rem .7rem;margin:0;font-weight:700;}
+.sm-err[hidden]{display:none;}
+
+/* artwork: fullscreen zoom button + viewer */
+.zoom-host{position:relative;}
+.zoom-btn{position:absolute;right:10px;bottom:10px;z-index:3;width:48px;height:48px;display:grid;place-items:center;background:var(--paper);color:var(--black);border:3px solid var(--black);box-shadow:3px 3px 0 var(--black);cursor:pointer;padding:0;border-radius:0;}
+.zoom-btn:hover{background:var(--gold);}
+.zoomdlg{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;padding:0;border:0;background:#0E0D0C;color:var(--paper);box-shadow:none;overflow:hidden;}
+.zoomdlg[open]{display:flex;flex-direction:column;animation:none;}
+.zoomdlg::backdrop{background:#0E0D0C;}
+.zm-bar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:.6rem .8rem;background:#0E0D0C;border-bottom:2px solid rgba(244,241,232,.25);}
+.zm-hint{font:400 .85rem/1.5 var(--thai);color:#D9D6CC;}
+.zm-tools{display:flex;gap:.5rem;flex:none;}
+.zm-tools button{width:48px;height:48px;font:400 1.3rem var(--anton);background:var(--paper);color:var(--black);border:3px solid var(--paper);cursor:pointer;border-radius:0;}
+.zm-tools button:hover{background:var(--gold);}
+.zm-stage{flex:1;min-height:0;position:relative;overflow:hidden;display:grid;place-items:center;touch-action:none;cursor:zoom-in;outline-offset:-4px;}
+.zm-stage.zm-in{cursor:grab;}
+.zm-img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-select:none;will-change:transform;}
+@media(max-width:560px){.zm-hint{font-size:.75rem;}}
+@media(prefers-reduced-motion:reduce){.zm-img{transition:none;}}
+
+/* breadcrumb (profile and buy pages) */
+.bc{font:400 .85rem/1.4 var(--type);}
+.bc ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .1rem;}
+.bc li{display:inline-flex;align-items:center;min-height:44px;}
+.bc li+li::before{content:"›";margin:0 .55rem;opacity:.7;}
+.bc a{color:inherit;text-decoration:none;border-bottom:2px solid currentColor;padding:.5rem 0;}
+.bc a:hover{background:var(--gold);color:var(--black);}
+.bc [aria-current]{font-weight:700;max-width:60vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bc-dark{color:var(--paper);}
+
+#all-artists{scroll-margin-top:96px;}
+
+/* Thai / Lao: letters carry stacked tone marks and vowels, so a ransom tile gets room above and below (nothing is clipped), and Lao has system fallbacks (no heavy webfont) */
+:root{--lao:"Noto Sans Lao","Noto Sans Lao UI","Phetsarath OT","Lao Sangam MN","Saysettha OT","Leelawadee UI",sans-serif;}
+html[lang=lo]{--thai:"IBM Plex Sans Thai","Noto Sans Lao","Noto Sans Lao UI","Phetsarath OT","Lao Sangam MN","Saysettha OT","Leelawadee UI",system-ui,sans-serif;
+  --type:"Special Elite","IBM Plex Sans Thai","Noto Sans Lao","Phetsarath OT","Lao Sangam MN",monospace;--anton:"Anton","Chonburi","Noto Sans Lao","Phetsarath OT","Lao Sangam MN",Impact,sans-serif;}
+.rn span.tl{line-height:1.3;padding:.3em .13em .24em;}
+.pf-ltr,.cut-name span{line-height:1.45;}
+/* phones: text of at least 17px and not hairline thin */
+@media(max-width:600px){html{font-size:106.25%;}}
+
+/* donation amounts (the donation dialog and the profile block) */
+.pf-tips-r{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;}
+.pf-amt{min-width:92px;min-height:52px;font:400 1.4rem var(--anton);letter-spacing:.08em;background:var(--pink);color:var(--black);border:4px solid var(--black);box-shadow:5px 5px 0 var(--black);padding:.4rem 1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.pf-amt:hover{background:var(--gold);transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--black);}
+.pf-tipf{display:flex;flex-wrap:wrap;gap:.6rem .8rem;align-items:center;justify-content:center;}
+.pf-tipf label{font:400 .95rem var(--thai);}
+.pf-tipf input{width:7.5rem;min-height:48px;font:400 1.1rem var(--thai);border:4px solid var(--black);background:#fff;color:var(--black);padding:.4rem .7rem;border-radius:0;}
+.pf-tipf input[aria-invalid=true]{border-color:var(--tartan-red,#C8102E);}
+.pf-tiperr{margin:0;background:var(--black);color:var(--paper);padding:.2rem .8rem;font:400 .95rem var(--thai);}
+.pf-tiperr[hidden]{display:none;}
+.cdlg .pf-tips-r{justify-content:center;}
+.cdlg .pf-tipf input{width:7.5rem;}
+.sm-for{margin:0;font:700 .95rem var(--thai);}
+
+/* ===== punk x architecture: donation / support windows, forms, street signs =====
+   One language everywhere: board-formed concrete, a row of rivets, a yellow/black hazard footing, a black name plate taped with pink. Palette tokens only (concrete = --concrete lightened with paper).
+   The decoration lives on the window frame; the room inside stays plain so the artwork and the words are the focus. */
+:root{
+  --a-form:repeating-linear-gradient(180deg,transparent 0 21px,rgba(14,13,12,.2) 21px 22px),repeating-linear-gradient(90deg,transparent 0 5px,rgba(244,241,232,.07) 5px 6px);
+  --a-lift:linear-gradient(rgba(244,241,232,.26),rgba(244,241,232,.26));
+  --a-rivets:radial-gradient(circle,#0E0D0C 0 2.6px,rgba(244,241,232,.6) 2.8px 3.8px,transparent 4px) 0 0/24px 100% repeat-x;
+  --a-hazard:repeating-linear-gradient(-45deg,#0E0D0C 0 11px,#E8B730 11px 22px);
+  --a-grid:linear-gradient(rgba(14,13,12,.055) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,rgba(14,13,12,.055) 1px,transparent 1px) 0 0/22px 22px;
+  --a-conc:var(--grain,none),var(--a-form),var(--a-lift),#8F8C85;
+  --a-beam:var(--grain,none),var(--a-form),var(--a-lift),var(--a-lift),#8F8C85;
+}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.cdlg:not(.zoomdlg){padding:0 12px;border:4px solid #0E0D0C;background:var(--a-conc);border-radius:0;overscroll-behavior:contain;}
+.cdlg-h{position:sticky;top:0;z-index:2;margin:0 -12px;display:flex;justify-content:flex-start;align-items:center;gap:.7rem;padding:1.05rem 1rem 1.5rem;background:var(--a-beam);color:#0E0D0C;border-bottom:5px solid #0E0D0C;}
+.cdlg-h::after{content:"";position:absolute;left:0;right:0;bottom:3px;height:12px;background:var(--a-rivets);pointer-events:none;}
+.cdlg-t{position:relative;flex:1;min-width:0;}
+.cdlg-t::before{content:"";position:absolute;z-index:1;top:-11px;left:14px;width:64px;height:18px;background:var(--pink);border:2px solid #0E0D0C;transform:rotate(-6deg);}
+.cdlg-h h2{display:inline-block;max-width:100%;margin:0;padding:.3rem .9rem .4rem;background:#0E0D0C;color:#F4F1E8;box-shadow:4px 4px 0 var(--pink);font:400 clamp(1.2rem,4vw,1.75rem)/1.45 "Chonburi",var(--thai);text-wrap:balance;transform:rotate(-1.2deg);}
+.cdlg-fl{flex:none;display:grid;justify-items:center;gap:.15rem;min-width:66px;padding:.3rem .45rem .35rem;background:#0E0D0C;color:var(--gold);border:3px solid #0E0D0C;box-shadow:inset 0 0 0 2px #45423B,3px 3px 0 rgba(14,13,12,.35);text-align:center;line-height:1.2;}
+.cdlg-fl small{font:400 .75rem/1.3 var(--type);letter-spacing:.14em;text-transform:uppercase;color:var(--paper);}
+.cdlg-fl b{font:400 1.85rem/1.1 var(--anton);letter-spacing:.02em;}
+.cdlg-fl b i{font-style:normal;font-size:.85rem;color:#C4C1B9;}
+.cdlg-fl span{font:600 .75rem/1.4 var(--thai);color:var(--paper);max-width:76px;}
+.cdlg-x{flex:none;width:46px;height:46px;border:3px solid #0E0D0C;background-color:var(--gold);background-image:radial-gradient(circle at 7px 7px,#0E0D0C 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) 7px,#0E0D0C 0 2px,transparent 2.6px),radial-gradient(circle at 7px calc(100% - 7px),#0E0D0C 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#0E0D0C 0 2px,transparent 2.6px);color:#0E0D0C;font:400 1.2rem var(--anton);cursor:pointer;box-shadow:3px 3px 0 #0E0D0C;}
+.cdlg-x:hover{background-color:var(--pink);}
+.cdlg-b{background:var(--a-grid),#F4F1E8;border-left:3px solid #0E0D0C;border-right:3px solid #0E0D0C;}
+.cdlg-foot{margin:0 -12px;height:22px;border-top:4px solid #0E0D0C;background:var(--a-hazard);}
+.qr-plate{position:relative;padding:14px;background:radial-gradient(circle at 7px 7px,#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 7px) 7px,#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at 7px calc(100% - 7px),#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#0E0D0C 0 2.4px,transparent 3px),var(--a-conc);border:3px solid #0E0D0C;box-shadow:5px 5px 0 #0E0D0C;}
+.qr-plate .sup-qr,.qr-plate svg{display:block;}
+/* thank-you = an engraved cornerstone, taped on */
+.stone{position:relative;display:grid;justify-items:center;gap:.15rem;justify-self:center;min-width:190px;padding:1rem 1.5rem 1.05rem;background:var(--a-conc);border:4px solid #0E0D0C;box-shadow:6px 6px 0 #0E0D0C,inset 0 0 0 7px rgba(14,13,12,.1);color:#0E0D0C;text-shadow:0 1px 0 rgba(244,241,232,.55);transform:rotate(-1deg);margin-bottom:.4rem;}
+.stone::before{content:"";position:absolute;top:-12px;right:18px;width:62px;height:18px;background:var(--gold);border:2px solid #0E0D0C;transform:rotate(7deg);}
+.stone .st-h{font:400 1.9rem/1.2 var(--anton);color:var(--pink);text-shadow:2px 2px 0 #0E0D0C;}
+.stone b{font:400 2.5rem/1.15 var(--anton);letter-spacing:.06em;font-weight:400;}
+.stone .st-l{font:400 .85rem/1.5 var(--type);letter-spacing:.14em;text-transform:uppercase;}
+/* money for circles itself: a gold plate on every step says whose money this is */
+.sc-plate{margin:0;width:100%;padding:.55rem .8rem;background:var(--gold);border:3px solid #0E0D0C;box-shadow:4px 4px 0 #0E0D0C;font:600 .95rem/1.7 var(--thai);text-align:left;}
+.sc-plate b{display:block;font:400 .78rem/1.5 var(--type);letter-spacing:.1em;text-transform:uppercase;}
+.after{display:grid;gap:.5rem;justify-items:center;padding:.8rem .9rem;border:3px dashed #0E0D0C;background:rgba(244,241,232,.7);text-align:center;}
+.after h3{margin:0;font:400 1.05rem/1.6 "Chonburi",var(--thai);}
+.after p{margin:0;font:400 .9rem/1.7 var(--thai);}
+.linkish{background:none;border:0;border-bottom:3px solid var(--pink);font:600 .95rem var(--thai);color:#0E0D0C;cursor:pointer;padding:.2rem 0;min-height:32px;}
+@media(max-width:600px){.cdlg:not(.zoomdlg){padding:0 8px;}.cdlg-h,.cdlg-foot{margin:0 -8px;}.cdlg-h{gap:.5rem;padding:1rem .7rem 1.4rem;}.cdlg-fl{min-width:58px;padding:.25rem .35rem .3rem;}.cdlg-fl b{font-size:1.55rem;}}
+@media(prefers-reduced-motion:reduce){.stone{transform:none;}}
+/* street signs to the other districts, above the footer of every page */
+.pl-dist{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;padding:.7rem 16px .8rem;background:var(--a-conc);border-top:4px solid var(--black);border-bottom:4px solid var(--black);position:relative;z-index:2;}
+.pl-dist-k{font:400 .75rem var(--type);letter-spacing:.12em;text-transform:uppercase;color:var(--black);background:var(--paper);border:2px solid var(--black);padding:.05rem .45rem;transform:rotate(-2deg);}
+.pl-sign{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.45rem 1.4rem;border:3px solid var(--black);background-color:var(--black);color:var(--paper);text-decoration:none;
+  background-image:radial-gradient(circle at 9px 50%,#F4F1E8 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 9px) 50%,#F4F1E8 0 2.4px,transparent 3px);font:400 .95rem/1.4 var(--anton);letter-spacing:.08em;text-transform:uppercase;box-shadow:3px 3px 0 rgba(14,13,12,.45);}
+.pl-sign:hover{background-color:#2c2a26;}
+.pl-sign[aria-current]{background-color:var(--gold);color:var(--black);background-image:radial-gradient(circle at 9px 50%,#0E0D0C 0 2.4px,transparent 3px),radial-gradient(circle at calc(100% - 9px) 50%,#0E0D0C 0 2.4px,transparent 3px);box-shadow:4px 4px 0 var(--pink);}
+html[lang=th] .pl-sign,html[lang=lo] .pl-sign{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;font-size:.9rem;}
+
+/* donation dialog: the action row sticks to the bottom edge of the window, so "I have donated / Close" is never cut off on a short screen */
+.cdlg .sm-act{position:sticky;bottom:0;z-index:2;padding:.8rem 1.6rem;background:var(--paper);border-top:3px solid var(--black);}
+
+/* phone: on the hand-written pages the menu button holds the links (the same list is in .mnav), so the bar itself shows only brand, language and menu: nothing spills past the screen */
+@media(max-width:860px){.pl-page nav .links>a{display:none;}}
+
+/* Thai / Lao tone marks and vowels need room: no small print under 14px (the sizes below were 12.8-13.9px) */
+html[lang=th] small,html[lang=lo] small,
+html[lang=th] dt,html[lang=lo] dt,
+html[lang=th] .wl,html[lang=lo] .wl,
+html[lang=th] .wv,html[lang=lo] .wv,
+html[lang=th] .ds,html[lang=lo] .ds,
+html[lang=th] .da,html[lang=lo] .da,
+html[lang=th] .dn,html[lang=lo] .dn,
+html[lang=th] .pa,html[lang=lo] .pa,
+html[lang=th] .pl-dist-k,html[lang=lo] .pl-dist-k,
+html[lang=th] .pf-tips-s,html[lang=lo] .pf-tips-s,
+html[lang=th] .news-c a,html[lang=lo] .news-c a,
+html[lang=th] .foot-c span,html[lang=lo] .foot-c span,
+html[lang=th] .foot-c a,html[lang=lo] .foot-c a,
+html[lang=th] .mini-foot a,html[lang=lo] .mini-foot a,
+html[lang=th] .meta,html[lang=lo] .meta,
+html[lang=th] .hint,html[lang=lo] .hint,
+html[lang=th] .mus-prof,html[lang=lo] .mus-prof,
+html[lang=th] .v-stamp,html[lang=lo] .v-stamp,
+html[lang=th] .v-note,html[lang=lo] .v-note,
+html[lang=th] .sn span,html[lang=lo] .sn span,
+html[lang=th] .sortl span,html[lang=lo] .sortl span,
+html[lang=th] .plaza span,html[lang=lo] .plaza span,
+html[lang=th] .v-tb span,html[lang=lo] .v-tb span,
+html[lang=th] .pf-say span,html[lang=lo] .pf-say span,
+html[lang=th] .sc-tag,html[lang=lo] .sc-tag,
+html[lang=th] .plaza > span,html[lang=lo] .plaza > span{font-size:.875rem;}

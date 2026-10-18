@@ -6,9 +6,10 @@
 //
 // It opens the REAL pages in headless Chrome (so there is no second copy of the rendering logic), then writes:
 //   studio-<id>.html   one static page per artist (full content, meta tags, JSON-LD). Built from cutaway.html.
+//   profile-<id>.html  the artist's profile page (own title / description / og, JSON-LD Person). Built from profile.html (tools/apply-profile-page.py).
 //   og/<id>.png        1200x630 share image per artist
 //   index.html         the block between <!--pre:…--> markers (artwork cards, filters, map, studio links)
-//   sitemap.xml        only with --site
+//   sitemap.xml        only with --site (studio and profile pages)
 // Run it again after you change artists.js or any text. Needs Node 22+ and Chrome/Chromium.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,7 +21,11 @@ const arg = n => { const i = process.argv.indexOf(n); return i > -1 ? process.ar
 const SITE = (arg('--site') || '').replace(/\/+$/, '');
 const abs = p => SITE ? `${SITE}/${p}` : p;
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
-const write = (f, s) => { fs.mkdirSync(path.dirname(path.join(ROOT, f)), {recursive: true}); fs.writeFileSync(path.join(ROOT, f), s); };
+/* a page that runs draws things on canvases (toDataURL) and the build saves the rendered DOM: never let that become a big base64 picture in a saved page. Pictures are files (the hall's visitors: people/*.png, tools/make-sprites.mjs). tests-legacy/suites/inline.mjs checks the same. */
+const noBigData = (f, s) => { for (const m of s.matchAll(/(?:(?<=url\()data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,][^)"\s]*|(?<!url\()data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,][^"\s]*)/g)) if (m[0].length > (/^(svg|gif)/.test(m[1] || m[2]) ? 2048 : 300)) throw new Error(`${f} would inline a ${m[0].length}-byte data:image/${m[1] || m[2]} URI: serve it as a file instead`); };
+/* every template carries the same 19 KB logo as an inline data: favicon; saved pages link favicon.svg instead (one cached file, ~850 KB less across the site) */
+const FAVICON = /<link rel="icon" href="data:image\/svg\+xml,[^"]*"[^>]*>/;
+const write = (f, s) => { if (f.endsWith('.html')) { s = s.replace(FAVICON, '<link rel="icon" href="favicon.svg" type="image/svg+xml">'); noBigData(f, s); } fs.mkdirSync(path.dirname(path.join(ROOT, f)), {recursive: true}); fs.writeFileSync(path.join(ROOT, f), s); };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const { ARTISTS, DISC_EN, CITY_EN } = new Function(read('artists.js') + '\n;return {ARTISTS, DISC_EN, CITY_EN};')();
 
@@ -45,7 +50,7 @@ const ogCard = id => {
 <div class="k">CIRCLES · NO.${String(ARTISTS.indexOf(a) + 1).padStart(2, '0')}</div><div class="rn">${letters}</div>
 <div class="l" style="top:330px;background:#0E0D0C;color:#F4F1E8">${esc(a.disc)}</div>
 <div class="l" style="top:388px;background:#FF2E88">${esc(DISC_EN[a.disc] || '')} · ${esc(CITY_EN[a.city] || a.city)}</div>
-<div class="s">${esc(a.pieces.length)} works · from $${Math.min(...a.pieces.map(x => x.p)).toLocaleString('en-US')}</div><div class="tp"></div>`;
+<div class="s">${esc(a.pieces.length)} works</div><div class="tp"></div>`;
 };
 
 const server = await startServer(ROOT, Object.fromEntries(ARTISTS.map(a => [`/__og/${a.id}`, () => ogCard(a.id)])));
@@ -60,22 +65,52 @@ try {
     await b.go(`${server.url}/cutaway.html?id=${a.id}`, 3000);
     await b.ev("document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));0");
     const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
-    if (!got.main || !got.main.includes('class="floor')) throw new Error(`render of ${a.id} produced no floors`);
+    if (!got.main || !/class="(floor|mus)[ "]/.test(got.main)) throw new Error(`render of ${a.id} produced no floors`);
+    const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
+    if (noAlt.length) throw new Error(`studio ${a.id} has ${noAlt.length} <img> without alt`);
     const url = `studio-${a.id}.html`, ogImg = abs(`og/${a.id}.png`);
     const ld = {'@context': 'https://schema.org', '@type': 'ItemList', name: got.title, itemListElement: a.pieces.map((p, i) => ({'@type': 'ListItem', position: i + 1, item: {
       '@type': 'VisualArtwork', name: p.t, alternateName: p.tEn, creator: {'@type': 'Person', name: a.name, alternateName: a.nameEn, homeLocation: {'@type': 'Place', name: a.city}},
-      dateCreated: String(p.y), artMedium: p.mEn, image: abs(p.img), offers: {'@type': 'Offer', price: p.p, priceCurrency: 'USD', availability: 'https://schema.org/InStock'}}}))};
+      dateCreated: String(p.y), artMedium: p.mEn, image: abs(p.img)}}))};
     let html = template
-      .replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main" data-pre="1" data-studio="${a.id}">${got.main}</main>`)
-      .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(got.title)}</title>`)
-      .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-      .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(got.title)}$2`)
-      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(got.desc)}$2`)
-      .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
-      .replace('</head>', `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
+      .replace(/<main id="main">[\s\S]*?<\/main>/, () => `<main id="main" data-pre="1" data-studio="${a.id}">${got.main}</main>`)
+      .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(got.title)}</title>`)
+      .replace(/(<meta name="description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
+      .replace(/(<meta property="og:title" content=")[^"]*(")/, (_, a, c) => a + esc(got.title) + c)
+      .replace(/(<meta property="og:description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, (_, a, c) => a + esc(got.title) + c)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
+      .replace(/(<meta property="og:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
+      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
+      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
+    write(url, html);
+    console.log('  wrote', url);
+  }
+
+  /* ---- 1b. one static profile page per artist (profile-<id>.html, from profile.html) ---- */
+  const ptemplate = read('profile.html');
+  for (const a of ARTISTS) {
+    await b.go(`${server.url}/profile.html?id=${a.id}`, 2500);
+    const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
+    if (!got.main || !/class="pf[ "]/.test(got.main) || !got.main.includes('class="pf-name"')) throw new Error(`render of profile ${a.id} produced no profile`);
+    if (got.title === read('cutaway.html').match(/<title>([\s\S]*?)<\/title>/)[1]) throw new Error(`profile ${a.id} kept the generic title`);
+    const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
+    if (noAlt.length) throw new Error(`profile ${a.id} has ${noAlt.length} <img> without alt`);
+    const url = `profile-${a.id}.html`, ogImg = abs(`og/${a.id}.png`);
+    const person = {'@context': 'https://schema.org', '@type': 'Person', name: a.name, alternateName: a.nameEn, jobTitle: `${DISC_EN[a.disc] || a.disc} artist`, description: a.bioEn || a.bio,
+      homeLocation: {'@type': 'Place', name: CITY_EN[a.city] || a.city}, image: ogImg, url: abs(url), ...(a.instagram && /^https:\/\//.test(a.instagram) ? {sameAs: [a.instagram]} : {}),
+      subjectOf: {'@type': 'WebPage', url: abs(`studio-${a.id}.html`)}};
+    let html = ptemplate
+      .replace(/<main id="main">[\s\S]*?<\/main>/, () => `<main id="main" data-pre="1" data-profile="${a.id}">${got.main}</main>`)
+      .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(got.title)}</title>`)
+      .replace(/(<meta name="description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
+      .replace(/(<meta property="og:title" content=")[^"]*(")/, (_, a, c) => a + esc(got.title) + c)
+      .replace(/(<meta property="og:description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, (_, a, c) => a + esc(got.title) + c)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
+      .replace(/(<meta property="og:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
+      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
+      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(person)}</script>\n</head>`);
     write(url, html);
     console.log('  wrote', url);
   }
@@ -99,19 +134,19 @@ try {
   let idx = read('index.html');
   const fill = (name, content) => { const re = new RegExp(`<!--pre:${name}-->[\\s\\S]*?<!--/pre:${name}-->`); if (!re.test(idx)) throw new Error('marker missing: ' + name); idx = idx.replace(re, () => `<!--pre:${name}-->${content}<!--/pre:${name}-->`); };
   fill('masonry', clean(frag.masonry)); fill('filters', clean(frag.filters)); fill('map', clean(frag.map)); fill('strip', list);
-  if (SITE) idx = idx.replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${abs('og.png')}$2`).replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${abs('og.png')}$2`);
+  if (SITE) idx = idx.replace(/(<meta property="og:image" content=")[^"]*(")/, (_, a, c) => a + abs('og.png') + c).replace(/(<meta name="twitter:image" content=")[^"]*(")/, (_, a, c) => a + abs('og.png') + c);
   write('index.html', idx);
   console.log('  updated index.html (pre-rendered blocks)');
 
   /* ---- 4. sitemap ---- */
   if (SITE) {
-    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), 'join.html', 'privacy.html', 'terms.html'];
+    const urls = ['index.html', ...ARTISTS.map(a => `studio-${a.id}.html`), ...ARTISTS.map(a => `profile-${a.id}.html`), 'join.html', 'privacy.html', 'terms.html'];
     write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${abs(u === 'index.html' ? '' : u)}</loc></url>`).join('\n')}\n</urlset>\n`);
     const robots = read('robots.txt').replace(/^#? ?Sitemap:.*$/m, '').trimEnd();
     write('robots.txt', `${robots}\nSitemap: ${abs('sitemap.xml')}\n`);
     console.log('  wrote sitemap.xml + robots.txt');
   } else console.log('  (no --site given: sitemap.xml skipped, URLs stay relative)');
-  const bad = b.logs.filter(l => !/favicon/.test(l));
+  const bad = b.logs.filter(l => !/favicon|\[Cloudflare Turnstile\]|challenges\.cloudflare\.com/.test(l));
   if (bad.length) { console.error('Page errors during build:\n' + bad.join('\n')); process.exitCode = 1; }
 } finally { b.close(); server.close(); }
 console.log('build done');
