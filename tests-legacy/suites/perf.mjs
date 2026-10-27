@@ -27,10 +27,10 @@ export async function run({url, check}) {
     await start();
     for (let i = 0; i < 60; i++) { await b.send('Input.dispatchMouseEvent', {type: 'mouseMoved', x: 200 + (i % 30) * 30, y: y - 20 + (i % 7) * 10}); await sleep(16); }
     r = await stop(); check(`CPU x${rate}: hovering buildings ≥ ${minFps} fps`, r.fps >= minFps, r);
-    // the studio page (the museum hall): idle and scrolling frames must stay smooth too
+    // the studio page (the tower): idle and scrolling frames must stay smooth too
     await b.go(`${url}/studio-thara.html`, 3500); await ev("document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));window.scrollTo(0,300);0"); await sleep(800);
     await start(); await sleep(2500); r = await stop();
-    check(`CPU x${rate}: studio page (museum) idle + scrolling ≥ ${minFps} fps`, r.fps >= minFps, r);
+    check(`CPU x${rate}: studio page (tower) idle + scrolling ≥ ${minFps} fps`, r.fps >= minFps, r);
     b.close();
   }
 }

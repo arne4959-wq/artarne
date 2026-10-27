@@ -30,7 +30,7 @@ export default function Dashboard({session, signOut}) {
     <header className="mg-room">
       <div className="mg-kick2">{mt('dash_kick')}</div>
       <h1>{artist ? mt('dash_hi', {a: name}) : session.user.email}</h1>
-      <div className="mg-out"><button type="button" className="btn" onClick={signOut}>{mt('out')}</button></div>
+      <div className="mg-out">{artist && artist.approved && <a className="btn" style={{marginRight: '.6rem'}} href={`studio-${artist.id}.html`}>{mt('see_me')}</a>}<button type="button" className="btn" onClick={signOut}>{mt('out')}</button></div>
     </header>
     <main id="main" className="mg-shell">
       {st.phase === 'loading' && <p role="status" className="mg-status">{mt('loading')}</p>}

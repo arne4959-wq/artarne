@@ -3,6 +3,7 @@
    Fields ending in "En" are the English versions. `img` can be swapped for a real photo (any path).
    Donation-only: nothing is sold, so a work has no price, status, edition or pay link (they were removed).
    Artist tells it, per work (optional, written by the artist in the first person; circles never edits or interprets it): say,sayEn (what the work says, ONE sentence, shown under the picture), why,whyEn (where it came from), look,lookEn (where to look). Shown in the work window as "ศิลปินเล่าเอง / In the artist's words" with a "written by the artist" stamp. A missing field hides its row.
+   Process, per work (optional; tower.js, the studio tower + the work window's stage tabs): idea,ideaEn,ideaLo (a few lines of text), sketch, draft (an image: a path in this site or an https address), stages:{idea,sketch,draft,final} (dates 'YYYY' / 'YYYY-MM' / 'YYYY-MM-DD'; final falls back to y). A missing stage shows an honest empty window ("no sketch yet"); never put an invented picture here.
    Concept, per work (optional): concept:{origin,originEn, material,materialEn, quote,quoteEn, steps:[{h,hEn,d,dEn} x3]}
                          Shows the "Concept of the work" block under the picture in the work dialog. No concept = no block. 
    Lao (optional, all DRAFT: needs native review): bioLo, and per piece mLo, sLo, qLo; DISC_LO / CITY_LO below. Per artist nameLo and per piece titleLo (Lao-script spelling of the Thai name / title, not a translation). Per piece priceLak (optional, none set yet): a real kip price, used as is instead of converting the dollars. A missing Lo field falls back to the Thai one.
@@ -16,14 +17,15 @@ const ARTISTS = [
   /* ---- Arne: the maker of the city, with a building of his own. Only facts Arne has told us are written here. say/why/look (first-person words per picture) are left EMPTY on purpose: Arne writes those himself, the rows stay hidden until then. y (year) and m (medium) are best guesses: please correct them. ---- */
   { id:'arne', name:'Arne', nameEn:'Arne', disc:'คอลลาจ', scale:1.08, kind:'collage', works:['#00FF3A','#F00FA8','#1B2B2A'], titles:['ART ART','สาธุ','ศิลปะคือทางออก'],
     nameLo:"Arne",
+    support:{bank:'LAO QR (LAPNet)', name:'KAISONE YORTCHAN MR', qr:'art/qr/arne.png'},   // Arne's own QR, money goes straight to him; no account number shown (the screenshot masks it)
     since:2026, city:'เวียงจันทน์',
     bio:'Arne เป็นนักศึกษาไอทีปีหนึ่งที่เวียงจันทน์ สร้างเมืองนี้ขึ้นมาเอง และทำงานตัดแปะซ้อนภาพ ใส่ดาวแดงลงไปเอง ตึกนี้เป็นตึกหลังแรกของเมือง ก่อนที่ศิลปินคนอื่นจะเข้ามา',
     bioEn:'Arne is a first-year IT student in Vientiane who built this city himself and makes collages: layered images with red stars he adds by hand. This is the first building in the city, before the other artists arrive.',
     bioLo:"Arne ເປັນນັກສຶກສາໄອທີປີໜຶ່ງຢູ່ວຽງຈັນ ສ້າງເມືອງນີ້ຂຶ້ນມາເອງ ແລະເຮັດງານຕັດແປະຊ້ອນຮູບ ໃສ່ດາວແດງລົງໄປເອງ ຕຶກນີ້ເປັນຕຶກຫຼັງທຳອິດຂອງເມືອງ ກ່ອນທີ່ສິລະປິນຄົນອື່ນຈະເຂົ້າມາ",   // DRAFT lo: needs native review
     pieces:[
-      {t:'ART ART',tEn:'ART ART',titleLo:"ART ART",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'992 × 720 px',ar:'992/720',img:'art/arne/arne-1-art-art.webp'},
-      {t:'สาธุ',tEn:'Sathu',titleLo:"ສາທຸ",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'404 × 612 px',ar:'404/612',img:'art/arne/arne-2-star-horse.webp'},
-      {t:'ศิลปะคือทางออก',tEn:'Art Is the Way Out',titleLo:"ສິລະປະຄືທາງອອກ",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'1001 × 550 px',ar:'1001/550',img:'art/arne/arne-3-green-crown.webp'}] },   // DRAFT lo: needs native review
+      {t:'ART ART',tEn:'ART ART',say:"ขอให้รูปภาพนี้มีชีวิต",sayEn:"May this picture come alive.",titleLo:"ART ART",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'992 × 720 px',ar:'992/720',img:'art/arne/arne-1-art-art.webp'},
+      {t:'สาธุ',tEn:'Sathu',say:"ม้าขาวลายดาว",sayEn:"A white horse with stars on it.",titleLo:"ສາທຸ",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'404 × 612 px',ar:'404/612',img:'art/arne/arne-2-star-horse.webp'},
+      {t:'ศิลปะคือทางออก',tEn:'Art Is the Way Out',say:"ความว่างเปล่า",sayEn:"Emptiness.",titleLo:"ສິລະປະຄືທາງອອກ",y:2026,m:'คอลลาจดิจิทัล',mEn:'Digital collage',mLo:"ຄໍລາຈດິຈິຕອນ",s:'1001 × 550 px',ar:'1001/550',img:'art/arne/arne-3-green-crown.webp'}] },   // DRAFT lo: needs native review
   { id:'napha', name:'นภา', nameEn:'Napha', disc:'จิตรกรรม', scale:1.12, kind:'arch', works:['#C4958A','#7A4A40','#D4CFCA'], titles:['เช้าหมอก','เงาใต้ต้นไม้','ห้องว่าง'],
     nameLo:"ນະພາ",   // DRAFT lo: needs native review
     since:2014, city:'เชียงใหม่', email:'napha@circles.example',

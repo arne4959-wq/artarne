@@ -125,7 +125,7 @@
           ${person('sitA', 'sit', bx + 30, bd - 20, false, 1)}${person('sitB', 'sit', bx + 30, bd + 90, false, 2)}
           ${person('stand', 'stand', -W / 2 + 60, FIRST + 430, true, 3)}${person('stand', 'stand', -W / 2 + 50, G.L - 100, false, 4).replace('data-d=', `data-min="${G.L - 900}" data-d=`)}
         </div></div>
-        <div class="mus-plate"><small>CIRCLES · MUSEUM</small><b>${esc(t('mus_name', {a: nameL(A)}))}</b><a class="mus-prof" href="profile-${esc(A.id)}.html">${esc(t('mus_prof'))}</a></div>
+        <div class="mus-plate"><small>CIRCLES · MUSEUM</small><b>${esc(t('mus_name', {a: nameL(A)}))}</b><a class="mus-prof" href="profile-${esc(A.id)}.html">${esc(t('mus_prof2', {a: nameL(A)}))}</a></div>
         <div class="mus-map" aria-hidden="true"><small>${esc(t('mus_map'))}</small>${mapSvg()}</div>
         <div class="mus-ctl"><button type="button" class="btn mus-prev" id="mus-prev">${esc(t('mus_prev'))}</button><span class="mus-cnt" id="mus-cnt"></span><button type="button" class="btn pk mus-next" id="mus-next">${esc(t('mus_next'))}</button></div>
       </div>
@@ -142,7 +142,7 @@
   }
   function labelHtml(k) {
     const p = A.pieces[k];
-    return `<i class="mus-tape"></i><small>${p.y} · ${esc(fmtSize(p))}</small><b>${esc(titleL(p))}</b>${sayOf(p) ? `<i class="mus-q">“${esc(sayOf(p))}”</i>` : ''}`
+    return `<i class="mus-tape"></i><small>${esc([p.y, fmtSize(p)].filter(Boolean).join(' · '))}</small><b>${esc(titleL(p))}</b>${sayOf(p) ? `<i class="mus-q">“${esc(sayOf(p))}”</i>` : ''}`
       + `<span class="mus-acts">${canDonate(A) ? `<button type="button" class="mus-don" data-support="${esc(A.id)}" data-for="${esc(titleL(p))}" data-quiet>${esc(t('don_work'))}</button>` : ''}<button type="button" class="mus-more" data-mus="more">${esc(t('mus_more'))}</button>${reportLink(A, k, p)}</span>`;
   }
   function update() {

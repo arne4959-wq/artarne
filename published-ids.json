@@ -1,0 +1,18 @@
+{
+  "_note": "Artist ids that are public. An id and its URLs (studio-<id>.html, profile-<id>.html, og/<id>.png) never change once it is here: people print QR codes and share links. To retire an artist, keep the id and add it under \"retired\" with a redirect target. npm run check fails if a listed id disappears.",
+  "ids": [
+    "arne"
+  ],
+  "retired": {
+    "napha": "/",
+    "thara": "/",
+    "kwan": "/",
+    "phum": "/",
+    "irene": "/",
+    "dao": "/",
+    "mali": "/",
+    "phop": "/",
+    "phrae": "/",
+    "pan": "/"
+  }
+}

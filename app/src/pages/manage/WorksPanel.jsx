@@ -117,6 +117,23 @@ function WorkForm({artist, work, nextPos, onCancel, onSaved}) {
       <Field label={mt('f_look_en')} name="look_en" as="textarea" wide maxLength={800} {...props}/>
       <Field label={mt('f_look_lo')} name="look_lo" as="textarea" wide maxLength={800} {...props}/>
     </div>
+    <h3 className="mg-h3">{mt('h_wprocess')}</h3>
+    <p className="mg-note">{mt('process_note')}</p>
+    <div className="mg-grid">
+      <Field label={mt('f_idea')} name="idea" as="textarea" wide maxLength={600} {...props}/>
+      <Field label={mt('f_idea_en')} name="idea_en" as="textarea" wide maxLength={600} {...props}/>
+      <Field label={mt('f_idea_lo')} name="idea_lo" as="textarea" wide maxLength={600} {...props}/>
+    </div>
+    <ImagePick src={form.sketch} ar={form.ar} bucket="art" artistId={artist.id} label={mt('f_sketch')} onDone={({url}) => set('sketch', url)}/>
+    {form.sketch && <button type="button" className="mg-mini" style={{width: 'auto'}} onClick={() => set('sketch', '')}>{mt('stage_remove')}</button>}
+    <ImagePick src={form.draft} ar={form.ar} bucket="art" artistId={artist.id} label={mt('f_draft')} onDone={({url}) => set('draft', url)}/>
+    {form.draft && <button type="button" className="mg-mini" style={{width: 'auto'}} onClick={() => set('draft', '')}>{mt('stage_remove')}</button>}
+    <div className="mg-grid">
+      <Field label={mt('f_idea_on')} name="idea_on" maxLength={10} placeholder="2026-03" {...props}/>
+      <Field label={mt('f_sketch_on')} name="sketch_on" maxLength={10} placeholder="2026-04" {...props}/>
+      <Field label={mt('f_draft_on')} name="draft_on" maxLength={10} placeholder="2026-05" {...props}/>
+      <Field label={mt('f_final_on')} name="final_on" maxLength={10} placeholder="2026-06" {...props}/>
+    </div>
     {needRights && <label className="mg-own"><input type="checkbox" checked={own} onChange={e => { setOwn(e.target.checked); setState(''); setErrors(x => ({...x, own: undefined})); }}/> {mt('own_check')}
       {errors.own && <span className="mg-ok bad" role="alert"> {mt(errors.own)}</span>}</label>}
     <div className="mg-bar">

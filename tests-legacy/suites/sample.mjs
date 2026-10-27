@@ -1,13 +1,14 @@
 // Donation-only site, sample mode (no real payment data): no selling anywhere, the donation dialog from home / studio / profile, old buy addresses, the phone loader, the home-page search.
+import {demoArtists} from '../demo.mjs';
 import {launch, sleep} from '../../tools/browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const __root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const {ARTISTS, CITY_EN} = new Function(fs.readFileSync(path.join(__root, 'artists.js'), 'utf8') + '\n;return {ARTISTS, CITY_EN};')();
+const {ARTISTS, CITY_EN} = new Function(demoArtists(__root) + '\n;return {ARTISTS, CITY_EN};')();
 export const name = 'sample';
 export async function run({url, check}) {
-  const A = ARTISTS.find(a => !a.live);
+  const A = ARTISTS.find(a => !a.live && /\.example$/i.test(String(a.email || '')));   // a sample artist (the owner's own entry has real bank details, so it is not a demo)
   const quiet = l => !/ViewTransition opt-in disabled/.test(l);
 
   /* ---------- nothing is for sale: no price, buy button, buy link, sold / reserved label on any page (TH and EN) ---------- */
@@ -46,7 +47,7 @@ export async function run({url, check}) {
   check('studio: choosing an amount shows the SAMPLE QR, how to donate and the no-fee note', (await ev("!!document.querySelector('#dlg-tip svg.sm-qr') && /SAMPLE/.test(document.querySelector('#dlg-tip .sup-sample').textContent) && /no fee/.test(document.getElementById('dlg-tip').textContent)")));
   await ev("document.getElementById('dlg-tip').close()");
   await b.go(`${url}/studio-${A.id}.html`, 3500);
-  check('studio: the label under the picture has Support instead of Buy', (await ev("!!document.querySelector('#mus-label [data-support]') && !/Buy/.test(document.getElementById('mus-label').textContent)")));
+  check('studio: the roof sign has Donate to the artist, the lobby has Support circles, nothing says Buy', (await ev("!!document.querySelector('.tw-roof [data-support]') && !!document.querySelector('.tw-lobby [data-support=site]') && !/\\bBuy\\b/.test(document.getElementById('tw').textContent)")));
   await b.go(`${url}/profile-${A.id}.html`, 3500);
   check('profile: presets 3 / 5 / 10 USD and a custom amount field', (await ev("[...document.querySelectorAll('.pf-amt')].map(x=>x.textContent).join()")) === '$3,$5,$10' && (await ev("!!document.querySelector('#pf-tip-n')")));
   await ev("document.querySelector('.pf-tipf input').value='0';document.querySelector('.pf-tipf').requestSubmit()"); await sleep(200);
@@ -109,7 +110,7 @@ export async function run({url, check}) {
   check('search with no match: empty-state message, nothing lit', (await lit()) === 0 && (await b.ev("document.getElementById('fnote-t').textContent")) === 'No artist matches your search');
   await b.key('Escape', 'Escape', 27); await sleep(400);
   check('Esc in the field clears the search', (await b.ev("document.getElementById('city-q').value")) === '' && (await lit()) === 0);
-  await b.ev("document.getElementById('lang').click()"); await sleep(700); await b.ev("document.getElementById('lang').click()"); await sleep(700);
+  await b.ev("document.querySelector('#lang button[data-l=\"th\"]').click()"); await sleep(900);   // the switch is three buttons now (TH | EN | ລາວ), not one button that cycles
   await type('zzzqqq');
   check('empty-state message is Thai in Thai mode', (await b.ev("document.documentElement.lang")) === 'th' && (await b.ev("document.getElementById('fnote-t').textContent")) === 'ไม่พบศิลปินที่ตรงกับคำค้น');
   b.close();

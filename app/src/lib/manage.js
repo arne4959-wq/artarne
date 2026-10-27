@@ -64,16 +64,21 @@ export function formToProfile(f) {
 /* ---- works (donation-only: no price, status, edition or pay link) ---- */
 export const WORK_TEXT = [['title', 120], ['title_en', 120], ['title_lo', 120], ['medium', 120], ['medium_en', 120], ['medium_lo', 120],
   ['size', 60], ['size_lo', 60], ['quote', 300], ['quote_en', 300], ['quote_lo', 300], ['story', 3000], ['story_en', 3000], ['story_lo', 3000],
-  ['say', 300], ['say_en', 300], ['say_lo', 300], ['why', 1500], ['why_en', 1500], ['why_lo', 1500], ['look', 800], ['look_en', 800], ['look_lo', 800]];   // say / why / look = "the artist tells it"
+  ['say', 300], ['say_en', 300], ['say_lo', 300], ['why', 1500], ['why_en', 1500], ['why_lo', 1500], ['look', 800], ['look_en', 800], ['look_lo', 800],   // say / why / look = "the artist tells it"
+  ['idea', 600], ['idea_en', 600], ['idea_lo', 600]];                                                                                      // the process: an idea note (the sketch and draft pictures and the stage dates are below)
+export const STAGE_DATES = ['idea_on', 'sketch_on', 'draft_on', 'final_on'];   // 'YYYY', 'YYYY-MM' or 'YYYY-MM-DD'
+export const isStageDate = v => /^\d{4}(-\d{2}(-\d{2})?)?$/.test(v) && Number(v.slice(0, 4)) >= 1900 && Number(v.slice(0, 4)) <= 2100 && (v.length < 7 || (+v.slice(5, 7) >= 1 && +v.slice(5, 7) <= 12)) && (v.length < 10 || (+v.slice(8, 10) >= 1 && +v.slice(8, 10) <= 31));
 
 export const emptyWork = () => {
-  const f = {year: String(new Date().getFullYear()), ar: '1/1', img: ''};
+  const f = {year: String(new Date().getFullYear()), ar: '1/1', img: '', sketch: '', draft: ''};
   for (const [k] of WORK_TEXT) f[k] = '';
+  for (const k of STAGE_DATES) f[k] = '';
   return f;
 };
 export function workToForm(w) {
-  const f = {year: s(w.year), ar: s(w.ar || '1/1'), img: s(w.img)};
+  const f = {year: s(w.year), ar: s(w.ar || '1/1'), img: s(w.img), sketch: s(w.sketch), draft: s(w.draft)};
   for (const [k] of WORK_TEXT) f[k] = s(w[k]);
+  for (const k of STAGE_DATES) f[k] = s(w[k]);
   return f;
 }
 
@@ -86,11 +91,19 @@ export function formToWork(f) {
   if (!/^[0-9]{1,3}\/[0-9]{1,3}$/.test(s(f.ar).trim())) errors.ar = 'er_ratio'; else row.ar = s(f.ar).trim();
   const img = s(f.img).trim();
   row.img = img || null;
+  for (const k of ['sketch', 'draft']) { const u = s(f[k]).trim(); if (u && (!/^https:\/\/\S+$/.test(u) || u.length > 500)) errors[k] = 'er_https'; else row[k] = u || null; }
+  for (const k of STAGE_DATES) { const d = s(f[k]).trim(); if (d && !isStageDate(d)) errors[k] = 'er_stage_date'; else row[k] = d || null; }
   return Object.keys(errors).length ? {errors} : {row};
 }
 
 /* the first free position: works are shown in this order, and unique (artist_id, position) forbids two at the same place */
-export const nextPosition = works => works.reduce((m, w) => Math.max(m, w.position), -1) + 1;
+export const nextPosition = works => {
+  const top = works.reduce((m, w) => Math.max(m, w.position), -1) + 1;
+  if (top <= 99) return top;                                   // the database accepts 0..99; an artist who adds and deletes for long would otherwise run out of numbers while having few works
+  const used = new Set(works.map(w => w.position));
+  for (let i = 0; i <= 99; i++) if (!used.has(i)) return i;    // the first free number (at most 40 works, so there always is one)
+  return top;
+};
 
 /* ---- payment ---- */
 export function formToPayment(f) {

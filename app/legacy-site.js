@@ -39,7 +39,8 @@ const LOADERS = {
   /* the sample artists of artists.js, after the real ones of artists.live.json (tools/pull-artists.mjs; see tools/live-data.mjs for the merge rule) */
   data: () => ({watch: 'artists.js', code: src => {
     const live = readLive(FIXTURE && fs.existsSync(path.join(FIXTURE, 'artists.live.json')) ? FIXTURE : SITE);
-    const merged = live.hideDemo && live.artists.length ? '__LIVE' : '[...__LIVE, ...ARTISTS]';
+    /* same rule as tools/merge-live.mjs: hideDemo drops the .example sample artists once a real one (live, or the owner's own entry) is left */
+    const merged = live.hideDemo ? `(() => { const isSample = a => /\\.example$/i.test(String(a.email || '')), keep = [...__LIVE, ...ARTISTS.filter(a => !isSample(a) && !__LIVE.some(l => l.id === a.id))]; return keep.length ? keep : [...__LIVE, ...ARTISTS]; })()` : '[...__LIVE, ...ARTISTS]';
     return `${src}\nconst __LIVE = ${JSON.stringify(live.artists)};\nconst __ALL = ${merged};\nexport {__ALL as ARTISTS, DISC_EN, CITY_EN, DISC_LO, CITY_LO};`;
   }}),
   strings: () => ({watch: 'circles.js', code: src => `export ${grab(src, /^const STR = \{[\s\S]*?^\};/m, 'const STR', 'circles.js')}`}),

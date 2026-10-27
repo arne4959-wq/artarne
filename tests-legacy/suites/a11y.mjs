@@ -9,7 +9,7 @@ const AUDIT = `(()=>{
   const ints=[...document.querySelectorAll('a[href],button,input:not([type=hidden]),select,textarea,[role=button],[role=tab]')].filter(vis);
   const d=e=>e.tagName.toLowerCase()+(e.id?'#'+e.id:'')+'.'+String(e.className).slice(0,24);
   const noname=ints.filter(e=>!nm(e)).map(d);
-  const small=ints.filter(e=>!e.classList.contains('mus-art')).filter(e=>{const r=e.getBoundingClientRect();return r.width<43.5||r.height<43.5}).map(e=>d(e)+' '+Math.round(e.getBoundingClientRect().width)+'x'+Math.round(e.getBoundingClientRect().height));
+  const small=ints.filter(e=>!e.classList.contains('mus-art')&&!e.classList.contains('tw-win')).filter(e=>{const r=e.getBoundingClientRect();return r.width<43.5||r.height<43.5}).map(e=>d(e)+' '+Math.round(e.getBoundingClientRect().width)+'x'+Math.round(e.getBoundingClientRect().height));
   const tiny=[];const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
   while(n=w.nextNode()){if(!n.textContent.trim())continue;const e=n.parentElement;if(!e||!vis(e)||e.closest('script,style,noscript,svg'))continue;const fs=parseFloat(getComputedStyle(e).fontSize);if(fs<11.99)tiny.push(d(e)+' '+fs);}
   return {noname,small:small.slice(0,8),tiny:tiny.slice(0,8),h1:document.querySelectorAll('h1').length,lang:document.documentElement.lang};

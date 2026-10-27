@@ -1,10 +1,11 @@
 // The HD-2D city strip: three depth planes, depth-of-field blur, pixel sprites, light + dust, only transform/opacity, reduced motion, phone.
+import {demoArtists} from '../demo.mjs';
 import {launch, sleep} from '../../tools/browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const __root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const {ARTISTS} = new Function(fs.readFileSync(path.join(__root, 'artists.js'), 'utf8') + '\n;return {ARTISTS};')();
+const {ARTISTS} = new Function(demoArtists(__root) + '\n;return {ARTISTS};')();
 const N = ARTISTS.length, WORKS = ARTISTS.reduce((n, a) => n + a.pieces.length, 0), FEATURED = 8;
 export const name = 'hd2d';
 const ALLOWED = ['transform', 'opacity'];
@@ -32,6 +33,7 @@ export async function run({url, check}) {
   check('sprites are 16x16 canvases scaled up with image-rendering: pixelated', sp.real === '16x16' && sp.scaled === 48 && sp.render === 'pixelated' && sp.walkers >= 3 && sp.birds >= 2, sp);
   const colours = await ev(`(()=>{const ok=new Set(['14,13,12','244,241,232','255,46,136','232,183,48','163,24,44','232,228,216']);const bad=new Set();for(const c of document.querySelectorAll('.spr canvas')){const d=c.getContext('2d').getImageData(0,0,16,16).data;for(let i=0;i<d.length;i+=4)if(d[i+3]>0&&!ok.has(d[i]+','+d[i+1]+','+d[i+2]))bad.add(d[i]+','+d[i+1]+','+d[i+2])}return [...bad]})()`);
   check('sprites use only the site\'s palette', colours.length === 0, colours);
+  await ev("document.getElementById('strip').scrollIntoView({block:'center'});0"); await sleep(500);   // the hero shortcuts push the city below the first screen, and animations that nobody can see do not tick
   const w1 = await ev("[...document.querySelectorAll('.walker')].map(w=>new DOMMatrix(getComputedStyle(w).transform).m41)"); await sleep(1500);
   const w2 = await ev("[...document.querySelectorAll('.walker')].map(w=>new DOMMatrix(getComputedStyle(w).transform).m41)");
   check('people really walk, both directions', w1.some((x, i) => w2[i] > x + 10) && w1.some((x, i) => w2[i] < x - 10));

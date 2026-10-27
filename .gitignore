@@ -10,3 +10,4 @@ app/node_modules/
 app/dist/
 app/tests/out/
 lao-review.csv
+node_modules/

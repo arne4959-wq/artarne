@@ -5,7 +5,7 @@ import path from 'node:path';
 
 /* the columns the public may read (supabase/migrations/001_init.sql: user_id is not one of them, and there is no e-mail column at all) */
 export const ARTIST_COLUMNS = 'id,name,name_en,name_lo,disc,city,since,bio,bio_en,bio_lo,tagline,tagline_en,concept,concept_en,instagram,photo,timeline,scale,kind,colors,created_at';
-export const WORK_COLUMNS = 'artist_id,position,title,title_en,title_lo,year,medium,medium_en,medium_lo,size,size_lo,ar,img,quote,quote_en,quote_lo,story,story_en,story_lo,say,say_en,say_lo,why,why_en,why_lo,look,look_en,look_lo,concept';
+export const WORK_COLUMNS = 'artist_id,position,title,title_en,title_lo,year,medium,medium_en,medium_lo,size,size_lo,ar,img,quote,quote_en,quote_lo,story,story_en,story_lo,say,say_en,say_lo,why,why_en,why_lo,look,look_en,look_lo,concept,idea,idea_en,idea_lo,sketch,draft,idea_on,sketch_on,draft_on,final_on';
 const DEFAULT_COLORS = ['#C4958A', '#7A4A40', '#D4CFCA'];   // the building's three colours when the artist has set none
 
 const put = (o, k, v) => { if (v !== null && v !== undefined && v !== '') o[k] = v; };   // missing stays missing, so pk() falls back to Thai
@@ -22,6 +22,12 @@ export function workToPiece(w) {
   put(p, 'why', w.why); put(p, 'whyEn', w.why_en); put(p, 'whyLo', w.why_lo);
   put(p, 'look', w.look); put(p, 'lookEn', w.look_en); put(p, 'lookLo', w.look_lo);
   put(p, 'concept', w.concept);
+  put(p, 'idea', w.idea); put(p, 'ideaEn', w.idea_en); put(p, 'ideaLo', w.idea_lo);                   // the process: an idea note, a sketch and a draft picture, and when each stage happened
+  if (/^https:\/\/\S+$/.test(w.sketch || '')) p.sketch = w.sketch;
+  if (/^https:\/\/\S+$/.test(w.draft || '')) p.draft = w.draft;
+  const on = {}, day = /^\d{4}(-\d{2}(-\d{2})?)?$/;
+  for (const [k, v] of [['idea', w.idea_on], ['sketch', w.sketch_on], ['draft', w.draft_on], ['final', w.final_on]]) if (day.test(v || '')) on[k] = v;
+  if (Object.keys(on).length) p.stages = on;
   return p;
 }
 

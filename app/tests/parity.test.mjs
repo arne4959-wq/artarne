@@ -39,7 +39,7 @@ after(() => vite && vite.close());
 test('artists.js data reaches React unchanged', () => {
   assert.deepEqual(JSON.parse(JSON.stringify(data.ARTISTS)), JSON.parse(JSON.stringify(oldData.ARTISTS)));
   for (const k of ['DISC_EN', 'CITY_EN', 'DISC_LO', 'CITY_LO']) assert.deepEqual(data[k], oldData[k], k);
-  assert.ok(data.ARTISTS.length >= 10);
+  assert.ok(data.ARTISTS.length >= 1);   // hideDemo: only the real artist(s) are left
 });
 
 test('strings and config reach React unchanged', () => {

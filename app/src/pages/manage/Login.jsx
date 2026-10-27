@@ -22,6 +22,8 @@ export default function Login({linkBad = false}) {
     const {error} = await supabase().auth.signInWithOtp({email: em, options: {shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname}});
     // Not invited = Supabase refuses, and we still say "sent": the page must not tell strangers which e-mails are artists.
     if (error && (error.status === 429 || /rate|too many|seconds/i.test(error.message || ''))) { setErr('lg_wait'); setPhase('idle'); return; }
+    // Supabase's built-in mail only reaches the owner's team: with it, every artist would be told "sent" and get nothing. Say what is wrong (it is a setup fault, not a fact about the artist).
+    if (error && (error.code === 'email_address_not_authorized' || /not authorized/i.test(error.message || ''))) { setErr('lg_mail'); setPhase('idle'); return; }
     if (error && !error.status) { setErr('lg_net'); setPhase('idle'); return; }   // no HTTP status = the request never arrived
     if (reduce) { setPhase('sent'); return; }
     setPhase('opening');                                              // the key flies into the lock, then the message shows

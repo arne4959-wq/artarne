@@ -5,8 +5,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..'), out = path.join(root, 'dist');
-const DIRS = ['art', 'fonts', 'og', 'people', 'vendor'];   // people/ = the pixel visitors of the studio hall (tools/make-sprites.mjs)
-const FILES = ['.nojekyll', 'robots.txt', 'og.png', 'favicon.svg'];
+const DIRS = ['art', 'fonts', 'legends', 'og', 'people', 'vendor'];   // people/ = the pixel visitors of the studio hall (tools/make-sprites.mjs)
+const FILES = ['.nojekyll', 'robots.txt', 'sitemap.xml', 'og.png', 'favicon.svg'];   // robots.txt points at sitemap.xml
 const skip = n => n === '.DS_Store';
 
 fs.rmSync(out, {recursive: true, force: true}); fs.mkdirSync(out);
@@ -14,9 +14,11 @@ const copy = (src, dst) => {
   if (fs.statSync(src).isDirectory()) { fs.mkdirSync(dst, {recursive: true}); for (const n of fs.readdirSync(src)) if (!skip(n)) copy(path.join(src, n), path.join(dst, n)); }
   else fs.copyFileSync(src, dst);
 };
-const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isFile() && /\.(html|css|js)$/.test(n));
+const top = fs.readdirSync(root).filter(n => fs.statSync(path.join(root, n)).isFile() && /\.(html|css|js)$/.test(n) && n !== 'punk-ui-demo.html');   // the demo page is for testing only (HOOKUP.md)
 for (const n of [...top, ...FILES]) if (fs.existsSync(path.join(root, n))) copy(path.join(root, n), path.join(out, n));
 for (const d of DIRS) if (fs.existsSync(path.join(root, d))) copy(path.join(root, d), path.join(out, d));
+// retired artists (published-ids.json) stay in the repo as test fixtures but are never published: their pages and share images are dropped here
+for (const id of Object.keys(JSON.parse(fs.readFileSync(path.join(root, 'published-ids.json'), 'utf8')).retired || {})) for (const f of [`studio-${id}.html`, `profile-${id}.html`, `og/${id}.png`]) fs.rmSync(path.join(out, f), {force: true});
 
 // The artists' settings page (manage.html) is built by the React app (npm run app:build). If that build exists, ship it with its scripts:
 // the page and app/dist/assets/ are copied next to the plain-HTML site, so the "Settings" links on the site work.

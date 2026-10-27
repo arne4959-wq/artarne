@@ -5,12 +5,22 @@ const CURATED = [['mali', 0], ['phop', 2], ['napha', 0], ['phrae', 2], ['thara',
 export const FEATURED_MAX = 8;
 export const TAPE = [-5, 4, -3, 6, -6, 3, -4, 5];
 
-/* → [{a, k}] : a real artist's first work, then the curated sample picks that exist; at most 8.
-   With only the sample artists this is exactly the old FEAT list. Nothing here can throw on a missing id or index. */
+/* → [{a, k}] : a real artist's first work, then the curated sample picks that exist, then (when artists are missing) the newest remaining works,
+   one per artist first, up to the same count as the curated list; at most 8. With every sample artist present this is exactly the old FEAT list.
+   Nothing here can throw on a missing id or index (site.js featList()). */
 export function featuredPicks(artists) {
-  const live = artists.filter(a => a.live && a.pieces.length).map(a => { return {a, k: 0}; });
+  const live = artists.filter(a => a.live && a.pieces.length).map(a => ({a, k: 0}));
   const curated = CURATED.map(([id, k]) => ({a: artists.find(x => x.id === id), k})).filter(x => x.a && x.a.pieces[x.k]);
-  return [...live, ...curated].slice(0, FEATURED_MAX);
+  const out = [...live, ...curated].slice(0, FEATURED_MAX), all = allWorks(artists), want = Math.min(CURATED.length, all.length);
+  if (out.length >= want) return out;
+  const key = x => x.a.id + ':' + x.k, have = new Set(out.map(key));
+  const rest = all.filter(x => !have.has(key(x))).sort((x, y) => (y.p.y || 0) - (x.p.y || 0));
+  for (const firstOnly of [true, false]) for (const x of rest) {
+    if (out.length >= want) break;
+    if (have.has(key(x)) || (firstOnly && out.some(o => o.a.id === x.a.id))) continue;
+    out.push({a: x.a, k: x.k}); have.add(key(x));
+  }
+  return out;
 }
 
 export const allWorks = artists => artists.flatMap(a => a.pieces.map((p, k) => ({a, p, k})));
@@ -23,8 +33,8 @@ export function worksList(artists, {showAll, sortBy}) {
 
 export const noLabel = i => `NO.${String(i + 1).padStart(2, '0')}`;
 
-/* the spotlight: the first artist of the list (real artists come first), their first work */
-export const spotlightOf = artists => artists[0] || null;
+/* the spotlight ("artist of the week"): the interview, the heading and the button are Napha's, so the section needs Napha on the site; without her it is not shown */
+export const spotlightOf = artists => artists.find(a => a.id === 'napha') || null;
 
 /* leaving for a studio: straight away when motion is reduced, a view transition where the browser has them, the curtain otherwise */
 export function openStudio(id, work, reduce) {

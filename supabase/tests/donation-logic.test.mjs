@@ -20,11 +20,13 @@ test('every required field is checked', () => {
   assert.deepEqual(parseDonation(null), {error: 'bad_body'}); assert.deepEqual(parseDonation([1]), {error: 'bad_body'}); assert.deepEqual(parseDonation('x'), {error: 'bad_body'});
 });
 
-test('amount: a number from 1 to 1000 with at most two decimals; currency USD, LAK or THB', () => {
+test('amount: a number from 1 to the ceiling of its currency (1000 USD) with at most two decimals; currency USD, LAK or THB', () => {
   const bad = (patch, field) => assert.equal(parseDonation({...good(), ...patch}).field, field);
   bad({amount: 0.99}, 'amount'); bad({amount: 1001}, 'amount'); bad({amount: -5}, 'amount'); bad({amount: '5'}, 'amount'); bad({amount: NaN}, 'amount'); bad({amount: Infinity}, 'amount'); bad({amount: 5.123}, 'amount'); bad({amount: null}, 'amount');
   assert.equal(parseDonation({...good(), amount: 1}).value.amount, 1); assert.equal(parseDonation({...good(), amount: 1000}).value.amount, 1000); assert.equal(parseDonation({...good(), amount: 2.5}).value.amount, 2.5);
-  bad({currency: 'EUR'}, 'currency'); assert.equal(parseDonation({...good(), currency: 'LAK', amount: 50000 / 100}).value.currency, 'LAK');
+  bad({currency: 'EUR'}, 'currency'); assert.equal(parseDonation({...good(), currency: 'LAK', amount: 50000}).value.amount, 50000);   // a usual kip gift is far above 1000
+  assert.equal(parseDonation({...good(), currency: 'THB', amount: 500}).value.amount, 500);
+  bad({currency: 'LAK', amount: 22000001}, 'amount'); bad({currency: 'THB', amount: 35001}, 'amount');
 });
 
 test('a named work is optional and only a position', () => {
@@ -42,6 +44,7 @@ test('slip: images only, valid base64, at most 2 MB', () => {
   assert.equal(ok.value.slip.ext, 'png');
   assert.equal(parseDonation({...good(), slip: {type: 'application/pdf', data: 'aGVsbG8='}}).field, 'slip');
   assert.equal(parseDonation({...good(), slip: {type: 'image/png', data: 'not base64!'}}).field, 'slip');
+  assert.equal(parseDonation({...good(), slip: {type: 'image/png', data: 'aGVsb'}}).field, 'slip');   // length 5: atob would throw after the notice was saved
   assert.equal(parseDonation({...good(), slip: 'x'}).field, 'slip');
   const big = 'A'.repeat(Math.ceil((MAX_SLIP_BYTES + 10) * 4 / 3));
   assert.equal(parseDonation({...good(), slip: {type: 'image/jpeg', data: big}}).field, 'slip');

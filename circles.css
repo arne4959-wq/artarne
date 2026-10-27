@@ -185,10 +185,18 @@ html.has-fab footer{padding-bottom:calc(76px + env(safe-area-inset-bottom));}   
 html[data-calm="1"] *,html[data-calm="1"] *::before,html[data-calm="1"] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
 .fab-wrap{position:fixed;right:.8rem;bottom:.8rem;z-index:900;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100vw - 1.6rem);}
 .fab-wrap .btn{min-height:44px;box-shadow:4px 4px 0 var(--black);}
-.fab-wrap .fab-sup.away{display:none;}
+.fab-wrap .fab-sup.away,.fab-wrap.away{display:none;}
 
 @media(max-width:900px){.calm-t{display:inline;}}
-@media(max-width:600px){.fab-wrap{right:.5rem;bottom:.5rem;max-width:calc(100vw - 4rem);}.fab-wrap .btn{min-height:48px;padding:.55rem .95rem;font-size:.95rem;letter-spacing:.05em;}}
+@media(max-width:600px){
+  /* phones: the Donate button is a bar docked to the bottom edge (it used to float over the cards at the right) */
+  .fab-wrap{left:0;right:0;bottom:0;max-width:none;display:block;padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom));background:var(--paper);border-top:var(--line) solid var(--black);animation:fabUp .25s ease-out;}
+  .fab-wrap .btn{display:block;width:100%;min-height:48px;padding:.55rem .95rem;font-size:1rem;letter-spacing:.05em;text-align:center;}
+  html.has-fab footer{padding-bottom:calc(92px + env(safe-area-inset-bottom));}
+  html.has-fab .toast{bottom:calc(5.4rem + env(safe-area-inset-bottom));}
+}
+@keyframes fabUp{from{transform:translateY(100%);}}
+@media(prefers-reduced-motion:reduce){.fab-wrap{animation:none!important;}}
 .sup-q{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
 .city-search{flex:1 1 220px;min-width:0;min-height:44px;padding:.5rem .9rem;border:var(--line,3px) solid var(--black);background:var(--paper);color:var(--black);font:400 1rem var(--sans,inherit);}
 

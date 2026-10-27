@@ -24,7 +24,7 @@ export const MS = {
     lg_sub: 'ตึกนี้ไม่มีปุ่มสมัคร ศิลปินที่ได้รับเชิญเท่านั้น ใส่อีเมลที่เราเชิญไว้ แล้วเราจะส่งกุญแจ (ลิงก์) ไปให้',
     lg_email: 'อีเมล', lg_btn: 'ส่งกุญแจมา →', lg_sending: 'กำลังส่ง…', lg_stamp: 'ห้ามสมัครเอง',
     lg_sent_h: 'ส่งกุญแจแล้ว', lg_sent_p: 'เปิดอีเมลแล้วกดลิงก์ในนั้น ถ้าไม่เจอให้ดูในสแปม ลิงก์ใช้ได้ครั้งเดียว ถ้าอีเมลนี้ไม่ได้รับเชิญ จะไม่มีอะไรส่งไป',
-    lg_again: 'ใช้อีเมลอื่น', lg_wait: 'ขอลิงก์บ่อยเกินไป รอสักครู่แล้วลองใหม่', lg_bad: 'อีเมลนี้ดูไม่ถูกต้อง', lg_net: 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
+    lg_again: 'ใช้อีเมลอื่น', lg_wait: 'ขอลิงก์บ่อยเกินไป รอสักครู่แล้วลองใหม่', lg_bad: 'อีเมลนี้ดูไม่ถูกต้อง', lg_net: 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', lg_mail: 'ระบบส่งอีเมลของเว็บยังตั้งค่าไม่เสร็จ จึงส่งลิงก์เข้าให้คุณไม่ได้ แจ้งผู้ดูแลเว็บ',
     lg_nokey: 'ยังไม่ได้รับเชิญ?', lg_join: 'ขอมีตึก →', lg_setup: 'ระบบยังไม่ตั้งค่า: ยังไม่ได้ใส่ที่อยู่ฐานข้อมูล', lg_checking: 'กำลังตรวจกุญแจ…',
     lg_link_bad: 'กุญแจนี้ใช้ไม่ได้หรือหมดอายุแล้ว ขอกุญแจใหม่ด้านล่าง',
     
@@ -37,7 +37,7 @@ export const MS = {
     
     
     sp_cta: 'เข้าไปในตึกของ{a} →',
-    out: 'ออกจากระบบ', dash_hi: 'ตึกของ {a}', dash_kick: 'ห้องควบคุม',
+    out: 'ออกจากระบบ', see_me: 'ดูตึกของฉันบนเว็บ', dash_hi: 'ตึกของ {a}', dash_kick: 'ห้องควบคุม',
     nb_h: 'ยังไม่มีตึกผูกกับอีเมลนี้', nb_p: 'คุณเข้าสู่ระบบได้แล้ว แต่เจ้าของเว็บยังไม่ได้ผูกตึกให้อีเมล {e} ติดต่อเจ้าของเว็บ แล้วกลับมาใหม่',
     hidden: 'ตึกของคุณยังไม่เปิดให้คนทั่วไปเห็น รอเจ้าของเว็บอนุมัติ', demo: 'ตึกตัวอย่าง',
     tab_profile: 'โปรไฟล์', tab_works: 'งานของฉัน', tab_pay: 'รับเงิน', save: 'บันทึก', saving: 'กำลังบันทึก…', saved: 'บันทึกแล้ว (ขึ้นบนเว็บภายในประมาณ 30 นาที)', retry: 'บันทึกไม่สำเร็จ ลองใหม่',
@@ -52,7 +52,7 @@ export const MS = {
     h_timeline: 'ไทม์ไลน์ของคุณ', tl_note: 'เหตุการณ์สำคัญในเส้นทางศิลปะของคุณ ใส่ได้ไม่เกิน 12 แถว เว้นว่างได้', f_tl_t: 'เกิดอะไรขึ้น (ไทย)', f_tl_en: 'เกิดอะไรขึ้น (อังกฤษ)', tl_add: '+ เพิ่มแถว', tl_del: 'ลบแถวนี้',
     er_scale: 'ขนาดต้องอยู่ระหว่าง 0.6 ถึง 1.5', er_too_many: 'มีได้ไม่เกิน 12 แถว',
     h_names: 'ชื่อ', h_about: 'เกี่ยวกับคุณ', h_links: 'ลิงก์',
-    w_add: '+ เพิ่มงาน', w_none: 'ยังไม่มีงาน เพิ่มชิ้นแรกเลย', w_edit: 'แก้', w_del: 'ลบ', w_del_sure: 'ลบจริงไหม? กดอีกครั้ง', w_cancel: 'ยกเลิก', w_new: 'งานใหม่', w_editing: 'แก้งาน',
+    w_add: '+ เพิ่มงาน', w_none: 'ยังไม่มีงาน เพิ่มชิ้นแรกเลย (ตึกของคุณจะขึ้นบนเว็บเมื่อมีงานที่มีรูปอย่างน้อย 1 ชิ้น)', w_edit: 'แก้', w_del: 'ลบ', w_del_sure: 'ลบจริงไหม? กดอีกครั้ง', w_cancel: 'ยกเลิก', w_new: 'งานใหม่', w_editing: 'แก้งาน',
     w_limit: 'มีงานครบ 40 ชิ้นแล้ว',
     rules_note: 'อัปโหลดได้เฉพาะงานที่คุณสร้างเอง หรือที่ได้รับอนุญาตแล้ว ห้ามใช้ภาพของคนอื่น ภาพที่มีคนอื่นอยู่ในภาพโดยไม่ยินยอม หรือเนื้อหาที่ล่วงละเมิดผู้อื่น หากได้รับคำร้องเรียน ผู้ดูแลอาจซ่อนงานชิ้นนั้นก่อนตรวจสอบ',
     own_check: 'ฉันยืนยันว่านี่คืองานของฉันเอง หรือฉันได้รับอนุญาตให้เผยแพร่', er_own: 'ต้องติ๊กก่อนบันทึก', w_hidden: 'ถูกซ่อนโดยผู้ดูแล (คนทั่วไปมองไม่เห็น) ติดต่อผู้ดูแลเพื่อตรวจสอบ',
@@ -62,6 +62,7 @@ export const MS = {
     f_story: 'เรื่องเบื้องหลัง', f_story_en: 'เรื่องเบื้องหลัง (อังกฤษ)', f_story_lo: 'เรื่องเบื้องหลัง (ลาว)', h_wbasic: 'ข้อมูลหลัก', h_wtext: 'ข้อความ (ใส่หรือไม่ก็ได้)',
     h_wtell: 'ศิลปินเล่าเอง', tell_note: 'เขียนเป็นเสียงของคุณเอง (บุคคลที่หนึ่ง) circles จะแสดงตามที่เขียน ไม่แก้ไขและไม่ตีความแทน ประโยคแรกจะขึ้นใต้ภาพ ส่วนที่เหลืออยู่ในหน้าต่างผลงาน',
     f_say: 'งานนี้อยากบอกอะไร (ประโยคเดียว)', f_say_en: 'งานนี้อยากบอกอะไร (อังกฤษ)', f_say_lo: 'งานนี้อยากบอกอะไร (ลาว)', f_why: 'ที่มาของงาน', f_why_en: 'ที่มาของงาน (อังกฤษ)', f_why_lo: 'ที่มาของงาน (ลาว)', f_look: 'อยากให้ดูตรงไหน', f_look_en: 'อยากให้ดูตรงไหน (อังกฤษ)', f_look_lo: 'อยากให้ดูตรงไหน (ลาว)',
+    h_wprocess: 'ที่มาของงาน (ไม่บังคับ)', process_note: 'ใส่ไอเดีย สเก็ตช์ และร่างของงานชิ้นนี้ เพื่อให้คนดูเห็นว่างานค่อย ๆ เกิดขึ้นอย่างไร ขั้นไหนไม่มี ปล่อยว่างได้ หน้าเว็บจะแสดงเป็นช่องว่างให้เอง', f_idea: 'ไอเดียตอนเริ่ม', f_idea_en: 'ไอเดียตอนเริ่ม (อังกฤษ)', f_idea_lo: 'ไอเดียตอนเริ่ม (ลาว)', f_sketch: 'เลือกรูปสเก็ตช์', f_draft: 'เลือกรูปร่าง', stage_remove: 'เอารูปนี้ออก', f_idea_on: 'วันที่ของไอเดีย (เช่น 2026-03)', f_sketch_on: 'วันที่ของสเก็ตช์', f_draft_on: 'วันที่ของร่าง', f_final_on: 'วันที่งานเสร็จ', er_stage_date: 'ใช้รูปแบบ ปี หรือ ปี-เดือน หรือ ปี-เดือน-วัน เช่น 2026-03',
     img_pick: 'เลือกรูป', img_change: 'เปลี่ยนรูป', img_up: 'กำลังอัปโหลด…', img_none: 'ยังไม่มีรูป', img_note: 'รูปจะถูกย่อให้พอดีเว็บก่อนส่งอัตโนมัติ (JPG, PNG, WebP)',
     p_h: 'รับเงินผ่าน LAO QR', p_note: 'circles ไม่ถือเงินของใคร ลูกค้าโอนเข้าบัญชีของคุณโดยตรง ใส่รูป QR ที่ export จากแอปธนาคารของคุณเอง',
     p_warn: 'ก่อนเปิดขาย: ตรวจกับธนาคารว่าบัญชีของคุณเปิดรับ LAO QR แล้ว และเช็กเรื่องการจดทะเบียนธุรกิจหรือภาษีสำหรับการขายงานศิลปะกับหน่วยงานในลาว เว็บนี้ไม่ใช่คำปรึกษาทางกฎหมายหรือภาษี',
@@ -92,7 +93,7 @@ export const MS = {
     lg_sub: 'There is no sign-up button. Invited artists only. Type the e-mail we invited and we will send you a key (a link).',
     lg_email: 'E-mail', lg_btn: 'SEND THE KEY →', lg_sending: 'SENDING…', lg_stamp: 'NO SELF SIGN-UP',
     lg_sent_h: 'Key sent', lg_sent_p: 'Open your e-mail and press the link. Check spam. The link works once. If this address was not invited, nothing is sent.',
-    lg_again: 'Use another e-mail', lg_wait: 'Too many tries. Wait a minute and try again.', lg_bad: 'That e-mail does not look right.', lg_net: 'Could not send. Try again.',
+    lg_again: 'Use another e-mail', lg_wait: 'Too many tries. Wait a minute and try again.', lg_bad: 'That e-mail does not look right.', lg_net: 'Could not send. Try again.', lg_mail: 'The site’s e-mail sender is not set up yet, so the sign-in link could not be sent. Please tell the site owner.',
     lg_nokey: 'Not invited yet?', lg_join: 'Ask for a building →', lg_setup: 'Not set up: the database address is missing.', lg_checking: 'Checking the key…',
     lg_link_bad: 'This key is broken or expired. Ask for a new one below.',
     
@@ -105,7 +106,7 @@ export const MS = {
     
     
     sp_cta: "Enter {a}'s building →",
-    out: 'Sign out', dash_hi: "{a}'s building", dash_kick: 'CONTROL ROOM',
+    out: 'Sign out', see_me: 'See my building', dash_hi: "{a}'s building", dash_kick: 'CONTROL ROOM',
     nb_h: 'No building is linked to this e-mail', nb_p: 'You are signed in, but the site owner has not linked a building to {e} yet. Contact the owner, then come back.',
     hidden: 'Your building is hidden from visitors until the site owner approves it.', demo: 'Sample building',
     tab_profile: 'Profile', tab_works: 'My works', tab_pay: 'Get paid', save: 'Save', saving: 'Saving…', saved: 'Saved (shows on the site within about 30 minutes)', retry: 'Could not save. Try again.',
@@ -120,7 +121,7 @@ export const MS = {
     h_timeline: 'Your timeline', tl_note: 'The milestones of your art path. Up to 12 rows; you may leave it empty.', f_tl_t: 'What happened (Thai)', f_tl_en: 'What happened (English)', tl_add: '+ Add a row', tl_del: 'Delete this row',
     er_scale: 'Size must be between 0.6 and 1.5', er_too_many: 'At most 12 rows',
     h_names: 'Names', h_about: 'About you', h_links: 'Links',
-    w_add: '+ Add a work', w_none: 'No works yet. Add the first one.', w_edit: 'Edit', w_del: 'Delete', w_del_sure: 'Really delete? Press again', w_cancel: 'Cancel', w_new: 'New work', w_editing: 'Edit work',
+    w_add: '+ Add a work', w_none: 'No works yet. Add the first one. (Your building shows on the site once it has at least one work with a picture.)', w_edit: 'Edit', w_del: 'Delete', w_del_sure: 'Really delete? Press again', w_cancel: 'Cancel', w_new: 'New work', w_editing: 'Edit work',
     w_limit: 'You already have 40 works',
     rules_note: 'Upload only work you made yourself or have permission to show. No one else’s pictures, no photos of people who did not agree, nothing that attacks others. If someone complains, an admin may hide the work while it is checked.',
     own_check: 'I confirm this is my own work, or I have permission to publish it', er_own: 'Tick this before saving', w_hidden: 'Hidden by an admin (visitors cannot see it). Contact the admin to have it checked.',
@@ -130,6 +131,7 @@ export const MS = {
     f_story: 'The story behind it', f_story_en: 'Story (English)', f_story_lo: 'Story (Lao)', h_wbasic: 'The basics', h_wtext: 'Words (optional)',
     h_wtell: 'In your own words', tell_note: 'Write in your own voice (first person). circles shows it exactly as written and never edits or interprets it. The first sentence appears under the picture; the rest is in the work window.',
     f_say: 'What this work says (one sentence)', f_say_en: 'What this work says (English)', f_say_lo: 'What this work says (Lao)', f_why: 'Where it came from', f_why_en: 'Where it came from (English)', f_why_lo: 'Where it came from (Lao)', f_look: 'Where to look', f_look_en: 'Where to look (English)', f_look_lo: 'Where to look (Lao)',
+    h_wprocess: 'How it was made (optional)', process_note: 'Add the idea, sketch and draft of this work so visitors can see how it grew. Leave a stage empty if you have nothing for it: the site shows an empty window for it.', f_idea: 'The idea, at the start', f_idea_en: 'The idea (English)', f_idea_lo: 'The idea (Lao)', f_sketch: 'Choose a sketch picture', f_draft: 'Choose a draft picture', stage_remove: 'Remove this picture', f_idea_on: 'When the idea came (e.g. 2026-03)', f_sketch_on: 'When the sketch was made', f_draft_on: 'When the draft was made', f_final_on: 'When the work was finished', er_stage_date: 'Use a year, year-month or year-month-day, like 2026-03',
     img_pick: 'Choose a picture', img_change: 'Change picture', img_up: 'Uploading…', img_none: 'No picture yet', img_note: 'The picture is shrunk to fit the site before it is sent (JPG, PNG, WebP)',
     p_h: 'Get paid with LAO QR', p_note: 'circles never holds anyone’s money. Buyers pay straight into your account. Add the QR picture you export from your own bank app.',
     p_warn: 'Before you sell: check with your bank that your account accepts LAO QR, and check business registration and tax rules for selling art with the authorities in Laos. This site is not legal or tax advice.',
@@ -142,6 +144,7 @@ export const MS = {
   lo: {   // DRAFT lo: needs native review. Anything missing here shows in Thai.
     h_wtell: 'ສິລະປິນເລົ່າເອງ', tell_note: 'ຂຽນເປັນສຽງຂອງທ່ານເອງ (ບຸກຄົນທີໜຶ່ງ) circles ຈະສະແດງຕາມທີ່ຂຽນ ບໍ່ແກ້ໄຂ ແລະ ບໍ່ຕີຄວາມແທນ ປະໂຫຍກທຳອິດຈະຢູ່ໃຕ້ຮູບ ສ່ວນທີ່ເຫຼືອຢູ່ໃນໜ້າຕ່າງຜົນງານ',
     f_say: 'ຜົນງານນີ້ຢາກບອກຫຍັງ (ປະໂຫຍກດຽວ)', f_say_en: 'ຜົນງານນີ້ຢາກບອກຫຍັງ (ອັງກິດ)', f_say_lo: 'ຜົນງານນີ້ຢາກບອກຫຍັງ (ລາວ)', f_why: 'ທີ່ມາຂອງຜົນງານ', f_why_en: 'ທີ່ມາຂອງຜົນງານ (ອັງກິດ)', f_why_lo: 'ທີ່ມາຂອງຜົນງານ (ລາວ)', f_look: 'ຢາກໃຫ້ເບິ່ງຕົງໃດ', f_look_en: 'ຢາກໃຫ້ເບິ່ງຕົງໃດ (ອັງກິດ)', f_look_lo: 'ຢາກໃຫ້ເບິ່ງຕົງໃດ (ລາວ)',
+    h_wprocess: 'ທີ່ມາຂອງຜົນງານ (ບໍ່ບັງຄັບ)', process_note: 'ໃສ່ແນວຄິດ ສະເກັດ ແລະ ຮ່າງຂອງຜົນງານຊິ້ນນີ້ ເພື່ອໃຫ້ຄົນເບິ່ງເຫັນວ່າຜົນງານຄ່ອຍໆເກີດຂຶ້ນແນວໃດ ຂັ້ນໃດບໍ່ມີກໍປ່ອຍຫວ່າງໄດ້', f_idea: 'ແນວຄິດຕອນເລີ່ມ', f_idea_en: 'ແນວຄິດ (ອັງກິດ)', f_idea_lo: 'ແນວຄິດ (ລາວ)', f_sketch: 'ເລືອກຮູບສະເກັດ', f_draft: 'ເລືອກຮູບຮ່າງ', stage_remove: 'ເອົາຮູບນີ້ອອກ', f_idea_on: 'ວັນທີຂອງແນວຄິດ (ເຊັ່ນ 2026-03)', f_sketch_on: 'ວັນທີຂອງສະເກັດ', f_draft_on: 'ວັນທີຂອງຮ່າງ', f_final_on: 'ວັນທີຜົນງານສຳເລັດ', er_stage_date: 'ໃຊ້ ປີ ຫຼື ປີ-ເດືອນ ຫຼື ປີ-ເດືອນ-ວັນ ເຊັ່ນ 2026-03',   // DRAFT lo: needs native review
     lg_kick: 'ປະຕູເຫຼັກ · ສະເພາະສິລະປິນ', lg_title: 'ເຂົ້າຕຶກ', lg_aria: 'ເຂົ້າຕຶກ',
     lg_sub: 'ບໍ່ມີປຸ່ມສະໝັກ ສະເພາະສິລະປິນທີ່ໄດ້ຮັບເຊີນ ໃສ່ອີເມວທີ່ພວກເຮົາເຊີນໄວ້ ແລ້ວພວກເຮົາຈະສົ່ງກະແຈ (ລິ້ງ) ໄປໃຫ້',
     lg_email: 'ອີເມວ', lg_btn: 'ສົ່ງກະແຈມາ →', lg_sending: 'ກຳລັງສົ່ງ…', lg_stamp: 'ຫ້າມສະໝັກເອງ',

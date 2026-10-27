@@ -6,9 +6,12 @@ Database for artists who manage their own works, and the "I've donated" notices 
 
 ## Setup (once, by the site owner)
 
+The short, ordered version for this site is in `docs/SETTINGS.md` ("ใส่ให้ใช้งานจริง"). The details:
+
 1. Create a project at supabase.com. Region: closest to your artists and supporters.
-2. SQL editor → paste `migrations/001_init.sql` → Run.
+2. SQL editor → paste `migrations/001_init.sql` → Run. Then the rest in one go: `npm run db:bundle | pbcopy` and paste (migrations 002–008 as one `begin; … commit;` transaction: if anything fails, nothing changes). `npm run doctor` shows what is still missing.
 3. Authentication → Providers → Email: keep it on. Turn **off** "Allow new users to sign up". Artists are invited, nobody signs up by themselves.
+3b. **Authentication → SMTP Settings: set your own SMTP server.** Supabase's built-in mail only delivers to members of *your Supabase organisation* ("Email address not authorized") and has a very low hourly limit, so without this no artist ever receives the sign-in link. (Brevo, Resend with your own domain, or a Gmail App Password all work; with a custom server the default limit is 30 mails an hour.) Test with an address that is not yours.
 4. Authentication → URL configuration: set the Site URL to the site's address, and add every address of `manage.html` under **Redirect URLs** (for example `http://localhost:5173/manage.html` while developing, and the real address later). The sign-in link in the e-mail only works for addresses on this list.
 5. Project settings → API: copy the **Project URL** and the **anon public** key. These two go into the site's `CONFIG` later; they are safe in the browser because of the access rules. **Never** commit the `service_role` key. Edge Functions get it from the platform, not from this repo.
 
@@ -16,8 +19,8 @@ Database for artists who manage their own works, and the "I've donated" notices 
 
 The admin is a user whose `app_metadata.role` is `admin`. An artist cannot set this on themselves (only the server can write `app_metadata`).
 
-1. Authentication → Users → Add user → Send invitation (your own e-mail).
-2. SQL editor:
+1. Authentication → Users → Add user (your own e-mail).
+2. SQL editor, or let `npm run db:seed -- arne you@example.com --admin | pbcopy` print this *and* your building (see `docs/SETTINGS.md`):
    ```sql
    update auth.users
    set raw_app_meta_data = coalesce(raw_app_meta_data, '{}') || '{"role":"admin"}'
@@ -30,10 +33,10 @@ The admin is a user whose `app_metadata.role` is `admin`. An artist cannot set t
 An artist is created by the admin, then linked to a login:
 
 ```sql
--- 1. invite them first (Authentication → Users → Send invitation), then copy their user id
+-- 1. invite them first (Authentication → Users → Invite user; needs your own SMTP, see Setup 3b). No user id to copy: the row is linked by e-mail.
 insert into artists (id, user_id, name, name_en, disc, city, approved)
-values ('mali', '<their user id>', 'มะลิ', 'Mali', 'ศิลปะดิจิทัล', 'เวียงจันทน์', true);
-insert into artist_private (artist_id, email) values ('mali', 'their@email');
+select 'mali', id, 'มะลิ', 'Mali', 'ศิลปะดิจิทัล', 'เวียงจันทน์', true from auth.users where lower(email) = lower('their@email');
+insert into artist_private (artist_id, email) values ('mali', 'their@email');   -- fails (and nothing is created) if that login does not exist yet
 ```
 
 `id` is the address slug (`studio-mali.html`): lowercase letters, digits and `-`, 3–40 characters. `approved = false` keeps an artist invisible to visitors while they fill in their profile. `demo = true` marks sample data.
@@ -69,21 +72,23 @@ What the function guarantees: it refuses without a valid Turnstile token, for an
 
 `functions/donation-notice/logic.js` holds the rules as plain JavaScript and is tested with Node (`supabase/tests/donation-logic.test.mjs`). `index.ts` needs Deno and a real project: it is **not** run by any test here, so step 5 is the check that matters.
 
-## Step 4: real artists on the site (`npm run pull`)
+## Step 4: real artists on the site
 
-The site is static, so what an artist saves in `manage.html` reaches the public pages when the site is built again:
+The site is static, so what an artist saves in `manage.html` reaches the public pages when the site is built again. `.github/workflows/deploy.yml` does that every 30 minutes (switch-on steps: `docs/SETTINGS.md`). The chain it runs, in order, and what you can run yourself:
 
 ```
-npm run pull              # reads approved artists + their works from Supabase (public columns only), writes artists.live.json
-npm run pull -- --hide-demo   # also hide the sample artists once at least one real artist is there (never leaves the city empty)
-npm run app:build         # builds the pages: studio-<id>.html, profile-<id>.html for every real artist too
+npm run pull                 # approved artists + their works from Supabase (public columns only) → artists.live.json
+npm run pull -- --hide-demo  # same, and hide the sample artists once at least one real artist is there (never leaves the city empty)
+node tools/merge-live.mjs    # puts them into artists.js for this build (a generated block; never commit it, `--strip` removes it again)
+node tools/build.mjs --site https://your.site   # studio-<id>.html, profile-<id>.html, og/<id>.png and sitemap.xml for every artist
+npm run dist                 # the dist/ folder that is published, with manage.html
 ```
 
-- `artists.live.json` is generated; commit it, so a build works without the network. The sample artists of `artists.js` stay until you pass `--hide-demo` (or delete them).
-- Real artists come first in the city, oldest first. An approved artist with no works yet is left out until the first work is added.
-- The e-mail is never in the file (it is not a public column). Messages go to `CONFIG.contact` until an inquiry function exists. Payment details (account, QR) are not in the file either: the buy page asks for them live, so a changed QR shows at once.
-- Run `npm run pull` again after an artist adds a work or you approve someone. Automating it (a scheduled build, or a database webhook) needs the deploy host, which is not chosen yet.
-- Test: `node app/tests/live-build.mjs` builds the app with a made-up real artist and opens its pages in Chrome (no network).
+- Before `merge-live.mjs` nothing in the plain-HTML site read `artists.live.json` (only the React app did), so artists saved in the database never reached the pages. The merge also checks every artist and skips a bad one (bad id, no works, an unsafe picture address) with a warning in the log, instead of failing the build for everybody; unknown building shapes and colours fall back to the defaults.
+- `artists.live.json` is generated: the deploy build pulls it fresh. Real artists come first in the city (the owner's hand-written building, then the live artists oldest first, then the sample artists). An approved artist with no works yet is left out until the first work is added.
+- The e-mail is never in the file (it is not a public column). Messages go to `CONFIG.contact` until an inquiry function exists. The bank details are public by design (they are printed next to a QR) and are copied into the artist's `support`; a real artist without a QR picture shows the account only, never a made-up QR.
+- Run it again (or wait up to 30 minutes) after an artist adds a work or you approve someone.
+- Tests: `node tests-legacy/run.mjs live` runs the whole chain on a scratch copy with made-up live artists, one of them hostile (markup in every text field, bad addresses, bad colours); `node app/tests/live-build.mjs` does the same for the React app.
 
 ## Notes for the code that will use this
 
@@ -95,8 +100,20 @@ npm run app:build         # builds the pages: studio-<id>.html, profile-<id>.htm
 ## Tests
 
 ```
-npx -y -p @electric-sql/pglite node supabase/tests/rls.mjs
+npm i --no-save --prefix supabase/tests @electric-sql/pglite    # once (npx -p does not work: ES modules only look next to the file)
+npm run test:db                                                 # node supabase/tests/rls.mjs
 node --test supabase/tests/donation-logic.test.mjs
 ```
 
-62 checks in an in-memory Postgres with a stand-in for Supabase's `auth` and `storage` schemas: what anon, an artist, another artist and the admin can read and write, plus the constraints (status, price, https links, e-mail, 40-work limit, reorder). This checks the SQL, **not** the real Supabase service. After step 1 is deployed, repeat three checks by hand on the real project: (1) with the anon key, `select * from artist_private` is refused, (2) an invited artist cannot update another artist's row, (3) an artist cannot upload into someone else's folder.
+108 checks in an in-memory Postgres with a stand-in for Supabase's `auth` and `storage` schemas, running migrations 001–008: what anon, an artist, another artist and the admin can read and write, the constraints (links, e-mail, text lengths, 40-work limit, reorder), the work rules (a hidden work, the own-work tick), the artist's own words, the profile photo, **that every column the dashboard writes (`app/src/lib/manage.js`) is allowed by the grants**, that `tools/seed-sql.mjs` puts the owner's building in cleanly, and that the paste-in bundle `npm run db:bundle` equals running the files one by one and is all-or-nothing. This checks the SQL, **not** the real Supabase service. After the migrations are on the real project, repeat three checks by hand: (1) with the anon key, `select * from artist_private` is refused, (2) an invited artist cannot update another artist's row, (3) an artist cannot upload into someone else's folder. `npm run doctor` checks the rest from outside.
+
+## Checking a new bank account or QR (migration 008)
+
+When an artist adds or changes their account or QR in manage.html, visitors do not see it until you check it (so a stolen login cannot quietly swap the QR and take the donations).
+Look at the new details (Table editor → `artist_payment`, rows with `checked = false`; open the QR through Storage → `qr`), ask the artist if anything looks odd, then in the SQL editor:
+
+```sql
+update public.artist_payment set checked = true where artist_id = '<id>';
+```
+
+The next deploy (at most 30 minutes) puts it on the site.

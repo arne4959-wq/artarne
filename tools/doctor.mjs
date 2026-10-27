@@ -36,6 +36,12 @@ for (const [c, m] of Object.entries(cols)) {
 }
 const works = await get('/rest/v1/works?select=artist_id&limit=1');
 say(works.status === 200 ? 'OK' : 'FAIL', works.status === 200 ? 'table works is reachable' : `works: HTTP ${works.status}`, works.status === 200 ? '' : 'run migration 001');
+const wcols = {say: '004_artist_tells.sql', rights_confirmed_at: '006_work_rules.sql', hidden: '006_work_rules.sql', idea: '007_work_process.sql'};   // without these the dashboard cannot save a work and `npm run pull` fails with HTTP 400
+for (const [c, m] of Object.entries(wcols)) {
+  const r = await get(`/rest/v1/works?select=${c}&limit=1`);
+  if (r.status === 200) say('OK', `column works.${c} exists`);
+  else say('FAIL', `column works.${c} is missing`, `run supabase/migrations/${m} (002-007 in order: they are all needed before artists can post)`);
+}
 
 const notices = await get('/rest/v1/donation_notices?select=id&limit=1');
 if (notices.status === 200 && Array.isArray(notices.json) && notices.json.length) say('FAIL', 'donation_notices is readable by the PUBLIC (donor e-mails would leak)', 'check the rules in migration 003 (the table must be private)');
@@ -74,4 +80,10 @@ else say('OK', `edge function donation-notice answers (HTTP ${fn.status} to an e
 console.log('');
 const f = out.filter(x => x === 'FAIL').length, w = out.filter(x => x === 'WARN').length;
 console.log(f ? `${f} FAIL, ${w} WARN: fix the FAIL lines first.` : w ? `no FAIL, ${w} WARN.` : 'all good.');
+console.log(`
+Cannot be checked from outside, do these once in the Supabase dashboard (docs/SETTINGS.md, "Putting it live"):
+  - Authentication → SMTP: set a custom SMTP server. Supabase's built-in mail only reaches members of YOUR Supabase organisation
+    ("Email address not authorized"), so without this no artist ever receives the sign-in link.
+  - Authentication → URL configuration: the Site URL and a Redirect URL for manage.html (the address of the published site + /manage.html).
+  - Authentication → Users: your own login exists (Add user), then run tools/seed-sql.mjs to make it admin and create your building.`);
 process.exit(f ? 1 : 0);

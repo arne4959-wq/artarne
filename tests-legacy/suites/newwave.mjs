@@ -1,11 +1,12 @@
 // The "new wave" artists: complete in data, rendered everywhere, in both languages, and the page numbers follow the data.
+import {demoArtists} from '../demo.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {launch, sleep} from '../../tools/browser.mjs';
 export const name = 'newwave';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const {ARTISTS, DISC_EN, CITY_EN} = new Function(fs.readFileSync(path.join(root, 'artists.js'), 'utf8') + '\n;return {ARTISTS, DISC_EN, CITY_EN};')();
+const {ARTISTS, DISC_EN, CITY_EN} = new Function(demoArtists(root) + '\n;return {ARTISTS, DISC_EN, CITY_EN};')();
 export async function run({url, check}) {
   const wave = ARTISTS.filter(a => a.wave);
   check('there are new-wave artists in the data', wave.length >= 4, wave.map(a => a.id));
@@ -15,8 +16,9 @@ export async function run({url, check}) {
     check(`${a.id}: complete data (bio TH+EN, 3 pieces with title/year/medium/size/image)`, !miss.length && !bad.length && a.pieces.length === 3 && DISC_EN[a.disc] && CITY_EN[a.city], {miss, bad: bad.map(p => p.t)});
     check(`${a.id}: the English bio is exactly two sentences, the Thai bio is not empty`, (a.bioEn.match(/[.!?](\s|$)/g) || []).length === 2 && a.bio.length > 40, a.bioEn);
   }
-  const kinds = new Set(ARTISTS.map(a => a.kind));
-  check('every building has its own shape (no two artists share a kind)', kinds.size === ARTISTS.length, [...kinds]);
+  /* the sample city was drawn with one shape per building. Real artists (the owner, and everybody from Supabase) pick from the same ten shapes, so they may share one. */
+  const sample = ARTISTS.filter(a => /\.example$/i.test(String(a.email || ''))), kinds = new Set(sample.map(a => a.kind));
+  check('every sample building has its own shape (no two sample artists share a kind)', kinds.size === sample.length, [...kinds]);
 
   for (const [lang, w, h, touch] of [['th', 1440, 800, false], ['en', 375, 812, true]]) {
     const b = await launch(); await b.lang(lang); await b.view(w, h, touch);
@@ -27,11 +29,11 @@ export async function run({url, check}) {
     check(`${lang} ${w}px: no empty hole between the filters and the map`, r.gap < 70 && r.overflowX <= 0, r);
     b.close();
   }
-  /* every new-wave studio opens, shows its 3 pictures in the museum hall, its label, and the detail dialog works */
+  /* every new-wave studio opens, shows its 3 finished works in the tower, its label, and the detail dialog works */
   const b = await launch(); await b.lang('en'); await b.view(1280, 900);
   for (const a of wave) {
     await b.go(`${url}/studio-${a.id}.html?work=1`, 3500);
-    const r = await b.ev(`({floors:document.querySelectorAll('.mus-art').length,imgs:[...document.querySelectorAll('.mus-art img')].filter(i=>i.complete&&i.naturalWidth>0).length,kicker:document.querySelector('.kicker').textContent,dlg:document.getElementById('dlg').open,title:document.getElementById('dlg-t').textContent,roof:!!document.querySelector('.roof'),overflowX:document.documentElement.scrollWidth-innerWidth})`);
+    const r = await b.ev(`({floors:document.querySelectorAll('.tw-final').length,imgs:[...document.querySelectorAll('.tw-final img')].filter(i=>i.complete&&i.naturalWidth>0).length,kicker:document.querySelector('.kicker').textContent,dlg:document.getElementById('dlg').open,title:document.getElementById('dlg-t').textContent,roof:!!document.querySelector('.tw-roof'),overflowX:document.documentElement.scrollWidth-innerWidth})`);
     check(`${a.id} studio: 3 pictures, all images, new-wave label, ?work=1 opens "${a.pieces[1].tEn}"`, r.floors === 3 && r.imgs === 3 && /NEW WAVE/.test(r.kicker) && r.dlg && r.title === a.pieces[1].tEn && r.overflowX <= 0, r);
   }
   check('no console / network errors on the new studios', b.logs.length === 0, b.logs);
@@ -55,12 +57,12 @@ export async function run({url, check}) {
     check('no console / network errors on the open work', z.logs.length === 0, z.logs);
     z.close();
   }
-  /* a phone: the hint talks about swiping, the museum is on the first screen, nothing overflows */
+  /* a phone: the lift is a row above the tower, three windows per floor, nothing overflows */
   {
     const m = await launch(); await m.lang('en'); await m.view(375, 812, true);
     await m.go(`${url}/cutaway.html?id=${wave[0].id}`, 3500);
-    const r = await m.ev(`({hint:document.querySelector('.hint').dataset.t,txt:document.querySelector('.hint').textContent,top:Math.round(document.getElementById('mus-stage').getBoundingClientRect().top),ox:document.documentElement.scrollWidth-innerWidth})`);
-    check('375px: hint is the swipe text, the hall starts above 520px (first picture visible), no horizontal overflow', r.hint === 'hint_swipe' && /Swipe/i.test(r.txt) && r.top < 520 && r.ox <= 0, r);
+    const r = await m.ev(`({lift:document.querySelector('.tw-lift').getBoundingClientRect().top<document.getElementById('tw-bld').getBoundingClientRect().top,perRow:Math.max(...[...document.querySelectorAll('.tw-fl')].map(f=>new Set([...f.querySelectorAll('.tw-win')].map(w=>Math.round(w.getBoundingClientRect().top))).size)),ox:document.documentElement.scrollWidth-innerWidth})`);
+    check('375px: the lift is a row above the tower, every floor keeps its windows on one row, no horizontal overflow', r.lift && r.perRow === 1 && r.ox <= 0, r);
     m.close();
   }
 }

@@ -6,7 +6,8 @@ export const SLIP_TYPES = {'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp'
 export const MAX_SLIP_BYTES = 2 * 1024 * 1024;
 export const CURRENCIES = ['USD', 'LAK', 'THB'];
 export const MIN_AMOUNT = 1;
-export const MAX_AMOUNT = 1000;
+export const MAX_AMOUNT = 1000;   // US dollars
+export const MAX_BY_CURRENCY = {USD: MAX_AMOUNT, THB: 35000, LAK: 22000000};   // about the same ceiling in each currency (1,000 kip is only a few cents); 008_payment_check.sql has the same numbers
 export const RATE_PER_EMAIL_HOUR = 5;     // notices from one e-mail address per hour
 export const RATE_PER_ARTIST_HOUR = 30;   // notices for one artist per hour, from anyone
 export const MAX_PENDING_PER_ARTIST = 200;   // unanswered notices for one artist
@@ -32,16 +33,16 @@ export function parseDonation(body) {
   if (!donor_name) return {error: 'bad_field', field: 'donor_name'};
   const donor_email = str(body.donor_email, 120).toLowerCase();
   if (!EMAIL.test(donor_email)) return {error: 'bad_field', field: 'donor_email'};
-  const amount = body.amount;
-  if (typeof amount !== 'number' || !Number.isFinite(amount) || amount < MIN_AMOUNT || amount > MAX_AMOUNT || Math.abs(amount * 100 - Math.round(amount * 100)) > 1e-6) return {error: 'bad_field', field: 'amount'};
   const currency = body.currency == null ? 'USD' : body.currency;
   if (!CURRENCIES.includes(currency)) return {error: 'bad_field', field: 'currency'};
+  const amount = body.amount;
+  if (typeof amount !== 'number' || !Number.isFinite(amount) || amount < MIN_AMOUNT || amount > MAX_BY_CURRENCY[currency] || Math.abs(amount * 100 - Math.round(amount * 100)) > 1e-6) return {error: 'bad_field', field: 'amount'};
   const captcha = typeof body.captcha === 'string' ? body.captcha.trim() : '';
   if (!captcha || captcha.length > 2048) return {error: 'bad_field', field: 'captcha'};
   let slip = null;
   if (body.slip != null) {
     const s = body.slip;
-    if (typeof s !== 'object' || !SLIP_TYPES[s.type] || typeof s.data !== 'string' || !/^[A-Za-z0-9+/]+={0,2}$/.test(s.data)) return {error: 'bad_field', field: 'slip'};
+    if (typeof s !== 'object' || !SLIP_TYPES[s.type] || typeof s.data !== 'string' || !/^[A-Za-z0-9+/]+={0,2}$/.test(s.data) || s.data.length % 4 !== 0) return {error: 'bad_field', field: 'slip'};
     if (base64Bytes(s.data) > MAX_SLIP_BYTES) return {error: 'bad_field', field: 'slip'};
     slip = {type: s.type, ext: SLIP_TYPES[s.type], data: s.data};
   }

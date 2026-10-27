@@ -26,6 +26,7 @@ Stop with `Ctrl+C`. Edit a file, refresh the browser.
 | `artists.js` | **all artists, buildings and artworks** (names, bios, sizes, image paths, EN texts; `p:`/`status:` are old selling data that no page shows any more) |
 | `circles.js`, `circles.css` | shared: TH/EN strings, language switch, forms, toast, ransom type, mobile menu, dialogs |
 | `privacy.html`, `terms.html`, `legal.css` | privacy policy and terms of use (TH + EN) — **templates, see "Before you go live"** |
+| `published-ids.json` | the artist ids that are public. An id and its URLs never change once listed (QR codes and shared links depend on it); `npm run check` fails if one disappears. Also see "Decide before real data goes in" in `docs/GO-LIVE.md` |
 | `art/*.svg` | 30 generated artworks (placeholders for real photos). `python3 tools/genart.py` regenerates them |
 | `og.png`, `og/<id>.png` | share images (site, and one per artist, generated) |
 | `fonts/`, `vendor/` | self-hosted fonts (SIL OFL) and Lenis (MIT) |

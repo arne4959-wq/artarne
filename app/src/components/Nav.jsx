@@ -11,7 +11,7 @@ import Coin from './Coin.jsx';
 export function LangButton() {
   const {lang, setLang, t} = useLang();
   return <div className="lang-seg" id="lang" role="group" aria-label={t('lang_aria')}>
-    {LANGS.map(l => <button key={l} type="button" lang={l} aria-pressed={l === lang} aria-label={LANG_NAME[l]} onClick={() => l !== lang && setLang(l)}>{LANG_BTN[l]}</button>)}
+    {LANGS.map(l => <button key={l} type="button" data-l={l} lang={l} aria-pressed={l === lang} aria-label={LANG_NAME[l]} onClick={() => l !== lang && setLang(l)}>{LANG_BTN[l]}</button>)}
   </div>;
 }
 
@@ -34,14 +34,14 @@ export default function Nav({links = [], join = false, menu = null, brandHref = 
       {brandHref ? <a className="brand" href={brandHref} onPointerEnter={spin} onClick={spin}>{brand}</a>
         : <div className="brand" onPointerEnter={spin} onClick={spin}>{brand}</div>}
       <div className="links">
-        {withAll(links).map(([href, k]) => <a key={href + k} href={href} data-t={k}>{t(k)}</a>)}
+        {withAll(links).map(([href, k]) => <a key={href + k} href={href} data-t={k} {...(k === 'nav_all' ? {'data-all': ''} : {})}>{t(k)}</a>)}
         <LangButton/>
         {join && <button type="button" className="join" onClick={() => dialogs.openJoin()}>{t('nav_join')}</button>}
         {menu && <button type="button" className="menu-btn" id="menu-btn" aria-label={t('menu_aria')} aria-expanded={open ? 'true' : 'false'} aria-controls="mnav"
           onClick={e => { e.stopPropagation(); setOpen(o => !o); }}><i></i><i></i></button>}
       </div>
       {menu && <div className={'mnav' + (open ? ' open' : '')} id="mnav" inert={!open} onClick={e => { if (e.target.closest('a')) setOpen(false); }}>
-        {withAll(menu).sort((a, b) => /join\.html$/.test(b[0]) - /join\.html$/.test(a[0])).map(([href, k]) => <a key={href + k} className={/join\.html$/.test(href) ? 'mn-join' : undefined} href={href} data-t={k}>{t(k)}</a>)}
+        {withAll(menu).sort((a, b) => /join\.html$/.test(b[0]) - /join\.html$/.test(a[0])).map(([href, k]) => <a key={href + k} className={/join\.html$/.test(href) ? 'mn-join' : undefined} href={href} data-t={k} {...(k === 'nav_all' ? {'data-all': ''} : {})}>{t(k)}</a>)}
       </div>}
     </nav>
   );

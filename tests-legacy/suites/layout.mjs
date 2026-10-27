@@ -1,10 +1,11 @@
 // Four layout promises: ransom words never split, pixel people at the doors, a building + its tag fit one screen, a clear break before the Manifesto.
+import {demoArtists} from '../demo.mjs';
 import {launch, sleep} from '../../tools/browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const __root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const {ARTISTS} = new Function(fs.readFileSync(path.join(__root, 'artists.js'), 'utf8') + '\n;return {ARTISTS};')();
+const {ARTISTS} = new Function(demoArtists(__root) + '\n;return {ARTISTS};')();
 const N = ARTISTS.length, WORKS = ARTISTS.reduce((n, a) => n + a.pieces.length, 0), FEATURED = 8;
 export const name = 'layout';
 export async function run({url, check}) {
@@ -47,6 +48,65 @@ export async function run({url, check}) {
     await b.go(`${url}/index.html`, 4500);
     const r = await b.ev(`(()=>{const g=document.querySelector('.ground').getBoundingClientRect(),p=document.getElementById('progress').getBoundingClientRect(),t=document.querySelector('.tape-wrap'),tr=t.getBoundingClientRect(),m=document.getElementById('how').getBoundingClientRect();return {adjacent:t.nextElementSibling===document.getElementById('how')&&t.previousElementSibling.classList.contains('city')&&document.getElementById('manifesto').previousElementSibling.classList.contains('tape-wrap'),gap:Math.round(tr.top-g.bottom),aboveProgress:Math.round(tr.top-p.bottom),overlapsManifesto:Math.round(m.top-tr.top)}})()`);
     check(`${w}px: hazard tape between the street and the first section (how it works) (and another one before the Manifesto), with a gap`, r.adjacent && r.gap >= 24 && r.aboveProgress >= 6 && r.overlapsManifesto > 0, r);
+    b.close();
+  }
+  /* 6 — phones: the Donate button is a bar on the bottom edge (studio page after the first screen, and inside the work window); desktop keeps the old layout */
+  {
+    const b = await launch(); await b.lang('th'); await b.view(390, 844, true);
+    await b.go(`${url}/studio-napha.html`, 4000);
+    const top = await b.ev("(()=>{const w=document.querySelector('.fab-wrap');return !!w&&getComputedStyle(w).display==='none'})()");
+    await b.ev('window.scrollTo(0,document.documentElement.scrollHeight)'); await sleep(1500);   // past the lobby, which has its own Support button (the bar steps aside while that is on screen)
+    const bar = await b.ev("(()=>{const w=document.querySelector('.fab-wrap');if(!w)return null;const r=w.getBoundingClientRect(),f=[...document.querySelectorAll('footer a')].filter(e=>e.offsetParent).pop();return {gap:Math.round(innerHeight-r.bottom),w:Math.round(r.width),vw:innerWidth,h:Math.round(r.height),overflow:document.documentElement.scrollWidth>innerWidth}})()");
+    await b.ev('window.scrollTo(0,document.documentElement.scrollHeight)'); await sleep(1500);
+    const foot = await b.ev("(()=>{const w=document.querySelector('.fab-wrap').getBoundingClientRect(),l=[...document.querySelectorAll('footer a,footer button')].filter(e=>e.offsetParent).pop().getBoundingClientRect();return {lastBottom:Math.round(l.bottom),barTop:Math.round(w.top)}})()");
+    check('390px studio page: no Donate bar on the first screen, a full-width bar flush with the bottom edge after scrolling, nothing sideways',
+      top === true && !!bar && bar.gap === 0 && bar.w === bar.vw && bar.h >= 56 && bar.h <= 90 && !bar.overflow, {top, bar});
+    check('390px studio page: the bar does not cover the last footer link', foot.lastBottom <= foot.barTop, foot);
+    await b.go(`${url}/studio-napha.html?work=0`, 4500);
+    const wb = await b.ev("(()=>{const d=document.querySelector('dialog[open]'),bar=document.getElementById('dlg-bar'),bt=document.getElementById('dlg-sup');if(!d||!bar)return null;const r=bar.getBoundingClientRect(),dr=d.getBoundingClientRect();return {inView:r.bottom<=dr.bottom+1&&r.top>=0&&r.top<innerHeight,support:bt.dataset.support,work:bt.dataset.for,text:bt.textContent}})()");
+    check('390px work window: the Donate bar is on screen without scrolling and names the artist and the work', !!wb && wb.inView && wb.support === 'napha' && !!wb.work && /นภา/.test(wb.text), wb);
+    await b.ev("(()=>{const d=document.querySelector('dialog[open]');d.style.scrollBehavior='auto';d.scrollTop=d.scrollHeight})()"); await sleep(500);
+    const end = await b.ev("(()=>{const d=document.querySelector('dialog[open]'),r=document.getElementById('dlg-bar').getBoundingClientRect(),dr=d.getBoundingClientRect();return r.bottom<=dr.bottom+1&&r.top>=0})()");
+    await b.ev("document.getElementById('dlg-sup').click()"); await sleep(800);
+    const dn = await b.ev("(()=>{const d=document.getElementById('dlg-tip');return !!d&&d.open&&/นภา/.test(d.querySelector('h2').textContent)&&/เช้าหมอก/.test((d.querySelector('.sm-for')||{}).textContent||'')})()");
+    check('390px work window: the bar stays on screen at the end of the window, and tapping it opens the donation dialog for this artist and work', end === true && dn === true, {end, dn});
+    b.close();
+    for (const [w, h] of [[1280, 800], [1440, 900], [1280, 700]]) {
+      const d2 = await launch(); await d2.lang('th'); await d2.view(w, h, false);
+      await d2.go(`${url}/studio-napha.html?work=0`, 4500);
+      const dk = await d2.ev("(()=>{const bar=document.getElementById('dlg-bar').getBoundingClientRect(),body=document.querySelector('.dlg-body').getBoundingClientRect(),fr=document.querySelector('.dlg-art .frame').getBoundingClientRect(),dr=document.querySelector('dialog[open]').getBoundingClientRect();return {underStory:Math.abs(bar.left-body.left)<=1,coversPicture:bar.left<fr.right&&bar.top<fr.bottom,inWindow:bar.bottom<=dr.bottom+1&&bar.top>=0,note:getComputedStyle(document.getElementById('dlg-supn')).display!=='none',vtb:!!document.querySelector('.v-tb'),like:document.getElementById('dlg-res').textContent.trim()}})()");
+      check(`${w}x${h} work window: the Donate bar sits under the story column, inside the window, never over the picture; the repeated by-line row is gone; the like button says "ถูกใจ"`,
+        dk.underStory && !dk.coversPicture && dk.inWindow && dk.note && !dk.vtb && /ถูกใจ/.test(dk.like), dk);
+      d2.close();
+    }
+  }
+  /* 7 — home: the main action is pink with a quiet one beside it and a trust line above the tape; the 10 discipline chips open from one "Art form" button */
+  for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
+    const b = await launch(); await b.lang('th'); await b.view(w, h, touch);
+    await b.go(`${url}/index.html`, 4500);
+    const hero = await b.ev("(()=>{const k=document.querySelector('.hero-cta .btn.pk'),g=document.querySelector('.hero-cta .btn.ghost'),t=document.querySelector('.hero-trust'),tr=t.getBoundingClientRect(),pts=[[tr.left+20,tr.top+tr.height/2],[tr.left+tr.width/2,tr.top+tr.height/2]].map(p=>{const e=document.elementFromPoint(p[0],p[1]);return !!e&&!!e.closest('.hero-trust')});return {pink:getComputedStyle(k).backgroundColor,toCity:k.getAttribute('href'),toFeatured:g&&g.getAttribute('href'),trust:t.querySelectorAll('li').length,strip:tr.bottom<=innerHeight,stripOnTop:pts.every(Boolean),overflow:document.documentElement.scrollWidth>innerWidth}})()");
+    check(`${w}px home: pink "enter the city" + quiet "featured work" + two-point trust line that nothing covers`, hero.pink === 'rgb(255, 46, 136)' && hero.toCity === '#city' && hero.toFeatured === '#featured' && hero.trust === 2 && hero.strip && hero.stripOnTop && !hero.overflow, hero);
+    await b.ev("document.getElementById('all-artists').scrollIntoView()"); await sleep(1500);
+    const f0 = await b.ev("(()=>({panelHidden:document.getElementById('fpanel').hidden,visibleChips:[...document.querySelectorAll('#filters .fbtn[data-d]')].filter(e=>e.getBoundingClientRect().width>0).length,expanded:document.getElementById('ftog').getAttribute('aria-expanded')}))()");
+    await b.ev("document.getElementById('ftog').click()"); await sleep(400);
+    const f1 = await b.ev("(()=>({open:!document.getElementById('fpanel').hidden,chips:[...document.querySelectorAll('#fpanel .fbtn')].filter(e=>e.getBoundingClientRect().width>0).length,expanded:document.getElementById('ftog').getAttribute('aria-expanded')}))()");
+    await b.ev("document.querySelector('.fbtn[data-d=\"เซรามิก\"]').click()"); await sleep(1200);
+    const f2 = await b.ev("(()=>({closed:document.getElementById('fpanel').hidden,label:document.querySelector('#ftog .ft-l').textContent,on:document.getElementById('ftog').classList.contains('on'),lit:document.querySelectorAll('.bd.lit').length}))()");
+    check(`${w}px city filters: closed = "All", "New wave" and one "Art form" button; open lists the disciplines; picking one closes the panel and the button names it`,
+      f0.panelHidden && f0.visibleChips === 2 && f0.expanded === 'false' && f1.open && f1.chips >= 9 && f1.expanded === 'true' && f2.closed && /เซรามิก/.test(f2.label) && f2.on && f2.lit === 1, {f0, f1, f2});
+    b.close();
+  }
+  /* 8 — studio page: the tower ends in a lobby (bio, "Support circles", a link that says what the profile is); the floating bar gives way while a Support button is on screen */
+  for (const [w, h, touch] of [[1280, 800, false], [390, 844, true]]) {
+    const b = await launch(); await b.lang('th'); await b.view(w, h, touch);
+    await b.go(`${url}/studio-napha.html`, 4500);
+    const lr = await b.ev("(()=>{const s=document.querySelector('.tw-lobby');if(!s)return null;const btn=s.querySelector('[data-support]'),prof=s.querySelector('.lr-prof'),foot=document.querySelector('.tower-foot'),bld=document.querySelector('.tw-fl');return {support:btn&&btn.dataset.support,prof:prof&&prof.textContent,href:prof&&prof.getAttribute('href'),afterFloors:(bld.compareDocumentPosition(s)&Node.DOCUMENT_POSITION_FOLLOWING)>0,beforeFoot:(s.compareDocumentPosition(foot)&Node.DOCUMENT_POSITION_FOLLOWING)>0,bio:s.querySelector('p').textContent.length>20}})()");
+    await b.ev("document.querySelector('.tw-lobby').scrollIntoView({block:'center',behavior:'instant'})"); await sleep(1800);
+    const fab = await b.ev("(()=>{const w=document.querySelector('.fab-wrap');return !w||getComputedStyle(w).display==='none'})()");
+    await b.ev("document.querySelector('.tw-lobby [data-support]').click()"); await sleep(800);
+    const dn = await b.ev("(()=>{const d=document.getElementById('dlg-sc');return !!d&&d.open})()");
+    check(`${w}px studio page: lobby after the floors with the bio, a Support circles button, "เรื่องของนภา" links to the profile, the floating bar steps aside, tapping opens the circles support window`,
+      !!lr && lr.support === 'site' && lr.prof === 'เรื่องของนภา' && lr.href === 'profile-napha.html' && lr.afterFloors && lr.beforeFoot && lr.bio && fab === true && dn === true, {lr, fab, dn});
     b.close();
   }
   /* 5 — the new colour: map icons never sit on the text, patterns exist (the card tapes are hidden now: their old check is gone) */

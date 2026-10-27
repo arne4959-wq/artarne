@@ -4,8 +4,9 @@ import {supabaseReady} from './supabase.js';
 
 export const DON_AMOUNTS = [3, 5, 10];   // preset donations in US dollars
 export const MIN_AMOUNT = 1, MAX_AMOUNT = 1000;
-export const sampleMode = A => !supabaseReady || !A || !A.live;
 export const supOf = A => { const s = A && A.support; return s && (s.qr || s.no) ? s : null; };
+const ownReal = A => !!A && !/\.example$/i.test(String(A.email || '')) && !!supOf(A) && !supOf(A).sample;   // the owner's own entry (no `live` flag) with his real bank QR
+export const sampleMode = A => !A || (!ownReal(A) && (!supabaseReady || !A.live));
 /* a sample artist can always be supported (a generated SAMPLE QR); a real one only once payment details exist */
 export const canDonate = A => !!A && (sampleMode(A) || !!supOf(A));
 export const validAmount = v => /^\d{1,4}$/.test(String(v).trim()) && +v >= MIN_AMOUNT && +v <= MAX_AMOUNT;

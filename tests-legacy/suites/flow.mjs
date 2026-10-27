@@ -1,10 +1,11 @@
 // What a visitor can do: language, buildings, studios, dialogs, forms, filters, keyboard, no-JS, reduced motion, offline-safe assets.
+import {demoArtists} from '../demo.mjs';
 import {launch, sleep} from '../../tools/browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const __root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const {ARTISTS} = new Function(fs.readFileSync(path.join(__root, 'artists.js'), 'utf8') + '\n;return {ARTISTS};')();
+const {ARTISTS} = new Function(demoArtists(__root) + '\n;return {ARTISTS};')();
 const N = ARTISTS.length, WORKS = ARTISTS.reduce((n, a) => n + a.pieces.length, 0), FEATURED = 8;
 export const name = 'flow';
 export async function run({url, check}) {
@@ -21,13 +22,14 @@ export async function run({url, check}) {
   check('buildings are real links to studio pages', (await ev("[...document.querySelectorAll('.bd')].map(a=>a.getAttribute('href')).join()")) === ARTISTS.map(a => `studio-${a.id}.html`).join());
   check('keyboard: no <a> without href', (await ev("document.querySelectorAll('a:not([href]):not([hidden])').length")) === 0);
 
-  // language switch: the button cycles EN → ລາວ → TH → EN
-  await ev("document.getElementById('lang').click()"); await sleep(900);
-  check('language button: English → Lao', (await ev('document.documentElement.lang')) === 'lo');
-  await ev("document.getElementById('lang').click()"); await sleep(900);
-  check('language button: Lao → Thai (Thai title)', (await ev('document.documentElement.lang')) === 'th' && (await ev('document.title')).includes('เมืองของศิลปิน'));
-  await ev("document.getElementById('lang').click()"); await sleep(900);
-  check('language button: Thai → English', (await ev('document.documentElement.lang')) === 'en');
+  // language switch: three buttons side by side (TH | EN | ລາວ), the current one is marked; a click on a button switches to that language
+  const pick = l => ev(`document.querySelector('#lang button[data-l="${l}"]').click()`);
+  await pick('lo'); await sleep(900);
+  check('language switch: English → Lao (the Lao button is marked)', (await ev('document.documentElement.lang')) === 'lo' && (await ev(`document.querySelector('#lang button[data-l="lo"]').getAttribute('aria-pressed')`)) === 'true');
+  await pick('th'); await sleep(900);
+  check('language switch: Lao → Thai (Thai title)', (await ev('document.documentElement.lang')) === 'th' && (await ev('document.title')).includes('เมืองของศิลปิน'));
+  await pick('en'); await sleep(900);
+  check('language switch: Thai → English', (await ev('document.documentElement.lang')) === 'en');
 
   // featured: sort + show all
   await ev("document.getElementById('all-btn').click()"); await sleep(800);
@@ -82,13 +84,11 @@ export async function run({url, check}) {
   await b.send('Input.dispatchMouseEvent', {type: 'mouseReleased', x: p2.x, y: p2.y, button: 'left', clickCount: 1}); await sleep(2800);
   check('clicking a building opens its studio page', (await ev('location.pathname')).endsWith('studio-napha.html'));
 
-  /* ---------- studio page (the museum hall) ---------- */
+  /* ---------- studio page (the tower: ideas / sketches / works floors) ---------- */
   await b.go(`${url}/studio-thara.html`, 3500);
-  check('studio page: 4 pictures in the hall, links to neighbours', (await ev("document.querySelectorAll('.mus-art').length")) === 4 && (await ev("document.querySelectorAll('.mus-art img').length")) === 4 && (await ev("[...document.querySelectorAll('.sn')].map(a=>a.getAttribute('href')).join()")) === 'studio-napha.html,studio-kwan.html');
-  await ev("document.querySelector('.mus-art[data-k=\"1\"]').click()"); await sleep(700);
-  check('clicking a picture that is not lit walks to it (no dialog yet)', !(await ev("document.getElementById('dlg').open")) && (await ev("document.getElementById('mus-label').textContent")).includes('The Waiting'));
-  await ev("document.querySelector('.mus-art[data-k=\"1\"]').click()"); await sleep(900);
-  check('clicking the lit picture opens a detail dialog with the facts', (await ev("document.getElementById('dlg').open")) && (await ev("document.getElementById('dlg-t').textContent")) === 'The Waiting' && (await ev("document.getElementById('dlg-dl').innerText")).includes('Pigment print on cotton paper'));
+  check('studio page: a tower with 4 works (12 windows, 4 finished pictures), links to neighbours', (await ev("document.querySelectorAll('.tw-win').length")) === 12 && (await ev("document.querySelectorAll('.tw-final img').length")) === 4 && (await ev("[...document.querySelectorAll('.sn')].map(a=>a.getAttribute('href')).join()")) === 'studio-napha.html,studio-kwan.html');
+  await ev("document.querySelector('.tw-final[data-k=\"1\"]').click()"); await sleep(900);
+  check('clicking a finished-work window opens a detail dialog with the facts', (await ev("document.getElementById('dlg').open")) && (await ev("document.getElementById('dlg-t').textContent")) === 'The Waiting' && (await ev("document.getElementById('dlg-dl').innerText")).includes('Pigment print on cotton paper'));
   check('URL remembers the open work', (await ev('location.search')) === '?work=1');
   await ev("document.getElementById('dlg-next').click()"); await sleep(300);
   check('next / previous work', (await ev("document.getElementById('dlg-t').textContent")) === "Bird's-eye");
@@ -96,7 +96,7 @@ export async function run({url, check}) {
   check('ArrowLeft goes back', (await ev("document.getElementById('dlg-t').textContent")) === 'The Waiting');
   await b.key('Escape', 'Escape', 27); await sleep(300);
   check('Esc closes it and clears ?work', (await ev("!document.getElementById('dlg').open")) && (await ev('location.search')) === '');
-  await ev("document.querySelector('.mus-art[data-k=\"1\"]').click()"); await sleep(900);
+  await ev("document.querySelector('.tw-final[data-k=\"1\"]').click()"); await sleep(900);
   await ev("document.getElementById('dlg-sup').click()"); await sleep(700);
   check('the Support button in the open work opens the donation dialog, naming the work', (await ev("document.getElementById('dlg-tip')?.open")) && (await ev("document.getElementById('dlg-tip').textContent")).includes('The Waiting') && (await ev("!!document.querySelector('#dlg-tip .pf-amt')")));
   await ev("document.getElementById('dlg-tip').close()");
@@ -104,7 +104,7 @@ export async function run({url, check}) {
   await b.go(`${url}/studio-dao.html?work=2`, 4000);
   check('deep link ?work=2 opens "The Letter"', (await ev("document.getElementById('dlg').open")) && (await ev("document.getElementById('dlg-t').textContent")) === 'The Letter');
   await b.go(`${url}/cutaway.html?id=phum`, 3500);
-  check('dynamic cutaway.html?id= still works (fallback)', (await ev("document.querySelectorAll('.mus-art').length")) === 2);
+  check('dynamic cutaway.html?id= still works (fallback)', (await ev("document.querySelectorAll('.tw-final').length")) === 2);
   await b.go(`${url}/studio-nobody.html`, 3500);
   check('unknown studio URL → friendly "no such building" page', (await ev("document.querySelector('.nf h1')?.textContent")) === "This building doesn't exist yet");
   await b.go(`${url}/cutaway.html?id=zzz`, 2500);
@@ -130,7 +130,7 @@ export async function run({url, check}) {
   /* ---------- JavaScript off: crawlers and no-JS visitors ---------- */
   b = await launch(); await b.view(1280, 900); await b.send('Emulation.setScriptExecutionDisabled', {value: true});
   await b.go(`${url}/studio-thara.html`, 2500);
-  check('no-JS: studio page has its hall, pictures, title and JSON-LD', (await b.ev("document.querySelectorAll('.mus-art').length")) === 4 && (await b.ev("document.querySelectorAll('.mus-art img').length")) === 4 && (await b.ev("document.querySelector('script[type=\"application/ld+json\"]').textContent")).includes('VisualArtwork'));
+  check('no-JS: studio page has its tower, pictures, title and JSON-LD', (await b.ev("document.querySelectorAll('.tw-final').length")) === 4 && (await b.ev("document.querySelectorAll('.tw-final img').length")) === 4 && (await b.ev("document.querySelector('script[type=\"application/ld+json\"]').textContent")).includes('VisualArtwork'));
   await b.go(`${url}/index.html`, 2500);
   check('no-JS: home shows cards, map, studio links, and no black loader', (await b.ev("document.querySelectorAll('.card').length")) === FEATURED && (await b.ev("document.querySelectorAll('.dist').length")) === N && (await b.ev("document.querySelectorAll('#strip-in .ns a').length")) === N && (await b.ev("getComputedStyle(document.getElementById('loader')).display")) === 'none');
   b.close();

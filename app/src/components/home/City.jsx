@@ -17,7 +17,11 @@ export default function City({artists}) {
   const wave = d === '*wave';
   const hit = a => (!d || (wave ? !!a.wave : a.disc === d)) && (!q || [a.name, a.nameEn, a.nameLo, a.disc, discL(a), a.city, cityL(a)].some(x => x && String(x).toLowerCase().includes(q)));
   const matches = act ? artists.filter(hit) : [], n = matches.length, only = n === 1 ? matches[0] : null;
-  const filters = useMemo(() => [['', t('f_all')], ['*wave', t('f_wave')], ...[...new Map(artists.map(a => [a.disc, discL(a)]))]], [artists, L.lang]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const filters = useMemo(() => [['', t('f_all')], ...(artists.some(a => a.wave) ? [['*wave', t('f_wave')]] : []), ...[...new Map(artists.map(a => [a.disc, discL(a)]))]], [artists, L.lang]);   // eslint-disable-line react-hooks/exhaustive-deps
+  const top = filters.filter(f => f[0] === '' || f[0] === '*wave'), rest = filters.filter(f => f[0] !== '' && f[0] !== '*wave'), disc = !!d && d !== '*wave';   // "All" and "New wave" stay in sight; the disciplines open from the "Art form" button, which also says which one is on
+  const chip = ([v, label]) => <button key={v} type="button" className={'fbtn' + (v === d ? ' on' : '')} data-d={v} aria-pressed={v === d}>{label}</button>;
+  const [panel, setPanel] = useState(false), tog = useRef(null);
+  const closePanel = () => { setPanel(false); tog.current?.focus({preventScroll: true}); };
   const setFilter = v => { slide.current = true; setD(v); };
 
   const firstRun = useRef(true);
@@ -60,8 +64,13 @@ export default function City({artists}) {
       </div>
       <input type="search" className="city-search" id="city-q" value={qRaw} onChange={e => { slide.current = true; setQRaw(e.target.value); }} onKeyDown={e => { if (e.key === 'Escape') setQRaw(''); }}
         placeholder={t('search_ph')} aria-label={t('search_aria')} maxLength={40} autoComplete="off" enterKeyHint="search"/>
-      <div className="filters" id="filters" role="group" aria-label={t('filters_aria')} onClick={e => { const b = e.target.closest('.fbtn[data-d]'); if (b) setFilter(b.dataset.d); }}>
-        {filters.map(([v, label]) => <button key={v} type="button" className={'fbtn' + (v === d ? ' on' : '')} data-d={v} aria-pressed={v === d}>{label}</button>)}
+      <div className="filters" id="filters" role="group" aria-label={t('filters_aria')}
+        onClick={e => { const b = e.target.closest('.fbtn[data-d]'); if (!b) return; setFilter(b.dataset.d); if (b.closest('#fpanel')) closePanel(); }}   /* picked one from the panel: it gets out of the way */
+        onKeyDown={e => { if (e.key === 'Escape' && panel) closePanel(); }}>
+        {top.map(chip)}
+        <button type="button" ref={tog} className={'fbtn ftog' + (disc ? ' on' : '')} id="ftog" aria-expanded={panel} aria-controls="fpanel" onClick={() => panel ? closePanel() : setPanel(true)}>
+          <span className="ft-l">{disc ? `${t('f_branch')}: ${discL(artists.find(a => a.disc === d))}` : t('f_branch')}</span><span className="ft-a" aria-hidden="true">{panel ? '▴' : '▾'}</span></button>
+        <div className="fpanel" id="fpanel" hidden={!panel}>{rest.map(chip)}</div>
       </div>
       <div className={'fnote' + (act ? '' : ' off')} id="fnote" role="status" inert={!act}>
         <span id="fnote-t">{act ? (!n ? t('fnote_q0') : q ? t('fnote_q', {n}) : wave ? t('fnote_wave', {n}) : t('fnote', {n, d: discL(artists.find(a => a.disc === d))})) : ''}</span>

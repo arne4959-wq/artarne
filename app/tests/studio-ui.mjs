@@ -1,14 +1,15 @@
-// studio-ui.mjs — the React studio page on its own in headless Chrome (desktop + phone): the hall, the artwork window, zoom, donate, no shop. Takes screenshots.
+// studio-ui.mjs — the React studio page on its own in headless Chrome (desktop + phone): the tower, the artwork window and its stages, zoom, donate, no shop. Takes screenshots.
 // Needs `npm run app:build` first. Usage: node app/tests/studio-ui.mjs [folder for screenshots]   (default: screenshots/ in the project)
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {startServer, launch, sleep} from '../../tools/browser.mjs';
-const HERE = path.dirname(fileURLToPath(import.meta.url)), DIST = path.resolve(HERE, '..', 'dist'), OUT = path.resolve(process.argv[2] || path.join(HERE, '..', '..', 'screenshots'));
+import {makeFixture} from './fixture.mjs';
+const HERE = path.dirname(fileURLToPath(import.meta.url)), OUT = path.resolve(process.argv[2] || path.join(HERE, '..', '..', 'screenshots'));
 fs.mkdirSync(OUT, {recursive: true});
 let bad = 0;
 const check = (name, ok, extra = '') => { if (!ok) bad++; console.log(`${ok ? '✓' : '✗'} ${name}${ok ? '' : '  ' + extra}`); };
-const srv = await startServer(DIST), b = await launch();
+const FIX = makeFixture(), srv = await startServer(FIX.dist), b = await launch();   // the test data of fixture.mjs: the sample artists, and Napha with a process
 await b.send('Network.setBlockedURLs', {urls: ['*challenges.cloudflare.com*']});
 const ev = b.ev;
 try {
@@ -18,16 +19,19 @@ try {
     await b.go(`${srv.url}/studio-napha.html?lang=en`, 2800);
     const s = n => path.join(OUT, `react-studio-${n}-${vp}.png`);
     check(`${vp}: no sideways scroll`, await ev(`document.documentElement.scrollWidth <= innerWidth`));
-    check(`${vp}: the hall is there with its 3 works, door-to-end plan and controls`, await ev(`document.querySelectorAll('#mus .mus-art').length === 3 && !!document.querySelector('.mus-map') && !!document.getElementById('mus-next') && document.getElementById('mus-cnt').textContent === '1 / 3'`));
-    check(`${vp}: the hint matches the device (${touch ? 'swipe' : 'arrow keys'})`, await ev(`document.querySelector('.hint').dataset.t === '${touch ? 'hint_swipe' : 'mus_hint'}'`));
-    check(`${vp}: the stage sits inside the screen`, await ev(`(() => { const r = document.getElementById('mus-stage').getBoundingClientRect(); return r.left >= -1 && r.right <= innerWidth + 1 && r.height > 200; })()`));
+    check(`${vp}: the tower is there: 3 floor kinds, a window per work and stage, the lift and the contact sheet`, await ev(`document.querySelectorAll('.tw-fl').length === 3 && document.querySelectorAll('.tw-win').length === 9 && document.querySelectorAll('.tw-lift [data-lift]').length === 4 && document.querySelectorAll('.tw-cell').length === 12`));
+    check(`${vp}: the roof sign names the artist and the lobby has the circles gift`, await ev(`/NAPHA/.test(document.querySelector('.tw-sign').textContent) && !!document.querySelector('.tw-lobby [data-support="site"]')`));
+    check(`${vp}: the tower sits inside the screen`, await ev(`(() => { const r = document.getElementById('tw-bld').getBoundingClientRect(); return r.left >= -1 && r.right <= innerWidth + 1 && r.height > 200; })()`));
     check(`${vp}: nothing to buy anywhere on the page`, await ev(`!/\\$\\s?\\d|฿|price|add to cart|checkout|ซื้อ/i.test(document.querySelector('main').textContent) && !document.querySelector('[data-buy],.buy,.price')`));
-    await ev(`document.getElementById('mus-stage').scrollIntoView()`); await sleep(500);
-    await b.shot(s('hall'));
-    await ev(`document.getElementById('mus-next').click()`); await sleep(1500); await b.shot(s('hall-next'));
-    await ev(`document.getElementById('mus-prev').click()`); await sleep(1300);
+    await ev(`document.getElementById('tw-bld').scrollIntoView()`); await sleep(500);
+    await b.shot(s('tower'));
+    await ev(`document.querySelector('.tw-lift [data-lift="sketch"]').click()`); await sleep(500);
+    check(`${vp}: the lift lights one kind of floor`, await ev(`document.getElementById('tw-bld').dataset.lit === 'sketch' && document.querySelector('.tw-lift [data-lift="sketch"]').getAttribute('aria-pressed') === 'true'`));
+    await b.shot(s('tower-lift'));
+    await ev(`document.querySelector('.tw-lift [data-lift="all"]').click()`);
 
-    await ev(`document.querySelector('.mus-more').click()`); await sleep(700);
+    await ev(`document.querySelector('.tw-win[data-k="0"][data-s="final"]').click()`); await sleep(700);
+    check(`${vp}: the window opens at the finished picture and shows the four stages`, await ev(`(() => { const d = document.getElementById('dlg'); return d.open && d.querySelector('#dlg-frame').dataset.cur === 'final' && d.querySelectorAll('.stg-tab').length === 4 && d.querySelectorAll('.stg-layer').length === 4; })()`));
     check(`${vp}: the window is a concrete room (beam, room sign, hazard footing, taped picture)`, await ev(`(() => { const d = document.getElementById('dlg'); return d.open && !!d.querySelector('.cdlg-h .cdlg-x') && /01/.test(d.querySelector('.wd-room').textContent) && !!d.querySelector('.cdlg-foot') && !!d.querySelector('.dlg-tape'); })()`));
     check(`${vp}: "written by the artist" badge and the artist's own words`, await ev(`(() => { const d = document.getElementById('dlg'); return /written by the artist/i.test((d.querySelector('.v-stamp') || {}).textContent || '') && d.querySelectorAll('.v-rows dd').length === 2 && !!d.querySelector('.v-say') && !!d.querySelector('.v-note'); })()`));
     check(`${vp}: the window fits the screen width`, await ev(`(() => { const r = document.getElementById('dlg').getBoundingClientRect(); return r.left >= -1 && r.right <= innerWidth + 1; })()`));
@@ -46,7 +50,7 @@ try {
     await b.key('Escape', 'Escape', 27); await sleep(400);
     check(`${vp}: zoom is gone after Escape`, await ev(`!document.getElementById('dlg-zoom')`));
     // (a script-made click gives Chrome no user activation, so one Escape may close both stacked windows; a real person's click does not. Open the window again to go on.)
-    if (!(await ev(`document.getElementById('dlg').open`))) { await ev(`document.querySelector('.mus-more').click()`); await sleep(500); }
+    if (!(await ev(`document.getElementById('dlg').open`))) { await ev(`document.querySelector('.tw-win[data-k="0"][data-s="final"]').click()`); await sleep(500); }
     await ev(`document.getElementById('dlg-sup').click()`); await sleep(700);
     check(`${vp}: the quiet donate link opens the donation to the artist, naming the work (not the circles gift)`, await ev(`(() => { const d = document.getElementById('dlg-tip'); return d.open && /Napha/.test(d.querySelector('h2').textContent) && /Morning Fog/.test((d.querySelector('.sm-for') || {}).textContent || '') && !document.getElementById('dlg-sc'); })()`));
     await b.shot(s('window-donate'));

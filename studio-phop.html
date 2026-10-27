@@ -143,6 +143,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 .k-collage .room{background:radial-gradient(ellipse at 50% 0,rgba(244,241,232,.12),transparent 70%),#1d1c1a;}
 .k-vase .fin::before,.k-vase .fin::after,.k-spore .fin::before,.k-spore .fin::after{border-radius:0 0 30px 30px;}
 
+.last-room{position:relative;z-index:2;width:min(100%,760px);margin:2.6rem auto 0;padding:1.3rem 1.5rem 1.6rem;background:var(--bone);color:var(--black);border:var(--line) solid var(--black);box-shadow:8px 8px 0 var(--pink);}   /* the end of the walk: say thank you where the visitor is most moved */
+.last-room small{font:400 .8rem var(--type);letter-spacing:.14em;color:var(--tartan-red);}
+.last-room h2{font:400 clamp(1.5rem,4vw,2rem)/1.3 "Chonburi",var(--thai);margin:.2rem 0 .5rem;}
+.last-room p{font:400 .92rem/1.7 var(--thai);margin:0 0 1.1rem;max-width:52ch;}
+.lr-act{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.5rem;}
+.lr-prof{display:inline-flex;align-items:center;min-height:44px;padding:0 .15rem;font:600 .95rem var(--thai);color:var(--black);text-decoration:underline;text-decoration-color:var(--pink);text-decoration-thickness:3px;text-underline-offset:.3em;}   /* 44px tall: a phone tap target */
+.lr-prof:hover,.lr-prof:focus-visible{background:var(--black);color:var(--paper);}
+@media(max-width:600px){.last-room{margin-top:2rem;padding:1.1rem 1.1rem 1.3rem;box-shadow:6px 6px 0 var(--pink);}.lr-act .btn{flex:1 1 100%;text-align:center;min-height:48px;}}
 .tower-foot{width:min(100%,760px);margin:2.2rem auto 0;display:flex;gap:1rem;flex-wrap:wrap;justify-content:space-between;align-items:center;font:400 .85rem var(--type);letter-spacing:.1em;}
 .mini-foot{padding:1.6rem 1rem 3rem;text-align:center;font:400 .8rem var(--type);letter-spacing:.08em;background:#DAD4C4;}
 .mini-foot a{color:var(--black);text-decoration:none;border-bottom:2px solid var(--pink);}
@@ -166,6 +174,7 @@ dialog.work-dlg[open]{animation:dlgIn .5s var(--ease);}
 .dlg-body{padding:2rem 1.8rem;display:grid;gap:1.1rem;align-content:start;}
 .dlg-body h2{font:400 clamp(1.9rem,4vw,2.6rem)/1.25 "Chonburi",var(--thai);}
 .dlg-body dl{display:grid;grid-template-columns:auto 1fr;gap:.5rem 1.2rem;font:400 .95rem/1.6 var(--thai);}
+.dlg-body dl[hidden]{display:none;}
 .dlg-body dt{font:400 .78rem var(--type);letter-spacing:.14em;color:var(--tartan-red);padding-top:.2rem;text-transform:uppercase;}
 .dlg-price{font:400 2.4rem/1 var(--anton);letter-spacing:.04em;background:var(--pink);border:var(--line) solid var(--black);justify-self:start;padding:.15rem .8rem;}
 .dlg-x{position:absolute;right:.8rem;top:.8rem;width:44px;height:44px;border:var(--line) solid var(--black);background:var(--gold);font:400 1.1rem var(--anton);cursor:pointer;z-index:2;}
@@ -368,9 +377,6 @@ html[lang=en] .v-say{font:italic 500 1.3rem/1.45 "Playfair Display",Georgia,seri
 .v-rows dt{padding:.7rem .8rem;background:var(--bone);border-right:2px solid var(--black);font:600 .8rem/1.5 var(--thai);color:var(--tartan-red);}
 .v-rows dt b{display:block;margin-bottom:.15rem;font:400 1.35rem/1.2 var(--anton);color:var(--black);}
 .v-rows dd{margin:0;padding:.7rem .9rem;font:400 1rem/1.8 var(--thai);}
-.v-tb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);font:400 .75rem/1.5 var(--type);letter-spacing:.08em;text-transform:uppercase;color:#3a3733;}
-.v-tb span{padding:.45rem .8rem;}.v-tb span+span{border-left:2px solid var(--black);}
-.v-tb b{display:block;font:600 .95rem/1.5 var(--thai);letter-spacing:0;text-transform:none;color:var(--black);}
 .v-note{margin:.7rem 0 0;font:400 .8rem/1.7 var(--type);color:#3a3733;}
 .res-btn{justify-self:start;min-height:44px;padding:.3rem .9rem;border:3px solid var(--black);background:var(--paper);color:var(--black);font:600 1rem/1.4 var(--thai);cursor:pointer;box-shadow:4px 4px 0 var(--black);}
 .res-btn b{font:400 .95rem var(--type);background:var(--black);color:var(--paper);padding:.05rem .4rem;}
@@ -389,8 +395,6 @@ html[lang=en] .v-say{font:italic 500 1.3rem/1.45 "Playfair Display",Georgia,seri
 .dlg-pr{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;}
 .dlg-pr small{font:400 .8rem/1.45 var(--thai);color:#4a4642;max-width:15em;}
 .dlg-deal .btn{display:block;width:100%;text-align:center;}
-.dlg-don{justify-self:start;font:600 1rem var(--thai);background:none;border:0;border-bottom:3px dotted var(--black);padding:.1rem 0;cursor:pointer;color:var(--black);min-height:44px;}
-.dlg-don:hover,.dlg-don:focus-visible{background:var(--black);color:var(--paper);padding:.1rem .5rem;}
 .dlg-how{list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
 .dlg-how li{counter-increment:s;text-wrap:balance;display:grid;gap:.25rem;justify-items:start;font:400 .76rem/1.4 var(--thai);color:#3a3733;}
 .dlg-how li::before{content:counter(s);display:grid;place-items:center;width:1.45rem;height:1.45rem;border-radius:50%;background:var(--black);color:var(--gold);font:400 .78rem var(--anton);}
@@ -433,6 +437,22 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
 .dlg-deal .btn.ghost{background:var(--paper);color:var(--black);font-size:.95rem;padding:.6rem 1rem;box-shadow:4px 4px 0 var(--black);}
 .dlg-paynote{font:400 .75rem/1.5 var(--thai);color:#5a5650;}
 .dlg-deal [hidden]{display:none!important;}
+/* the one action ("Support <artist>") stays on the bottom edge of the work window while you read; before it was a small link far down the story */
+.dlg-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;position:sticky;bottom:0;z-index:6;margin:0 -12px;padding:.7rem 1.4rem;background:var(--paper);border-top:var(--line) solid var(--black);}
+.dlg-bar[hidden]{display:none!important;}
+.dlg-bar .dlg-paynote{margin:0;font:400 .85rem/1.5 var(--thai);color:#3a3733;max-width:46ch;}
+.dlg-bar .btn{flex:none;min-height:48px;padding:.55rem 1.4rem;font-size:1rem;letter-spacing:.05em;text-align:center;box-shadow:4px 4px 0 var(--black);}
+.dlg-deal[hidden]{display:none!important;}
+.dlg-deal{display:flex;gap:.85rem;background:none;border:0;box-shadow:none;padding:0;margin-top:.2rem;}   /* only the like button is left in it */
+@media(min-width:861px){
+  /* wide window: the bar sits under the story column only (width of the 1fr column of .dlg-in), so the picture pane keeps its full height */
+  .dlg-bar{width:calc((100% - 6px) / 2.3 + 3px + 12px);margin:0 -12px 0 auto;}
+}
+@media(max-width:600px){
+  .dlg-bar{margin:0 -8px;padding:.55rem .8rem;}
+  .dlg-bar .dlg-paynote{display:none;}   /* the donation dialog says it on its first step */
+  .dlg-bar .btn{flex:1;}
+}
 /* phone / touch: a short head, so the hall (the first picture and its light) is on the first screen without scrolling */
 @media(max-width:700px),(pointer:coarse){
   .cut-head{padding:1rem 1.2rem 1.5rem;gap:.5rem;}
@@ -487,12 +507,18 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
           <div class="mus-ppl sit" data-d="1680" style="transform:translate3d(-395px,28px,-1680px)"><span style=""><img class="mus-bob" style="animation-delay:-0.7s" src="people/sit-a.png" alt="" width="180" height="252" draggable="false"></span></div><div class="mus-ppl sit" data-d="1790" style="transform:translate3d(-395px,28px,-1790px)"><span style=""><img class="mus-bob" style="animation-delay:-1.4s" src="people/sit-b.png" alt="" width="180" height="252" draggable="false"></span></div>
           <div class="mus-ppl" data-d="1230" style="transform:translate3d(-410px,28px,-1230px)"><span style="transform:scaleX(-1)"><img class="mus-bob" style="animation-delay:-2.1s" src="people/stand.png" alt="" width="180" height="252" draggable="false"></span></div><div class="mus-ppl mus-gone" data-min="2100" data-d="2900" style="transform:translate3d(-420px,28px,-2900px)"><span style=""><img class="mus-bob" style="animation-delay:-2.8s" src="people/stand.png" alt="" width="180" height="252" draggable="false"></span></div>
         </div></div>
-        <div class="mus-plate"><small>CIRCLES · MUSEUM</small><b>พิพิธภัณฑ์ของภพ</b><a class="mus-prof" href="profile-phop.html">ดูโปรไฟล์ศิลปิน</a></div>
+        <div class="mus-plate"><small>CIRCLES · MUSEUM</small><b>พิพิธภัณฑ์ของภพ</b><a class="mus-prof" href="profile-phop.html">เรื่องของภพ</a></div>
         <div class="mus-map" aria-hidden="true"><small>ผังตึก</small><svg viewBox="0 0 126 114" aria-hidden="true"><rect x="28" y="8" width="70" height="96" class="mus-hall"></rect><path d="M52 104h22v6h-22z" class="mus-door"></path><rect class="mus-m is-on" data-k="0" x="26" y="70.4" width="4" height="16"></rect><rect class="mus-m" data-k="1" x="96" y="41.6" width="4" height="16"></rect><rect class="mus-m" data-k="2" x="50" y="7" width="26" height="4"></rect><path id="mus-you" class="mus-you" d="M0 -6 L5 4 L-5 4Z" transform="translate(63 90.6)"></path></svg></div>
         <div class="mus-ctl"><button type="button" class="btn mus-prev" id="mus-prev" disabled="">← ภาพก่อน</button><span class="mus-cnt" id="mus-cnt">1 / 3</span><button type="button" class="btn pk mus-next" id="mus-next">เดินต่อ →</button></div>
       </div>
       <aside class="mus-label" id="mus-label" aria-live="polite"><i class="mus-tape"></i><small>2024 · 30 × 40 ซม.</small><b>สนามเวกเตอร์</b><i class="mus-q">“ลมที่มองไม่เห็น วาดด้วยสมการ”</i><span class="mus-acts"><button type="button" class="mus-don" data-support="phop" data-for="สนามเวกเตอร์" data-quiet="">โดเนท · ได้แรงบันดาลใจจากงานนี้</button><button type="button" class="mus-more" data-mus="more">รายละเอียดและแนวคิด</button></span></aside>
     </section>
+      <section class="last-room" aria-labelledby="lr-h">
+        <small>ห้องสุดท้าย</small>
+        <h2 id="lr-h">ชอบงานของภพ?</h2>
+        <p>ช่วยให้สร้างงานต่อ · เงินเข้าบัญชีศิลปินโดยตรง ตอนนี้ circles ไม่หักค่าธรรมเนียม</p>
+        <div class="lr-act"><button type="button" class="btn pk" data-support="phop">โดเนทให้ภพ</button><a class="lr-prof" href="profile-phop.html">เรื่องของภพ</a></div>
+      </section>
       <div class="tower-foot"><span>SECTION A–A · ไม่มีลิฟต์ ใช้บันไดเท่านั้น</span><a class="btn pk" href="index.html#city">← กลับไปเดินเมือง</a></div>
       <div class="snav" role="navigation" aria-label="studios">
         <a class="sn prev" href="studio-mali.html"><small>← ตึกก่อนหน้า</small><b>มะลิ</b><span>ริโซกราฟ</span></a>
@@ -511,11 +537,12 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
       <div id="dlg-voice"></div>
       <div class="dlg-story" id="dlg-story"><small id="dlg-sk"></small><blockquote id="dlg-q"></blockquote><p id="dlg-st"></p></div>
       <dl id="dlg-dl"></dl>
-      <div class="dlg-deal"><button type="button" class="dlg-don" id="dlg-sup" data-support="" data-quiet></button><button type="button" class="res-btn" id="dlg-res" aria-pressed="false"></button><small class="dlg-paynote" id="dlg-supn"></small></div>
+      <div class="dlg-deal"><button type="button" class="res-btn" id="dlg-res" aria-pressed="false"></button></div>
       <div class="dlg-nav"><button type="button" id="dlg-prev">←</button><div class="dlg-th" id="dlg-th"></div><button type="button" id="dlg-next">→</button><span class="dlg-cnt" id="dlg-cnt"></span></div>
     </div>
   </div>
   <section class="dlg-concept" id="dlg-concept" aria-labelledby="dlg-cc-h" hidden></section>
+  <div class="dlg-bar" id="dlg-bar"><small class="dlg-paynote" id="dlg-supn"></small><button type="button" class="btn pk" id="dlg-sup" data-support="" data-quiet></button></div>
   <div class="cdlg-foot" aria-hidden="true"></div>
 </dialog>
 
@@ -587,7 +614,7 @@ function render(initial) {
           ${deco(A.kind, i, n)}
           <button type="button" class="work" data-k="${k}" aria-label="${esc(titleL(A.pieces[k]) + ' — ' + t('cw_view', {t: titleL(A.pieces[k])}))}">
             <span class="aw"><i class="beam"></i><span class="art" style="--ar:${A.pieces[k].ar};--h:${frameH(A.pieces[k].ar)}px;--art:${artBg(A.works, k)}">${artImg(A, k)}</span></span>
-            <span class="lbl"><i class="tape"></i><small>${A.pieces[k].y} · ${esc(fmtSize(A.pieces[k]))}</small><b>${esc(titleL(A.pieces[k]))}</b>${sayOf(A.pieces[k]) ? `<i class="q">“${esc(sayOf(A.pieces[k]))}”</i>` : ''}<span class="go">${esc(t('cw_look'))}</span></span>
+            <span class="lbl"><i class="tape"></i><small>${esc([A.pieces[k].y, fmtSize(A.pieces[k])].filter(Boolean).join(' · '))}</small><b>${esc(titleL(A.pieces[k]))}</b>${sayOf(A.pieces[k]) ? `<i class="q">“${esc(sayOf(A.pieces[k]))}”</i>` : ''}<span class="go">${esc(t('cw_look'))}</span></span>
           </button>
         </div>
         <div class="slab"></div>
@@ -609,6 +636,12 @@ function render(initial) {
         <div id="floors">${floors}</div>
         <div class="ground" style="--fw:${fws[n - 1]}%;--fo:${K.fo(n - 1)}%"></div>
       </div>
+      ${canDonate(A) ? `<section class="last-room" aria-labelledby="lr-h">
+        <small>${esc(t('lr_k'))}</small>
+        <h2 id="lr-h">${esc(t('pf_sup1', {a: nameL(A)}))}</h2>
+        <p>${esc(t('pf_sup2'))} · ${esc(t('dlg_supn'))}</p>
+        <div class="lr-act"><button type="button" class="btn pk" data-support="${esc(A.id)}">${esc(t('pf_supb', {a: nameL(A)}))}</button><a class="lr-prof" href="profile-${esc(A.id)}.html">${esc(t('mus_prof2', {a: nameL(A)}))}</a></div>
+      </section>` : ''}
       <div class="tower-foot"><span>${esc(t('cw_section'))}</span><a class="btn pk" href="index.html#city">${esc(t('cw_back'))}</a></div>
       <div class="snav" role="navigation" aria-label="studios">
         <a class="sn prev" href="studio-${prevA.id}.html"><small>${esc(t('cw_prev'))}</small><b>${esc(nameL(prevA))}</b><span>${esc(discL(prevA))}</span></a>
@@ -643,9 +676,12 @@ function fillDlg(k) {
       + (c.origin || c.material ? `<dl class="cc-dl">${c.origin ? `<div><dt>${esc(t('cc_origin'))}</dt><dd>${esc(pk(c, 'origin'))}</dd></div>` : ''}${c.material ? `<div><dt>${esc(t('cc_mat'))}</dt><dd>${esc(pk(c, 'material'))}</dd></div>` : ''}</dl>` : '')
       + (c.quote ? `<blockquote class="cc-q">“${esc(pk(c, 'quote'))}”<cite>— ${esc(nameL(A))}</cite></blockquote>` : '') + `</div>` : '')
     + (steps.length ? `<ol class="cc-steps" aria-label="${esc(t('cc_steps'))}">${steps.slice(0, 3).map((x, i) => `<li class="cc-card"><i class="cc-tape" aria-hidden="true"></i><small>${esc(t('cc_step', {n: i + 1}))}</small><b>${esc(pk(x, 'h'))}</b><p>${esc(pk(x, 'd'))}</p></li>`).join('')}</ol>` : '');
-  $('#dlg-dl').innerHTML = `<div><dt>${esc(t('lb_year'))}</dt><dd>${p.y}</dd></div><div><dt>${esc(t('lb_size'))}</dt><dd>${esc(fmtSize(p))}</dd></div><div class="w"><dt>${esc(t('lb_medium'))}</dt><dd>${esc(pk(p, 'm'))}</dd></div>`;
-  const sup = $('#dlg-sup');                                      // donation-only: the one action is "Support <artist>", which opens the donation dialog (this work is named as the inspiration)
-  sup.textContent = t('don_work'); sup.hidden = !canDonate(A); sup.dataset.support = A.id; sup.dataset.for = titleL(p);
+  const fact = (k, v, cls) => v ? `<div${cls ? ` class="${cls}"` : ''}><dt>${esc(t(k))}</dt><dd>${esc(v)}</dd></div>` : '';   // an artist may leave the year, size or medium empty: no row, no "undefined"
+  $('#dlg-dl').innerHTML = fact('lb_year', p.y) + fact('lb_size', fmtSize(p)) + fact('lb_medium', pk(p, 'm'), 'w');
+  $('#dlg-dl').hidden = !$('#dlg-dl').innerHTML;
+  $('.dlg-deal').hidden = !isSample(A);   // the "Resonated" count is made up for the sample artists; a real artist's works get no invented number (real counts need a server: later)
+  const sup = $('#dlg-sup');                                      // donation-only: the one action is "Support <artist>", a bar that stays at the bottom of the window; it opens the donation dialog (this work is named as the inspiration)
+  sup.textContent = t('pf_supb', {a: nameL(A)}); sup.hidden = !canDonate(A); $('#dlg-bar').hidden = !canDonate(A); sup.dataset.support = A.id; sup.dataset.for = titleL(p);
   $('#dlg-supn').textContent = t('dlg_supn'); paintRes(k);
   const pv = $('#dlg-prev'), nx = $('#dlg-next'), n = A.pieces.length;
   pv.setAttribute('aria-label', t('w_prev')); nx.setAttribute('aria-label', t('w_next')); pv.disabled = k === 0; nx.disabled = k === n - 1;
@@ -659,7 +695,7 @@ function voiceHtml(p) {
   return `<section class="voice" aria-labelledby="v-h"><div class="v-top"><h3 id="v-h">${esc(t('v_h'))}</h3><span class="v-stamp">${esc(t('v_stamp'))}</span></div>`
     + (say ? `<p class="v-say">“${esc(say)}”</p><p class="v-by">${esc(t('v_by', {a: nameL(A)}))}</p>` : '')
     + (rows.length ? `<dl class="v-rows">${rows.map(x => `<div><dt><b>${x[2]}</b>${esc(t(x[1]))}</dt><dd>${esc(x[0])}</dd></div>`).join('')}</dl>` : '')
-    + `<div class="v-tb"><span>${esc(t('v_tb_by'))}<b>${esc(nameL(A))}</b></span><span>${esc(t('v_tb_work'))}<b>${esc(titleL(p))} · ${p.y}</b></span></div></section><p class="v-note">${esc(t('v_note'))}</p>`;
+    + `</section><p class="v-note">${esc(t('v_note'))}</p>`;
 }
 function paintRes(k) {   // the "Resonated" button: the count is sample data plus this browser's own tap
   const b = $('#dlg-res'), on = resMine(A.id, k);

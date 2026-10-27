@@ -1,14 +1,19 @@
 // The artists' own words, the weekly highlights, the Legends frame, "Support circles" (kept apart from artist donations), the resonated button, Lao strings.
+import {demoArtists} from '../demo.mjs';
 import {launch, sleep} from '../../tools/browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const __root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const {ARTISTS} = new Function(fs.readFileSync(path.join(__root, 'artists.js'), 'utf8') + '\n;return {ARTISTS};')();
+const {ARTISTS} = new Function(demoArtists(__root) + '\n;return {ARTISTS};')();
 export const name = 'places';
 export async function run({url, check}) {
   const all = ARTISTS.flatMap(a => a.pieces);
-  check('every sample work has say, why and look (TH + EN)', all.every(p => p.say && p.sayEn && p.why && p.whyEn && p.look && p.lookEn), all.filter(p => !p.say).map(p => p.tEn));
+  /* sample artists (they have a *.example e-mail) must carry the artist's-words fields in TH + EN. The owner's own works (no e-mail in artists.js) are real: only the owner can write their say / why / look, so they are
+     not invented here; the second check lists them so the gap stays visible. */
+  const sampleWorks = ARTISTS.filter(a => a.email).flatMap(a => a.pieces), realWorks = ARTISTS.filter(a => !a.email).flatMap(a => a.pieces);
+  check('every sample work has say, why and look (TH + EN)', sampleWorks.length > 0 && sampleWorks.every(p => p.say && p.sayEn && p.why && p.whyEn && p.look && p.lookEn), sampleWorks.filter(p => !p.say).map(p => p.tEn));
+  check('real works have a title and a picture (their own words are still to come from the artist)', realWorks.every(p => p.t && p.tEn && p.img), {withoutOwnWords: realWorks.filter(p => !p.say).map(p => p.tEn)});
   const b = await launch(); await b.lang('en'); await b.view(1280, 900); const ev = b.ev;
   await ev("localStorage.clear()");
   /* highlights */
@@ -30,7 +35,6 @@ export async function run({url, check}) {
   check('legends: paintings only (no film, music, samples or empty rooms), no donate button, a link to the living artists', l.rooms >= 2 && l.other === 0 && l.donate === 0 && l.go, l);
   check('legends: Claude Monet and Vincent van Gogh are there, each with a painting file that loads', l.names.some(n => /Monet/.test(n)) && l.names.some(n => /Gogh/.test(n)) && l.pics && l.loaded, l);
   check('legends: each room has the painter\'s own words with a linked source, a sign, a history note labelled as circles\' words, and a linked CC0/public-domain credit', l.quotes && l.srcs && l.sign && l.hist && l.credits, l);
-  await ev("document.getElementById('lang-btn')?.click()"); 
   const lang = await ev("(()=>{for(const l of ['en','lo']){setLang(l);var rs=[...document.querySelectorAll('.pl-vt')];if(!rs.length||rs.some(r=>r.querySelector('.pl-vt-own q').textContent.length<20||!r.querySelector('dd').textContent.trim()))return 'empty '+l;}setLang('th');return 'ok'})()");
   check('legends: English and Lao render every room (Lao falls back to Thai only where a line is missing)', lang === 'ok', lang);
   /* studio work window: the artist's words + resonated */

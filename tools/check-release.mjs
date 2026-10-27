@@ -60,6 +60,48 @@ else {
   if (stale.length) warn.push(`dist/ is older than the source (${stale.length} file(s), e.g. ${stale.slice(0, 4).join(', ')}): run npm run dist`);
 }
 
+/* 5. privacy: artists.js and artists.live.json are PUBLIC files in a public repo. A real e-mail address must never be in them
+   (the live pull from Supabase exports public columns only and blanks the e-mail; private details stay in Supabase). */
+const emailRe = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/g;
+/* In the deploy build (CI) artists.js carries the generated LIVE block and artists.live.json is the fresh pull: neither is committed, and the words in them are what the artists chose
+   to show on their public page. An e-mail in an artist's bio must not stop everybody's deploy, so there it is only a warning, and the generated block is not part of artists.js here. */
+for (const f of ['artists.js', 'artists.live.json']) {
+  if (!exists(f)) continue;
+  const text = f === 'artists.js' ? read(f).replace(/\n*\/\*LIVE:BEGIN[\s\S]*?\/\*LIVE:END\*\/\n?/, '\n') : read(f);
+  const bad = [...new Set(text.match(emailRe) || [])].filter(e => !/\.example$/i.test(e));
+  if (bad.length) (f === 'artists.live.json' && process.env.CI ? warn : fail).push(`${f} is public but contains a real-looking e-mail address (${bad.slice(0, 3).join(', ')}): keep private details in Supabase, never in this file${f === 'artists.live.json' && process.env.CI ? ' (here it is text an artist wrote on their public page: only a warning)' : ''}`);
+}
+
+/* 6. pictures: originals do not belong in git (it keeps every version forever). Publish a web copy: webp / jpg, long side <= 1600px, under ~700 KB. */
+const RAW = /\.(tiff?|psd|psb|raw|dng|cr2|nef|arw|heic|ai|indd|xcf)$/i, RASTER = /\.(jpe?g|png|webp|gif)$/i;
+const walk = d => fs.readdirSync(path.join(root, d), {withFileTypes: true}).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
+for (const d of ['art', 'og', 'legends', 'people', 'art-originals']) {
+  if (!exists(d)) continue;
+  for (const f of walk(d)) {
+    const kb = Math.round(fs.statSync(path.join(root, f)).size / 1024);
+    if (RAW.test(f) || kb > 8192) fail.push(`${f} (${kb} KB) looks like an original: keep originals out of git (Supabase Storage or your own drive), publish a web copy`);
+    else if (RASTER.test(f) && kb > 700) warn.push(`${f} is ${kb} KB: make a web copy (long side <= 1600px, under ~700 KB)`);
+  }
+}
+
+/* 7. URLs never change: every id in published-ids.json must still exist, with its pages (people print QR codes and share links) */
+if (!exists('published-ids.json')) warn.push('published-ids.json is missing: it records which artist ids (and URLs) are public');
+else {
+  const pub = JSON.parse(read('published-ids.json')), retired = pub.retired || {};
+  const A = vm.runInNewContext('(function(){' + read('artists.js') + '\n;return ARTISTS})()');
+  const live = exists('artists.live.json') ? JSON.parse(read('artists.live.json')) : [];
+  const liveList = Array.isArray(live) ? live : (live && live.artists) || [];   // artists.live.json is {artists: [...], hideDemo, pulledAt}
+  const have = new Set([...A.map(a => a.id), ...liveList.map(a => a && a.id).filter(Boolean)]);
+  for (const id of pub.ids) {
+    if (!have.has(id) && !retired[id]) fail.push(`artist "${id}" is public (published-ids.json) but gone from artists.js: studio-${id}.html and profile-${id}.html would break. Keep it, or list it under "retired" with a redirect`);
+    for (const f of [`studio-${id}.html`, `profile-${id}.html`]) if (!exists(f)) fail.push(`${f} is missing but "${id}" is public: run npm run build`);
+  }
+  for (const id of have) if (!pub.ids.includes(id)) warn.push(`artist id "${id}" is not in published-ids.json: add it when it goes live (an id never changes after that)`);
+  /* translations are optional: a missing English / Lao field shows the original text, and the site never machine-translates an artist's words */
+  const works = A.flatMap(a => a.pieces), en = works.filter(p => p.sayEn || p.stEn || p.qEn).length, lo = works.filter(p => p.sayLo || p.stLo || p.qLo).length;
+  console.log(`translations: ${en}/${works.length} works carry the artist's words in English, ${lo}/${works.length} in Lao (the rest show the original text)`);
+}
+
 for (const x of fail) console.log('FAIL  ' + x);
 for (const x of warn) console.log('WARN  ' + x);
 if (!fail.length && !warn.length) console.log('OK    nothing to fix');

@@ -18,11 +18,14 @@
     const f = new Intl.DateTimeFormat(loc, {day: 'numeric', month: 'short'}), y = sun.getFullYear();
     return t('hi_week', {n: wk, r: f.format(mon).replace(/\.$/, '') + '–' + f.format(sun).replace(/\.$/, ''), y});
   }
-  const rows = () => ARTISTS.flatMap(a => a.pieces.map((p, k) => ({a, p, k, res: resCount(a.id, k), views: sampleViews(a.id, k)})))
+  /* only the sample artists are ranked: their counts are made up. A real artist's works have no real counts yet (that needs a server), so they are not ranked with invented ones */
+  const rows = () => ARTISTS.filter(isSample).flatMap(a => a.pieces.map((p, k) => ({a, p, k, res: resCount(a.id, k), views: sampleViews(a.id, k)})))
     .sort((x, y) => y.res - x.res || y.views - x.views);
   const href = x => `studio-${x.a.id}.html?work=${x.k}`;
 
+  const soon = () => `<p class="pl-lead">${esc(t('hi_soon'))}</p>`;   // fewer than six ranked works (for example only real artists on the site): say so instead of throwing
   function works() {
+    if (rows().length < 6) return soon();
     const list = rows().slice(0, 6), order = [1, 0, 2];
     const tower = k => { const x = list[k], r = k + 1;
       return `<div class="pl-pc"><a class="pl-twr pl-r${r}" href="${esc(href(x))}" aria-label="${esc(t('hi_open', {n: r, t: titleL(x.p), a: nameL(x.a)}))}">
@@ -36,6 +39,7 @@
   }
   function concepts() {
     const list = rows().filter(x => pk(x.p, 'say')).slice(0, 4);
+    if (!list.length) return soon();
     return `<p class="pl-lead">${esc(t('hi_c_lead'))}</p><ol class="pl-cl">${list.map((x, j) =>
       `<li class="pl-cp"><span class="pl-n" aria-hidden="true">${j + 1}</span><div><q>${esc(pk(x.p, 'say'))}</q><div class="pl-meta"><span class="pl-own">${esc(t('hi_own'))}</span>
         <span>— ${esc(nameL(x.a))} · ${esc(t('hi_from', {t: titleL(x.p)}))}</span><span>${esc(t('hi_res', {n: nf(x.res)}))}</span></div></div></li>`).join('')}</ol>`;
@@ -57,6 +61,7 @@
   function render() {
     $('#hi-week-t').textContent = weekLabel();
     $('#pan-w').innerHTML = works(); $('#pan-c').innerHTML = concepts(); $('#pan-n').innerHTML = newcomers();
+    if (rows().length < 6) punkLoad(['times']).then(ok => { if (ok) CirclesTimes.front($('#pan-w'), punkWorks(), {lang: LANG}); });   // only real artists: THE CIRCLES TIMES front page replaces the "coming soon" line (taps only, never donations)
   }
   function select(tab, focus) {
     document.querySelectorAll('#hi-tabs [role=tab]').forEach(tb => { const on = tb === tab; tb.setAttribute('aria-selected', String(on)); tb.tabIndex = on ? 0 : -1; document.getElementById(tb.getAttribute('aria-controls')).hidden = !on; });
@@ -69,5 +74,6 @@
     if (e.key === 'ArrowRight') n = (i + 1) % all.length; else if (e.key === 'ArrowLeft') n = (i - 1 + all.length) % all.length; else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = all.length - 1;
     if (n >= 0) { e.preventDefault(); select(all[n], true); }
   });
+  if (location.hash === '#new') select(document.getElementById('tab-n'), false);
   window.HI = {render};
 })();

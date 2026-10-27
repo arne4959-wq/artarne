@@ -11,7 +11,7 @@ export const LANGS = ['th', 'en', 'lo'];
 export const LANG_NEXT = {th: 'en', en: 'lo', lo: 'th'}, LANG_BTN = {th: 'TH', en: 'EN', lo: 'ລາວ'}, LANG_NAME = {th: 'ภาษาไทย', en: 'English', lo: 'ພາສາລາວ'};
 export const LANG_KEY = 'circles-lang';
 
-export const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+export const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const NF = new Intl.NumberFormat('en-US');          // built once: constructing Intl objects per call is slow
 export const usd = n => '$' + NF.format(n);
 const lakRound = k => { const step = k < 1e6 ? 1e4 : 1e5; return Math.round(k / step) * step; };
@@ -30,7 +30,7 @@ export function makeLang(lang) {
     if (v && typeof s === 'string') for (const x in v) s = s.split('{' + x + '}').join(v[x]);
     return s;
   };
-  const pk = (o, k) => (lang === 'en' && o[k + 'En'] != null) ? o[k + 'En'] : (lang === 'lo' && o[k + 'Lo'] != null) ? o[k + 'Lo'] : o[k];
+  const pk = (o, k) => { const v = (lang === 'en' && o[k + 'En'] != null) ? o[k + 'En'] : (lang === 'lo' && o[k + 'Lo'] != null) ? o[k + 'Lo'] : o[k]; return v == null ? '' : v; };   // same as circles.js: a missing optional field is '', never undefined
   const nameL = a => pk(a, 'name');
   const discL = a => lang === 'en' ? (DISC_EN[a.disc] || a.disc) : lang === 'lo' ? (DISC_LO[a.disc] || a.disc) : a.disc;
   const cityL = a => lang === 'en' ? (CITY_EN[a.city] || a.city) : lang === 'lo' ? (CITY_LO[a.city] || a.city) : a.city;

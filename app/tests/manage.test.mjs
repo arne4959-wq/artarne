@@ -56,6 +56,7 @@ test('payment: account number is digits, spaces and dashes; e-mail is checked', 
 
 test('nextPosition fills after the last work; pictures keep their shape', () => {
   assert.equal(nextPosition([]), 0); assert.equal(nextPosition([{position: 0}, {position: 4}]), 5);
+  assert.equal(nextPosition([{position: 99}, {position: 0}, {position: 1}]), 2, 'after many adds and deletes the numbers run out at 99: take the first free one');
   assert.deepEqual(fitSize(4000, 3000, 1600), {w: 1600, h: 1200}); assert.deepEqual(fitSize(800, 600, 1600), {w: 800, h: 600});
   assert.equal(ratioOf(1600, 1200), '4/3'); assert.equal(ratioOf(1000, 1000), '1/1');
   assert.match(ratioOf(1601, 1237), /^[0-9]{1,3}\/[0-9]{1,3}$/);

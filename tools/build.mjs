@@ -6,7 +6,7 @@
 //
 // It opens the REAL pages in headless Chrome (so there is no second copy of the rendering logic), then writes:
 //   studio-<id>.html   one static page per artist (full content, meta tags, JSON-LD). Built from cutaway.html.
-//   profile-<id>.html  the artist's profile page (own title / description / og, JSON-LD Person). Built from profile.html (tools/apply-profile-page.py).
+//   profile-<id>.html  the artist's profile page (own title / description / og, JSON-LD Person). Built from profile.html.
 //   og/<id>.png        1200x630 share image per artist
 //   index.html         the block between <!--pre:…--> markers (artwork cards, filters, map, studio links)
 //   sitemap.xml        only with --site (studio and profile pages)
@@ -20,6 +20,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const arg = n => { const i = process.argv.indexOf(n); return i > -1 ? process.argv[i + 1] : null; };
 const SITE = (arg('--site') || '').replace(/\/+$/, '');
 const abs = p => SITE ? `${SITE}/${p}` : p;
+const isUrl = u => /^https?:\/\//.test(u);
+const absImg = p => isUrl(p) ? p : abs(p);                    // a live artist's picture is already an absolute https address (Supabase Storage)
+const imgSrc = u => isUrl(u) ? u : '/' + u;                   // the share-image card is served from the build's own server
+const ldJson = o => JSON.stringify(o).replace(/</g, '\\u003c');   // an artist's words must never close the <script> they are printed in
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 /* a page that runs draws things on canvases (toDataURL) and the build saves the rendered DOM: never let that become a big base64 picture in a saved page. Pictures are files (the hall's visitors: people/*.png, tools/make-sprites.mjs). tests-legacy/suites/inline.mjs checks the same. */
 const noBigData = (f, s) => { for (const m of s.matchAll(/(?:(?<=url\()data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,][^)"\s]*|(?<!url\()data:image\/(png|jpe?g|webp|gif|svg\+xml)[;,][^"\s]*)/g)) if (m[0].length > (/^(svg|gif)/.test(m[1] || m[2]) ? 2048 : 300)) throw new Error(`${f} would inline a ${m[0].length}-byte data:image/${m[1] || m[2]} URI: serve it as a file instead`); };
@@ -46,11 +50,11 @@ const ogCard = id => {
 .l{position:absolute;left:600px;font:400 34px/1.3 "Chonburi",serif;padding:2px 16px}
 .s{position:absolute;left:600px;top:480px;font-size:22px;letter-spacing:.06em}
 .tp{position:absolute;left:-20px;right:-20px;bottom:30px;height:28px;background:repeating-linear-gradient(135deg,#0E0D0C 0 16px,#E8B730 16px 32px);transform:rotate(-1deg)}
-</style><div class="ring"></div><div class="dot"></div><div class="art"><img src="/${p.img}"></div><div class="tape"></div>
+</style><div class="ring"></div><div class="dot"></div><div class="art"><img src="${esc(imgSrc(p.img))}"></div><div class="tape"></div>
 <div class="k">CIRCLES · NO.${String(ARTISTS.indexOf(a) + 1).padStart(2, '0')}</div><div class="rn">${letters}</div>
 <div class="l" style="top:330px;background:#0E0D0C;color:#F4F1E8">${esc(a.disc)}</div>
 <div class="l" style="top:388px;background:#FF2E88">${esc(DISC_EN[a.disc] || '')} · ${esc(CITY_EN[a.city] || a.city)}</div>
-<div class="s">${esc(a.pieces.length)} works</div><div class="tp"></div>`;
+<div class="s">${esc(a.pieces.length)} work${a.pieces.length === 1 ? '' : 's'}</div><div class="tp"></div>`;
 };
 
 const server = await startServer(ROOT, Object.fromEntries(ARTISTS.map(a => [`/__og/${a.id}`, () => ogCard(a.id)])));
@@ -65,13 +69,13 @@ try {
     await b.go(`${server.url}/cutaway.html?id=${a.id}`, 3000);
     await b.ev("document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));0");
     const got = await b.ev("({main: document.getElementById('main').innerHTML, title: document.title, desc: document.querySelector('meta[name=description]').content})");
-    if (!got.main || !/class="(floor|mus)[ "]/.test(got.main)) throw new Error(`render of ${a.id} produced no floors`);
+    if (!got.main || !/class="(floor|mus|tw-fl)[ "]/.test(got.main)) throw new Error(`render of ${a.id} produced no floors`);
     const noAlt = (got.main.match(/<img\b[^>]*>/g) || []).filter(x => !/\salt=/.test(x));
     if (noAlt.length) throw new Error(`studio ${a.id} has ${noAlt.length} <img> without alt`);
     const url = `studio-${a.id}.html`, ogImg = abs(`og/${a.id}.png`);
     const ld = {'@context': 'https://schema.org', '@type': 'ItemList', name: got.title, itemListElement: a.pieces.map((p, i) => ({'@type': 'ListItem', position: i + 1, item: {
       '@type': 'VisualArtwork', name: p.t, alternateName: p.tEn, creator: {'@type': 'Person', name: a.name, alternateName: a.nameEn, homeLocation: {'@type': 'Place', name: a.city}},
-      dateCreated: String(p.y), artMedium: p.mEn, image: abs(p.img)}}))};
+      dateCreated: String(p.y), artMedium: p.mEn, image: absImg(p.img)}}))};
     let html = template
       .replace(/<main id="main">[\s\S]*?<\/main>/, () => `<main id="main" data-pre="1" data-studio="${a.id}">${got.main}</main>`)
       .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(got.title)}</title>`)
@@ -82,7 +86,7 @@ try {
       .replace(/(<meta name="twitter:description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
       .replace(/(<meta property="og:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
       .replace(/(<meta name="twitter:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
-      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(ld)}</script>\n</head>`);
+      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${ldJson(ld)}</script>\n</head>`);
     write(url, html);
     console.log('  wrote', url);
   }
@@ -110,7 +114,7 @@ try {
       .replace(/(<meta name="twitter:description" content=")[^"]*(")/, (_, a, c) => a + esc(got.desc) + c)
       .replace(/(<meta property="og:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
       .replace(/(<meta name="twitter:image" content=")[^"]*(")/, (_, a, c) => a + ogImg + c)
-      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${JSON.stringify(person)}</script>\n</head>`);
+      .replace('</head>', () => `${SITE ? `<link rel="canonical" href="${abs(url)}">\n<meta property="og:url" content="${abs(url)}">\n` : ''}<script type="application/ld+json">${ldJson(person)}</script>\n</head>`);
     write(url, html);
     console.log('  wrote', url);
   }

@@ -152,6 +152,9 @@ body[data-lg="hokusai"]{--pink:#c8312b;--gold:#ecdcb8;--tartan-red:#16466b;--lg-
 /* Seurat: orange and blue made of dots; the eye mixes them */
 body[data-lg="seurat"]{--pink:#e0792b;--gold:#f1d38a;--tartan-red:#2f5fa8;--lg-veil:.55;
   --lg-pattern:radial-gradient(circle,rgba(224,121,43,.35) 1.6px,transparent 2.2px) 0 0/12px 12px,radial-gradient(circle,rgba(47,95,168,.35) 1.6px,transparent 2.2px) 6px 6px/12px 12px;}
+/* Cézanne: ochre, olive and terracotta; faceted planes */
+body[data-lg="cezanne"]{--pink:#b9552e;--gold:#e6c27a;--tartan-red:#4d6b3a;--lg-veil:.55;
+  --lg-pattern:repeating-linear-gradient(45deg,rgba(185,85,46,.13) 0 14px,transparent 14px 28px),repeating-linear-gradient(-45deg,rgba(77,107,58,.12) 0 14px,transparent 14px 28px);}
 
 /* ---- things drifting behind each legend's page (made by floatLayer in showcase.js; transform and opacity only) ---- */
 .lg-float{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
@@ -192,7 +195,7 @@ body[data-lg="seurat"]{--pink:#e0792b;--gold:#f1d38a;--tartan-red:#2f5fa8;--lg-v
 /* the legend's own identity on the gallery frames: his palette + his one word */
 .sc-gal-i{position:relative;box-shadow:6px 6px 0 var(--gold,#111);}
 .sc-gal-i p{margin:.5rem 0 0;font-size:.88rem;line-height:1.5;}
-.sc-gal-sign{position:absolute;top:-.7rem;left:.6rem;background:var(--pink,#111);color:#fff;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;padding:.2rem .5rem;border:2px solid #111;}
+.sc-gal-sign{position:absolute;top:-.7rem;left:.6rem;background:var(--pink,#111);color:#fff;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;padding:.2rem .5rem;border:2px solid #111;}
 /* gallery sits on a paper panel so the heading and notes stay readable over the painting background */
 .sc-gal{background:rgba(244,241,232,.94);border:3px solid #111;padding:1.2rem 1.2rem .6rem;}
 .sc-gal .sc-src{color:#4a4943;}

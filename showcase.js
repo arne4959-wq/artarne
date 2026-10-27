@@ -10,7 +10,7 @@
 
   /* ---------- punk bits ---------- */
   const ransom = (parts, cls = '', sz = '', label = '', tag = 'h1') => `<${tag} class="sc-ransom ${cls}" ${sz ? `style="--sz:${sz}"` : ''} ${tag === 'h1' ? `aria-label="${esc(label || parts.join(' '))}"` : 'aria-hidden="true"'}>${parts.map((p, i) => `<span class="sc-in" style="--i:${i + 1}" aria-hidden="true">${esc(p)}</span>`).join('')}</${tag}>`;
-  const MQ = {monet: ['LIGHT CHANGES', 'SAME STACK · NEW HOUR', 'FOLLOW NATURE', 'PAINT WHAT YOU SEE'], vangogh: ['LINE', 'COLOUR', 'LETTERS TO THEO', 'THE CYPRESSES STILL PREOCCUPY ME'], hokusai: ['THE WAVE', 'ONE MOUNTAIN · MANY VIEWS', 'THIRTY-SIX VIEWS OF FUJI', 'DRAW UNTIL THE END'], seurat: ['DOT BY DOT', 'PURE COLOUR', 'THE EYE DOES THE MIXING', 'TWO YEARS · ONE PICTURE']};
+  const MQ = {monet: ['LIGHT CHANGES', 'SAME STACK · NEW HOUR', 'FOLLOW NATURE', 'PAINT WHAT YOU SEE'], vangogh: ['LINE', 'COLOUR', 'LETTERS TO THEO', 'THE CYPRESSES STILL PREOCCUPY ME'], hokusai: ['THE WAVE', 'ONE MOUNTAIN · MANY VIEWS', 'THIRTY-SIX VIEWS OF FUJI', 'DRAW UNTIL THE END'], cezanne: ['CYLINDER · SPHERE · CONE', 'SEE IN PLANES', 'ONE APPLE · MANY SIDES', 'SLOW ON PURPOSE'], seurat: ['DOT BY DOT', 'PURE COLOUR', 'THE EYE DOES THE MIXING', 'TWO YEARS · ONE PICTURE']};
   const marquee = id => { const w = MQ[id] || ['ART NOT SORRY', 'NO MIDDLEMAN', L('ศิลปะไม่มีวันจบ', 'ART WITHOUT END'), 'NO GALLERY'], one = w.map(x => `<span>${esc(x)}</span><i>✱</i>`).join(''); return `<div class="sc-mq" aria-hidden="true"><div class="sc-mq-in">${one.repeat(6)}</div></div>`; };
   const hazard = '<div class="sc-hz" aria-hidden="true"></div>';
   const tape = (x, r, red) => `<i class="sc-tape${red ? ' red' : ''}" style="--tx:${x}%;--tr:${r}deg" aria-hidden="true"></i>`;
@@ -48,6 +48,13 @@
       pillars: [[L('จุด', 'Dot'), L('จุดสีเล็ก ๆ เคียงกัน ให้ตาผสมเอง', 'Small dabs of colour side by side, mixed by the eye')], [L('วิทยาศาสตร์ของสี', 'Colour science'), L('เขาศึกษาทฤษฎีสีมาวางแผนภาพ', 'He studied colour theory to plan his pictures')], [L('ความอดทน', 'Patience'), L('ภาพใหญ่หนึ่งภาพใช้เวลาราวสองปี', 'One large picture took about two years')]],
       timeline: [['1859', L('เกิดที่ปารีส', 'Born in Paris')], ['1884', L('เริ่มวาด “บ่ายวันอาทิตย์บนเกาะลา กรองด์ ฌาตต์”', 'Begins A Sunday on La Grande Jatte')], ['1886', L('แสดงภาพนี้ที่นิทรรศการอิมเพรสชันนิสต์ครั้งสุดท้าย', 'Shows it at the last Impressionist exhibition')], ['1888–89', L('เพิ่มกรอบสีรอบภาพ', 'Adds the painted border')], ['1891', L('เสียชีวิตที่ปารีส', 'Dies in Paris')]],
       period: [[L('อยู่ที่ไหน', 'Where'), L('ปารีส เขาทำภาพศึกษาจำนวนมากริมแม่น้ำแซนก่อนลงมือวาดภาพใหญ่', 'Paris; he made many studies by the Seine before the large canvas')], [L('วิธีทำงาน', 'How he worked'), L('วางจุดสีบริสุทธิ์เคียงกัน ให้ตาของคนดูผสมสีเอง แทนการผสมสีบนจานสี', 'Pure dabs of colour set side by side so the viewer’s eye mixes them, instead of mixing on the palette')], [L('สิ่งที่เปลี่ยน', 'What changed'), L('จากพู่กันที่เป็นธรรมชาติของอิมเพรสชันนิสต์ มาเป็นระบบที่วางแผนไว้', 'From the loose brushwork of the Impressionists to a planned system')]]
+    },
+    cezanne: {
+      name: ['PAUL', 'CEZANNE'], years: '1839–1906', place: L('ฝรั่งเศส', 'France'),
+      lead: L('จิตรกรผู้มองธรรมชาติเป็นรูปทรงและระนาบสี เขาให้แอปเปิลนิ่งอยู่นานจนวาดได้ และจิตรกรรุ่นหลังรวมถึงปิกัสโซเรียกเขาว่าผู้วางรากฐานของศิลปะสมัยใหม่', 'A painter who saw nature as forms and planes of colour. He made apples hold still long enough to paint, and later painters, Picasso among them, called him a foundation of modern art.'),
+      pillars: [[L('รูปทรง', 'Form'), L('มองทุกอย่างเป็นทรงกระบอก ทรงกลม และทรงกรวย', 'Everything seen as cylinder, sphere and cone')], [L('ระนาบสี', 'Planes of colour'), L('สร้างปริมาตรด้วยสีที่วางซ้อนกัน ไม่ใช่เส้นขอบ', 'Volume built from layered colour, not outlines')], [L('หลายมุมมอง', 'Many viewpoints'), L('ภาพหนึ่งภาพไม่ได้มองจากจุดเดียว', 'One picture is not seen from a single point')]],
+      timeline: [['1839', L('เกิดที่ Aix-en-Provence ทางใต้ของฝรั่งเศส', 'Born in Aix-en-Provence, southern France')], ['1874', L('ร่วมแสดงในนิทรรศการอิมเพรสชันนิสต์ครั้งแรกที่ปารีส', 'Shows at the first Impressionist exhibition in Paris')], ['1886', L('กลับไปอยู่ที่ Aix เป็นหลัก', 'Settles mainly back in Aix')], ['1895', L('มีนิทรรศการเดี่ยวครั้งใหญ่ที่ปารีส', 'First large solo exhibition in Paris')], ['1906', L('เสียชีวิตที่ Aix-en-Provence', 'Dies in Aix-en-Provence')]],
+      period: [[L('อยู่ที่ไหน', 'Where'), L('Aix-en-Provence ที่บ้านเกิด ห่างจากสายตาของปารีส วาดภาพนิ่งและทิวทัศน์ใกล้บ้าน', 'Aix-en-Provence, his home town, far from the eyes of Paris; still lifes and landscapes near home')], [L('วิธีทำงาน', 'How he worked'), L('วาดช้ามาก ให้แบบนั่งนานหลายครั้ง วางฝีแปรงเป็นระนาบสีเล็ก ๆ ซ้อนกัน', 'Very slowly, with long sittings, laying small planes of brushwork one over another')], [L('สิ่งที่เปลี่ยน', 'What changed'), L('จากการจับแสงชั่วขณะของอิมเพรสชันนิสต์ มาเป็นโครงสร้างที่มั่นคงของภาพ', 'From the Impressionists’ passing light to the solid structure of a picture')]]
     }
   };
   const idOf = x => x.file.split('/').pop().split('-')[0];
@@ -64,13 +71,15 @@
     ripple: '<svg viewBox="0 0 100 100"><g fill="none" stroke="#8f7fc2" stroke-width="2"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="32"/><circle cx="50" cy="50" r="18"/></g></svg>',
     bird: '<svg viewBox="0 0 80 40"><path d="M4 28Q22 4 40 24Q58 4 76 28" fill="none" stroke="#16466b" stroke-width="5" stroke-linecap="round"/></svg>',
     foam: '<svg viewBox="0 0 100 70"><path d="M5 62Q28 -4 72 20Q92 34 72 46Q58 36 62 28" fill="none" stroke="#16466b" stroke-width="5" stroke-linecap="round"/><g fill="#fffaf0" stroke="#16466b" stroke-width="2"><circle cx="82" cy="18" r="3"/><circle cx="90" cy="28" r="2.5"/><circle cx="76" cy="8" r="2.5"/></g></svg>',
+    apple: '<svg viewBox="0 0 100 100"><path d="M50 28C30 14 8 30 12 58c4 26 24 36 38 30 14 6 34-4 38-30 4-28-18-44-38-30Z" fill="#b9552e" fill-opacity=".55" stroke="#6b3a1c" stroke-width="3"/><path d="M50 28c0-10 4-16 12-18" fill="none" stroke="#5f7a3a" stroke-width="4" stroke-linecap="round"/></svg>',
     dot: c => `<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.2" fill="${c}"/></svg>`
   };
   const FLOATS = {
     vangogh: [['star', 'rise', 70, 150], ['sunflower', 'rise', 60, 110]],
     monet: [['lily', 'sail', 70, 110], ['pad', 'sail', 90, 160], ['ripple', 'ripple', 120, 220]],
     hokusai: [['bird', 'sail', 50, 90], ['foam', 'bob', 80, 140]],
-    seurat: [['dot', 'rise', 14, 38]]
+    seurat: [['dot', 'rise', 14, 38]],
+    cezanne: [['apple', 'bob', 60, 110]]
   };
   const DOTS = ['#e0792b', '#2f5fa8', '#5b8f3a', '#e8c13c', '#8a5aa8'];
   const floatLayer = id => {

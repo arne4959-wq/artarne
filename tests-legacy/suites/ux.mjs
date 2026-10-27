@@ -1,11 +1,12 @@
 // First screen and floating buttons: the first picture is on the first screen (studio + profile, every artist, desktop and phone);
 // only ONE button floats (Donate) and it covers no text; Pause and Share live in the footer. Runs on the built pages.
+import {demoArtists} from '../demo.mjs';
 import {launch, sleep} from '../../tools/browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const __root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const {ARTISTS} = new Function(fs.readFileSync(path.join(__root, 'artists.js'), 'utf8') + '\n;return {ARTISTS};')();
+const {ARTISTS} = new Function(demoArtists(__root) + '\n;return {ARTISTS};')();
 export const name = 'ux';
 const FIRST = (sel, vh) => `(()=>{const e=document.querySelector(${JSON.stringify(sel)});if(!e)return null;const r=e.getBoundingClientRect();return {top:Math.round(r.top),visible:Math.round(Math.min(r.bottom,${vh})-Math.max(r.top,0))};})()`;
 /* the floating Donate button against every piece of text on screen (decorative aria-hidden text, the moving strips and the picture labels excluded) */
@@ -23,13 +24,13 @@ const OVERLAP = `(()=>{
 })()`;
 const FIXED = `[...document.querySelectorAll('button,a[href]')].filter(e=>{const cs=getComputedStyle(e),r=e.getBoundingClientRect();return cs.position==='fixed'&&r.width>0&&!e.classList.contains('skip')&&!e.closest('nav')&&!e.closest('dialog')&&getComputedStyle(e).display!=='none'}).map(e=>e.className+':'+e.textContent.trim().slice(0,20))`;
 export async function run({url, check}) {
-  /* ---------- the first picture is on the first screen ---------- */
+  /* ---------- the first picture is on the first screen (studio: the tower is, its windows follow as you scroll; profile: the first picture) ---------- */
   for (const [W, H, touch, label] of [[1280, 800, false, '1280×800'], [375, 812, true, '375×812']]) {
     const b = await launch(); await b.lang('en'); await b.view(W, H, touch);
     const bad = [];
     for (const kind of ['studio', 'profile']) for (const A of ARTISTS) {
       await b.go(`${url}/${kind === 'studio' ? 'studio' : 'profile'}-${A.id}.html`, 2800);
-      const f = await b.ev(FIRST(kind === 'studio' ? '.mus-art' : '.pf-pk', H));
+      const f = await b.ev(FIRST(kind === 'studio' ? '#tw-bld' : '.pf-pk', H));
       if (!f || f.visible < 40) bad.push(`${kind}-${A.id}: first picture top ${f ? f.top : 'missing'} (visible ${f ? f.visible : 0}px)`);
     }
     check(`${label}: the first picture is on the first screen of every studio and profile (10 artists)`, bad.length === 0, bad.slice(0, 8));

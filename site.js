@@ -45,14 +45,14 @@ function tile(x, y, w, h, color, title, o = {}) {
   } else {
     body = `<rect class="t-out" x="${x}" y="${y}" width="${w}" height="${h}"/><rect class="t-in" x="${x+5}" y="${y+5}" width="${w-10}" height="${h-10}" fill="${color}"/><rect x="${x+5}" y="${y+5}" width="${w-10}" height="${h-10}" fill="url(#${ov})"/><rect x="${x+6.5}" y="${y+6.5}" width="${w-13}" height="${h-13}" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="3"/><rect class="t-hi" x="${x+5}" y="${y+5}" width="${w-10}" height="${h-10}"/>`;
   }
-  return `<g class="tile" style="--t:${tIdx++}"><title>${title}</title>${body}</g>`;
+  return `<g class="tile" style="--t:${tIdx++}">${title ? `<title>${esc(title)}</title>` : ''}${body}</g>`;   // the title is the artist's own words: escaped. A building draws up to 3 tiles; an artist with 1 or 2 works has no title for the rest (no "undefined" tooltip)
 }
 function tape(x, y, rot) { return `<rect x="${x}" y="${y}" width="46" height="15" fill="#FF2E88" stroke="#0E0D0C" stroke-width="2" opacity=".94" transform="rotate(${rot} ${x+23} ${y+7})"/>`; }
 
 function monument(a) {
   tIdx = 0; silh.length = 0;
   const W = a.works, T = a.titles;
-  let s = `<svg class="mon" viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ตึกของ${a.name}"><ellipse cx="200" cy="545" rx="205" ry="9" fill="url(#gshadow)"/>`;
+  let s = `<svg class="mon" viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ตึกของ${esc(a.name)}"><ellipse cx="200" cy="545" rx="205" ry="9" fill="url(#gshadow)"/>`;
   if (a.kind === 'arch') {
     const hole = 'M110,540 V270 A90,90 0 0 1 290,270 V540 Z';
     s += `<path d="${hole}" fill="#161413"/><path d="M110,180 L290,180 L330,540 L70,540 Z" fill="url(#shaft)" opacity=".7"/>`;
@@ -283,8 +283,23 @@ let langInit = false;
 const FEAT = [['mali', 0], ['phop', 2], ['napha', 0], ['phrae', 2], ['thara', 0], ['pan', 0], ['kwan', 2], ['irene', 1]], TAPE = [-5, 4, -3, 6, -6, 3, -4, 5];
 let showAll = false, sortBy = 'cur';
 const allWorks = () => ARTISTS.flatMap(a => a.pieces.map((p, k) => ({a, p, k})));
+/* the curated eight. An artist who is not on the site (hidden, not added yet) drops out, and the list is topped up with the newest remaining works,
+   one per artist first, so the home page works with any number of artists (it used to throw when one of the eight was missing) */
+function featList() {
+  const picked = FEAT.map(([id, k]) => { const a = artistById(id); return a && a.pieces[k] ? {a, p: a.pieces[k], k} : null; }).filter(Boolean);
+  const all = allWorks(), want = Math.min(FEAT.length, all.length);
+  if (picked.length >= want) return picked;
+  const key = x => x.a.id + ':' + x.k, have = new Set(picked.map(key)), out = [...picked];
+  const rest = all.filter(x => !have.has(key(x))).sort((x, y) => y.p.y - x.p.y);
+  for (const firstOnly of [true, false]) for (const x of rest) {
+    if (out.length >= want) break;
+    if (have.has(key(x)) || (firstOnly && out.some(o => o.a.id === x.a.id))) continue;
+    out.push(x); have.add(key(x));
+  }
+  return out;
+}
 function worksList() {
-  let l = showAll ? allWorks() : FEAT.map(([id, k]) => { const a = artistById(id); return {a, p: a.pieces[k], k}; });
+  let l = showAll ? allWorks() : featList();
   if (sortBy === 'new') l = [...l].sort((x, y) => y.p.y - x.p.y);
   return l;
 }
@@ -298,6 +313,7 @@ function renderFeatured(mode) {
   $('#feat-h').textContent = t(showAll ? 'feat_h_all' : 'feat_h');
   $('#feat-count').textContent = t('feat_count', {n: list.length});
   const ab = $('#all-btn'); ab.textContent = showAll ? t('less_btn') : t('all_btn', {n: total}); ab.setAttribute('aria-pressed', showAll);
+  ab.hidden = !showAll && total <= list.length;   // nothing more to show: no "show all N" button
 }
 $('#masonry').addEventListener('click', e => { const b = e.target.closest('.card'); if (!b || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return; e.preventDefault(); openStudio(b.dataset.id, +b.dataset.k); });
 $('#sort').addEventListener('change', e => { sortBy = e.target.value; renderFeatured('pop'); });
@@ -330,7 +346,10 @@ function renderMap() {
   const L = mapSpans(ARTISTS.length), n = ARTISTS.length;
   $('#map-grid').innerHTML = ARTISTS.map((a, i) => `<button class="dist d${i % 6}${i === 0 || (i === n - 1 && n % 2 === 0) ? ' wide' : ''}" style="grid-column:span ${L.s[i]}" data-id="${a.id}" data-d="${esc(a.disc)}" data-w="${a.wave ? 1 : 0}" data-cur="ENTER" aria-label="${esc(`NO.${String(i + 1).padStart(2, '0')} · ${discL(a)} · ${nameL(a)}`)}"><span class="dn">NO.${String(i + 1).padStart(2, '0')} · ${esc(t('district'))}</span><span class="dd">${esc(discL(a))}</span><span class="da">${esc(nameL(a))} · ${esc(cityL(a))}</span><svg viewBox="0 0 120 80" aria-hidden="true">${PLAN[a.kind]}</svg></button>`).join('')
     + (L.p ? `<div class="plaza" style="grid-column:span ${L.p}" aria-hidden="true"><span>${esc(t('plaza'))}</span><svg viewBox="0 0 120 80"><circle cx="60" cy="40" r="34"/><circle cx="60" cy="40" r="22"/><circle cx="60" cy="40" r="8"/><path d="M60,4 V76 M24,40 H96"/></svg></div>` : '') + `<div class="compass" aria-hidden="true">N ↑</div>`;
-  $('#filters').innerHTML = [['', t('f_all')], ['*wave', t('f_wave')], ...[...new Map(ARTISTS.map(a => [a.disc, discL(a)]))]].map(([d, l]) => `<button type="button" class="fbtn" data-d="${esc(d)}" aria-pressed="false">${esc(l)}</button>`).join('');
+  const chip = ([d, l]) => `<button type="button" class="fbtn" data-d="${esc(d)}" aria-pressed="false">${esc(l)}</button>`;   // "All" and "New wave" stay in sight, the disciplines (about one artist each) open from "Art form"
+  $('#filters').innerHTML = [['', t('f_all')], ...(ARTISTS.some(a => a.wave) ? [['*wave', t('f_wave')]] : [])].map(chip).join('')
+    + `<button type="button" class="fbtn ftog" id="ftog" aria-expanded="false" aria-controls="fpanel"><span class="ft-l">${esc(t('f_branch'))}</span><span class="ft-a" aria-hidden="true">▾</span></button>`
+    + `<div class="fpanel" id="fpanel" hidden>${[...new Map(ARTISTS.map(a => [a.disc, discL(a)]))].map(chip).join('')}</div>`;
   syncFilter(false);
 }
 function syncFilter(scrollStrip) {
@@ -341,6 +360,8 @@ function syncFilter(scrollStrip) {
   document.querySelectorAll('.dist').forEach(el => { const A = ARTISTS.find(x => x.id === el.dataset.id), on = !!A && (d || q) && ok(A); el.classList.toggle('on', on); });
   $('#map-grid').classList.toggle('f', !!(d || q));
   document.querySelectorAll('.fbtn[data-d]').forEach(b => { if (b.id === 'all-btn') return; const on = b.dataset.d === d; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  const tg = $('#ftog');   // the "Art form" button says which discipline is on, so a closed panel never hides the state
+  if (tg) { const disc = d && d !== '*wave'; tg.classList.toggle('on', !!disc); tg.querySelector('.ft-l').textContent = disc ? `${t('f_branch')}: ${discL(ARTISTS.find(a => a.disc === d))}` : t('f_branch'); }
   let first = null, n = 0, only = null;
   document.querySelectorAll('#strip-in .bd').forEach((bd, i) => {
     const hit = ok(ARTISTS[i]), act = !!(d || q);
@@ -357,7 +378,18 @@ function syncFilter(scrollStrip) {
   go.hidden = !(act && n === 1); if (!go.hidden) { go.dataset.id = only.id; go.href = 'studio-' + only.id + '.html'; }
 }
 function setFilter(d) { curD = d; syncFilter(true); }
-$('#filters').addEventListener('click', e => { const b = e.target.closest('.fbtn[data-d]'); if (b) setFilter(b.dataset.d); });
+function togglePanel(open) {
+  const p = $('#fpanel'), g = $('#ftog'); if (!p || !g) return;
+  if (open === undefined) open = p.hidden;
+  p.hidden = !open; g.setAttribute('aria-expanded', String(open)); g.querySelector('.ft-a').textContent = open ? '▴' : '▾';
+  if (!open) g.focus({preventScroll: true});
+}
+$('#filters').addEventListener('click', e => {
+  if (e.target.closest('#ftog')) { togglePanel(); return; }
+  const b = e.target.closest('.fbtn[data-d]'); if (!b) return;
+  setFilter(b.dataset.d); if (b.closest('#fpanel')) togglePanel(false);   // picked one: the panel gets out of the way
+});
+$('#filters').addEventListener('keydown', e => { const p = $('#fpanel'); if (e.key === 'Escape' && p && !p.hidden) togglePanel(false); });
 $('#map-grid').addEventListener('click', e => { const b = e.target.closest('.dist'); if (b) openStudio(b.dataset.id); });   // a district on the map = that artist's building
 $('#fnote-x').addEventListener('click', () => { const i = $('#city-q'); if (i) i.value = ''; curQ = ''; setFilter(''); });
 (function () {   // search by name, discipline or city
@@ -369,7 +401,10 @@ $('#fnote-in').addEventListener('click', e => { e.preventDefault(); openStudio(e
 
 /* spotlight */
 function renderSpot() {
-  const N = ARTISTS[0], p = N.pieces[0], im = $('#afr-img');
+  const N = artistById('napha'), sec = $('#spotlight');   // the heading, the interview and the button in the section are Napha's: the picture and caption must be hers too (it showed ARTISTS[0] = Arne's work)
+  if (sec) sec.hidden = !N;   // no Napha on the site (real artists only): no interview about someone who is not there
+  if (!N) { const e = $('#afr-img'); if (e) e.remove(); return; }   // the hidden section's picture has no src: an empty <img> counts as a broken image
+  const p = N.pieces[0], im = $('#afr-img');
   $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
   if (p.img && !im.getAttribute('src')) im.src = p.img;
   im.alt = titleL(p);
@@ -511,3 +546,17 @@ function mapFromHash() {
   go(); addEventListener('load', () => setTimeout(go, 50), {once: true});
 }
 addEventListener('hashchange', mapFromHash); mapFromHash();
+
+/* ---------- shortcuts on the hero ---------- */
+function shortcutRandom() {
+  const pool = ARTISTS.filter(a => a.pieces && a.pieces.length);
+  if (!pool.length) return;
+  const a = pool[Math.floor(Math.random() * pool.length)], w = Math.floor(Math.random() * a.pieces.length);
+  openStudio(a.id, w);
+}
+function shortcutFind(e) {
+  const i = document.getElementById('city-q'); if (!i) return;
+  e.preventDefault();
+  document.getElementById('city').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+  setTimeout(() => i.focus({preventScroll: true}), reduce ? 0 : 500);
+}

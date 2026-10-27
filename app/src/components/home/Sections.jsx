@@ -76,7 +76,7 @@ export function Featured({artists}) {
         <select id="sort" value={sortBy} onChange={e => { setSortBy(e.target.value); pop(); }}>
           {[['cur', 'sort_cur'], ['new', 'sort_new']].map(([v, k]) => <option key={v} value={v} data-t={k}>{t(k)}</option>)}
         </select></label>
-      <button type="button" className="fbtn" id="all-btn" aria-pressed={showAll} onClick={() => { setShowAll(v => !v); pop(); }}>{showAll ? t('less_btn') : t('all_btn', {n: total})}</button>
+      <button type="button" className="fbtn" id="all-btn" aria-pressed={showAll} hidden={!showAll && total <= list.length} onClick={() => { setShowAll(v => !v); pop(); }}>{showAll ? t('less_btn') : t('all_btn', {n: total})}</button>
       <span className="feat-count" id="feat-count" role="status">{t('feat_count', {n: list.length})}</span>
     </div>
     <div className="masonry" id="masonry">
@@ -92,35 +92,33 @@ export function Featured({artists}) {
   </section>;
 }
 
-/* the spotlight: the first artist of the city and their first work. The three-question interview is the sample artist Napha's; a real
-   artist shows their own tagline, concept and bio in the same frame. */
+/* the spotlight ("artist of the week"): the heading, the interview and the button are Napha's, so the picture and caption are hers too. Without Napha on the
+   site (real artists only) the section stays in the page but hidden, with no picture loaded: no interview about someone who is not there. */
 export function Spotlight({artists}) {
-  const L = useLang(), {t, pk, nameL, discL, cityL, titleL} = L, mt = useMt();
-  const N = spotlightOf(artists); if (!N) return null;
-  const idx = artists.indexOf(N), p = N.pieces[0], isNapha = N.id === 'napha';
-  const meta = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)}).replace('NO.01', noLabel(idx));
-  const lines = [pk(N, 'tagline'), pk(N, 'concept')].filter(Boolean), bio = pk(N, 'bio');
-  return <section className="sec spot" id="spotlight">
+  const L = useLang(), {t, nameL, cityL, discL, titleL} = L;
+  const napha = spotlightOf(artists), N = napha || artists[0]; if (!N) return null;
+  const idx = artists.indexOf(N), p = N.pieces[0];
+  const meta = napha ? t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)}).replace('NO.01', noLabel(idx)) : '';
+  return <section className="sec spot" id="spotlight" hidden={!napha}>
     <div className="chk" aria-hidden="true"></div>
     <div className="sec-k reveal">Spotlight</div>
-    <h2 className="sec-t reveal"><i data-t="spot_i">{t('spot_i')}</i><br/>{isNapha ? <span data-t="spot_h">{t('spot_h')}</span> : <span>{nameL(N)}</span>}</h2>
+    <h2 className="sec-t reveal"><i data-t="spot_i">{t('spot_i')}</i><br/><span data-t="spot_h">{t('spot_h')}</span></h2>
     <div className="spot-g">
       <figure className="afr concrete reveal"><div className="afr-in" id="afr-in" style={{'--art': artBg(N.works, 0)}}>
-        <img id="afr-img" alt={titleL(p)} decoding="async" src={p.img || undefined}/>
+        {napha ? <img id="afr-img" alt={titleL(p)} decoding="async" src={p.img || undefined}/> : null}
         <figcaption id="afr-cap" dangerouslySetInnerHTML={{__html: `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y}</span>`}}/>
       </div></figure>
       <div className="spot-qa">
         <div className="spot-meta reveal" id="spot-meta">{meta}</div>
-        {isNapha ? <details className="fold fold-spot"><summary><span data-t="fold_spot">{t('fold_spot')}</span></summary><div className="fold-body">
+        <details className="fold fold-spot"><summary><span data-t="fold_spot">{t('fold_spot')}</span></summary><div className="fold-body">
           {[1, 2, 3].map(n => <div key={n} className="qa reveal" style={{'--i': n}}><div className="q" data-t={`q${n}`}>{t(`q${n}`)}</div><p className="a" data-t={`a${n}`}>{t(`a${n}`)}</p></div>)}
         </div></details>
-          : (lines.length || bio) ? <div className="qa reveal" style={{'--i': 1}}>{lines.map((x, i) => <div key={i} className="q">{x}</div>)}{bio && <p className="a">{bio}</p>}</div> : null}
-        <button type="button" className="btn pk reveal" style={{'--i': 4}} onClick={() => openStudio(N.id, null, reduce)} {...(isNapha ? {'data-t': 'spot_cta'} : {})}>{isNapha ? t('spot_cta') : mt('sp_cta', {a: nameL(N)})}</button>
+        <button type="button" className="btn pk reveal" style={{'--i': 4}} onClick={() => openStudio('napha', null, reduce)} data-t="spot_cta">{t('spot_cta')}</button>
       </div>
     </div>
   </section>;
 }
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
 export function Stats({artists}) {
   const {t} = useLang();

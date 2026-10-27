@@ -49,7 +49,8 @@ Deno.serve(async (req: Request) => {
   if (n.slip) {
     const bytes = Uint8Array.from(atob(n.slip.data), c => c.charCodeAt(0)), path = `${n.artist_id}/${row.id}.${n.slip.ext}`;
     const up = await sb.storage.from('slips').upload(path, bytes, {contentType: n.slip.type, upsert: false});
-    if (!up.error) await sb.from('donation_notices').update({slip_path: path}).eq('id', row.id);
+    if (up.error) { await sb.from('donation_notices').delete().eq('id', row.id); return reply(500, {error: 'save'}); }   // never say "sent" when the slip was lost: the donor tries again
+    await sb.from('donation_notices').update({slip_path: path}).eq('id', row.id);
   }
 
   // 5. tell the artist (optional; the dashboard shows the notice either way)
