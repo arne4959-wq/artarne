@@ -450,7 +450,7 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
 .perk p{font:400 .98rem/1.85 var(--thai);}
 
 /* footer extras */
-.foot-more{flex:1 0 100%;display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:2.5rem;padding-top:2.4rem;border-top:2px dashed rgba(244,241,232,.3);}
+.foot-more{flex:1 0 100%;display:grid;grid-template-columns:1fr;gap:2.5rem;padding-top:2.4rem;border-top:2px dashed rgba(244,241,232,.3);}
 .foot-more h4{font:400 1rem var(--anton);letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:.9rem;}
 .foot-more ul{list-style:none;display:grid;gap:.5rem;}
 .foot-more a{color:var(--paper);text-decoration:none;font:400 1rem var(--thai);}
@@ -490,7 +490,6 @@ html.has-cursor .strip,html.has-cursor .bd,html.has-cursor .strip *,html.has-cur
   .stats{padding:3rem 1.2rem;}
   .stats-g{grid-template-columns:repeat(2,1fr);row-gap:1.6rem;}
   .st{padding:.4rem 1rem;}.st:nth-child(odd){border-left:0;padding-left:0;}
-  .foot-more{grid-template-columns:1fr 1fr;}.news{grid-column:1/-1;}
 }
 
 /* touch screens have no real hover: a tap must not leave the lifted/pressed look behind */
@@ -725,7 +724,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
     <span class="hl pink rise" style="--i:5" data-t="hero_hl2">พื้นที่สำหรับงานศิลปะ</span>
     <span class="hl gold rise" style="--i:6" data-t="hero_hl3">ที่ไม่ยอมเงียบ</span>
     <p class="lead rise" style="--i:7" data-t="hero_lead">ตึกคอนกรีตหนึ่งหลัง ศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไป ดูงาน แล้วสนับสนุนตรงถึงคนทำ</p>
-    <div class="hero-cta rise" style="--i:8"><a class="btn pk" href="#city" data-t="hero_cta">เข้าชมเมือง →</a><a class="btn ghost" href="#featured" data-t="hero_cta2">ดูผลงานเด่น</a></div>
+    <div class="hero-cta rise" style="--i:8"><a class="btn pk" href="#city" data-t="hero_cta">เข้าชมเมือง →</a><a class="btn ghost hero-feat" href="#featured" data-t="hero_cta2">ดูผลงานเด่น</a></div>
     <ul class="hero-trust rise" style="--i:9"><li data-t="hero_t1">ตอนนี้ไม่หักค่าธรรมเนียม</li><li data-t="hero_t2">เงินเข้าบัญชีศิลปินโดยตรง</li></ul>
     <section class="shortcuts rise" style="--i:9" aria-labelledby="sc-h"><h2 id="sc-h" class="sc-h" data-t="sc_h">ทางลัด</h2><div class="sc-grid">
       <button type="button" class="sc sc-y" onclick="shortcutRandom()"><i aria-hidden="true">?</i><span data-t="sc_rand">สุ่มดูงาน</span></button>
@@ -762,6 +761,18 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   </div>
   <div class="progress" id="progress" aria-hidden="true"><i id="progress-i"></i></div>
   <div class="map-view" id="map" hidden><div class="map" id="map-grid"><!--pre:map--><button class="dist d0 wide" style="grid-column:span 6" data-id="arne" data-d="คอลลาจ" data-w="0" data-cur="ENTER" aria-label="NO.01 · คอลลาจ · Arne"><span class="dn">NO.01 · ย่าน</span><span class="dd">คอลลาจ</span><span class="da">Arne · เวียงจันทน์</span><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="10" y="38" width="50" height="32"></rect><rect x="38" y="22" width="48" height="32" transform="rotate(-4 62 38)"></rect><rect x="66" y="8" width="46" height="32"></rect></svg></button><div class="compass" aria-hidden="true">N ↑</div><!--/pre:map--></div></div>
+</section>
+
+<section class="sec maker" id="first" aria-labelledby="mk-h">
+  <div class="sec-k reveal" data-t="mk_k">ตึกแรกของเมือง</div>
+  <h2 class="mk-h reveal" id="mk-h" data-t="mk_h">งานของผม</h2>
+  <p class="mk-p reveal" data-t="mk_p">เมืองนี้เริ่มจากงานเล็ก ๆ ที่ผมทำเอง</p>
+  <div class="mk-row">
+    <figure class="mk-f reveal" style="--r:-1.6deg"><img src="art/arne/arne-1-art-art.webp" width="992" height="720" loading="lazy" alt="" data-t-alt="mk_a1"></figure>
+    <figure class="mk-f reveal" style="--r:1.4deg"><img src="art/arne/arne-2-star-horse.webp" width="404" height="612" loading="lazy" alt="" data-t-alt="mk_a2"></figure>
+    <figure class="mk-f reveal" style="--r:-.8deg"><img src="art/arne/arne-3-green-crown.webp" width="1001" height="550" loading="lazy" alt="" data-t-alt="mk_a3"></figure>
+  </div>
+  <p class="mk-go reveal"><a class="btn ghost" href="studio-arne.html" data-t="mk_go">เข้าไปในตึกของผม →</a></p>
 </section>
 
 <div class="tape-wrap" aria-hidden="true"><div class="tape-bar"></div></div>
@@ -807,28 +818,6 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <div class="masonry" id="masonry"><!--pre:masonry--><div class="mi reveal in" style="--i:0"><a class="card" href="studio-arne.html?work=0" draggable="false" data-id="arne" data-k="0" data-cur="VIEW" aria-label="ART ART โดยArne 2026"><i class="tape" style="--tr:-5deg"></i><span class="art" style="--ar:992/720;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),linear-gradient(180deg,#00FF3A 0 40%,#F00FA8 40% 66%,#1B2B2A 66%)"><img src="art/arne/arne-1-art-art.webp" alt="ART ART" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ART ART</span><span class="pa">Arne · คอลลาจ</span><span class="pp">2026</span></span></a></div><div class="mi reveal in" style="--i:1"><a class="card" href="studio-arne.html?work=1" draggable="false" data-id="arne" data-k="1" data-cur="VIEW" aria-label="สาธุ โดยArne 2026"><i class="tape" style="--tr:4deg"></i><span class="art" style="--ar:404/612;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 34% 40%,#00FF3A 0 22%,transparent 22.5%),radial-gradient(circle at 68% 64%,#F00FA8 0 30%,transparent 30.5%),#1B2B2A"><img src="art/arne/arne-2-star-horse.webp" alt="สาธุ" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">สาธุ</span><span class="pa">Arne · คอลลาจ</span><span class="pp">2026</span></span></a></div><div class="mi reveal in" style="--i:2"><a class="card" href="studio-arne.html?work=2" draggable="false" data-id="arne" data-k="2" data-cur="VIEW" aria-label="ศิลปะคือทางออก โดยArne 2026"><i class="tape" style="--tr:-3deg"></i><span class="art" style="--ar:1001/550;--art:repeating-linear-gradient(0deg,rgba(255,255,255,.1) 0 1px,transparent 1px 7px),radial-gradient(circle at 50% 50%,#1B2B2A 0 18%,transparent 18.5%),linear-gradient(135deg,#00FF3A 0 50%,#F00FA8 50%)"><img src="art/arne/arne-3-green-crown.webp" alt="ศิลปะคือทางออก" loading="lazy" decoding="async" draggable="false"></span><span class="plate"><span class="pn">ศิลปะคือทางออก</span><span class="pa">Arne · คอลลาจ</span><span class="pp">2026</span></span></a></div><!--/pre:masonry--></div>
 </section>
 
-<div class="tape-wrap r" aria-hidden="true"><div class="tape-bar"></div></div>
-
-<section class="sec spot" id="spotlight">
-  <div class="chk" aria-hidden="true"></div>
-  <div class="sec-k reveal">Spotlight</div>
-  <h2 class="sec-t reveal"><i data-t="spot_i">Artist of the week</i><br><span data-t="spot_h">นภา</span></h2>
-  <div class="spot-g">
-    <figure class="afr concrete reveal"><div class="afr-in" id="afr-in"><img id="afr-img" alt="" decoding="async"><figcaption id="afr-cap"></figcaption></div></figure>
-    <div class="spot-qa">
-      <div class="spot-meta reveal" id="spot-meta"></div>
-      <details class="fold fold-spot"><summary><span data-t="fold_spot">อ่านบทสัมภาษณ์ 3 ข้อ</span></summary><div class="fold-body">
-      <div class="qa reveal" style="--i:1"><div class="q" data-t="q1">ทำไมถึงเลิกส่งงานเข้าหอศิลป์?</div><p class="a" data-t="a1">ส่งไปสิบสองรอบ ได้คำตอบว่า "น่าสนใจ แต่ยังไม่ใช่ตอนนี้" ครบสิบสองรอบ สุดท้ายก็เข้าใจว่า "ตอนนี้" ของพวกเขาไม่เคยมาถึง เลยเลิกรอ</p></div>
-      <div class="qa reveal" style="--i:2"><div class="q" data-t="q2">ทำไมต้องห้องว่างกับหมอก?</div><p class="a" data-t="a2">เพราะที่ว่างคือที่เดียวที่ไม่มีใครมาบอกว่าต้องรู้สึกยังไง ห้องว่างหนึ่งห้อง คนดูร้อยคน ได้ร้อยเรื่อง ไม่ต้องมีคิวเรเตอร์แปลให้</p></div>
-      <div class="qa reveal" style="--i:3"><div class="q" data-t="q3">ถ้าคนเดินเข้ามาแล้วไม่สนับสนุนล่ะ?</div><p class="a" data-t="a3">ก็ไม่เป็นไร เดินดูฟรี นั่งเถียงกับภาพได้ ถ้าวันไหนงานตามไปหลอนถึงบ้าน ค่อยกลับมาสนับสนุนคนวาดตรง ๆ ไม่มีใครเก็บค่าแนะนำ</p></div>
-      </div></details>
-      <button type="button" class="btn pk reveal" style="--i:4" onclick="openStudio('napha')" data-t="spot_cta">เข้าไปในตึกนภา →</button>
-    </div>
-  </div>
-</section>
-
-<div class="tape-wrap" aria-hidden="true"><div class="tape-bar"></div></div>
-
 <section class="sec mani" id="manifesto">
   <div class="sec-k reveal">Manifesto</div>
   <div class="mani-lines" role="heading" aria-level="2" data-t-aria="mani_aria" aria-label="ไม่มีหอศิลป์ ไม่มีคนกลาง ไม่มีค่าหัวคิว มีแค่คนทำกับคนดู">
@@ -841,17 +830,6 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <div id="wall-notes" hidden></div>
 </section>
 
-<section class="sec maker" id="maker" aria-labelledby="mk-h">
-  <div class="sec-k reveal" data-t="mk_k">จากคนสร้างเมือง</div>
-  <h2 class="mk-h reveal" id="mk-h" data-t="mk_h">งานของผม</h2>
-  <p class="mk-p reveal" data-t="mk_p">เมืองนี้เริ่มจากงานเล็ก ๆ ที่ผมทำเอง</p>
-  <div class="mk-row">
-    <figure class="mk-f reveal" style="--r:-1.6deg"><img src="art/arne/arne-1-art-art.webp" width="992" height="720" loading="lazy" alt="" data-t-alt="mk_a1"></figure>
-    <figure class="mk-f reveal" style="--r:1.4deg"><img src="art/arne/arne-2-star-horse.webp" width="404" height="612" loading="lazy" alt="" data-t-alt="mk_a2"></figure>
-    <figure class="mk-f reveal" style="--r:-.8deg"><img src="art/arne/arne-3-green-crown.webp" width="1001" height="550" loading="lazy" alt="" data-t-alt="mk_a3"></figure>
-  </div>
-  <p class="mk-go reveal"><a class="btn ghost" href="studio-arne.html" data-t="mk_go">เข้าไปในตึกของผม →</a></p>
-</section>
 <section class="sec cy" id="cycle" aria-labelledby="cy-h">
   <div>
     <div class="sec-k reveal">The loop</div>
@@ -909,22 +887,11 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
 
 <footer class="foot reveal">
   <h3 data-t-html="foot_h">ศิลปะ<em>ไม่รอ</em>ใคร</h3>
-  <p data-t="foot_p">อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง ขอแค่บัญชีรับเงินเป็นของคุณจริง</p>
-  <button type="button" class="btn pk" onclick="openJoin()" data-t="foot_btn">ขอมีตึก →</button>
+  <p class="foot-ask" data-t="foot_p">อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง ขอแค่บัญชีรับเงินเป็นของคุณจริง</p>
+  <button type="button" class="btn pk foot-ask" onclick="openJoin()" data-t="foot_btn">ขอมีตึก →</button>
   <details class="fold fold-foot"><summary><span data-t="fold_foot">เมนู โซเชียล และจดหมายข่าว</span></summary>
   <div class="foot-more">
     <div><h4 data-t="foot_menu">เมนู</h4><ul><li><a href="#city" data-t="nav_city">เมือง</a></li><li><a href="#manifesto" data-t="foot_manifesto">Manifesto</a></li><li><a href="#how" data-t="foot_how">วิธีใช้งาน</a></li><li><a href="#featured" data-t="foot_feat">ผลงานเด่น</a></li><li><a href="#map" data-t="foot_map">แผนที่เมือง</a></li><li><a href="join.html" data-t="foot_join">ขอมีตึก</a></li></ul></div>
-    <div><h4 data-t="foot_social">โซเชียล</h4><ul>
-      <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">Instagram · @circles.city</a></li>
-      <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">X · @circles_city</a></li>
-      <li><a href="#" onclick="event.preventDefault();toast(t('social_soon'))">YouTube · circles city</a></li>
-    </ul></div>
-    <form class="news" onsubmit="event.preventDefault();subscribeNews(this)">
-      <label for="news-em" data-t="news_label">ข่าวจากเมือง ตึกใหม่ งานใหม่ ส่งตรงถึงกล่องอีเมล ไม่สแปม ไม่ขายต่อ</label>
-      <label class="hp" aria-hidden="true">Website<input class="hp-n" name="website" tabindex="-1" autocomplete="off"></label>
-      <div class="news-r"><input id="news-em" type="email" required placeholder="you@example.com" autocomplete="email"><button class="btn" type="submit" data-t="news_btn">สมัคร →</button></div>
-      <small class="news-c" data-t-html="news_consent">สมัครแล้วถือว่ารับ<a href="privacy.html">นโยบายความเป็นส่วนตัว</a> ยกเลิกได้ทุกเมื่อ</small>
-    </form>
   </div></details>
   <div class="foot-c"><span data-t="foot_copy">© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.</span> · <a href="privacy.html" data-t="legal_privacy">นโยบายความเป็นส่วนตัว</a> · <a href="terms.html" data-t="legal_terms">เงื่อนไขการใช้งาน</a></div>
 </footer>

@@ -32,8 +32,8 @@ export async function run({url, check}) {
   /* home: cards and the artist of the week come before the Manifesto; Join lives in the footer and menu, not as a pink nav button */
   b = await launch(); await b.lang('th'); await b.view(1280, 800);
   await b.go(`${url}/index.html`, 3500);
-  const order = await b.ev("(()=>{const i=id=>[...document.querySelectorAll('main > section')].findIndex(s=>s.id===id);return {f:i('featured'),s:i('spotlight'),m:i('manifesto')}})()");
-  check('home: work cards and artist of the week are above the Manifesto', order.f > -1 && order.f < order.s && order.s < order.m, order);
+  const order = await b.ev("(()=>{const i=id=>[...document.querySelectorAll('main > section')].findIndex(s=>s.id===id);return {f:i('first'),s:i('how'),m:i('manifesto')}})()");
+  check('home: the first building with its works and the how-it-works come before the Manifesto', order.f > -1 && order.f < order.s && order.s < order.m, order);
   check('home: no pink Join button in the nav (Join stays in the footer and the phone menu)', await b.ev("!document.querySelector('nav .links .join') && !!document.querySelector('footer .btn[onclick*=openJoin]') && !!document.querySelector('#mnav a[href=\"join.html\"]')"));
   let r = await b.ev(AUDIT);
   check('home desktop: every link/button has a name', r.noname.length === 0, r.noname);

@@ -27,7 +27,7 @@ export async function run({check}) {
   check('people/*.png: the 3 shared hall sprites exist (20x28, RGBA PNG)', info.every(i => i.ok), info.filter(i => !i.ok).map(i => i.f));
   const mus = fs.readFileSync(path.join(root, 'museum.js'), 'utf8');
   check('museum.js points at the shared files and never serialises a canvas', SPRITES.every(f => mus.includes(f)) && !/toDataURL/.test(mus));
-  const studios = pages.filter(f => f.startsWith('studio-'));
+  const studios = pages.filter(f => f.startsWith('studio-') && !fs.readFileSync(path.join(root, f), 'utf8').includes('http-equiv="refresh"'));   // (a retired artist's page is only a redirect)
   const noLink = studios.filter(f => !fs.readFileSync(path.join(root, f), 'utf8').includes('src="people/'));
   check('each studio page links its visitors as people/*.png', noLink.length === 0, noLink);
 }

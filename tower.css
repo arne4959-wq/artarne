@@ -41,14 +41,14 @@ html[lang=th] .tw-sign b,html[lang=lo] .tw-sign b{letter-spacing:.06em;}
 .tw-void .tw-glass{background:repeating-linear-gradient(135deg,rgba(244,241,232,.08) 0 6px,transparent 6px 13px),#1B1917;}
 .tw-void .tw-glass::before,.tw-void .tw-glass::after{display:none;}
 .tw-empty{position:absolute;inset:8px 8px 22px;display:grid;place-items:center;text-align:center;border:2px dashed rgba(244,241,232,.5);font:400 .8rem/1.4 var(--type);letter-spacing:.04em;color:rgba(244,241,232,.9);padding:.3rem;}
-.tw-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:.18rem .5rem;background:var(--black);color:var(--paper);font:400 .72rem/1.35 var(--type);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;}
+.tw-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:.18rem .5rem;background:var(--black);color:var(--paper);font:400 .75rem/1.35 var(--type);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;}
 .tw-cap b{font:400 .8rem var(--anton);color:var(--gold);margin-right:.25rem;}
 
 /* the lift */
 .tw-lift{position:sticky;top:84px;display:flex;flex-direction:column;gap:.65rem;padding:.8rem .75rem 1rem;border:4px solid var(--black);background:var(--a-conc);box-shadow:7px 7px 0 var(--gold);}
 .tw-lift>small{font:400 .75rem var(--type);letter-spacing:.2em;text-transform:uppercase;background:var(--black);color:var(--gold);padding:.15rem .5rem;justify-self:start;}
 .tw-lift button{min-height:52px;padding:.45rem .6rem;border:3px solid var(--black);background:var(--paper);color:var(--black);font:600 .9rem/1.3 var(--thai);text-align:left;cursor:pointer;box-shadow:4px 4px 0 var(--black);transition:transform .15s,box-shadow .15s,background .2s;}
-.tw-lift button small{display:block;font:400 .72rem var(--type);letter-spacing:.04em;color:#4a4642;}
+.tw-lift button small{display:block;font:400 .75rem var(--type);letter-spacing:.04em;color:#4a4642;}
 .tw-lift button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--black);}
 .tw-lift button[aria-pressed=true]{background:var(--pink);}
 .tw-lift button[aria-pressed=true] small{color:var(--black);}

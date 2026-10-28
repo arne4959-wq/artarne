@@ -399,18 +399,8 @@ $('#fnote-x').addEventListener('click', () => { const i = $('#city-q'); if (i) i
 })();
 $('#fnote-in').addEventListener('click', e => { e.preventDefault(); openStudio(e.currentTarget.dataset.id); });
 
-/* spotlight */
-function renderSpot() {
-  const N = artistById('napha'), sec = $('#spotlight');   // the heading, the interview and the button in the section are Napha's: the picture and caption must be hers too (it showed ARTISTS[0] = Arne's work)
-  if (sec) sec.hidden = !N;   // no Napha on the site (real artists only): no interview about someone who is not there
-  if (!N) { const e = $('#afr-img'); if (e) e.remove(); return; }   // the hidden section's picture has no src: an empty <img> counts as a broken image
-  const p = N.pieces[0], im = $('#afr-img');
-  $('#afr-in').style.setProperty('--art', artBg(N.works, 0));
-  if (p.img && !im.getAttribute('src')) im.src = p.img;
-  im.alt = titleL(p);
-  $('#afr-cap').innerHTML = `<b>${esc(titleL(p))}</b><span>${esc(nameL(N))} · ${p.y}</span>`;
-  $('#spot-meta').textContent = t('spot_meta', {d: discL(N), y: N.since, c: cityL(N)});
-}
+/* one building so far: the search, filters, map, random, stats and the featured list are for a city of three or more (the .solo rules in circles.css hide them) */
+document.documentElement.classList.toggle('solo', ARTISTS.length < 3);
 
 /* city numbers: count up when scrolled into view */
 (function () {
@@ -427,7 +417,7 @@ function renderSpot() {
 
 /* everything that has words in it re-renders when the language changes */
 onLang(() => {
-  renderMarquee(); refreshCity(); renderSpot();
+  renderMarquee(); refreshCity();
   document.querySelectorAll('.mani-lines .rn').forEach(el => ransom(el, t(el.dataset.k), +el.dataset.s, true));
   if (langInit) { renderFeatured('still'); renderMap(); }
   setMeta(t('title_idx'), t('desc_idx'));

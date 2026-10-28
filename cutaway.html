@@ -220,6 +220,7 @@ html[lang=en] .dlg-story blockquote{font:italic 500 1.2rem/1.35 "Playfair Displa
 .dlg-story p{font:400 .9rem/1.7 var(--thai);color:#3a3733;}
 .dlg-concept{padding:1.8rem 1.8rem 2rem;border-top:var(--line) solid var(--black);background:var(--bone);display:grid;gap:1.3rem;}
 .dlg-concept[hidden]{display:none;}
+.cc-soon{margin:0;display:flex;flex-wrap:wrap;gap:.8rem 1rem;align-items:center;padding:1rem 1.2rem;border:3px dashed var(--black);background:repeating-linear-gradient(135deg,var(--paper) 0 14px,rgba(14,13,12,.06) 14px 16px);font:400 1rem/1.7 var(--thai);}
 .dlg-concept h3{font:400 clamp(1.5rem,3.4vw,2rem)/1.3 "Chonburi",var(--thai);}
 .dlg-concept h3 small{display:block;width:max-content;margin-bottom:.4rem;background:var(--black);color:var(--gold);font:italic 500 .95rem "Playfair Display",serif;padding:.15rem .7rem;}
 .cc-top{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;align-items:start;}
@@ -245,6 +246,8 @@ html[lang=th] .cc-card small{font:600 .8rem var(--thai);letter-spacing:.01em;}
 .v-top::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:10px;background:var(--a-rivets);}
 .v-top h3{margin:0;padding:.15rem .65rem;background:var(--gold);border:3px solid var(--black);font:400 1.05rem/1.5 var(--anton);letter-spacing:.08em;text-transform:uppercase;transform:rotate(-1deg);}
 html[lang=th] .v-top h3,html[lang=lo] .v-top h3{font-family:"Chonburi",var(--thai);letter-spacing:.02em;text-transform:none;}
+.voice-soon{border-style:dashed;box-shadow:none;background:repeating-linear-gradient(135deg,var(--paper) 0 14px,rgba(14,13,12,.06) 14px 16px);}
+.v-empty{margin:0;padding:1rem;font:400 1rem/1.7 var(--thai);color:#3a3733;}
 .v-stamp{padding:.15rem .5rem;border:3px double var(--tartan-red);background:var(--paper);color:var(--tartan-red);font:700 .78rem/1.5 var(--thai);transform:rotate(4deg);}
 .v-say{margin:0;padding:1rem 1rem .25rem;font:400 clamp(1.15rem,3vw,1.4rem)/1.6 "Chonburi",var(--thai);text-wrap:balance;}
 html[lang=en] .v-say{font:italic 500 1.3rem/1.45 "Playfair Display",Georgia,serif;}
@@ -403,10 +406,10 @@ function render(initial) {
     <div class="tower-wrap">
       ${TW.html(A, idx)}
       <div class="tower-foot"><span>${esc(t('cw_section'))}</span><a class="btn pk" href="index.html#city">${esc(t('cw_back'))}</a></div>
-      <div class="snav" role="navigation" aria-label="studios">
+      ${ARTISTS.length > 1 ? `<div class="snav" role="navigation" aria-label="studios">
         <a class="sn prev" href="studio-${prevA.id}.html"><small>${esc(t('cw_prev'))}</small><b>${esc(nameL(prevA))}</b><span>${esc(discL(prevA))}</span></a>
         <a class="sn next" href="studio-${nextA.id}.html"><small>${esc(t('cw_next'))}</small><b>${esc(nameL(nextA))}</b><span>${esc(discL(nextA))}</span></a>
-      </div>
+      </div>` : ''}
     </div>`;
   TW.bind(main);                                           // the lift
   ransom($('#rn-title'), nameL(A), idx);
@@ -418,7 +421,7 @@ function render(initial) {
 /* ---- detail dialog ---- */
 const dlg = $('#dlg');
 function fillDlg(k, stage) {
-  const p = A.pieces[k]; openK = k; if (TW.STAGES.includes(stage)) curStage = stage;
+  const p = A.pieces[k]; openK = k; if (TW.STAGES.includes(stage)) curStage = stage; if (!TW.hasProcess(p)) curStage = 'final';   // no idea, sketch or draft yet: only the finished work, no empty stage tabs
   const level = k + 1;
   $('#dlg-fl').innerHTML = `<small>${esc(t('room_k'))}</small><b>0${level}</b>`;                       // the room number, like a floor sign in the beam
   $('#dlg-t').textContent = titleL(p);
@@ -426,13 +429,13 @@ function fillDlg(k, stage) {
   fr.innerHTML = `<i class="dlg-tape" aria-hidden="true"></i>${TW.layersHtml(A, k)}${zoomBtnHtml()}`;   // one decoration (the tape); four stage layers (idea / sketch / draft / final), an empty stage is an honest empty window
   $('#dlg-stg').innerHTML = TW.panelHtml(A, k); showPeel(TW.STAGES.indexOf(curStage));
   $('#dlg-by').innerHTML = t('d_by', {a: esc(nameL(A)), d: esc(discL(A)), c: esc(cityL(A))});
-  const vh = voiceHtml(p); $('#dlg-voice').innerHTML = vh;                                         // "In the artist's words": the artist's own three fields
+  const vh = voiceHtml(p); $('#dlg-voice').innerHTML = vh || (p.st ? '' : voiceSoon());   // no words yet: a marked empty slot, never an invented concept                                         // "In the artist's words": the artist's own three fields
   const story = $('#dlg-story'); story.hidden = !p.st || !!vh;                                       // the old third-person story only shows when the artist has not written their own
   if (p.st && !vh) { $('#dlg-sk').textContent = t('d_story'); $('#dlg-q').textContent = pk(p, 'q') || ''; $('#dlg-st').textContent = pk(p, 'st'); }
   const cc = $('#dlg-concept'), c = p.concept, steps = c && Array.isArray(c.steps) ? c.steps.filter(x => x && (x.h || x.d)) : [];
   const hasCc = !!(c && (c.origin || c.material || c.quote || steps.length));   // no concept = no block, never an empty one
-  cc.hidden = !hasCc;
-  cc.innerHTML = !hasCc ? '' : `<h3 id="dlg-cc-h"><small>CONCEPT</small>${esc(t('cc_h'))}</h3>`
+  cc.hidden = false;   // no concept yet: a marked "coming soon" slot in the artist's voice area, never an invented text
+  cc.innerHTML = !hasCc ? `<h3 id="dlg-cc-h"><small>CONCEPT</small>${esc(t('cc_h'))}</h3><p class="cc-soon"><span class="v-stamp">${esc(t('v_soon'))}</span> ${esc(t('cc_soon_p', {a: nameL(A)}))}</p>` : `<h3 id="dlg-cc-h"><small>CONCEPT</small>${esc(t('cc_h'))}</h3>`
     + (c.origin || c.material || c.quote ? `<div class="cc-top">`
       + (c.origin || c.material ? `<dl class="cc-dl">${c.origin ? `<div><dt>${esc(t('cc_origin'))}</dt><dd>${esc(pk(c, 'origin'))}</dd></div>` : ''}${c.material ? `<div><dt>${esc(t('cc_mat'))}</dt><dd>${esc(pk(c, 'material'))}</dd></div>` : ''}</dl>` : '')
       + (c.quote ? `<blockquote class="cc-q">“${esc(pk(c, 'quote'))}”<cite>— ${esc(nameL(A))}</cite></blockquote>` : '') + `</div>` : '')
@@ -457,6 +460,9 @@ function voiceHtml(p) {
     + (say ? `<p class="v-say">“${esc(say)}”</p><p class="v-by">${esc(t('v_by', {a: nameL(A)}))}</p>` : '')
     + (rows.length ? `<dl class="v-rows">${rows.map(x => `<div><dt><b>${x[2]}</b>${esc(t(x[1]))}</dt><dd>${esc(x[0])}</dd></div>`).join('')}</dl>` : '')
     + `</section><p class="v-note">${esc(t('v_note'))}</p>`;
+}
+function voiceSoon() {
+  return `<section class="voice voice-soon" aria-labelledby="v-h"><div class="v-top"><h3 id="v-h">${esc(t('v_h'))}</h3><span class="v-stamp">${esc(t('v_soon'))}</span></div><p class="v-empty">${esc(t('v_soon_p', {a: nameL(A)}))}</p></section>`;
 }
 function paintRes(k) {   // the "Resonated" button: the count is sample data plus this browser's own tap
   const b = $('#dlg-res'), on = resMine(A.id, k);

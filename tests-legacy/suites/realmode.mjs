@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {launch, startServer, sleep} from '../../tools/browser.mjs';
-import {demoArtists} from '../demo.mjs';
+import {demoArtists, demoSite} from '../demo.mjs';
 export const name = 'realmode';
 const noise = l => /Turnstile|favicon|challenges\.cloudflare|HTTP 404 \S+\/legends\//.test(l);   // a legend picture that `npm run pictures` has not fetched yet is a known warning of npm run check, not part of this promise
 export async function run({root, check}) {
@@ -22,7 +22,7 @@ export async function run({root, check}) {
     for (const p of ['index.html', 'highlights.html', 'studio-arne.html', 'profile-arne.html', 'donate.html']) {
       await b.go(`${server.url}/${p}`, p === 'index.html' ? 4500 : 3000);
       if (p === 'index.html') {
-        var home = await b.ev("(()=>({buildings:document.querySelectorAll('#strip-in .bd').length,cards:document.querySelectorAll('#masonry .mi').length,allBtnHidden:document.getElementById('all-btn').hidden,spotHidden:document.getElementById('spotlight').hidden,wave:!!document.querySelector('.fbtn[data-d=\"*wave\"]'),overflowX:document.documentElement.scrollWidth>innerWidth}))()");
+        var home = await b.ev("(()=>({buildings:document.querySelectorAll('#strip-in .bd').length,cards:document.querySelectorAll('#masonry .mi').length,allBtnHidden:document.getElementById('all-btn').hidden,spotHidden:!document.getElementById('spotlight'),wave:!!document.querySelector('.fbtn[data-d=\"*wave\"]'),overflowX:document.documentElement.scrollWidth>innerWidth}))()");
       }
       errs.push(...b.logs.filter(l => !noise(l)).map(l => p + ': ' + l.slice(0, 120)));
       b.logs.length = 0;
@@ -46,18 +46,15 @@ export async function run({root, check}) {
   const s1 = await b.ev("(()=>{const d=document.querySelector('dialog.df');return {amt:(d.querySelector('[data-df-amt]')||{}).textContent,sample:!!d.querySelector('.df-sample')||/SAMPLE/.test(d.innerText),acc:/ARNE TEST/.test(d.innerText)&&/111 222 333/.test(d.innerText),paid:!!d.querySelector('[data-go3]:not([disabled])'),nofee:!!d.querySelector('.df-nofee')}})()");
   await b.ev("document.querySelector('dialog.df [data-go3]').click()"); await sleep(900);
   const s2 = await b.ev("(()=>{const d=document.querySelector('dialog.df');return {form:!!d.querySelector('form'),sample:/SAMPLE|สาธิต|จำลอง|demo/i.test(d.innerText),text:d.querySelector('.df-poster').textContent,note:d.querySelector('.df-poster p[style]').textContent,tips:(()=>{try{return (JSON.parse(localStorage.getItem('circles-sample-v1'))||{}).tips||[]}catch(e){return []}})().length}})()");
-  check('real artist: the 3-step window (bricks 2/5/10/25), then the real QR/account name and number with the no-fee box and no demo banner', s0.open && !s0.old && s0.bricks === '2,5,10,25' && !s0.sample && s1.amt === '$5' && !s1.sample && s1.acc && s1.paid && s1.nofee, {s0, s1});
+  check('real artist: the 3-step window (bricks 2/5/10/25), then the real QR/account name and number with the no-fee box and no demo banner', s0.open && !s0.old && s0.bricks === '2,5,10,25' && !s0.sample && /^110,000 ₭ ?≈ \$5$/.test(s1.amt) && !s1.sample && s1.acc && s1.paid && s1.nofee, {s0, s1});
   check('real artist: after "I have paid" the poster thank-you (no pretend form, no "demo"), says honestly that nothing is passed on (no "the artist confirms" promise), and no made-up tip is stored', !s2.form && !s2.sample && /Arne/.test(s2.text) && /โดยตรง/.test(s2.note) && !/ยืนยันเอง/.test(s2.note) && s2.tips === 0, s2);
-  await b.go(`${server.url}/studio-napha.html?work=0`, 4500);
+  const ds = demoSite(root), dsrv = await startServer(ds);   // the sample artists' pages are redirects in the real folder: use a throw-away copy built with the demo shown
+  await b.go(`${dsrv.url}/studio-napha.html?work=0`, 4500);
   await b.ev("document.getElementById('dlg-sup').click()"); await sleep(700);
   await b.ev("document.querySelector('#dlg-tip [data-amt=\"5\"]').click()"); await sleep(600);
   const d1 = await b.ev("(()=>{const d=document.getElementById('dlg-tip');return {sample:/SAMPLE/.test(d.innerText),floor:(d.querySelector('.cdlg-fl')||{}).textContent}})()");
   await b.ev("document.querySelector('#dlg-tip [data-sm-sent]').click()"); await sleep(600);
   const d2 = await b.ev("!!document.querySelector('#dlg-tip form.sm-form')");
   check('sample artist: still the 4-step demo (SAMPLE banner, then the pretend "I have donated" form)', d1.sample && /4/.test(d1.floor) && d2 === true, {d1, d2});
-  await b.go(`${server.url}/index.html`, 4500);
-  await b.ev("document.getElementById('spotlight').scrollIntoView()"); await sleep(1800);
-  const sp = await b.ev("(()=>({h:document.querySelector('#spotlight .sec-t').innerText,cap:document.getElementById('afr-cap').innerText,cta:document.querySelector('#spotlight .btn.pk').innerText}))()");
-  check('"artist of the week": the heading, the picture caption and the button name the same artist (นภา)', /นภา/.test(sp.h) && /นภา/.test(sp.cap) && /นภา/.test(sp.cta), sp);
-  b.close(); server.close();
+  b.close(); server.close(); dsrv.close(); if (ds !== root) fs.rmSync(ds, {recursive: true, force: true});
 }

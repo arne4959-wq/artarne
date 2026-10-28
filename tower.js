@@ -35,13 +35,15 @@ const TW = (function () {
     const p = A.pieces[k], title = titleL(p);
     const glass = st.s === 'idea'
       ? (st.has ? `<span class="tw-note"><i class="tw-tape" aria-hidden="true"></i><span>${esc(st.text)}</span></span>` : `<span class="tw-empty">${esc(none('idea'))}</span>`)
-      : (st.has ? `<img src="${esc(st.src)}" alt="" loading="lazy" decoding="async" draggable="false">` : `<span class="tw-empty">${esc(none(st.s))}</span>`);
+      : (st.has ? `<img src="${esc(st.src)}" alt="${esc(title + ' — ' + t('st_' + st.s))}" loading="lazy" decoding="async" draggable="false">` : `<span class="tw-empty">${esc(none(st.s))}</span>`);
     return `<button type="button" class="tw-win tw-${st.s}${st.has ? '' : ' tw-void'}" data-k="${k}" data-s="${st.s}" aria-label="${esc(title + ' — ' + t('st_' + st.s) + (st.has ? '' : ' (' + none(st.s) + ')'))}">`
       + `<span class="tw-glass">${glass}</span><span class="tw-cap" aria-hidden="true"><b>${num(k)}</b> ${esc(title)}</span></button>`;
   }
 
   function html(A, idx) {
-    const n = A.pieces.length, shown = Math.min(n, PER_ROW * MAX_ROWS), rows = Math.ceil(shown / PER_ROW), total = rows * CATS.length;
+    const n = A.pieces.length, shown = Math.min(n, PER_ROW * MAX_ROWS), rows = Math.ceil(shown / PER_ROW);
+    const cats = CATS.filter(([, st]) => st === 'final' || A.pieces.slice(0, shown).some(p => stage(p, st).has));   // a floor nobody has filled yet is not built (no rows of empty windows); the work window still says what is missing
+    const total = rows * cats.length;
     const floor = (cat, st, r, level) => {
       const ks = []; for (let k = r * PER_ROW; k < Math.min(shown, (r + 1) * PER_ROW); k++) ks.push(k);
       return `<section class="tw-fl" data-f="${cat}" aria-label="${esc(t('tw_fl', {n: level}) + ' · ' + t('tw_room_' + cat))}">`
@@ -49,14 +51,14 @@ const TW = (function () {
         + ks.map(k => windowHtml(A, k, stage(A.pieces[k], st))).join('') + '</section>';
     };
     let h = '', level = total;
-    for (const [cat, st] of CATS) for (let r = 0; r < rows; r++) h += floor(cat, st, r, level--);
+    for (const [cat, st] of cats) for (let r = 0; r < rows; r++) h += floor(cat, st, r, level--);
     const range = i => rows === 1 ? t('tw_fl', {n: total - i * rows}) : t('tw_fl_r', {a: total - i * rows - rows + 1, b: total - i * rows});
-    const lift = CATS.map(([cat], i) => `<button type="button" data-lift="${cat}" aria-pressed="false"><span aria-hidden="true">↑</span> ${esc(range(i))}<small>${esc(t('tw_cat_' + cat))}</small></button>`).join('')
-      + `<button type="button" class="all" data-lift="all" aria-pressed="true">${esc(t('tw_lift_all'))}</button>`;
+    const lift = (cats.length > 1 ? cats : []).map(([cat], i) => `<button type="button" data-lift="${cat}" aria-pressed="false"><span aria-hidden="true">↑</span> ${esc(range(i))}<small>${esc(t('tw_cat_' + cat))}</small></button>`).join('')
+      + (cats.length > 1 ? `<button type="button" class="all" data-lift="all" aria-pressed="true">${esc(t('tw_lift_all'))}</button>` : '');
     const don = canDonate(A) ? `<button type="button" class="btn pk tw-don" data-support="${esc(A.id)}">${esc(t('tw_don', {a: nameL(A)}))}</button>` : '';
     return `<div class="tw" id="tw">`
-      + `<p class="tw-hint"><mark>${esc(t('tw_hint_k'))}</mark> ${esc(t('tw_hint'))}</p>`
-      + `<div class="tw-grid">`
+      + `<p class="tw-hint"><mark>${esc(t('tw_hint_k'))}</mark> ${esc(t(cats.length > 1 ? 'tw_hint' : 'tw_hint1'))}</p>`
+      + `<div class="tw-grid"${cats.length > 1 ? '' : ' style="grid-template-columns:minmax(0,1fr)"'}>`
       + `<div class="tw-bld" id="tw-bld" data-lit="all">`
       + `<div class="tw-roof"><i class="tw-ant" aria-hidden="true"></i><div class="tw-sign"><b>${esc(t('tw_roof', {n: nameL(A).toUpperCase()}))}</b></div>${don}</div>`
       + h
@@ -65,10 +67,10 @@ const TW = (function () {
       + `<p class="tw-note-fee">${esc(t('tw_lobby_note'))}</p>`
       + `<div class="tw-lob-act"><button type="button" class="btn pk" data-support="site">${esc(t('tw_sup_site'))}</button><a class="lr-prof" href="profile-${esc(A.id)}.html">${esc(t('mus_prof2', {a: nameL(A)}))}</a></div></div></section>`
       + `<div class="tw-ground" aria-hidden="true"></div></div>`
-      + `<div class="tw-lift" role="group" aria-label="${esc(t('tw_lift'))}"><small>${esc(t('tw_lift'))}</small>${lift}</div>`
+      + (cats.length > 1 ? `<div class="tw-lift" role="group" aria-label="${esc(t('tw_lift'))}"><small>${esc(t('tw_lift'))}</small>${lift}</div>` : '')
       + `</div>`
       + (n > shown ? `<p class="tw-more">${esc(t('tw_more', {n: shown, m: n}))}</p>` : '')
-      + (n ? sheetHtml(A) : '') + `</div>`;
+      + (A.pieces.some(hasProcess) ? sheetHtml(A) : '') + `</div>`;
   }
 
   /* the contact sheet: every work (row) x every stage (column) */
@@ -87,7 +89,8 @@ const TW = (function () {
   /* the lift: light one floor kind, dim the others */
   function bind(root) {
     const bld = root.querySelector('#tw-bld'); if (!bld) return;
-    root.querySelector('.tw-lift').addEventListener('click', e => {
+    const lift = root.querySelector('.tw-lift'); if (!lift) return;   // one floor kind only: no lift
+    lift.addEventListener('click', e => {
       const b = e.target.closest('[data-lift]'); if (!b) return;
       bld.dataset.lit = b.dataset.lift;
       root.querySelectorAll('.tw-lift [data-lift]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
@@ -105,6 +108,7 @@ const TW = (function () {
 
   function panelHtml(A, k) {
     const sts = stagesOf(A.pieces[k]), proc = hasProcess(A.pieces[k]);
+    if (!proc) return '';   // nothing but the finished work: no row of empty stage tabs
     const tabs = sts.map((st, i) => `<button type="button" class="stg-tab${st.has ? '' : ' void'}" data-stage="${st.s}" aria-pressed="false" aria-label="${esc(t('st_' + st.s) + (st.has ? '' : ' (' + none(st.s) + ')'))}"><small>0${i + 1}</small>${esc(t('st_' + st.s))}</button>`).join('');
     const peel = proc
       ? `<div class="stg-peel"><label for="stg-range">${esc(t('st_peel'))}</label><input type="range" id="stg-range" min="0" max="3" step="0.01" value="3"><small>${esc(t('st_peel_hint'))}</small></div>`

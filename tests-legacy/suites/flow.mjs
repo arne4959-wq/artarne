@@ -60,12 +60,8 @@ export async function run({url, check}) {
   check('Join form links the privacy policy', (await ev("!!document.querySelector('#dlg-join .note a[href=\"privacy.html\"]')")));
   await ev("(()=>{const f=document.querySelector('#dlg-join form');f.name.value='New Artist';f.email.value='a@example.com';f.message.value='I make things.';f.requestSubmit()})()"); await sleep(800);
   check('Join submit → email app + copyable message', (await ev("document.querySelector('#dlg-join .cdlg-h h2').textContent")) === 'Your email app is opening' && (await ev("document.getElementById('done-pre').textContent")).includes('name: New Artist'));
-  check('Join message goes to the contact address', (await ev("document.querySelector('#dlg-join .note').textContent")).includes('hello@circles.example'));
+  check('Join message goes to the contact address', (await ev("document.querySelector('#dlg-join .note').textContent.includes(CONFIG.contact)")));
   await b.key('Escape', 'Escape', 27); await sleep(300);
-  await ev("document.getElementById('news-em').value='me@example.com';document.querySelector('.news').requestSubmit()"); await sleep(500);
-  check('newsletter is kept in this browser (no endpoint yet)', (await ev("localStorage.getItem('circles-news')")) === '["me@example.com"]');
-  await ev("document.querySelector('.hp-n').value='bot';document.getElementById('news-em').value='spam@example.com';document.querySelector('.news').requestSubmit()"); await sleep(400);
-  check('newsletter honeypot: a bot-filled form is dropped', (await ev("localStorage.getItem('circles-news')")) === '["me@example.com"]');
 
   // buildings: drag must not navigate, click must
   await ev("document.getElementById('strip').scrollLeft=0;document.getElementById('strip').scrollIntoView({block:'center'});0"); await sleep(2200);   // (the filter above slid the city to another building)
@@ -86,7 +82,7 @@ export async function run({url, check}) {
 
   /* ---------- studio page (the tower: ideas / sketches / works floors) ---------- */
   await b.go(`${url}/studio-thara.html`, 3500);
-  check('studio page: a tower with 4 works (12 windows, 4 finished pictures), links to neighbours', (await ev("document.querySelectorAll('.tw-win').length")) === 12 && (await ev("document.querySelectorAll('.tw-final img').length")) === 4 && (await ev("[...document.querySelectorAll('.sn')].map(a=>a.getAttribute('href')).join()")) === 'studio-napha.html,studio-kwan.html');
+  check('studio page: a tower with 4 works (only the finished floor is built when nobody has shown a process: 4 windows, 4 finished pictures), links to neighbours', (await ev("document.querySelectorAll('.tw-win').length")) === 4 && (await ev("document.querySelectorAll('.tw-final img').length")) === 4 && (await ev("[...document.querySelectorAll('.sn')].map(a=>a.getAttribute('href')).join()")) === 'studio-napha.html,studio-kwan.html');
   await ev("document.querySelector('.tw-final[data-k=\"1\"]').click()"); await sleep(900);
   check('clicking a finished-work window opens a detail dialog with the facts', (await ev("document.getElementById('dlg').open")) && (await ev("document.getElementById('dlg-t').textContent")) === 'The Waiting' && (await ev("document.getElementById('dlg-dl').innerText")).includes('Pigment print on cotton paper'));
   check('URL remembers the open work', (await ev('location.search')) === '?work=1');

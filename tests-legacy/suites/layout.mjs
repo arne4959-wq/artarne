@@ -46,8 +46,8 @@ export async function run({url, check}) {
   for (const [w, h, touch] of [[1440, 900, false], [375, 812, true]]) {
     b = await launch(); await b.lang('th'); await b.view(w, h, touch);
     await b.go(`${url}/index.html`, 4500);
-    const r = await b.ev(`(()=>{const g=document.querySelector('.ground').getBoundingClientRect(),p=document.getElementById('progress').getBoundingClientRect(),t=document.querySelector('.tape-wrap'),tr=t.getBoundingClientRect(),m=document.getElementById('how').getBoundingClientRect();return {adjacent:t.nextElementSibling===document.getElementById('how')&&t.previousElementSibling.classList.contains('city')&&document.getElementById('manifesto').previousElementSibling.classList.contains('tape-wrap'),gap:Math.round(tr.top-g.bottom),aboveProgress:Math.round(tr.top-p.bottom),overlapsManifesto:Math.round(m.top-tr.top)}})()`);
-    check(`${w}px: hazard tape between the street and the first section (how it works) (and another one before the Manifesto), with a gap`, r.adjacent && r.gap >= 24 && r.aboveProgress >= 6 && r.overlapsManifesto > 0, r);
+    const r = await b.ev(`(()=>{const g=document.querySelector('.ground').getBoundingClientRect(),p=document.getElementById('progress').getBoundingClientRect(),t=document.querySelector('.tape-wrap'),tr=t.getBoundingClientRect(),m=document.getElementById('how').getBoundingClientRect();return {adjacent:t.nextElementSibling===document.getElementById('how')&&/city|maker/.test(t.previousElementSibling.className),gap:Math.round(tr.top-g.bottom),aboveProgress:Math.round(tr.top-p.bottom),overlapsManifesto:Math.round(m.top-tr.top)}})()`);
+    check(`${w}px: hazard tape between the street and the first section (how it works) with a gap`, r.adjacent && r.gap >= 24 && r.aboveProgress >= 6, r);   // (with one building the Manifesto no longer has a tape of its own above it)
     b.close();
   }
   /* 6 — phones: the Donate button is a bar on the bottom edge (studio page after the first screen, and inside the work window); desktop keeps the old layout */

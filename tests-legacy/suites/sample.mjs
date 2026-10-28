@@ -29,7 +29,7 @@ export async function run({url, check}) {
       check(`${lang} · ${p}: nothing for sale`, !(await b.ev(SELLING)).length, await b.ev(SELLING));
     }
     await b.go(`${url}/profile-${A.id}.html`, 3500);
-    const bad = await b.ev(SELLING.replace("const t=document.body.innerText;", "const t=[...document.body.children].filter(e=>true).map(e=>e.innerText).join('\\n').split('\\n').filter(l=>!/^\\$[0-9]+$/.test(l.trim())).join('\\n');"));
+    const bad = await b.ev(SELLING.replace("const t=document.body.innerText;", "const t=[...document.body.children].filter(e=>true).map(e=>e.innerText).join('\\n').split('\\n').filter(l=>!/^([\\d,]+ ₭ ≈ )?\\$[0-9]+$/.test(l.trim())).join('\\n');"));
     check(`${lang} · profile: nothing for sale (only the donation presets show dollars)`, !bad.length, bad);
     b.close();
   }
@@ -49,7 +49,7 @@ export async function run({url, check}) {
   await b.go(`${url}/studio-${A.id}.html`, 3500);
   check('studio: the roof sign has Donate to the artist, the lobby has Support circles, nothing says Buy', (await ev("!!document.querySelector('.tw-roof [data-support]') && !!document.querySelector('.tw-lobby [data-support=site]') && !/\\bBuy\\b/.test(document.getElementById('tw').textContent)")));
   await b.go(`${url}/profile-${A.id}.html`, 3500);
-  check('profile: presets 3 / 5 / 10 USD and a custom amount field', (await ev("[...document.querySelectorAll('.pf-amt')].map(x=>x.textContent).join()")) === '$3,$5,$10' && (await ev("!!document.querySelector('#pf-tip-n')")));
+  check('profile: presets 3 / 5 / 10 USD shown in kip (the QR currency) with the dollars, and a custom amount field', /^[\d,]+ ₭ ≈ \$3,[\d,]+ ₭ ≈ \$5,[\d,]+ ₭ ≈ \$10$/.test(await ev("[...document.querySelectorAll('.pf-amt')].map(x=>x.textContent).join()")) && (await ev("!!document.querySelector('#pf-tip-n')")));
   await ev("document.querySelector('.pf-tipf input').value='0';document.querySelector('.pf-tipf').requestSubmit()"); await sleep(200);
   check('profile: an invalid custom amount shows a message and opens nothing', (await ev("!document.querySelector('.pf-tiperr').hidden")) && (await ev("!document.getElementById('dlg-tip')?.open")));
   await ev("document.querySelector('.pf-tipf input').value='25';document.querySelector('.pf-tipf').requestSubmit()"); await sleep(500);

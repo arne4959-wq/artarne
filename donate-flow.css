@@ -24,6 +24,7 @@ dialog.df::backdrop{background:rgba(13,13,13,.82)}
 .df-brick:nth-child(even){transform:translateY(5px)}
 .df-brick[aria-pressed=true]{background:var(--df-pink);box-shadow:4px 4px 0 var(--df-ink);transform:translateY(-2px)}
 .df-brick small{display:block;font:600 11px var(--df-body)}
+.df-brick{font-size:clamp(18px,4.6vw,24px)}.df-usd{display:block;font:600 12px var(--df-body);opacity:.75}.df-amt .df-usd{font-size:15px;margin-top:4px}
 @media(max-width:480px){.df-bricks{grid-template-columns:repeat(2,1fr)}.df-brick:nth-child(even){transform:none}}
 .df-field{display:grid;gap:4px}.df-field label{font-weight:700;font-size:14px}
 .df-field input,.df-field textarea{font:500 16px var(--df-body);background:#fff;border:3px solid var(--df-ink);padding:10px;color:var(--df-ink);width:100%}

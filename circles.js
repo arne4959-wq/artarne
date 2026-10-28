@@ -7,12 +7,12 @@
    support  : the site's own bank QR, shown by the Support button: {bank, name, no, qr}. Replace the SAMPLE values (and delete `sample: true`) with your real account. Empty = "Coming soon".
    donate   : the https:// link of your support page (Ko-fi, Stripe Payment Link, ...). While it is empty the Support button on the home page shows "Coming soon" instead of a link.
    shop     : false (kept for old links; nothing reads it). The site is DONATION-ONLY: nothing is sold, there are no prices, buy buttons or buy pages. Every "Donate to <artist>" button opens the donation dialog (sample QR until real bank data is in artists.js).
-   lakPerUsd: how many Lao kip one US dollar is worth. Only the Lao (lo) pages use it: donation amounts are shown in kip, rounded to a tidy figure
-              (under 1,000,000 to the nearest 10,000, from 1,000,000 up to the nearest 100,000). Thai and English always show US dollars. 0 = Lao pages show dollars too.
+   lakPerUsd: how many Lao kip one US dollar is worth. Every artist's QR is a Lao (kip) account, so donation amounts are shown in kip in every language, rounded to a tidy figure
+              (under 1,000,000 to the nearest 10,000, from 1,000,000 up to the nearest 100,000); Thai and English add "≈ $n" so the size is still clear. 0 = dollars everywhere.
    supabaseUrl, supabaseKey: the Supabase project URL and its publishable (anon) key. Nothing reads them yet; the artist dashboard will.
    manage   : false until the artists' settings page (manage.html) is published. While false the footer "Settings" link is hidden (no dead link). tools/dist.mjs flips it to true in dist/ when it ships manage.html.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { shop: false, manage: false, support: {bank: 'BCEL', name: 'SAMPLE', no: '000 000 000 000', qr: 'art/qr-sample.svg', sample: true}, endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'hello@circles.example', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
+const CONFIG = { shop: false, manage: false, support: {bank: 'BCEL', name: 'SAMPLE', no: '000 000 000 000', qr: 'art/qr-sample.svg', sample: true}, endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'arne4959@gmail.com', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
   lakPerUsd: 22400,
   analytics: '',   // OFF. To count visits without cookies: make a free GoatCounter site and put 'https://YOURNAME.goatcounter.com/count' here. Then ALSO update privacy.html (it says there is no analytics). docs/GO-LIVE.md
   supabaseUrl: 'https://lgkqvfmnqdpajddishio.supabase.co', supabaseKey: 'sb_publishable_vDPIYxQA0JiZCumJ_qMuhg_BxFSfuXp' };   // supabase*: the artists' database (supabase/README.md). The publishable key is meant to be public: the access rules in the database protect the data, never put a secret / service_role key here.
@@ -303,11 +303,11 @@ if (LITE) document.documentElement.classList.add('lite');
 const $ = q => document.querySelector(q);
 const NF = new Intl.NumberFormat('en-US');          // built once: constructing Intl objects per call is slow
 const usd = n => '$' + NF.format(n);
-/* donation amounts: money(n) is plain text for n US dollars. Lao pages (with CONFIG.lakPerUsd set) show kip, rounded: "12,100,000 ₭"; Thai and English show "$12". */
-const lakOn = () => LANG === 'lo' && +CONFIG.lakPerUsd > 0;
+/* donation amounts: money(n) is plain text for n US dollars, shown in kip (the currency of the artists' QR): "110,000 ₭" on Lao pages, "110,000 ₭ ≈ $5" on Thai and English ones. CONFIG.lakPerUsd = 0 → "$5". */
+const lakOn = () => +CONFIG.lakPerUsd > 0;
 const lakRound = k => { const step = k < 1e6 ? 1e4 : 1e5; return Math.round(k / step) * step; };
 const lak = n => NF.format(lakRound(n * CONFIG.lakPerUsd)) + ' ₭';
-const money = n => lakOn() ? lak(n) : usd(n);
+const money = n => !lakOn() ? usd(n) : LANG === 'lo' ? lak(n) : lak(n) + ' ≈ ' + usd(n);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
 /* ---------- strings ---------- */
@@ -323,7 +323,9 @@ th: {
   don_trust:'เงินก้อนนี้เข้าบัญชีของ {a} โดยตรง · circles ไม่หักค่าธรรมเนียม ไม่ผ่านมือใคร', don_check:'ก่อนกดยืนยันในแอปธนาคาร ให้เช็กว่าชื่อผู้รับตรงกับชื่อบัญชีด้านบน',
   don_fee:'ยอดที่เห็นเป็นยอดอ้างอิง สกุลเงินที่โอนจริงและค่าธรรมเนียมธนาคาร (ถ้ามี) เป็นไปตามธนาคารของคุณ circles ไม่หักเพิ่ม',
   st_note:'circles ไม่หักค่าธรรมเนียม ค่าธรรมเนียมธนาคาร (ถ้ามี) เป็นไปตามธนาคารของผู้โอน',
-  jn_verify:'เราไม่คัดงานและไม่ตัดสินรสนิยม สิ่งเดียวที่เรายืนยันคือบัญชีรับเงินเป็นของคุณ ก่อนเปิดตึกเราจะขอภาพหน้าจอแอปธนาคารที่เห็นชื่อบัญชีตรงกับชื่อของคุณ (ปิดเลขบัญชีบางส่วนได้) เพื่อให้คนที่โอนมั่นใจว่าเงินถึงคุณจริง',
+  jn_verify:'เมื่อเปิดรับ เราไม่คัดงานและไม่ตัดสินรสนิยม สิ่งเดียวที่เรายืนยันคือบัญชีรับเงินเป็นของคุณ โดยจะขอภาพหน้าจอที่เห็นเพียงชื่อบัญชีกับเลข 4 ตัวท้าย (บังส่วนที่เหลือ) ดูแลเฉพาะผู้ดูแลเว็บ และลบภายใน 30 วันหลังตรวจเสร็จ รายละเอียดอยู่ในนโยบายความเป็นส่วนตัว ตอนนี้เรายังไม่เก็บภาพนี้',
+  jn_closed_h:'ตอนนี้ยังไม่เปิดรับคำขอมีตึก', jn_closed_p:'เมืองเพิ่งเริ่ม ตอนนี้มีตึกแรกหนึ่งหลัง คือของ Arne เรายังไม่รับคำขอจากศิลปินคนอื่น และหน้านี้ไม่มีฟอร์มและไม่เก็บข้อมูลใดๆ เมื่อพร้อมรับ เราจะประกาศที่หน้าแรกก่อน',
+  cw_back_first:'เข้าไปดูตึกแรก →',
   sup_led_in:'รับแล้ว', sup_led_out:'ใช้ไปแล้ว', sup_led_left:'คงเหลือ', sup_led_none:'ยังไม่มี',
   nav_city:'เมือง', nav_about:'เกี่ยวกับ', nav_map:'แผนที่', nav_join:'ขอมีตึก', menu_aria:'เมนู', lang_aria:'เปลี่ยนภาษา',
   wave:'คลื่นลูกใหม่', f_wave:'★ คลื่นลูกใหม่', fnote_wave:'ไฮไลต์ {n} ตึกคลื่นลูกใหม่ในแถบเมืองแล้ว',
@@ -361,7 +363,7 @@ th: {
   join_btn:'ขอมีตึก →', jn_kick:'สำหรับศิลปิน', jn_cta:'เล่าให้เราฟังสั้น ๆ ว่าคุณทำงานแบบไหน แนบลิงก์ผลงาน แล้วเราจะติดต่อกลับทางอีเมล', jb_p:'รับการสนับสนุนตรง ไม่มีใครคัดงาน ขอแค่ยืนยันว่าบัญชีรับเงินเป็นของคุณ', jb_btn:'ขอมีตึกของคุณ →', skip_main:'ข้ามไปที่เนื้อหา',
   foot_h:'ศิลปะ<em>ไม่รอ</em>ใคร', foot_p:'อยากมีตึกในเมืองนี้ ส่งงานมาได้เลย เราไม่ถามว่าคุณเป็นใคร เราดูแค่ว่างานคุณเป็นยังไง ขอแค่บัญชีรับเงินเป็นของคุณจริง', foot_btn:'ขอมีตึก →',
   foot_menu:'เมนู', foot_social:'โซเชียล', foot_manifesto:'เกี่ยวกับ', foot_how:'วิธีใช้งาน', foot_feat:'ผลงานเด่น', foot_map:'แผนที่เมือง', foot_join:'ขอมีตึก',
-  news_label:'ข่าวจากเมือง ตึกใหม่ งานใหม่ ส่งตรงถึงกล่องอีเมล ไม่สแปม ไม่ขายต่อ', news_btn:'สมัคร →', foot_copy:'© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.',
+  news_label:'ข่าวจากเมือง ตึกใหม่ งานใหม่ ส่งตรงถึงกล่องอีเมล ไม่สแปม ไม่ขายต่อ', news_btn:'สมัคร →', foot_copy:'© 2026 CIRCLES · เมืองเพิ่งเริ่ม ตอนนี้มีตึกแรกหนึ่งหลัง · NO GALLERY. NO MIDDLEMAN.',
   social_soon:'ลิงก์โซเชียลจะเปิดตอนเว็บขึ้นออนไลน์',
   /* dialogs + feedback */
   close:'ปิด', jd_title:'ขอมี<em>ตึก</em>ในเมืองนี้', jd_intro:'เล่าให้ฟังสั้น ๆ ว่าคุณทำอะไร ไม่ต้องมีประวัติยาว ไม่ต้องมีใครรับรอง เราดูที่งาน',
@@ -379,7 +381,7 @@ th: {
   pf_wh:'ผลงานในพิพิธภัณฑ์', pf_hover:'แตะหรือชี้ที่ภาพเพื่อดูผลงาน', pf_all:'เดินเข้าไปดูทั้งหมด →', pf_sup1:'ชอบงานของ{a}?', pf_sup2:'ช่วยให้สร้างงานต่อ', pf_supn:'ทุกการสนับสนุนไปถึงศิลปินโดยตรง ช่วงเริ่มต้นนี้ Circles ยังไม่หักค่าธรรมเนียมจากศิลปิน', pf_supb:'โดเนทให้{a}',sup_qr_t:'สแกนเพื่อสนับสนุน{a}', sup_bank:'ธนาคาร', sup_acc_name:'ชื่อบัญชี', sup_acc_no:'เลขบัญชี', sup_copy:'คัดลอกเลขบัญชี', sup_copied:'คัดลอกแล้ว', sup_direct:'เงินเข้าบัญชีของ {a} โดยตรง circles ไม่ได้รับเงินแทน', sup_sample:'ข้อมูลตัวอย่างเท่านั้น ห้ามโอนเงิน', search_ph:'ค้นหาศิลปิน…', search_aria:'ค้นหาศิลปินจากชื่อ สาขา หรือเมือง', fnote_q:'พบ {n} ตึกที่ตรงกับคำค้น', fnote_q0:'ไม่พบศิลปินที่ตรงกับคำค้น', calm_off:'หยุดการเคลื่อนไหว', calm_on:'เปิดการเคลื่อนไหว', share_btn:'แชร์', share_copied:'คัดลอกลิงก์แล้ว', sup_hint:'บนมือถือ: บันทึกรูป QR แล้วเปิดแอปธนาคารของคุณ (เช่น BCEL One) เลือกสแกนจากรูปในเครื่อง', sup_save:'บันทึกรูป QR', pf_soon:'เร็วๆ นี้', sm_tag:'ตัวอย่าง / SAMPLE', sm_banner:'ตัวอย่าง (SAMPLE) · นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไป ห้ามโอนเงินจริง', sm_qr_alt:'QR ตัวอย่าง ไม่ใช่ของจริง', tip_h:'เลือกจำนวนที่อยากสนับสนุน', tip_other:'จำนวนอื่น (USD)', tip_go:'ต่อไป', tip_bad:'ใส่จำนวนเต็ม 1–1000 ดอลลาร์', tip_amt:'ยอดสนับสนุน {m}', tip_sent:'ฉันโอนแล้ว', pay_notice_h:'แจ้งว่าโอนแล้ว', pay_slip:'สลิปโอนเงิน (ไม่บังคับ รูปภาพไม่เกิน 2 MB)', pay_slip_big:'ไฟล์ใหญ่เกิน 2 MB', pay_slip_type:'ต้องเป็นไฟล์รูปภาพ', pay_need_name:'กรอกชื่อ', pay_need_email:'กรอกอีเมลให้ถูกต้อง', pay_submit:'ส่งแจ้งโอน', pay_sending:'กำลังส่ง…', pay_back:'ย้อนกลับ', pay_done_h:'แจ้งโอนแล้ว · ขอบคุณ (สาธิต)', pay_done_tip:'บันทึกการแจ้งโอน {m} ให้ {a} แบบจำลองแล้ว ของจริง {a} จะกดยืนยันเมื่อเห็นยอดเข้าบัญชีของตัวเอง นี่คือการสาธิต ไม่มีอะไรถูกส่งออกไปและไม่มีเงินเคลื่อนไหว',        dlg_supn:'เงินเข้าบัญชีศิลปินโดยตรง ตอนนี้ circles ไม่หักค่าธรรมเนียม', don_done_real:'ส่งแจ้งแล้ว ศิลปินจะตรวจยอดและตอบกลับทางอีเมลที่คุณให้ไว้ ขอบคุณที่สนับสนุน', don_e_captcha:'ยืนยันตัวตนไม่ผ่าน ลองใหม่อีกครั้ง', don_e_busy:'ศิลปินมีแจ้งค้างอยู่มาก ลองใหม่ภายหลัง', don_e_rate:'ลองบ่อยเกินไป รอสักครู่', don_e_not_found:'ไม่พบศิลปินหรือผลงานนี้', don_e_bad_field:'ข้อมูลไม่ครบหรือไม่ถูกต้อง', don_e_net:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', don_e_slip:'ใช้ไฟล์สลิปนี้ไม่ได้ (JPG, PNG หรือ WebP)', don_none:'ศิลปินยังไม่ได้ใส่ข้อมูลบัญชีรับเงิน', don_work:'โดเนท · ได้แรงบันดาลใจจากงานนี้', bio_more:'อ่านต่อ', bio_less:'ย่อ', don_for:'เพื่อผลงาน “{t}”', don_how:'สแกน QR ด้วยแอปธนาคาร (เช่น BCEL One) หรือโอนเข้าบัญชีด้านล่าง แล้วกด “ฉันโอนแล้ว” เงินเข้าศิลปินโดยตรง ตอนนี้ circles ไม่หักค่าธรรมเนียม',        zoom_btn:'ขยายภาพเต็มจอ', zoom_in:'ซูมเข้า', zoom_out:'ซูมออก', zoom_reset:'ขนาดพอดี', zoom_hint:'เลื่อนล้อเมาส์หรือหยิกนิ้วเพื่อซูม ลากเพื่อเลื่อน กด Esc เพื่อปิด', hint_swipe:'▼ ปัดซ้าย-ขวาเพื่อเดินดูภาพ แตะที่ภาพเพื่อดูรายละเอียดเต็ม', nav_all:'ศิลปินทั้งหมด', bc_aria:'เส้นทางหน้า', bc_city:'เมือง', bc_artists:'ศิลปิน', bc_work:'ผลงาน',   
   pf_walk:'เดินเข้าพิพิธภัณฑ์ →', pf_ask:'ถามศิลปิน', pf_ig:'Instagram', pf_share:'แชร์โปรไฟล์ ↗', pf_copy:'คัดลอกลิงก์', pf_copied:'คัดลอกลิงก์แล้ว', pf_marq:'ART NOT SORRY ★ วงกลมไม่มีวันจบ ★ CIRCLES ★ เดินเข้าพิพิธภัณฑ์ ★ ',
   mus_prof:'ดูโปรไฟล์ศิลปิน', title_pf:'โปรไฟล์ของ{a} — circles', desc_pf:'รู้จัก{a} ศิลปินสาขา{d} แนวคิดของงาน ผลงานในพิพิธภัณฑ์ และช่องทางสนับสนุน',
-  fold_spot:'อ่านบทสัมภาษณ์ 3 ข้อ', fold_foot:'เมนู โซเชียล และจดหมายข่าว',
+  fold_spot:'อ่านบทสัมภาษณ์ 3 ข้อ', fold_foot:'เมนู',
         
            
      
@@ -433,7 +435,7 @@ th: {
   lg_img:"ภาพวาด",
   lg_count:"{n} ภาพบนผนัง",
   foot_set:'ตั้งค่า (ศิลปิน)',   nav_don:'บริจาค', foot_report:'แจ้งปัญหา',   rp_work:'แจ้งงานนี้',
-  mk_go:'เข้าไปในตึกของผม →',   mk_k:'จากคนสร้างเมือง', mk_h:'งานของผม', mk_p:'เมืองนี้เริ่มจากงานเล็ก ๆ ที่ผมทำเอง ตัดแปะ ซ้อนภาพ ใส่ดาวแดง ผมเป็นนักศึกษาไอทีปีหนึ่งที่เวียงจันทน์ ภาพเหล่านี้เป็นฝีมือผม ใช้เป็นเสียงของเมืองไปก่อนที่ศิลปินคนอื่นจะเข้ามา', mk_a1:'ภาพตัดแปะภาพวาดสระบัวและคำว่า ART ซ้ำ ๆ มีดาวแดงลอยทับ', mk_a2:'ภาพม้าขาวสีเทา มีดาวแดงบนหน้าผาก', mk_a3:'ภาพตัดแปะสีเขียวสะท้อนแสง มีดาวสีชมพูและจุดสีส้ม',
+  mk_go:'เข้าไปในตึกของผม →',   mk_k:'ตึกแรกของเมือง', mk_h:'งานของผม', mk_p:'เมืองนี้เริ่มจากงานเล็ก ๆ ที่ผมทำเอง ตัดแปะ ซ้อนภาพ ใส่ดาวแดง ผมเป็นนักศึกษาไอทีปีหนึ่งที่เวียงจันทน์ ภาพเหล่านี้เป็นฝีมือผม ใช้เป็นเสียงของเมืองไปก่อนที่ศิลปินคนอื่นจะเข้ามา', mk_a1:'ภาพตัดแปะภาพวาดสระบัวและคำว่า ART ซ้ำ ๆ มีดาวแดงลอยทับ', mk_a2:'ภาพม้าขาวสีเทา มีดาวแดงบนหน้าผาก', mk_a3:'ภาพตัดแปะสีเขียวสะท้อนแสง มีดาวสีชมพูและจุดสีส้ม',
   lg_f_title:"ชื่อภาพ",
   lg_f_maker:"จิตรกร · ปี",
   lg_f_own:"แนวคิดของเขา ในคำของเขาเอง",
@@ -473,6 +475,8 @@ th: {
   v_tb_by:'ผู้เขียน',
   v_tb_work:'ผลงาน',
   v_note:'ทั้งหมดเป็นคำของศิลปินเอง circles ไม่แก้ไขและไม่ตีความแทน',
+  v_soon:'เร็วๆ นี้', v_soon_p:'ยังไม่มีคำของศิลปินสำหรับชิ้นนี้ {a} จะเขียนเองเมื่อพร้อม เราไม่เขียนแทน',
+  cc_soon_p:'{a} ยังไม่ได้เขียนแนวคิดของงานชิ้นนี้ ที่มา วัสดุ และขั้นตอนจะมาอยู่ตรงนี้เมื่อศิลปินเขียนเอง',
   f_say:'งานนี้อยากบอกอะไร (ประโยคเดียว)',
   f_why:'ที่มาของงาน',
   f_look:'อยากให้ดูตรงไหน',
@@ -480,7 +484,7 @@ th: {
   sc_done_r_h:'ขอบคุณที่ช่วย circles',
   sc_done_r_p:'ขอบคุณที่ช่วยดูแลเว็บ {m} ทีมงานจะเห็นยอดเมื่อเงินเข้าบัญชี circles เงินก้อนนี้ไม่ได้ไปถึงศิลปิน',
   /* studio tower (2026-10-22): ideas / sketches / works floors, stages in the work window */
-  tw_hint_k:'ลองเล่น', tw_hint:'กดปุ่มลิฟต์เพื่อเปิดไฟชั้นนั้น ชั้นอื่นจะมืดลง กดหน้าต่างเพื่อเข้าไปดูงาน',
+  tw_hint_k:'ลองเล่น', tw_hint1:'กดหน้าต่างเพื่อเข้าไปดูงาน', tw_hint:'กดปุ่มลิฟต์เพื่อเปิดไฟชั้นนั้น ชั้นอื่นจะมืดลง กดหน้าต่างเพื่อเข้าไปดูงาน',
   tw_roof:'ตึกของ {n}', tw_don:'โดเนทให้ {a}', tw_lift:'ลิฟต์', tw_lift_all:'เปิดไฟทั้งตึก', tw_fl:'ชั้น {n}', tw_fl_r:'ชั้น {a}–{b}',
   tw_cat_idea:'ไอเดีย', tw_cat_sketch:'สเก็ตช์', tw_cat_work:'ผลงานจริง',
   tw_room_idea:'ดาดฟ้า · ไอเดีย', tw_room_sketch:'ห้องสเก็ตช์', tw_room_work:'ห้องจัดแสดง',
@@ -504,7 +508,9 @@ en: {
   don_trust:'This money goes straight to {a}’s own account · circles takes no fee and never holds it', don_check:'Before you confirm in your bank app, check that the recipient name matches the account name above.',
   don_fee:'The amount shown is a reference. The currency actually sent and any bank fee are set by your own bank. circles adds nothing.',
   st_note:'circles takes no fee. Any bank fee is set by the sender’s bank.',
-  jn_verify:'We do not jury work or judge taste. The one thing we check is that the payout account is yours. Before your building opens we will ask for a screenshot of your bank app showing an account name that matches yours (you may hide part of the number) so people who send money know it reaches you.',
+  jn_verify:'When requests open, we still do not jury work or judge taste. The one thing we check is that the payout account is yours. We will ask for a screenshot that shows only the account name and the last 4 digits (hide the rest). Only the site admin sees it, and it is deleted within 30 days after the check. Details are in the privacy policy. We do not collect this screenshot now.',
+  jn_closed_h:'Building requests are not open yet', jn_closed_p:'The city has only just started, with one building so far: Arne’s. We are not taking requests from other artists yet, and this page has no form and collects nothing. When we are ready, we will announce it on the home page first.',
+  cw_back_first:'Visit the first building →',
   sup_led_in:'Received', sup_led_out:'Spent', sup_led_left:'Left', sup_led_none:'None yet',
   nav_city:'City', nav_about:'About', nav_map:'Map', nav_join:'Get a building', menu_aria:'Menu', lang_aria:'Switch language',
   wave:'NEW WAVE', f_wave:'★ New wave', fnote_wave:'Highlighted {n} new-wave building(s) in the strip',
@@ -542,7 +548,7 @@ en: {
   join_btn:'Get a building →', jn_kick:'For artists', jn_cta:'Tell us briefly what you make and add a link to your work. We will get back to you by email.', jb_p:'Get supported directly, no jury. We only check that the payout account is yours.', jb_btn:'Get your own building →', skip_main:'Skip to content',
   foot_h:'Art <em>waits</em> for no one', foot_p:"Want a building in this city? Send us your work. We won't ask who you are, only what your work is like. We only need the payout account to really be yours.", foot_btn:'Get a building →',
   foot_menu:'Menu', foot_social:'Social', foot_manifesto:'About', foot_how:'How it works', foot_feat:'Featured', foot_map:'City map', foot_join:'Get a building',
-  news_label:'News from the city: new buildings, new work, straight to your inbox. No spam, never resold.', news_btn:'Subscribe →', foot_copy:'© 2026 CIRCLES · prototype · artists and works shown are examples · NO GALLERY. NO MIDDLEMAN.',
+  news_label:'News from the city: new buildings, new work, straight to your inbox. No spam, never resold.', news_btn:'Subscribe →', foot_copy:'© 2026 CIRCLES · the city has only just started, one building so far · NO GALLERY. NO MIDDLEMAN.',
   social_soon:'Social links open when the site goes live',
   close:'Close', jd_title:'Request a <em>building</em> in this city', jd_intro:"Tell us briefly what you make. No long CV, no references. We look at the work.",
   jd_name:'Name / pen name', jd_email:'Email', jd_disc:'Discipline', jd_other:'Other', jd_link:'Link to your work (site / Instagram / Drive)', jd_msg:'Tell us about your work', jd_pay_h:'How people can support you (optional)', jd_pay_note:'Add the bank and account you want supporters to pay into. When we reply by email we will ask for the receive-money QR from your bank app. The money goes straight to you.', jd_bank:'Bank', jd_send:'Send request →', jd_cancel:'Cancel',
@@ -558,7 +564,7 @@ en: {
   pf_wh:'Works in the museum', pf_hover:'Tap or point at a picture to see the work', pf_all:'Walk in and see them all →', pf_sup1:"Like {a}'s work?", pf_sup2:'Help keep it going', pf_supn:'Every bit of support goes straight to the artist. For now Circles takes no fee from artists.', pf_supb:'Donate to {a}',sup_qr_t:'Scan to support {a}', sup_bank:'Bank', sup_acc_name:'Account name', sup_acc_no:'Account number', sup_copy:'Copy account number', sup_copied:'Copied', sup_direct:'The money goes straight to {a}\'s account. circles never holds it.', sup_sample:'Sample data only. Do not transfer money.', search_ph:'Search artists…', search_aria:'Search artists by name, discipline or city', fnote_q:'{n} building(s) match your search', fnote_q0:'No artist matches your search', calm_off:'Pause motion', calm_on:'Resume motion', share_btn:'Share', share_copied:'Link copied', sup_hint:'On a phone: save the QR image, then open your bank app (for example BCEL One) and scan it from your gallery.', sup_save:'Save QR image', pf_soon:'Coming soon', sm_tag:'SAMPLE', sm_banner:'SAMPLE · this is a demo. Nothing is sent. Do not transfer real money.', sm_qr_alt:'Sample QR, not real', tip_h:'Choose an amount to give', tip_other:'Other amount (USD)', tip_go:'Continue', tip_bad:'Enter a whole number from 1 to 1000 dollars', tip_amt:'Donation: {m}', tip_sent:"I've donated", pay_notice_h:'I\'ve donated', pay_slip:'Transfer slip (optional, image up to 2 MB)', pay_slip_big:'The file is larger than 2 MB', pay_slip_type:'It must be an image file', pay_need_name:'Please enter your name', pay_need_email:'Please enter a valid e-mail', pay_submit:'Send notice', pay_sending:'Sending…', pay_back:'Back', pay_done_h:'Notice sent · thank you (demo)', pay_done_tip:'A pretend transfer notice of {m} to {a} was recorded. For real, {a} confirms it once the money shows up in their own account. This is a demo: nothing was sent and no money moved.',        dlg_supn:'The money goes straight to the artist. For now circles takes no fee.', don_done_real:'Notice sent. The artist will check the amount and write to the e-mail you gave. Thank you for your support!', don_e_captcha:'Verification failed. Try again.', don_e_busy:'The artist has many notices waiting. Try again later.', don_e_rate:'Too many tries. Wait a moment.', don_e_not_found:'This artist or work was not found', don_e_bad_field:'Some details are missing or wrong', don_e_net:'Could not send. Try again.', don_e_slip:'The slip file cannot be used (JPG, PNG or WebP)', don_none:'The artist has not added payment details yet', don_work:'Donate · inspired by this work', bio_more:'More', bio_less:'Less', don_for:'For the work “{t}”', don_how:'Scan the QR with your bank app (for example BCEL One) or transfer to the account below, then press “I have donated”. The money goes straight to the artist. For now circles takes no fee.',        zoom_btn:'View the artwork fullscreen', zoom_in:'Zoom in', zoom_out:'Zoom out', zoom_reset:'Fit to screen', zoom_hint:'Scroll or pinch to zoom, drag to move, Esc to close', hint_swipe:'▼ Swipe left and right to walk the hall. Tap a work for full details', nav_all:'All artists', bc_aria:'Breadcrumb', bc_city:'City', bc_artists:'Artists', bc_work:'Work',   
   pf_walk:'Walk into the museum →', pf_ask:'Ask the artist', pf_ig:'Instagram', pf_share:'Share profile ↗', pf_copy:'Copy link', pf_copied:'Link copied', pf_marq:'ART NOT SORRY ★ CIRCLES NEVER END ★ CIRCLES ★ WALK INTO THE MUSEUM ★ ',
   mus_prof:'View artist profile', title_pf:"{a}'s profile — circles", desc_pf:"Meet {a}, {d} artist: the ideas behind the work, the works in the museum, and a way to support them.",
-  fold_spot:'Read the 3-question interview', fold_foot:'Menu, social & newsletter',
+  fold_spot:'Read the 3-question interview', fold_foot:'Menu',
         
            
      
@@ -613,7 +619,7 @@ en: {
   lg_img:"Paintings",
   lg_count:"{n} paintings on the walls",
   foot_set:'Settings (artists)',   nav_don:'Donate', foot_report:'Report a problem',   rp_work:'Report this work',
-  mk_go:'Walk into my building →',   mk_k:'From the city’s maker', mk_h:'My own work', mk_p:'This city started from small things I made myself: collage, layered images, red stars. I am a first-year IT student in Vientiane. These pieces are mine, and they are the voice of the city until other artists arrive.', mk_a1:'Collage of a water-lily pond painting with the word ART repeated and red stars floating over it', mk_a2:'Grey-toned white horse with a red star on its forehead', mk_a3:'Neon green collage with pink stars and orange dots',
+  mk_go:'Walk into my building →',   mk_k:'The city’s first building', mk_h:'My own work', mk_p:'This city started from small things I made myself: collage, layered images, red stars. I am a first-year IT student in Vientiane. These pieces are mine, and they are the voice of the city until other artists arrive.', mk_a1:'Collage of a water-lily pond painting with the word ART repeated and red stars floating over it', mk_a2:'Grey-toned white horse with a red star on its forehead', mk_a3:'Neon green collage with pink stars and orange dots',
   lg_f_title:"Title",
   lg_f_maker:"Painter · year",
   lg_f_own:"His concept, in his own words",
@@ -653,6 +659,8 @@ en: {
   v_tb_by:'Written by',
   v_tb_work:'Work',
   v_note:'These are the artist’s own words. circles does not edit or interpret them.',
+  v_soon:'Coming soon', v_soon_p:'No words from the artist for this work yet. {a} will write them when ready; we do not write them for anyone.',
+  cc_soon_p:'{a} has not written the concept for this work yet. Its origin, material and steps will appear here once the artist writes them.',
   f_say:'What this work says (one sentence)',
   f_why:'Where it came from',
   f_look:'Where to look',
@@ -660,7 +668,7 @@ en: {
   sc_done_r_h:'Thank you for supporting circles',
   sc_done_r_p:'Thank you for helping run the site with {m}. It is counted when it reaches circles’ account. It did not go to any artist.',
   /* studio tower (2026-10-22): ideas / sketches / works floors, stages in the work window */
-  tw_hint_k:'Try it', tw_hint:'Press a lift button to light that floor; the others go dark. Click a window to step inside the work.',
+  tw_hint_k:'Try it', tw_hint1:'Click a window to step inside the work.', tw_hint:'Press a lift button to light that floor; the others go dark. Click a window to step inside the work.',
   tw_roof:"{n}'S BUILDING", tw_don:'Donate to {a}', tw_lift:'Lift', tw_lift_all:'Light the whole building', tw_fl:'Floor {n}', tw_fl_r:'Floors {a}–{b}',
   tw_cat_idea:'Ideas', tw_cat_sketch:'Sketches', tw_cat_work:'Finished works',
   tw_room_idea:'Roof deck · ideas', tw_room_sketch:'Sketch room', tw_room_work:'Gallery',
@@ -839,7 +847,7 @@ lo: {
   foot_social: "ໂຊຊຽວ",   // DRAFT lo: needs native review
   news_label: "ຂ່າວຈາກເມືອງ ຕຶກໃໝ່ ຜົນງານໃໝ່ ສົ່ງຕົງເຖິງກ່ອງອີເມວ ບໍ່ສະແປມ ບໍ່ຂາຍຕໍ່",   // DRAFT lo: needs native review
   news_btn: "ສະໝັກ →",   // DRAFT lo: needs native review
-  foot_copy: "© 2026 CIRCLES · ຕົ້ນແບບ · ສິລະປິນ ແລະ ຜົນງານໃນເວັບນີ້ເປັນຕົວຢ່າງ · NO GALLERY. NO MIDDLEMAN.",   // DRAFT lo: needs native review
+  foot_copy: "© 2026 CIRCLES · ເມືອງເພິ່ງເລີ່ມ ຕອນນີ້ມີຕຶກທຳອິດໜຶ່ງຫຼັງ · NO GALLERY. NO MIDDLEMAN.",   // DRAFT lo: needs native review
   news_saved: "ບັນທຶກອີເມວໄວ້ໃນເຄື່ອງນີ້ແລ້ວ (ຍັງບໍ່ໄດ້ເຊື່ອມລະບົບສົ່ງຈົດໝາຍ)",   // DRAFT lo: needs native review
   news_sent: "ສະໝັກຮັບຂ່າວສຳເລັດແລ້ວ",   // DRAFT lo: needs native review
   cy_h: "ວົງມົນບໍ່ມີປາຍທາງ ສິລະປະກໍຄືກັນ",   // DRAFT lo: needs native review
@@ -870,7 +878,7 @@ lo: {
   pf_ig: "Instagram",   // DRAFT lo: needs native review
   works_n: "{n} WORKS",   // DRAFT lo: needs native review
   fold_spot: "ອ່ານບົດສຳພາດ 3 ຂໍ້",   // DRAFT lo: needs native review
-  fold_foot: "ເມນູ ໂຊຊຽວ ແລະ ຈົດໝາຍຂ່າວ",   // DRAFT lo: needs native review
+  fold_foot: "ເມນູ",   // DRAFT lo: needs native review
   pf_h: "ໂປຣໄຟລ໌ຂອງ{a}",   // DRAFT lo: needs native review
      // DRAFT lo: needs native review
      // DRAFT lo: needs native review
@@ -1031,7 +1039,7 @@ lo: {
   lg_open: "ເບິ່ງປະຫວັດແລະຜົນງານຂອງເຂົາ →",   // DRAFT lo: needs native review
   foot_set: "ຕັ້ງຄ່າ (ສິລະປິນ)",   // DRAFT lo: needs native review
   nav_don: "ບໍລິຈາກ",   // DRAFT lo: needs native review
-  mk_go: 'ເຂົ້າໄປໃນຕຶກຂອງຂ້ອຍ →',   mk_k: 'ຈາກຜູ້ສ້າງເມືອງ', mk_h: 'ຜົນງານຂອງຂ້ອຍ', mk_p: 'ເມືອງນີ້ເລີ່ມຈາກງານນ້ອຍໆທີ່ຂ້ອຍເຮັດເອງ ຕັດແປະ ຊ້ອນຮູບ ໃສ່ດາວແດງ ຂ້ອຍເປັນນັກສຶກສາໄອທີປີໜຶ່ງຢູ່ວຽງຈັນ ຮູບເຫຼົ່ານີ້ເປັນຝີມືຂ້ອຍ ເປັນສຽງຂອງເມືອງກ່ອນທີ່ສິລະປິນຄົນອື່ນຈະເຂົ້າມາ', mk_a1: 'ຮູບຕັດແປະຮູບແຕ້ມສະນ້ຳດອກບົວແລະຄຳວ່າ ART ຊ້ຳໆ ມີດາວແດງລອຍທັບ', mk_a2: 'ຮູບມ້າຂາວສີເທົາ ມີດາວແດງເທິງໜ້າຜາກ', mk_a3: 'ຮູບຕັດແປະສີຂຽວສະທ້ອນແສງ ມີດາວສີບົວແລະຈຸດສີສົ້ມ',   // DRAFT lo: needs native review
+  mk_go: 'ເຂົ້າໄປໃນຕຶກຂອງຂ້ອຍ →',   mk_k: 'ຕຶກທຳອິດຂອງເມືອງ', mk_h: 'ຜົນງານຂອງຂ້ອຍ', mk_p: 'ເມືອງນີ້ເລີ່ມຈາກງານນ້ອຍໆທີ່ຂ້ອຍເຮັດເອງ ຕັດແປະ ຊ້ອນຮູບ ໃສ່ດາວແດງ ຂ້ອຍເປັນນັກສຶກສາໄອທີປີໜຶ່ງຢູ່ວຽງຈັນ ຮູບເຫຼົ່ານີ້ເປັນຝີມືຂ້ອຍ ເປັນສຽງຂອງເມືອງກ່ອນທີ່ສິລະປິນຄົນອື່ນຈະເຂົ້າມາ', mk_a1: 'ຮູບຕັດແປະຮູບແຕ້ມສະນ້ຳດອກບົວແລະຄຳວ່າ ART ຊ້ຳໆ ມີດາວແດງລອຍທັບ', mk_a2: 'ຮູບມ້າຂາວສີເທົາ ມີດາວແດງເທິງໜ້າຜາກ', mk_a3: 'ຮູບຕັດແປະສີຂຽວສະທ້ອນແສງ ມີດາວສີບົວແລະຈຸດສີສົ້ມ',   // DRAFT lo: needs native review
   rp_work: "ແຈ້ງຜົນງານນີ້",   // DRAFT lo: needs native review
   foot_report: "ແຈ້ງບັນຫາ",   // DRAFT lo: needs native review
   lg_f_title: "ຊື່ຮູບ",   // DRAFT lo: needs native review
@@ -1073,6 +1081,9 @@ lo: {
   v_tb_by: "ຜູ້ຂຽນ",   // DRAFT lo: needs native review
   v_tb_work: "ຜົນງານ",   // DRAFT lo: needs native review
   v_note: "ທັງໝົດເປັນຄຳຂອງສິລະປິນເອງ circles ບໍ່ແກ້ໄຂ ແລະ ບໍ່ຕີຄວາມແທນ",   // DRAFT lo: needs native review
+  v_soon: "ໄວໆ ນີ້",   // DRAFT lo: needs native review
+  cc_soon_p: "{a} ຍັງບໍ່ໄດ້ຂຽນແນວຄິດຂອງຜົນງານຊິ້ນນີ້ ທີ່ມາ ວັດສະດຸ ແລະ ຂັ້ນຕອນຈະມາຢູ່ບ່ອນນີ້ເມື່ອສິລະປິນຂຽນເອງ",   // DRAFT lo: needs native review
+  v_soon_p: "ຍັງບໍ່ມີຄຳຂອງສິລະປິນສຳລັບຊິ້ນນີ້ {a} ຈະຂຽນເອງເມື່ອພ້ອມ ພວກເຮົາບໍ່ຂຽນແທນ",   // DRAFT lo: needs native review
   f_say: "ຜົນງານນີ້ຢາກບອກຫຍັງ (ປະໂຫຍກດຽວ)",   // DRAFT lo: needs native review
   f_why: "ທີ່ມາຂອງຜົນງານ",   // DRAFT lo: needs native review
   f_look: "ຢາກໃຫ້ເບິ່ງຕົງໃດ",   // DRAFT lo: needs native review
@@ -1127,12 +1138,16 @@ lo: {
   don_check: "ກ່ອນກົດຢືນຢັນໃນແອັບທະນາຄານ ໃຫ້ກວດວ່າຊື່ຜູ້ຮັບກົງກັບຊື່ບັນຊີດ້ານເທິງ",   // DRAFT lo: needs native review
   don_fee: "ຍອດທີ່ເຫັນເປັນຍອດອ້າງອີງ ສະກຸນເງິນທີ່ໂອນຈິງ ແລະ ຄ່າທຳນຽມທະນາຄານ (ຖ້າມີ) ເປັນໄປຕາມທະນາຄານຂອງທ່ານ circles ບໍ່ຫັກເພີ່ມ",   // DRAFT lo: needs native review
   st_note: "circles ບໍ່ຫັກຄ່າທຳນຽມ ຄ່າທຳນຽມທະນາຄານ (ຖ້າມີ) ເປັນໄປຕາມທະນາຄານຂອງຜູ້ໂອນ",   // DRAFT lo: needs native review
-  jn_verify: "ພວກເຮົາບໍ່ຄັດງານ ແລະ ບໍ່ຕັດສິນລົດນິຍົມ ສິ່ງດຽວທີ່ພວກເຮົາຢືນຢັນແມ່ນບັນຊີຮັບເງິນເປັນຂອງທ່ານ ກ່ອນເປີດຕຶກ ພວກເຮົາຈະຂໍພາບໜ້າຈໍແອັບທະນາຄານທີ່ເຫັນຊື່ບັນຊີກົງກັບຊື່ຂອງທ່ານ (ປິດເລກບັນຊີບາງສ່ວນໄດ້) ເພື່ອໃຫ້ຄົນທີ່ໂອນເງິນໝັ້ນໃຈວ່າເງິນເຖິງທ່ານແທ້",   // DRAFT lo: needs native review
+  jn_verify: "ເມື່ອເປີດຮັບ ພວກເຮົາຍັງບໍ່ຄັດງານ ແລະ ບໍ່ຕັດສິນລົດນິຍົມ ສິ່ງດຽວທີ່ຢືນຢັນແມ່ນບັນຊີຮັບເງິນເປັນຂອງທ່ານ ໂດຍຈະຂໍພາບໜ້າຈໍທີ່ເຫັນພຽງຊື່ບັນຊີ ແລະ ເລກ 4 ຕົວທ້າຍ (ປິດສ່ວນທີ່ເຫຼືອ) ສະເພາະຜູ້ດູແລເວັບເບິ່ງໄດ້ ແລະ ລຶບພາຍໃນ 30 ວັນຫຼັງກວດແລ້ວ ລາຍລະອຽດຢູ່ໃນນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ ດຽວນີ້ພວກເຮົາຍັງບໍ່ເກັບພາບນີ້",   // DRAFT lo: needs native review
+  jn_closed_h: "ດຽວນີ້ຍັງບໍ່ເປີດຮັບຄຳຂໍມີຕຶກ",   // DRAFT lo: needs native review
+  cw_back_first: "ເຂົ້າໄປເບິ່ງຕຶກທຳອິດ →",   // DRAFT lo: needs native review
+  jn_closed_p: "ເມືອງເພິ່ງເລີ່ມ ດຽວນີ້ມີຕຶກທຳອິດໜຶ່ງຫຼັງ ຄືຂອງ Arne ພວກເຮົາຍັງບໍ່ຮັບຄຳຂໍຈາກສິລະປິນຄົນອື່ນ ແລະ ໜ້ານີ້ບໍ່ມີຟອມ ແລະ ບໍ່ເກັບຂໍ້ມູນໃດໆ ເມື່ອພ້ອມຮັບ ພວກເຮົາຈະປະກາດທີ່ໜ້າທຳອິດກ່ອນ",   // DRAFT lo: needs native review
   sup_led_in: "ໄດ້ຮັບແລ້ວ",   // DRAFT lo: needs native review
   sup_led_out: "ໃຊ້ໄປແລ້ວ",   // DRAFT lo: needs native review
   sup_led_left: "ຄົງເຫຼືອ",   // DRAFT lo: needs native review
   sup_led_none: "ຍັງບໍ່ມີ",   // DRAFT lo: needs native review
   /* studio tower (2026-10-22): ideas / sketches / works floors, stages in the work window */
+  tw_hint1: "ກົດປ່ອງຢ້ຽມເພື່ອເຂົ້າໄປເບິ່ງຜົນງານ",   // DRAFT lo: needs native review (the end of tw_hint)
   tw_hint_k: "ລອງຫຼິ້ນ",   // DRAFT lo: needs native review
   tw_hint: "ກົດປຸ່ມລິບເພື່ອເປີດໄຟຊັ້ນນັ້ນ ຊັ້ນອື່ນຈະມືດລົງ ກົດປ່ອງຢ້ຽມເພື່ອເຂົ້າໄປເບິ່ງຜົນງານ",   // DRAFT lo: needs native review
   tw_roof: "ຕຶກຂອງ {n}",   // DRAFT lo: needs native review
@@ -1402,7 +1417,7 @@ function wireDonate() {
 function wireNav() {
   wireDonate();
   document.querySelectorAll('.links, #mnav').forEach(nav => {   // "All artists": next to "City" in the top bar and the phone menu, on every page (it goes to the search + filter row on the home page)
-    const city = nav.querySelector('a[href$="#city"]'); if (!city || nav.querySelector('[data-all]')) return;
+    const city = nav.querySelector('a[href$="#city"]'); if (!city || nav.querySelector('[data-all]') || ARTISTS.length < 3) return;   // the search + filter row is hidden while the city has fewer than three artists
     const a = document.createElement('a'); a.href = city.getAttribute('href').replace(/#city$/, '#all-artists'); a.dataset.t = 'nav_all'; a.dataset.all = ''; a.textContent = t('nav_all'); city.after(a);
   });
   langSeg(true);
