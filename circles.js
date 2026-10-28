@@ -122,11 +122,12 @@ function sampleNoticeWire(root, onOk, onBack) {   // validates by hand (name, e-
    forTitle = the work that inspired the gift (shown only as a note, the money goes to the artist). Sample mode: nothing is sent, see the block above. */
 /* ---------- punk-ui: cube.*, donate-flow.*, times.*, notices.js are loaded on demand (see HOOKUP.md), so no page needs new <script> tags.
    punkLoad(['cube','donate']) -> Promise<bool>; false = a file failed to load and the caller falls back to the plain version. ---------- */
+const PUNK_V = {"cube.css":"cc63938c", "cube.js":"9e59b414", "donate-flow.css":"8bb61ff5", "donate-flow.js":"875f72ed", "times.css":"7f5133c3", "notices.js":"229efaae", "times.js":"5bf0c24a"};   // filled by tools/stamp.mjs: file -> content hash, so a changed file is fetched fresh instead of from the browser cache
 const PUNK_FILES = {cube: ['cube.css', 'cube.js'], donate: ['cube.css', 'cube.js', 'donate-flow.css', 'donate-flow.js'], times: ['times.css', 'notices.js', 'times.js']};
 const punkLoaded = {};
 const punkLoad = names => Promise.all([].concat(...names.map(n => PUNK_FILES[n])).filter((f, i, a) => a.indexOf(f) === i).map(f => punkLoaded[f] || (punkLoaded[f] = new Promise((ok, no) => {
   const css = f.endsWith('.css'), el = document.createElement(css ? 'link' : 'script');
-  if (css) { el.rel = 'stylesheet'; el.href = f; } else { el.src = f; }
+  const u = PUNK_V[f] ? f + '?v=' + PUNK_V[f] : f; if (css) { el.rel = 'stylesheet'; el.href = u; } else { el.src = u; }
   el.onload = ok; el.onerror = () => { delete punkLoaded[f]; no(new Error(f)); }; document.head.appendChild(el);
 })))).then(() => true, () => false);
 /* the works of the REAL artists for THE CIRCLES TIMES / the ticker. res is 0 on purpose: sampleRes() invents counts for every artist, and a real artist has no real counts yet (needs a server) */

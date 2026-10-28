@@ -8,6 +8,7 @@
     "start": "python3 serve.py",
     "build": "node tools/build.mjs",
     "dist": "node tools/dist.mjs",
+    "stamp": "node tools/stamp.mjs",
     "pictures": "node tools/get-pictures.mjs",
     "lao-review": "node tools/lao-review.mjs",
     "doctor": "node tools/doctor.mjs",

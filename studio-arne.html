@@ -21,9 +21,9 @@
 <link rel="preload" href="fonts/anton-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/chonburi-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-thai-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="fonts/fonts.css">
-<link rel="stylesheet" href="circles.css">
-<link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="fonts/fonts.css?v=70f6ceb0">
+<link rel="stylesheet" href="circles.css?v=e4686373">
+<link rel="stylesheet" href="tower.css?v=10e39674">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -394,9 +394,9 @@ html[lang=th] .dlg-deal .btn{font-size:1.15rem;}
   <div class="cdlg-foot" aria-hidden="true"></div>
 </dialog>
 
-<script src="artists.js"></script>
-<script src="circles.js"></script>
-<script src="tower.js"></script>
+<script src="artists.js?v=acc1e1e2"></script>
+<script src="circles.js?v=16406220"></script>
+<script src="tower.js?v=18a46bf5"></script>
 <script>
 const params = new URLSearchParams(location.search);
 const wantId = params.get('id') || (document.querySelector('#main[data-studio]') || {dataset: {}}).dataset.studio || 'napha';
@@ -542,6 +542,6 @@ wireNav(); ready = true; applyLang();
 const w0 = params.get('work');
 if (A && w0 !== null && /^\d+$/.test(w0) && +w0 < A.pieces.length) setTimeout(() => openWork(+w0, params.get('stage')), reduce ? 0 : 700);
 </script>
-<script src="pixel-punks.js"></script>
+<script src="pixel-punks.js?v=f7c46d6a"></script>
 </body>
 </html>

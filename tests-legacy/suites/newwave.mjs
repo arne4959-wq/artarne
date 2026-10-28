@@ -61,8 +61,8 @@ export async function run({url, check}) {
   {
     const m = await launch(); await m.lang('en'); await m.view(375, 812, true);
     await m.go(`${url}/cutaway.html?id=${wave[0].id}`, 3500);
-    const r = await m.ev(`({lift:document.querySelector('.tw-lift').getBoundingClientRect().top<document.getElementById('tw-bld').getBoundingClientRect().top,perRow:Math.max(...[...document.querySelectorAll('.tw-fl')].map(f=>new Set([...f.querySelectorAll('.tw-win')].map(w=>Math.round(w.getBoundingClientRect().top))).size)),ox:document.documentElement.scrollWidth-innerWidth})`);
-    check('375px: the lift is a row above the tower, every floor keeps its windows on one row, no horizontal overflow', r.lift && r.perRow === 1 && r.ox <= 0, r);
+    const r = await m.ev(`({lift:!document.querySelector('.tw-lift')||document.querySelector('.tw-lift').getBoundingClientRect().top<document.getElementById('tw-bld').getBoundingClientRect().top,perRow:Math.max(...[...document.querySelectorAll('.tw-fl')].map(f=>new Set([...f.querySelectorAll('.tw-win')].map(w=>Math.round(w.getBoundingClientRect().top))).size)),ox:document.documentElement.scrollWidth-innerWidth})`);
+    check('375px: the lift (when there is more than one kind of floor) is a row above the tower, every floor keeps its windows on one row, no horizontal overflow', r.lift && r.perRow === 1 && r.ox <= 0, r);
     m.close();
   }
 }

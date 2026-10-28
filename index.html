@@ -19,12 +19,12 @@
 <meta name="twitter:description" content="circles เมืองของศิลปิน ตึกคอนกรีตหนึ่งหลังคือศิลปินหนึ่งคน ไม่มีหอศิลป์ ไม่มีคนกลาง เดินเข้าไปดูงานแล้วสนับสนุนตรงถึงคนทำ">
 <meta name="twitter:image" content="https://arne4959-wq.github.io/artarne/og.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"circles","description":"A city of artists: one concrete building, one artist. No gallery, no middleman.","inLanguage":["th","en"]}</script>
-<link rel="stylesheet" href="circles.css">
+<link rel="stylesheet" href="circles.css?v=e4686373">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/anton-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/chonburi-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-thai-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="fonts/fonts.css?v=70f6ceb0">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -666,7 +666,7 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
 @media(prefers-reduced-motion:reduce){.masonry .card .art img,.masonry .card .plate{transition:none;}}
 /* ===== works-img:end ===== */
 </style>
-<link rel="stylesheet" href="punk.css">
+<link rel="stylesheet" href="punk.css?v=432c40a6">
 <link rel="canonical" href="https://arne4959-wq.github.io/artarne/">
 <meta property="og:url" content="https://arne4959-wq.github.io/artarne/">
 </head>
@@ -896,12 +896,12 @@ html[lang=th] .vt,html[lang=th] .fbtn{letter-spacing:.02em;}
   <div class="foot-c"><span data-t="foot_copy">© 2026 CIRCLES · ต้นแบบ · ศิลปินและผลงานในเว็บนี้เป็นตัวอย่าง · NO GALLERY. NO MIDDLEMAN.</span> · <a href="privacy.html" data-t="legal_privacy">นโยบายความเป็นส่วนตัว</a> · <a href="terms.html" data-t="legal_terms">เงื่อนไขการใช้งาน</a></div>
 </footer>
 
-<script src="artists.js" defer></script>
-<script src="circles.js" defer></script>
-<script src="site.js" defer></script>
-<script src="hd2d.js" defer></script>
-<script src="punk.js" defer></script>
-<script src="vendor/lenis.min.js" defer></script>
+<script src="artists.js?v=acc1e1e2" defer></script>
+<script src="circles.js?v=16406220" defer></script>
+<script src="site.js?v=d76f64dc" defer></script>
+<script src="hd2d.js?v=624f26e4" defer></script>
+<script src="punk.js?v=96333d13" defer></script>
+<script src="vendor/lenis.min.js?v=44dcd10f" defer></script>
 <script defer>/* THE CIRCLES TIMES pieces on the home page: the ข่าวด่วน ticker over the city (3 newest real works) and the wall notices (notices.js) in the manifesto */
 addEventListener('DOMContentLoaded', () => { const draw = () => punkLoad(['times']).then(ok => { if (!ok) return; CirclesTimes.ticker(document.getElementById('news-ticker'), punkWorks(), {lang: LANG}); CirclesTimes.notices(document.getElementById('wall-notes'), null, {lang: LANG}); }); draw(); onLang(draw); });</script>
 </body>

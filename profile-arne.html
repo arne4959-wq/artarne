@@ -21,10 +21,10 @@
 <link rel="preload" href="fonts/anton-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/chonburi-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-thai-400-normal-thai.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="fonts/fonts.css">
-<link rel="stylesheet" href="circles.css">
-<link rel="stylesheet" href="blade.css">
-<link rel="stylesheet" href="profile.css">
+<link rel="stylesheet" href="fonts/fonts.css?v=70f6ceb0">
+<link rel="stylesheet" href="circles.css?v=e4686373">
+<link rel="stylesheet" href="blade.css?v=e8842d4e">
+<link rel="stylesheet" href="profile.css?v=3359a0c8">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -153,9 +153,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2
 
 <footer class="mini-foot"><a href="index.html">circles</a> · <a href="privacy.html" data-t="legal_privacy">นโยบายความเป็นส่วนตัว</a> · <a href="terms.html" data-t="legal_terms">เงื่อนไขการใช้งาน</a></footer>
 
-<script src="artists.js"></script>
-<script src="circles.js"></script>
-<script src="profile.js"></script>
+<script src="artists.js?v=acc1e1e2"></script>
+<script src="circles.js?v=16406220"></script>
+<script src="profile.js?v=33aa4a00"></script>
 <script>
 const params = new URLSearchParams(location.search);
 const wantId = params.get('id') || (document.querySelector('#main[data-profile]') || {dataset: {}}).dataset.profile || 'napha';

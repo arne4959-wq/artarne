@@ -65,7 +65,7 @@
       creditEn: 'The Metropolitan Museum of Art · H. O. Havemeyer Collection, Bequest of Mrs. H. O. Havemeyer, 1929 (JP1847) · public domain, CC0, from Met Open Access',
       creditLo: 'The Metropolitan Museum of Art · H. O. Havemeyer Collection, Bequest of Mrs. H. O. Havemeyer, 1929 (JP1847) · ສາທາລະນະສົມບັດ CC0 ຈາກ Met Open Access',
       creditUrl: 'https://www.metmuseum.org/art/collection/search/45434'}
-    ,{file: 'legends/seurat-la-grande-jatte.jpg', w: 1600, h: 1072, year: '1884–86',
+    ,{file: 'legends/seurat-la-grande-jatte.jpg', w: 1600, h: 1065, year: '1884–86',
       title: 'บ่ายวันอาทิตย์บนเกาะลา กรองด์ ฌาตต์', titleEn: 'A Sunday on La Grande Jatte — 1884', titleLo: 'ບ່າຍວັນອາທິດເທິງເກາະລາ ກຣອງ ຊາດ',
       maker: 'Georges Seurat', makerEn: 'Georges Seurat', makerLo: 'Georges Seurat',
       sign: 'จุด', signEn: 'DOT', signLo: 'ຈຸດ',

@@ -118,7 +118,7 @@ test('every old page has CSS for its route, in the old order', async () => {
     // the order the browser applies them: every <link rel="stylesheet"> and the page's first <style>, as they stand in the HTML
     // (index.html links punk.css AFTER its <style>; the other pages link everything before it)
     const first = src.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-    const links = [...src.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].filter(m => m[1] !== 'fonts/fonts.css').map(m => ({at: m.index, css: read(m[1])}));
+    const links = [...src.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].filter(m => !m[1].startsWith('fonts/fonts.css')).map(m => ({at: m.index, css: read(m[1].split('?')[0])}));
     const want = [...links, {at: first.index, css: first[1]}].sort((a, b) => a.at - b.at).map(x => x.css);
     assert.deepEqual(list, want, `${mod} (${html}.html)`);
   }
