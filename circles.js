@@ -324,6 +324,27 @@ th: {
   don_trust:'เงินก้อนนี้เข้าบัญชีของ {a} โดยตรง · circles ไม่หักค่าธรรมเนียม ไม่ผ่านมือใคร', don_check:'ก่อนกดยืนยันในแอปธนาคาร ให้เช็กว่าชื่อผู้รับตรงกับชื่อบัญชีด้านบน',
   don_fee:'ยอดที่เห็นเป็นยอดอ้างอิง สกุลเงินที่โอนจริงและค่าธรรมเนียมธนาคาร (ถ้ามี) เป็นไปตามธนาคารของคุณ circles ไม่หักเพิ่ม',
   st_note:'circles ไม่หักค่าธรรมเนียม ค่าธรรมเนียมธนาคาร (ถ้ามี) เป็นไปตามธนาคารของผู้โอน',
+  ji_lead:'ฝากชื่อไว้ได้เลย หน้านี้คือการแสดงความสนใจ ยังไม่ใช่การสมัคร และยังไม่ใช่การยืนยันว่าได้เข้าร่วม',
+  ji_wait:'เมืองนี้มีคนดูแลคนเดียว เราจะอ่านรายชื่อเมื่อพร้อม ยังบอกไม่ได้ว่าจะติดต่อกลับเมื่อไหร่ และอาจไม่ได้ติดต่อทุกคน ไม่ต้องกดเร่งนะ',
+  ji_h:'ฝากชื่อไว้ก่อน',
+  ji_name:'ชื่อหรือชื่อศิลปินที่อยากให้แสดง',
+  ji_name_s:'นามปากกาก็ได้',
+  ji_name_ph:'เช่น นภา',
+  ji_contact:'ช่องทางติดต่อ',
+  ji_contact_s:'อีเมลหรือ Instagram อย่างใดอย่างหนึ่ง',
+  ji_contact_ph:'napha@email.com หรือ @napha',
+  ji_link:'ลิงก์ผลงาน',
+  ji_link_s:'ที่ที่เห็นงานของคุณ เช่น Instagram, Behance, เว็บส่วนตัว',
+  ji_send:'ฝากชื่อไว้ก่อน',
+  ji_note:'เราใช้ช่องทางติดต่อและลิงก์นี้เพื่อพิจารณาการเข้าร่วมเท่านั้น ไม่นำไปใช้อย่างอื่น ขอให้ลบได้ทุกเมื่อ · <a href="privacy.html">ความเป็นส่วนตัว</a>',
+  ji_st:'ยังไม่ใช่การตอบรับ',
+  ji_done_h:'ได้รับข้อมูลแล้ว',
+  ji_done_p:'ขอบคุณที่สนใจ นี่เป็นเพียงการที่เราเก็บชื่อของคุณไว้ เราจะติดต่อกลับเมื่อพร้อม ซึ่งอาจใช้เวลานาน และอาจไม่ได้ติดต่อทุกคน ไม่ต้องส่งซ้ำนะ',
+  ji_done_btn:'ไปเดินชมเมือง →',
+  ji_e_name:'ใส่ชื่อที่อยากให้แสดงก่อนนะ',
+  ji_e_contact:'ใส่อีเมลหรือ Instagram ไว้ให้เราติดต่อ',
+  ji_e_link:'ลิงก์ผลงานดูไม่ครบ ลองเช็กอีกที',
+  ji_e_fail:'ส่งไม่ผ่าน ลองอีกครั้งในอีกสักครู่ ข้อมูลที่กรอกยังอยู่ครบ',
   jn_verify:'เมื่อเปิดรับ เราไม่คัดงานและไม่ตัดสินรสนิยม สิ่งเดียวที่เรายืนยันคือบัญชีรับเงินเป็นของคุณ โดยจะขอภาพหน้าจอที่เห็นเพียงชื่อบัญชีกับเลข 4 ตัวท้าย (บังส่วนที่เหลือ) ดูแลเฉพาะผู้ดูแลเว็บ และลบภายใน 30 วันหลังตรวจเสร็จ รายละเอียดอยู่ในนโยบายความเป็นส่วนตัว ตอนนี้เรายังไม่เก็บภาพนี้',
   jn_closed_h:'ตอนนี้ยังไม่เปิดรับคำขอมีตึก', jn_closed_p:'เมืองเพิ่งเริ่ม ตอนนี้มีตึกแรกหนึ่งหลัง คือของ Arne เรายังไม่รับคำขอจากศิลปินคนอื่น และหน้านี้ไม่มีฟอร์มและไม่เก็บข้อมูลใดๆ เมื่อพร้อมรับ เราจะประกาศที่หน้าแรกก่อน',
   cw_back_first:'เข้าไปดูตึกแรก →',
@@ -509,6 +530,27 @@ en: {
   don_trust:'This money goes straight to {a}’s own account · circles takes no fee and never holds it', don_check:'Before you confirm in your bank app, check that the recipient name matches the account name above.',
   don_fee:'The amount shown is a reference. The currency actually sent and any bank fee are set by your own bank. circles adds nothing.',
   st_note:'circles takes no fee. Any bank fee is set by the sender’s bank.',
+  ji_lead:'Leave your name here. This page only shows your interest. It is not an application and it does not confirm that you have joined.',
+  ji_wait:'One person looks after this city. We will read the list when we are ready. We cannot say when we will get back to you, and we may not reach everyone, so there is no need to chase us.',
+  ji_h:'Leave your name',
+  ji_name:'Your name or artist name, as you want it shown',
+  ji_name_s:'A pen name is fine',
+  ji_name_ph:'e.g. Napha',
+  ji_contact:'How to reach you',
+  ji_contact_s:'Email or Instagram, either one',
+  ji_contact_ph:'napha@email.com or @napha',
+  ji_link:'Link to your work',
+  ji_link_s:'Where we can see it, e.g. Instagram, Behance or your own site',
+  ji_send:'Leave my name',
+  ji_note:'We use your contact and link only to consider your request. We do not use them for anything else, and you can ask us to delete them at any time. · <a href="privacy.html">Privacy</a>',
+  ji_st:'Not an acceptance yet',
+  ji_done_h:'We got it',
+  ji_done_p:'Thank you for your interest. This only means we have kept your name. We will get back to you when we are ready, which may take a long time, and we may not reach everyone. No need to send it again.',
+  ji_done_btn:'Walk the city →',
+  ji_e_name:'Add the name you want shown first',
+  ji_e_contact:'Add an email or Instagram so we can reach you',
+  ji_e_link:'That link looks incomplete. Please check it',
+  ji_e_fail:'It did not go through. Try again in a moment; what you typed is still here',
   jn_verify:'When requests open, we still do not jury work or judge taste. The one thing we check is that the payout account is yours. We will ask for a screenshot that shows only the account name and the last 4 digits (hide the rest). Only the site admin sees it, and it is deleted within 30 days after the check. Details are in the privacy policy. We do not collect this screenshot now.',
   jn_closed_h:'Building requests are not open yet', jn_closed_p:'The city has only just started, with one building so far: Arne’s. We are not taking requests from other artists yet, and this page has no form and collects nothing. When we are ready, we will announce it on the home page first.',
   cw_back_first:'Visit the first building →',
@@ -1139,6 +1181,27 @@ lo: {
   don_check: "ກ່ອນກົດຢືນຢັນໃນແອັບທະນາຄານ ໃຫ້ກວດວ່າຊື່ຜູ້ຮັບກົງກັບຊື່ບັນຊີດ້ານເທິງ",   // DRAFT lo: needs native review
   don_fee: "ຍອດທີ່ເຫັນເປັນຍອດອ້າງອີງ ສະກຸນເງິນທີ່ໂອນຈິງ ແລະ ຄ່າທຳນຽມທະນາຄານ (ຖ້າມີ) ເປັນໄປຕາມທະນາຄານຂອງທ່ານ circles ບໍ່ຫັກເພີ່ມ",   // DRAFT lo: needs native review
   st_note: "circles ບໍ່ຫັກຄ່າທຳນຽມ ຄ່າທຳນຽມທະນາຄານ (ຖ້າມີ) ເປັນໄປຕາມທະນາຄານຂອງຜູ້ໂອນ",   // DRAFT lo: needs native review
+  ji_lead: "ຝາກຊື່ໄວ້ໄດ້ເລີຍ ໜ້ານີ້ແມ່ນການສະແດງຄວາມສົນໃຈ ຍັງບໍ່ແມ່ນການສະໝັກ ແລະຍັງບໍ່ແມ່ນການຢືນຢັນວ່າໄດ້ເຂົ້າຮ່ວມ",   // DRAFT lo: needs native review
+  ji_wait: "ເມືອງນີ້ມີຄົນດູແລຄົນດຽວ ພວກເຮົາຈະອ່ານລາຍຊື່ເມື່ອພ້ອມ ຍັງບອກບໍ່ໄດ້ວ່າຈະຕິດຕໍ່ກັບເມື່ອໃດ ແລະອາດຈະບໍ່ໄດ້ຕິດຕໍ່ທຸກຄົນ ບໍ່ຕ້ອງຮີບຮ້ອນເນາະ",   // DRAFT lo: needs native review
+  ji_h: "ຝາກຊື່ໄວ້ກ່ອນ",   // DRAFT lo: needs native review
+  ji_name: "ຊື່ ຫຼື ຊື່ສິລະປິນທີ່ຢາກໃຫ້ສະແດງ",   // DRAFT lo: needs native review
+  ji_name_s: "ນາມປາກກາກໍໄດ້",   // DRAFT lo: needs native review
+  ji_name_ph: "ເຊັ່ນ ນະພາ",   // DRAFT lo: needs native review
+  ji_contact: "ຊ່ອງທາງຕິດຕໍ່",   // DRAFT lo: needs native review
+  ji_contact_s: "ອີເມວ ຫຼື Instagram ອັນໃດອັນໜຶ່ງ",   // DRAFT lo: needs native review
+  ji_contact_ph: "napha@email.com ຫຼື @napha",   // DRAFT lo: needs native review
+  ji_link: "ລິ້ງຜົນງານ",   // DRAFT lo: needs native review
+  ji_link_s: "ບ່ອນທີ່ເຫັນຜົນງານຂອງທ່ານ ເຊັ່ນ Instagram, Behance, ເວັບສ່ວນຕົວ",   // DRAFT lo: needs native review
+  ji_send: "ຝາກຊື່ໄວ້ກ່ອນ",   // DRAFT lo: needs native review
+  ji_note: "ພວກເຮົາໃຊ້ຊ່ອງທາງຕິດຕໍ່ ແລະ ລິ້ງນີ້ເພື່ອພິຈາລະນາການເຂົ້າຮ່ວມເທົ່ານັ້ນ ບໍ່ນຳໄປໃຊ້ຢ່າງອື່ນ ຂໍໃຫ້ລຶບໄດ້ທຸກເວລາ · <a href=\"privacy.html\">ຄວາມເປັນສ່ວນຕົວ</a>",   // DRAFT lo: needs native review
+  ji_st: "ຍັງບໍ່ແມ່ນການຕອບຮັບ",   // DRAFT lo: needs native review
+  ji_done_h: "ໄດ້ຮັບຂໍ້ມູນແລ້ວ",   // DRAFT lo: needs native review
+  ji_done_p: "ຂອບໃຈທີ່ສົນໃຈ ນີ້ເປັນພຽງການທີ່ພວກເຮົາເກັບຊື່ຂອງທ່ານໄວ້ ພວກເຮົາຈະຕິດຕໍ່ກັບເມື່ອພ້ອມ ເຊິ່ງອາດໃຊ້ເວລາດົນ ແລະອາດຈະບໍ່ໄດ້ຕິດຕໍ່ທຸກຄົນ ບໍ່ຕ້ອງສົ່ງຊ້ຳເນາະ",   // DRAFT lo: needs native review
+  ji_done_btn: "ໄປຍ່າງຊົມເມືອງ →",   // DRAFT lo: needs native review
+  ji_e_name: "ໃສ່ຊື່ທີ່ຢາກໃຫ້ສະແດງກ່ອນເນາະ",   // DRAFT lo: needs native review
+  ji_e_contact: "ໃສ່ອີເມວ ຫຼື Instagram ໄວ້ໃຫ້ພວກເຮົາຕິດຕໍ່",   // DRAFT lo: needs native review
+  ji_e_link: "ລິ້ງຜົນງານເບິ່ງຄືບໍ່ຄົບ ລອງກວດອີກເທື່ອ",   // DRAFT lo: needs native review
+  ji_e_fail: "ສົ່ງບໍ່ຜ່ານ ລອງໃໝ່ອີກໃນຈັກໜ້ອຍ ຂໍ້ມູນທີ່ກອກຍັງຢູ່ຄົບ",   // DRAFT lo: needs native review
   jn_verify: "ເມື່ອເປີດຮັບ ພວກເຮົາຍັງບໍ່ຄັດງານ ແລະ ບໍ່ຕັດສິນລົດນິຍົມ ສິ່ງດຽວທີ່ຢືນຢັນແມ່ນບັນຊີຮັບເງິນເປັນຂອງທ່ານ ໂດຍຈະຂໍພາບໜ້າຈໍທີ່ເຫັນພຽງຊື່ບັນຊີ ແລະ ເລກ 4 ຕົວທ້າຍ (ປິດສ່ວນທີ່ເຫຼືອ) ສະເພາະຜູ້ດູແລເວັບເບິ່ງໄດ້ ແລະ ລຶບພາຍໃນ 30 ວັນຫຼັງກວດແລ້ວ ລາຍລະອຽດຢູ່ໃນນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ ດຽວນີ້ພວກເຮົາຍັງບໍ່ເກັບພາບນີ້",   // DRAFT lo: needs native review
   jn_closed_h: "ດຽວນີ້ຍັງບໍ່ເປີດຮັບຄຳຂໍມີຕຶກ",   // DRAFT lo: needs native review
   cw_back_first: "ເຂົ້າໄປເບິ່ງຕຶກທຳອິດ →",   // DRAFT lo: needs native review

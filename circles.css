@@ -350,9 +350,7 @@ html[lang=th] .pf-say span,html[lang=lo] .pf-say span,
 html[lang=th] .sc-tag,html[lang=lo] .sc-tag,
 html[lang=th] .plaza > span,html[lang=lo] .plaza > span{font-size:.875rem;}
 
-/* shortcut: the site is Arne's alone for now, so every "get a building" door is shut; delete this rule when other artists are welcome (join.html itself stays) */
-a[href$="join.html"],.join-band{display:none!important;}
 
-/* shortcut: with one building (site.js sets .solo for fewer than three artists) the city tools, featured list, stats and the "get a building" footer are noise; remove this block when the city grows */
-.solo .shortcuts,.solo .city-tools,.solo #featured,.solo .stats,.solo .hero-feat,.solo .foot-ask,
-.solo a[href="#all-artists"],.solo a[href="#map"],.solo a[href="#featured"],.solo li:has(>a[href$="join.html"]),.solo li:has(>a[href="#map"]),.solo li:has(>a[href="#featured"]){display:none!important;}
+/* shortcut: with one building (site.js sets .solo for fewer than three artists) the city tools, featured list, stats are noise; remove this block when the city grows */
+.solo .shortcuts,.solo .city-tools,.solo #featured,.solo .stats,.solo .hero-feat,
+.solo a[href="#all-artists"],.solo a[href="#map"],.solo a[href="#featured"],.solo li:has(>a[href="#map"]),.solo li:has(>a[href="#featured"]){display:none!important;}
