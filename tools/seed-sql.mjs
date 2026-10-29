@@ -81,7 +81,7 @@ begin
   insert into public.artists (${artistCols.join(', ')})
     values (${artistVals.join(', ')});
   insert into public.artist_private (artist_id, email) values (${lit('id', a.id)}, '${e}');
-${pay ? `  insert into public.artist_payment (artist_id, bank, account_name, account_no) values (${lit('id', a.id)}, ${lit('bank', pay.bank || 'BCEL')}, ${lit('account_name', pay.name)}, ${lit('account_no', pay.no)});   -- the QR: upload it in manage.html → รับเงิน\n` : ''}${works.join('\n')}
+${pay ? `  insert into public.artist_payment (artist_id, bank, account_name, account_no, checked) values (${lit('id', a.id)}, ${lit('bank', pay.bank || 'BCEL')}, ${lit('account_name', pay.name)}, ${lit('account_no', pay.no)}, true);   -- checked: the owner seeds it (migration 008). The QR: upload it in manage.html → รับเงิน\n` : ''}${works.join('\n')}
 end
 $seed$;
 

@@ -41,6 +41,7 @@ const mock = `
       if (method === 'GET') return json(notices);
       if (method === 'PATCH') { const id = new URL(url).searchParams.get('id').replace('eq.', ''); notices = notices.map(n => n.id === id ? {...n, ...JSON.parse(body)} : n); return new Response(null, {status: 204}); }
     }
+    if (url.includes('/rest/v1/artist_payment') && method === 'GET' && url.includes('checked=eq.false')) return json([{artist_id:'kwan', bank:'LAO QR', account_name:'Kwan P.', account_no:null, qr_path:'kwan/q1.png'}]);
     if (url.includes('/rest/v1/artist_payment')) { if (method === 'GET') return one ? json({artist_id:'napha', bank:'BCEL', account_name:'Napha S.', account_no:'010 12 345', qr_path:null}) : json([]); return new Response(null, {status: 201}); }
     if (url.includes('/rest/v1/artist_private')) { if (method === 'GET') return one ? json({email:'napha@studio.com'}) : json([]); return new Response(null, {status: 201}); }
     if (url.includes('/storage/v1/object/')) return json({Key: 'art/napha/x.webp'});
@@ -172,6 +173,10 @@ for (const [name, w, h, touch] of [['desk', 1280, 900, false], ['phone', 390, 84
   await b.ev("window.__calls.length=0"); await clickText('#ad-h ~ ul button.btn', 'อนุมัติ'); await sleep(500);
   const ca = await b.ev("JSON.stringify(window.__calls)");
   check('"Approve" PATCHes that one artist to approved and the row leaves the list', /PATCH/.test(ca) && /id=eq.dao-k/.test(ca) && /approved\\?":true/.test(ca) && await b.ev("/ไม่มีคำขอรอ/.test(document.querySelector('#ad-h').parentElement.textContent)"), ca.slice(0, 400));
+  check('admin: an unchecked QR shows with its account name and picture', await b.ev("(()=>{const li=document.querySelector('.mg-pay');return !!li&&/Kwan P\\./.test(li.textContent)&&/qr\\/kwan\\/q1\\.png/.test(li.querySelector('img')?.src||'')})()"));
+  await b.ev("window.__calls.length=0"); await clickText('.mg-pay button.btn', 'ตรวจแล้ว'); await sleep(500);
+  const cq = await b.ev("JSON.stringify(window.__calls)");
+  check('"Checked" PATCHes only that artist and that QR to checked, and the row leaves', /PATCH/.test(cq) && /artist_id=eq.kwan/.test(cq) && /qr_path=eq.kwan/.test(cq) && /checked\\?":true/.test(cq) && await b.ev("!document.querySelector('.mg-pay')"), cq.slice(0, 400));
 }
 console.log(b.logs.filter(l => !/favicon/.test(l)).slice(0, 8).join('\n') || '(no console errors)');
 console.log(`${ok} passed, ${bad} failed`);

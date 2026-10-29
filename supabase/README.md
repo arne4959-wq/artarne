@@ -110,7 +110,7 @@ node --test supabase/tests/donation-logic.test.mjs
 ## Checking a new bank account or QR (migration 008)
 
 When an artist adds or changes their account or QR in manage.html, visitors do not see it until you check it (so a stolen login cannot quietly swap the QR and take the donations).
-Look at the new details (Table editor → `artist_payment`, rows with `checked = false`; open the QR through Storage → `qr`), ask the artist if anything looks odd, then in the SQL editor:
+As an admin, open manage.html: the approvals box lists "Payment QRs waiting for a check" with the QR and account name; press **Checked, the name matches** (it ticks only the QR you saw: if the artist changed it meanwhile the new one stays unchecked). Without the dashboard, look at the new details (Table editor → `artist_payment`, rows with `checked = false`; open the QR through Storage → `qr`), ask the artist if anything looks odd, then in the SQL editor:
 
 ```sql
 update public.artist_payment set checked = true where artist_id = '<id>';
