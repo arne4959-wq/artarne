@@ -15,6 +15,18 @@ export async function deliver(kind, to, subject, fields) {
   return {mode: 'mailto', body, to, subject};
 }
 
+/* a new building request (ClaimPanel): tell the site owner by e-mail through the same form endpoint, so they can approve it soon.
+   Never the mailto fallback (that would open the artist's own mail app), never blocks: the request is already saved, a lost mail only means
+   the owner sees it next time they open manage.html. */
+export function notifyOwner(row, email) {
+  if (!CONFIG.endpoint) return Promise.resolve(false);
+  const link = location.origin + location.pathname;
+  return fetch(CONFIG.endpoint, {method: 'POST', keepalive: true, headers: {'Content-Type': 'application/json', Accept: 'application/json'},
+    body: JSON.stringify({kind: 'building-request', to: CONFIG.contact, subject: 'คำขอตึกใหม่: ' + row.p_name, _subject: 'circles: คำขอตึกใหม่ — ' + row.p_name,
+      name: row.p_name, building: row.p_id, disc: row.p_disc, city: row.p_city, email, note: row.p_note || '', approve: link})})
+    .then(r => r.ok, () => false);
+}
+
 /* newsletter: returns the toast key to show, or '' when nothing should happen (honeypot / empty) */
 export async function subscribeNews(form) {
   if (form.querySelector('.hp-n')?.value) return '';          // honeypot: bots fill every field

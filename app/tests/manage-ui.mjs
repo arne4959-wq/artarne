@@ -22,6 +22,7 @@ const mock = `
   const real = window.fetch.bind(window);
   window.fetch = async (input, init = {}) => {
     const url = typeof input === 'string' ? input : input.url, method = (init.method || (input.method) || 'GET').toUpperCase();
+    if (url.includes('formspree.io')) { calls.push({method, url, body: init.body}); return json({ok: true}); }   // the owner's e-mail (never really sent by a test)
     if (!url.includes('${REF}.supabase.co')) return real(input, init);
     const body = init.body && typeof init.body === 'string' ? init.body : null;
     calls.push({method, url: url.replace(/^https:\\/\\/[^/]+/, ''), body});
@@ -163,6 +164,7 @@ for (const [name, w, h, touch] of [['desk', 1280, 900, false], ['phone', 390, 84
   await set('ชื่อตึกในลิงก์', 'dao-art'); await clickText('button[type=submit]', 'ส่งคำขอ'); await sleep(800);
   const cc = await b.ev("JSON.stringify(window.__calls)");
   check('sending calls claim_building once with the form', (cc.match(/rpc\/claim_building/g) || []).length === 1 && /dao-art/.test(cc) && /เวียงจันทน์/.test(cc), cc.slice(0, 400));
+  check('then the owner is e-mailed once about the new request (name, link name, e-mail)', (cc.match(/formspree\.io/g) || []).length === 1 && /building-request/.test(cc) && /dao-art/.test(cc), cc.slice(0, 600));
   check('then the dashboard of the new, still hidden building', await b.ev("document.querySelector('.mg-room h1')?.textContent==='ตึกของ ดาว' && !!document.querySelector('.mg-note')"));
   check('an artist does not see the approvals list', await b.ev("!document.querySelector('#ad-h')"));
 }

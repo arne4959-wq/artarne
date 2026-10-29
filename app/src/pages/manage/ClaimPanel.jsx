@@ -1,9 +1,11 @@
-/* ClaimPanel.jsx — a login with no building asks for one (claim_building, migration 009). It is created hidden; an admin approves it. */
+/* ClaimPanel.jsx — a login with no building asks for one (claim_building, migration 009). It is created hidden; an admin approves it.
+   The owner is told by e-mail (notifyOwner, through CONFIG.endpoint). */
 import {useState} from 'react';
 import {ARTISTS} from 'virtual:circles/data';
 import {useMt} from '../../lib/manageStrings.js';
 import {supabase} from '../../lib/supabase.js';
 import {formToClaim, slugFrom} from '../../lib/manage.js';
+import {notifyOwner} from '../../lib/forms.js';
 import {Field, SaveState} from './Field.jsx';
 
 const TAKEN = ARTISTS.map(a => a.id);   // hand-written buildings of artists.js: the database does not know them
@@ -21,7 +23,7 @@ export default function ClaimPanel({email, onDone}) {
     if (r.errors) { setErrors(r.errors); setState('fix'); return; }
     setErrors({}); setMsg(''); setState('saving');
     const {error} = await supabase().rpc('claim_building', r.row);
-    if (!error) { onDone(); return; }
+    if (!error) { notifyOwner(r.row, email); onDone(); return; }   // the owner gets an e-mail; not awaited
     if (/duplicate key/.test(error.message || '')) { setErrors({id: 'er_taken'}); setState('fix'); return; }
     if (/already has a building/.test(error.message || '')) { onDone(); return; }   // sent twice (two tabs): just show the building
     if (/too many requests/.test(error.message || '')) setMsg('cl_full');
