@@ -43,6 +43,10 @@ for (const [c, m] of Object.entries(wcols)) {
   else say('FAIL', `column works.${c} is missing`, `run supabase/migrations/${m} (002-007 in order: they are all needed before artists can post)`);
 }
 
+const claim = await get('/rest/v1/rpc/claim_building', {method: 'POST', headers: {...H, 'Content-Type': 'application/json'}, body: '{"p_id":"doctor-probe","p_name":"x","p_disc":"x","p_city":"x"}'});   // anon may not run it: 401/403 = it exists
+if (claim.status === 404) say('FAIL', 'function claim_building is missing: new artists cannot ask for a building', 'run supabase/migrations/009_self_signup.sql');
+else say('OK', 'function claim_building exists');
+
 const notices = await get('/rest/v1/donation_notices?select=id&limit=1');
 if (notices.status === 200 && Array.isArray(notices.json) && notices.json.length) say('FAIL', 'donation_notices is readable by the PUBLIC (donor e-mails would leak)', 'check the rules in migration 003 (the table must be private)');
 else if (notices.status === 404) say('WARN', 'table donation_notices is missing', 'run migration 003 (the "I\'ve donated" notices)');
@@ -60,8 +64,11 @@ if (real) {
 
 const auth = await get('/auth/v1/settings');
 if (auth.status === 200 && auth.json) {
-  if (auth.json.disable_signup === true) say('OK', 'public sign-up is OFF (only invited artists can log in)');
-  else say('FAIL', 'public sign-up is ON: anyone can create a login', 'Authentication → Providers → Email → turn OFF "Allow new users to sign up"');
+  // since 009 a new login is safe (it can only make one hidden building), and Google sign-in needs sign-up ON for a first visit
+  if (auth.json.disable_signup === true) say('FAIL', 'public sign-up is OFF: a new artist cannot sign in with Google', 'Authentication → Sign In / Providers → turn ON "Allow new users to sign up" (safe since migration 009)');
+  else say('OK', 'public sign-up is ON (a new login can only ask for a hidden building)');
+  if (auth.json.external && auth.json.external.google === true) say('OK', 'Google sign-in is on');
+  else say('FAIL', 'Google sign-in is off: artists have no way in except the e-mail link (which needs a custom SMTP)', 'docs/SETTINGS.md, "Google sign-in"');
   if (auth.json.external && auth.json.external.email === false) say('FAIL', 'e-mail login is switched off', 'Authentication → Providers → Email: keep it on');
 } else say('WARN', `could not read the auth settings (HTTP ${auth.status})`);
 
@@ -82,8 +89,8 @@ const f = out.filter(x => x === 'FAIL').length, w = out.filter(x => x === 'WARN'
 console.log(f ? `${f} FAIL, ${w} WARN: fix the FAIL lines first.` : w ? `no FAIL, ${w} WARN.` : 'all good.');
 console.log(`
 Cannot be checked from outside, do these once in the Supabase dashboard (docs/SETTINGS.md, "Putting it live"):
-  - Authentication → SMTP: set a custom SMTP server. Supabase's built-in mail only reaches members of YOUR Supabase organisation
-    ("Email address not authorized"), so without this no artist ever receives the sign-in link.
+  - Only if you keep the e-mail link as a way in: Authentication → SMTP, a custom SMTP server. Supabase's built-in mail only reaches
+    members of YOUR Supabase organisation ("Email address not authorized"). Google sign-in does not need it.
   - Authentication → URL configuration: the Site URL and a Redirect URL for manage.html (the address of the published site + /manage.html).
-  - Authentication → Users: your own login exists (Add user), then run tools/seed-sql.mjs to make it admin and create your building.`);
+  - Your own login: sign in once on manage.html with Google, then run tools/seed-sql.mjs to make it admin and create your building.`);
 process.exit(f ? 1 : 0);

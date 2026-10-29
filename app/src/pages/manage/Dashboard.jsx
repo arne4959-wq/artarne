@@ -7,13 +7,16 @@ import ProfilePanel from './ProfilePanel.jsx';
 import WorksPanel from './WorksPanel.jsx';
 import PaymentPanel from './PaymentPanel.jsx';
 import DonationsPanel from './DonationsPanel.jsx';
+import ClaimPanel from './ClaimPanel.jsx';
+import Approvals from './Approvals.jsx';
 
 const TABS = [['profile', 'tab_profile'], ['works', 'tab_works'], ['donations', 'tab_donations'], ['pay', 'tab_pay']];
 
 export default function Dashboard({session, signOut}) {
   const mt = useMt(), {lang} = useLang();
   const [st, setSt] = useState({phase: 'loading'}), [tab, setTab] = useState('works');
-  const [fresh, setFresh] = useState(0), uid = session.user.id;   // fresh = donation notices waiting for the artist
+  const [fresh, setFresh] = useState(0), uid = session.user.id;
+  const admin = session.user.app_metadata?.role === 'admin';   // a button only: the database checks the same claim (is_admin)   // fresh = donation notices waiting for the artist
   const load = useCallback(async () => {
     setSt({phase: 'loading'});
     const {data, error} = await supabase().from('artists').select('*').eq('user_id', uid).maybeSingle();
@@ -35,7 +38,8 @@ export default function Dashboard({session, signOut}) {
     <main id="main" className="mg-shell">
       {st.phase === 'loading' && <p role="status" className="mg-status">{mt('loading')}</p>}
       {st.phase === 'fail' && <div className="mg-bad" role="alert">{mt('load_fail')} <button type="button" className="mg-mini" style={{width: 'auto', marginLeft: '.6rem'}} onClick={load}>{mt('reload')}</button></div>}
-      {st.phase === 'none' && <section className="mg-panel"><h2>{mt('nb_h')}</h2><p>{mt('nb_p', {e: session.user.email})}</p></section>}
+      {admin && <Approvals/>}
+      {st.phase === 'none' && <ClaimPanel email={session.user.email} onDone={load}/>}
       {artist && <>
         {!artist.approved && <p className="mg-note" role="status">{mt('hidden')}</p>}
         {artist.demo && <p className="mg-note warn">{mt('demo')}</p>}

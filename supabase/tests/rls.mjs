@@ -1,4 +1,4 @@
-// RLS tests for supabase/migrations/001..008, run in an in-memory Postgres (PGlite) with a small stand-in for Supabase's auth and storage schemas.
+// RLS tests for supabase/migrations/001..009, run in an in-memory Postgres (PGlite) with a small stand-in for Supabase's auth and storage schemas.
 // Run:  npm i --no-save --prefix supabase/tests @electric-sql/pglite     (once)
 //       node supabase/tests/rls.mjs
 // (`npx -p @electric-sql/pglite node ...` does NOT work: ES modules look for packages next to the file, not in npx's cache.)
@@ -29,13 +29,13 @@ await db.exec(PRELUDE);
 await db.exec(fs.readFileSync(new URL('../migrations/001_init.sql', import.meta.url),'utf8'));
 await db.exec(fs.readFileSync(new URL('../migrations/002_payment_notices.sql', import.meta.url),'utf8'));
 await db.exec(fs.readFileSync(new URL('../migrations/003_donations.sql', import.meta.url),'utf8'));
-for (const f of ['004_artist_tells', '005_artist_photo', '006_work_rules', '007_work_process', '008_payment_check']) await db.exec(fs.readFileSync(new URL(`../migrations/${f}.sql`, import.meta.url),'utf8'));
-console.log('migrations applied (001-008)');
+for (const f of ['004_artist_tells', '005_artist_photo', '006_work_rules', '007_work_process', '008_payment_check', '009_self_signup']) await db.exec(fs.readFileSync(new URL(`../migrations/${f}.sql`, import.meta.url),'utf8'));
+console.log('migrations applied (001-009)');
 let pass=0, fail=0;
 const as = async (who, sql, params) => {   // who: null=postgres, 'anon', uid, 'admin'; params: optional $1.. values
   await db.exec('reset role; select set_config(\'request.jwt.claims\', \'\', false)');
   if (who==='anon') await db.exec("set role anon");
-  else if (who) { const claims = who===ADM ? {sub:ADM, app_metadata:{role:'admin'}} : {sub:who}; await db.query("select set_config('request.jwt.claims', $1, false)", [JSON.stringify(claims)]); await db.exec('set role authenticated'); }
+  else if (who) { const claims = typeof who==='object' ? who : who===ADM ? {sub:ADM, app_metadata:{role:'admin'}} : {sub:who}; await db.query("select set_config('request.jwt.claims', $1, false)", [JSON.stringify(claims)]); await db.exec('set role authenticated'); }
   try { const r = await db.query(sql, params); return {rows:r.rows, n:r.affectedRows ?? r.rows.length}; } catch(e) { return {err:e.message}; }
   finally { await db.exec('reset role'); }
 };
@@ -199,13 +199,36 @@ r = await as(A,"update works set idea='hacked' where artist_id='art-b' and posit
 r = await as('anon',"select idea, sketch, final_on from works where artist_id='art-a' and position=90"); ok('007: visitors read the process of approved artists', r.rows && r.rows.length===1 && r.rows[0].idea==='a boat', JSON.stringify(r));
 r = await as('anon',"update works set idea='x'"); ok('007: visitors cannot write it', !!r.err || r.n===0, JSON.stringify(r));
 
+// ---- 009: a signed-in login asks for its own building; an admin approves it ----
+const D='00000000-0000-0000-0000-00000000000d', Dj={sub:D, email:'D@Gmail.com'};
+await as(null, `insert into auth.users(id,email) values ('${D}','d@gmail.com')`);
+r = await as('anon',"select claim_building('anon-x','x','d','c')"); ok('009: visitors cannot ask for a building', !!r.err, JSON.stringify(r));
+r = await as(Dj,"insert into artists(id,user_id,name,disc,city) values ('d-direct','"+D+"','n','d','c')"); ok('009: a new login still cannot insert an artist straight through the API', !!r.err, JSON.stringify(r));
+r = await as(Dj,"select claim_building('art-a','x','d','c')"); ok('009: a taken building name is refused', /duplicate key/.test(r.err||''), JSON.stringify(r));
+r = await as(Dj,"select claim_building('Bad Name!','x','d','c')"); ok('009: the building name must be a slug', !!r.err, JSON.stringify(r));
+r = await as(Dj,"select claim_building(' Dao-K ','Dao','paint','Vientiane','https://ig.test/dao') as id"); ok('009: a new login asks for one building', r.rows?.[0]?.id==='dao-k', JSON.stringify(r));
+r = await as(null,"select a.approved, a.user_id::text u, p.email, p.apply_note from artists a join artist_private p on p.artist_id=a.id where a.id='dao-k'");
+ok('009: it is hidden, linked to the login, and the e-mail + note are kept privately', r.rows?.[0]?.approved===false && r.rows[0].u===D && r.rows[0].email==='d@gmail.com' && r.rows[0].apply_note==='https://ig.test/dao', JSON.stringify(r));
+r = await as(Dj,"select claim_building('dao-2','x','d','c')"); ok('009: one building per login', /already has a building/.test(r.err||''), JSON.stringify(r));
+r = await as(A,"select claim_building('a-2','x','d','c')"); ok('009: an artist who has a building cannot ask for another', !!r.err, JSON.stringify(r));
+r = await as('anon',"select id from artists where id='dao-k'"); ok('009: visitors do not see a waiting building', r.rows?.length===0, JSON.stringify(r));
+r = await as(Dj,"update artists set approved=true where id='dao-k'"); ok('009: the artist cannot approve themself', !!r.err, JSON.stringify(r));
+r = await as(Dj,"insert into works(artist_id,position,title) values ('dao-k',0,'first') returning id"); ok('009: while waiting, the artist can already add works', r.n===1, JSON.stringify(r));
+r = await as('anon',"select title from works where artist_id='dao-k'"); ok('009: ...which visitors do not see yet', r.rows?.length===0, JSON.stringify(r));
+r = await as(ADM,"select a.id, p.email, p.apply_note from artists a left join artist_private p on p.artist_id=a.id where not a.approved and not a.demo order by a.id"); ok('009: the admin lists the waiting buildings with e-mail and note', r.rows?.some(x=>x.id==='dao-k' && x.email==='d@gmail.com' && x.apply_note==='https://ig.test/dao'), JSON.stringify(r));
+r = await as(ADM,"update artists set approved=true where id='dao-k' returning id"); ok('009: the admin approves with one update', r.n===1, JSON.stringify(r));
+r = await as('anon',"select title from works where artist_id='dao-k'"); ok('009: after approval visitors see the building and its works', JSON.stringify(r.rows?.map(x=>x.title))==='["first"]', JSON.stringify(r));
+await as(null, "insert into auth.users(id,email) values ('00000000-0000-0000-0000-0000000000e1','e@x.co')");
+r = await as({sub:'00000000-0000-0000-0000-0000000000e1', email:'e@x.co'},"select claim_building('spam-e','x','d','c')");
+r = await as(ADM,"delete from artists where id='spam-e' returning id"); ok('009: the admin refuses a request by deleting it (its private row goes too)', r.n===1 && (await as(null,"select count(*)::int n from artist_private where artist_id='spam-e'")).rows[0].n===0, JSON.stringify(r));
+
 // ---- the one-transaction bundle (tools/sql-bundle.mjs) that the owner pastes into the SQL editor equals running 002-008 one by one ----
 const {bundle} = await import('../../tools/sql-bundle.mjs');
 const fresh = async () => { const d = new PGlite(); await d.exec(PRELUDE); await d.exec(fs.readFileSync(new URL('../migrations/001_init.sql', import.meta.url),'utf8')); return d; };
 const shape = async d => ((await d.query("select 'c:'||table_name||'.'||column_name||':'||data_type||':'||is_nullable as x from information_schema.columns where table_schema='public' union all select 'p:'||tablename||'.'||policyname||':'||cmd from pg_policies where schemaname in ('public','storage') union all select 'f:'||p.proname from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' union all select 't:'||event_object_table||'.'||trigger_name from information_schema.triggers where trigger_schema='public' order by 1")).rows.map(x => x.x).join('\n'));
-const db2 = await fresh(); let berr = ''; try { await db2.exec(bundle(2, 8)); } catch (e) { berr = e.message; }
-ok('the paste-in bundle (002-008, begin/commit) applies cleanly on top of 001', !berr, berr);
+const db2 = await fresh(); let berr = ''; try { await db2.exec(bundle(2, 9)); } catch (e) { berr = e.message; }
+ok('the paste-in bundle (002-009, begin/commit) applies cleanly on top of 001', !berr, berr);
 ok('and leaves exactly the same columns, policies, functions and triggers as running the files one by one', (await shape(db2)) === (await shape(db)));
-const db3 = await fresh(); let broke = ''; try { await db3.exec(bundle(2, 8).replace(/commit;\s*$/, 'select 1/0;\ncommit;')); } catch (e) { broke = e.message; } await db3.exec('rollback').catch(() => {});
+const db3 = await fresh(); let broke = ''; try { await db3.exec(bundle(2, 9).replace(/commit;\s*$/, 'select 1/0;\ncommit;')); } catch (e) { broke = e.message; } await db3.exec('rollback').catch(() => {});
 ok('a bundle that fails on its last statement changes nothing (all or nothing)', /division by zero/.test(broke) && (await shape(db3)) === (await shape(await fresh())), broke);
 console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail?1:0);

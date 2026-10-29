@@ -17,6 +17,7 @@ const mock = `
     {id:'w1', artist_id:'napha', position:0, title:'เช้าหมอก', title_en:'Morning Fog', ar:'4/5', img:null, year:2022},
     {id:'w2', artist_id:'napha', position:1, title:'ห้องว่าง', title_en:'Empty Room', ar:'1/1', img:'art/napha-2.svg', year:2021}];
   let notices = [{id:'n1', artist_id:'napha', work_id:'w1', donor_name:'Somchai', donor_email:'somchai@mail.com', amount:5, currency:'USD', message:'Thank you!', slip_path:null, status:'pending', created_at:'2026-10-11T05:00:00Z', works:{title:'เช้าหมอก', title_en:'Morning Fog', title_lo:null}}];
+  let claimed = !/[?&]claim/.test(location.search);   // ?claim = a fresh Google login with no building yet
   const json = (b, status = 200) => new Response(JSON.stringify(b), {status, headers: {'Content-Type': 'application/json'}});
   const real = window.fetch.bind(window);
   window.fetch = async (input, init = {}) => {
@@ -25,6 +26,9 @@ const mock = `
     const body = init.body && typeof init.body === 'string' ? init.body : null;
     calls.push({method, url: url.replace(/^https:\\/\\/[^/]+/, ''), body});
     const h = new Headers(init.headers || {}), one = (h.get('Accept') || '').includes('pgrst.object');
+    if (url.includes('/rest/v1/rpc/claim_building')) { const b = JSON.parse(body); Object.assign(artist, {id: b.p_id, name: b.p_name, disc: b.p_disc, city: b.p_city}); claimed = true; return json(b.p_id); }
+    if (url.includes('/rest/v1/artists') && method === 'GET' && url.includes('approved=eq.false')) return json([{id:'dao-k', name:'Dao', disc:'paint', city:'Vientiane', created_at:'2026-10-29T01:00:00Z', artist_private:{email:'d@gmail.com', apply_note:'https://ig.test/dao'}}]);
+    if (url.includes('/rest/v1/artists') && method === 'GET' && !claimed) return one ? json(null) : json([]);
     if (url.includes('/rest/v1/artists')) { if (method === 'GET') return one ? json(artist) : json([artist]); const b = JSON.parse(body); Object.assign(artist, b); return json(one ? artist : [artist]); }
     if (url.includes('/rest/v1/works')) {
       if (method === 'GET') return json(works);
@@ -45,9 +49,10 @@ const mock = `
   };
 })();`;
 const session = JSON.stringify({access_token: 'x.y.z', refresh_token: 'r', token_type: 'bearer', expires_in: 3600, expires_at: Math.floor(Date.now() / 1000) + 3600, user: {id: UID, email: 'napha@studio.com', aud: 'authenticated', app_metadata: {}, user_metadata: {}}});
-const html = fs.readFileSync(DIST + '/manage.html', 'utf8').replace('<head>', `<head><script>try{localStorage.setItem('sb-${REF}-auth-token', ${JSON.stringify(session)})}catch(e){};${mock.replace(/<\/script>/g, '<\\/script>')}</script>`);
+const signedIn = sess => fs.readFileSync(DIST + '/manage.html', 'utf8').replace('<head>', `<head><script>try{localStorage.setItem('sb-${REF}-auth-token', ${JSON.stringify(sess)})}catch(e){};${mock.replace(/<\/script>/g, '<\\/script>')}</script>`);
+const html = signedIn(session), adminHtml = signedIn(session.replace('"app_metadata":{}', '"app_metadata":{"role":"admin"}'));
 const anon = fs.readFileSync(DIST + '/manage.html', 'utf8').replace('<head>', `<head><script>${mock.replace(/<\/script>/g, '<\\/script>')}</script>`);
-const srv = await startServer(DIST, {'/manage.html': u => (u.searchParams.has('anon') ? anon : html)});
+const srv = await startServer(DIST, {'/manage.html': u => (u.searchParams.has('anon') ? anon : u.searchParams.has('admin') ? adminHtml : html)});
 const b = await launch();
 await b.lang('th');
 const click = sel => b.ev(`(()=>{const e=document.querySelector(${JSON.stringify(sel)});if(!e)return 'NOEL ${sel}';e.click();return 'ok'})()`);
@@ -60,6 +65,7 @@ let ok = 0, bad = 0; const check = (n, c, x = '') => { c ? ok++ : bad++; console
 
 {   // the door (no session)
   await b.view(1280, 900); await b.go(srv.url + '/manage.html?anon&full', 2500);
+  check('no session: a "Sign in with Google" button comes first', await b.ev("document.querySelector('.mg-go')?.textContent==='เข้าด้วย Google' && document.querySelector('.mg-go').type==='button'"));
   check('no session: the concrete door, no sign-up button', await b.ev("!!document.querySelector('.mg-door') && ![...document.querySelectorAll('button,a')].some(x=>/sign ?up|สมัครสมาชิก/i.test(x.textContent))"));
   // the wall is alive: three depths, a sticker shadow under every shape, people on the kerb, a bird
   check('wall has far, mid and near shapes', await b.ev("document.querySelectorAll('.far .sp').length>=8 && document.querySelectorAll('.mid .sp').length>=6 && document.querySelectorAll('.near .sp').length>=4"));
@@ -73,10 +79,10 @@ let ok = 0, bad = 0; const check = (n, c, x = '') => { c ? ok++ : bad++; console
   // rule: every keyframe of this page animates only transform and opacity
   check('manage keyframes touch only transform and opacity', await b.ev(`(()=>{const ok=new Set(['transform','opacity']),bad=[];for(const sh of document.styleSheets){let rules;try{rules=sh.cssRules}catch(e){continue}for(const r of rules){if(r.type===7&&/^(mg|fr[24]$)/.test(r.name)){for(const k of r.cssRules)for(const p of k.style)if(!ok.has(p))bad.push(r.name+':'+p)}}}return bad.length?bad.join(','):true})()`), '');
   await b.ev("window.__calls.length=0");
-  await b.ev(`(()=>{const e=document.querySelector('input[name=email]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'nobody');e.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.mg-go').click()})()`); await sleep(300);
+  await b.ev(`(()=>{const e=document.querySelector('input[name=email]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'nobody');e.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.mg-go[type=submit]').click()})()`); await sleep(300);
   check('bad e-mail: error shown, nothing sent', await b.ev("!!document.querySelector('.mg-err')") && !/otp/.test(await b.ev("JSON.stringify(window.__calls)")));
   check('bad e-mail: the stamp lands again and the bolts rattle', await b.ev("!!document.querySelector('.mg-stamp.re') && document.querySelectorAll('.mg-bolt.re').length===4"));
-  await b.ev(`(()=>{const e=document.querySelector('input[name=email]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'Napha@Studio.com');e.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.mg-go').click()})()`); await sleep(600);
+  await b.ev(`(()=>{const e=document.querySelector('input[name=email]');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,'Napha@Studio.com');e.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.mg-go[type=submit]').click()})()`); await sleep(600);
   const c = await b.ev("JSON.stringify(window.__calls)");
   check('valid e-mail: one-time link request, never creates a user', /auth\/v1\/otp/.test(c) && /create_user\\?":false/.test(c) && /napha@studio.com/.test(c), c);
   check('after a valid e-mail the key flies into the lock, with confetti', await b.ev("!!document.querySelector('.mg-door.opening') || !!document.querySelector('.mg-sent')"));
@@ -145,6 +151,27 @@ for (const [name, w, h, touch] of [['desk', 1280, 900, false], ['phone', 390, 84
     await clickText('.mg-tab', 'งานของฉัน'); await sleep(200); await clickText('button.btn', '+ เพิ่มงาน'); await sleep(300); await b.shot(`${out}/dash-workform-${name}.png`);
     check('no sideways scroll at 390px', await b.ev("document.documentElement.scrollWidth<=innerWidth"), await b.ev("document.documentElement.scrollWidth"));
   }
+}
+{   // a new Google login: no building yet, so it asks for one
+  await b.view(1280, 900); await b.go(srv.url + '/manage.html?claim', 2500);
+  check('a login without a building sees the request form, the slug guessed from the e-mail', await b.ev("!!document.querySelector('form.mg-panel h2') && document.querySelector('input[maxlength=\"40\"]')?.value==='napha'"));
+  await b.shot(`${out}/claim.png`);
+  await set('ชื่อตึกในลิงก์', 'arne'); await set('ชื่อ (ไทย)', 'ดาว'); await set('แนวงาน', 'จิตรกรรม'); await set('เมือง', 'เวียงจันทน์');
+  await b.ev("window.__calls.length=0"); await clickText('button[type=submit]', 'ส่งคำขอ'); await sleep(300);
+  check('a slug the site already uses is refused before anything is sent', !/claim_building/.test(await b.ev("JSON.stringify(window.__calls)")) && /มีคนใช้แล้ว/.test(await b.ev("document.querySelector('.mg-lbl.bad small')?.textContent||''")));
+  await set('ชื่อตึกในลิงก์', 'dao-art'); await clickText('button[type=submit]', 'ส่งคำขอ'); await sleep(800);
+  const cc = await b.ev("JSON.stringify(window.__calls)");
+  check('sending calls claim_building once with the form', (cc.match(/rpc\/claim_building/g) || []).length === 1 && /dao-art/.test(cc) && /เวียงจันทน์/.test(cc), cc.slice(0, 400));
+  check('then the dashboard of the new, still hidden building', await b.ev("document.querySelector('.mg-room h1')?.textContent==='ตึกของ ดาว' && !!document.querySelector('.mg-note')"));
+  check('an artist does not see the approvals list', await b.ev("!document.querySelector('#ad-h')"));
+}
+{   // the site owner
+  await b.go(srv.url + '/manage.html?admin', 2500);
+  check('admin: the waiting request shows with e-mail and note', await b.ev("(()=>{const t=document.querySelector('#ad-h')?.parentElement.textContent||'';return /Dao/.test(t)&&/d@gmail.com/.test(t)&&/ig.test\\/dao/.test(t)})()"));
+  await b.shot(`${out}/approvals.png`);
+  await b.ev("window.__calls.length=0"); await clickText('#ad-h ~ ul button.btn', 'อนุมัติ'); await sleep(500);
+  const ca = await b.ev("JSON.stringify(window.__calls)");
+  check('"Approve" PATCHes that one artist to approved and the row leaves the list', /PATCH/.test(ca) && /id=eq.dao-k/.test(ca) && /approved\\?":true/.test(ca) && await b.ev("/ไม่มีคำขอรอ/.test(document.querySelector('#ad-h').parentElement.textContent)"), ca.slice(0, 400));
 }
 console.log(b.logs.filter(l => !/favicon/.test(l)).slice(0, 8).join('\n') || '(no console errors)');
 console.log(`${ok} passed, ${bad} failed`);

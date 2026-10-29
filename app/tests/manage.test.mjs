@@ -87,3 +87,15 @@ test('profile form round-trip keeps photo, look and timeline', () => {
   assert.equal(update.photo, a.photo); assert.equal(update.kind, 'vase'); assert.equal(update.scale, 0.9);
   assert.deepEqual(update.timeline, [{y: 2020, t: 'ก', tEn: 'a'}]);
 });
+
+test('asking for a building: a slug, a name, a discipline and a city', async () => {
+  const {formToClaim, slugFrom} = await import('../src/lib/manage.js');
+  assert.equal(slugFrom('Dao.Keo_99@gmail.com'), 'dao-keo-99');
+  assert.equal(slugFrom('ນາງ@gmail.com'), '', 'a non-latin name gives no slug: the artist types one');
+  const good = {id: ' Dao-K ', name: 'ດາວ', disc: 'paint', city: 'Vientiane', note: ' '};
+  assert.deepEqual(formToClaim(good).row, {p_id: 'dao-k', p_name: 'ດາວ', p_disc: 'paint', p_city: 'Vientiane', p_note: null});
+  assert.equal(formToClaim({...good, id: 'a b'}).errors.id, 'er_slug');
+  assert.equal(formToClaim({...good, id: 'x'}).errors.id, 'er_slug');
+  assert.equal(formToClaim({...good, id: 'arne'}, ['arne']).errors.id, 'er_taken');
+  assert.deepEqual(Object.keys(formToClaim({id: 'ok-id'}).errors).sort(), ['city', 'disc', 'name']);
+});

@@ -126,3 +126,15 @@ export function ratioOf(w, h) {
   while (a > 999 || b > 999) { a = Math.round(a / 2); b = Math.round(b / 2); }   // odd sizes: keep it inside the 3 digits the database accepts
   return `${Math.max(1, a)}/${Math.max(1, b)}`;
 }
+
+/* ---- asking for a building (migration 009, claim_building) ---- */
+export const SLUG = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/;   // artists.id: the building lives at studio-<id>.html
+export const slugFrom = email => s(email).split('@')[0].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+/* taken: ids already used by the site (hand-written artists in artists.js); the database only knows its own rows */
+export function formToClaim(f, taken = []) {
+  const errors = {}, id = s(f.id).trim().toLowerCase();
+  if (!SLUG.test(id)) errors.id = 'er_slug'; else if (taken.includes(id)) errors.id = 'er_taken';
+  const row = {p_id: id, p_name: text(f.name, 80), p_disc: text(f.disc, 60), p_city: text(f.city, 60), p_note: text(f.note, 500)};
+  for (const k of ['name', 'disc', 'city']) if (!row['p_' + k]) errors[k] = 'er_required';
+  return Object.keys(errors).length ? {errors} : {row};
+}

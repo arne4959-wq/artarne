@@ -1,4 +1,5 @@
-/* Login.jsx — the concrete door. Invite only: no sign-up button. The e-mail gets a one-time link (magic link). */
+/* Login.jsx — the concrete door. Google first (no mail server needed); a new login then asks for a building (Dashboard → ClaimPanel, migration 009).
+   The e-mail one-time link stays for invited artists only (shouldCreateUser: false) and needs a custom SMTP on Supabase. */
 import {useEffect, useRef, useState} from 'react';
 import {useMt} from '../../lib/manageStrings.js';
 import {Ransom} from '../../components/art.jsx';
@@ -30,6 +31,12 @@ export default function Login({linkBad = false}) {
     timer.current = setTimeout(() => setPhase('sent'), 1250);
   }
 
+  async function google() {
+    setErr(''); setPhase('sending');
+    const {error} = await supabase().auth.signInWithOAuth({provider: 'google', options: {redirectTo: location.origin + location.pathname}});
+    if (error) { setErr('lg_net'); setPhase('idle'); }   // on success the browser is already leaving for Google
+  }
+
   const busy = phase === 'sending' || phase === 'opening';
   return <main id="main" className="mg-wall">
     <Wall/>
@@ -53,6 +60,8 @@ export default function Login({linkBad = false}) {
         : <form onSubmit={submit} noValidate>
             <p className="mg-sub">{mt('lg_sub')}</p>
             {err === 'lg_link_bad' && <p className="mg-bad" role="alert">{mt(err)}</p>}
+            <button type="button" className="btn mg-go mg-google" disabled={busy} onClick={google}>{mt('lg_google')}</button>
+            <p className="mg-sub" style={{margin: '1.2rem 0 .4rem', fontSize: '.85rem'}}>{mt('lg_or')}</p>
             <label className="mg-field"><span>{mt('lg_email')}</span>
               <input className="mg-slot" type="email" name="email" autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck="false" required
                 value={email} onChange={e => setEmail(e.target.value)} disabled={busy}
