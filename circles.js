@@ -324,8 +324,9 @@ th: {
   don_trust:'เงินก้อนนี้เข้าบัญชีของ {a} โดยตรง · circles ไม่หักค่าธรรมเนียม ไม่ผ่านมือใคร', don_check:'ก่อนกดยืนยันในแอปธนาคาร ให้เช็กว่าชื่อผู้รับตรงกับชื่อบัญชีด้านบน',
   don_fee:'ยอดที่เห็นเป็นยอดอ้างอิง สกุลเงินที่โอนจริงและค่าธรรมเนียมธนาคาร (ถ้ามี) เป็นไปตามธนาคารของคุณ circles ไม่หักเพิ่ม',
   st_note:'circles ไม่หักค่าธรรมเนียม ค่าธรรมเนียมธนาคาร (ถ้ามี) เป็นไปตามธนาคารของผู้โอน',
-  ji_lead:'ฝากชื่อไว้ได้เลย หน้านี้คือการแสดงความสนใจ ยังไม่ใช่การสมัคร และยังไม่ใช่การยืนยันว่าได้เข้าร่วม',
-  ji_wait:'เมืองนี้มีคนดูแลคนเดียว เราจะอ่านรายชื่อเมื่อพร้อม ยังบอกไม่ได้ว่าจะติดต่อกลับเมื่อไหร่ และอาจไม่ได้ติดต่อทุกคน ไม่ต้องกดเร่งนะ',
+  ji_lead:'สมัครด้วยบัญชี Google ไม่ต้องตั้งรหัสผ่าน ใช้เวลาไม่ถึง 2 นาที ฟรี ไม่หักค่าธรรมเนียม',
+  ji_s1:'กดปุ่มข้างล่าง แล้วเลือกบัญชี Google ของคุณ', ji_s2:'กรอกชื่อ แนวงาน เมือง และลิงก์ผลงาน', ji_s3:'ระหว่างรอเจ้าของเมืองอนุมัติ ลงงานและใส่ QR รับเงินเตรียมไว้ได้เลย พออนุมัติ ตึกของคุณจะขึ้นเว็บเอง',
+  ji_go:'สมัครด้วย Google →', ji_alt:'ไม่มีบัญชี Google? ฝากชื่อไว้แทน',
   ji_h:'ฝากชื่อไว้ก่อน',
   ji_name:'ชื่อหรือชื่อศิลปินที่อยากให้แสดง',
   ji_name_s:'นามปากกาก็ได้',
@@ -530,8 +531,9 @@ en: {
   don_trust:'This money goes straight to {a}’s own account · circles takes no fee and never holds it', don_check:'Before you confirm in your bank app, check that the recipient name matches the account name above.',
   don_fee:'The amount shown is a reference. The currency actually sent and any bank fee are set by your own bank. circles adds nothing.',
   st_note:'circles takes no fee. Any bank fee is set by the sender’s bank.',
-  ji_lead:'Leave your name here. This page only shows your interest. It is not an application and it does not confirm that you have joined.',
-  ji_wait:'One person looks after this city. We will read the list when we are ready. We cannot say when we will get back to you, and we may not reach everyone, so there is no need to chase us.',
+  ji_lead:'Sign up with your Google account. No password to make up, under 2 minutes, free, no fees.',
+  ji_s1:'Press the button below and choose your Google account', ji_s2:'Fill in your name, the kind of work you make, your city and a link to your work', ji_s3:'While you wait for the city\'s keeper to approve you, add your works and your payment QR. Once approved, your building goes up on its own.',
+  ji_go:'Sign up with Google →', ji_alt:'No Google account? Leave your name instead',
   ji_h:'Leave your name',
   ji_name:'Your name or artist name, as you want it shown',
   ji_name_s:'A pen name is fine',
@@ -1181,8 +1183,12 @@ lo: {
   don_check: "ກ່ອນກົດຢືນຢັນໃນແອັບທະນາຄານ ໃຫ້ກວດວ່າຊື່ຜູ້ຮັບກົງກັບຊື່ບັນຊີດ້ານເທິງ",   // DRAFT lo: needs native review
   don_fee: "ຍອດທີ່ເຫັນເປັນຍອດອ້າງອີງ ສະກຸນເງິນທີ່ໂອນຈິງ ແລະ ຄ່າທຳນຽມທະນາຄານ (ຖ້າມີ) ເປັນໄປຕາມທະນາຄານຂອງທ່ານ circles ບໍ່ຫັກເພີ່ມ",   // DRAFT lo: needs native review
   st_note: "circles ບໍ່ຫັກຄ່າທຳນຽມ ຄ່າທຳນຽມທະນາຄານ (ຖ້າມີ) ເປັນໄປຕາມທະນາຄານຂອງຜູ້ໂອນ",   // DRAFT lo: needs native review
-  ji_lead: "ຝາກຊື່ໄວ້ໄດ້ເລີຍ ໜ້ານີ້ແມ່ນການສະແດງຄວາມສົນໃຈ ຍັງບໍ່ແມ່ນການສະໝັກ ແລະຍັງບໍ່ແມ່ນການຢືນຢັນວ່າໄດ້ເຂົ້າຮ່ວມ",   // DRAFT lo: needs native review
-  ji_wait: "ເມືອງນີ້ມີຄົນດູແລຄົນດຽວ ພວກເຮົາຈະອ່ານລາຍຊື່ເມື່ອພ້ອມ ຍັງບອກບໍ່ໄດ້ວ່າຈະຕິດຕໍ່ກັບເມື່ອໃດ ແລະອາດຈະບໍ່ໄດ້ຕິດຕໍ່ທຸກຄົນ ບໍ່ຕ້ອງຮີບຮ້ອນເນາະ",   // DRAFT lo: needs native review
+  ji_lead: "ສະໝັກດ້ວຍບັນຊີ Google ບໍ່ຕ້ອງຕັ້ງລະຫັດຜ່ານ ໃຊ້ເວລາບໍ່ເຖິງ 2 ນາທີ ຟຣີ ບໍ່ຫັກຄ່າທຳນຽມ",   // DRAFT lo: needs native review
+  ji_s1: "ກົດປຸ່ມຂ້າງລຸ່ມ ແລ້ວເລືອກບັນຊີ Google ຂອງທ່ານ",   // DRAFT lo: needs native review
+  ji_s2: "ໃສ່ຊື່ ແນວງານ ເມືອງ ແລະລິ້ງຜົນງານ",   // DRAFT lo: needs native review
+  ji_s3: "ລະຫວ່າງລໍຖ້າເຈົ້າຂອງເມືອງອະນຸມັດ ລົງງານແລະໃສ່ QR ຮັບເງິນໄວ້ກ່ອນໄດ້ເລີຍ ພໍອະນຸມັດ ຕຶກຂອງທ່ານຈະຂຶ້ນເວັບເອງ",   // DRAFT lo: needs native review
+  ji_go: "ສະໝັກດ້ວຍ Google →",   // DRAFT lo: needs native review
+  ji_alt: "ບໍ່ມີບັນຊີ Google? ຝາກຊື່ໄວ້ແທນ",   // DRAFT lo: needs native review
   ji_h: "ຝາກຊື່ໄວ້ກ່ອນ",   // DRAFT lo: needs native review
   ji_name: "ຊື່ ຫຼື ຊື່ສິລະປິນທີ່ຢາກໃຫ້ສະແດງ",   // DRAFT lo: needs native review
   ji_name_s: "ນາມປາກກາກໍໄດ້",   // DRAFT lo: needs native review

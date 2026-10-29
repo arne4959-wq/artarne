@@ -26,7 +26,7 @@ export const MS = {
     lg_email: 'อีเมล', lg_btn: 'ส่งกุญแจมา →', lg_sending: 'กำลังส่ง…', lg_stamp: 'ศิลปินเท่านั้น',
     lg_sent_h: 'ส่งกุญแจแล้ว', lg_sent_p: 'เปิดอีเมลแล้วกดลิงก์ในนั้น ถ้าไม่เจอให้ดูในสแปม ลิงก์ใช้ได้ครั้งเดียว ถ้าอีเมลนี้ไม่ได้รับเชิญ จะไม่มีอะไรส่งไป',
     lg_again: 'ใช้อีเมลอื่น', lg_wait: 'ขอลิงก์บ่อยเกินไป รอสักครู่แล้วลองใหม่', lg_bad: 'อีเมลนี้ดูไม่ถูกต้อง', lg_net: 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', lg_mail: 'ระบบส่งอีเมลของเว็บยังตั้งค่าไม่เสร็จ จึงส่งลิงก์เข้าให้คุณไม่ได้ แจ้งผู้ดูแลเว็บ',
-    lg_nokey: 'ยังไม่ได้รับเชิญ?', lg_join: 'ขอมีตึก →', lg_setup: 'ระบบยังไม่ตั้งค่า: ยังไม่ได้ใส่ที่อยู่ฐานข้อมูล', lg_checking: 'กำลังตรวจกุญแจ…',
+    lg_nokey: 'ยังไม่มีตึก? กดเข้าด้วย Google แล้วขอได้เลย', lg_join: 'ดูขั้นตอน →', lg_setup: 'ระบบยังไม่ตั้งค่า: ยังไม่ได้ใส่ที่อยู่ฐานข้อมูล', lg_checking: 'กำลังตรวจกุญแจ…',
     lg_link_bad: 'กุญแจนี้ใช้ไม่ได้หรือหมดอายุแล้ว ขอกุญแจใหม่ด้านล่าง',
     
     
@@ -102,7 +102,7 @@ export const MS = {
     lg_email: 'E-mail', lg_btn: 'SEND THE KEY →', lg_sending: 'SENDING…', lg_stamp: 'ARTISTS ONLY',
     lg_sent_h: 'Key sent', lg_sent_p: 'Open your e-mail and press the link. Check spam. The link works once. If this address was not invited, nothing is sent.',
     lg_again: 'Use another e-mail', lg_wait: 'Too many tries. Wait a minute and try again.', lg_bad: 'That e-mail does not look right.', lg_net: 'Could not send. Try again.', lg_mail: 'The site’s e-mail sender is not set up yet, so the sign-in link could not be sent. Please tell the site owner.',
-    lg_nokey: 'Not invited yet?', lg_join: 'Ask for a building →', lg_setup: 'Not set up: the database address is missing.', lg_checking: 'Checking the key…',
+    lg_nokey: 'No building yet? Sign in with Google and ask for one.', lg_join: 'How it works →', lg_setup: 'Not set up: the database address is missing.', lg_checking: 'Checking the key…',
     lg_link_bad: 'This key is broken or expired. Ask for a new one below.',
     
     
@@ -163,7 +163,7 @@ export const MS = {
     lg_sub: 'ເຂົ້າດ້ວຍບັນຊີ Google ຄັ້ງທຳອິດຈະໄດ້ຂຽນຂໍຕຶກ ເມື່ອເຈົ້າຂອງເວັບອະນຸມັດແລ້ວ ຕຶກຂອງທ່ານຈະຂຶ້ນໃນເມືອງ',
     lg_google: 'ເຂົ້າດ້ວຍ Google', lg_or: 'ຫຼື ໃຊ້ລິ້ງທາງອີເມວ (ສະເພາະຄົນທີ່ໄດ້ຮັບເຊີນ)',
     lg_email: 'ອີເມວ', lg_btn: 'ສົ່ງກະແຈມາ →', lg_sending: 'ກຳລັງສົ່ງ…', lg_stamp: 'ສະເພາະສິລະປິນ',
-    lg_sent_h: 'ສົ່ງກະແຈແລ້ວ', lg_again: 'ໃຊ້ອີເມວອື່ນ', lg_nokey: 'ຍັງບໍ່ໄດ້ຮັບເຊີນ?', lg_join: 'ຂໍມີຕຶກ →',
+    lg_sent_h: 'ສົ່ງກະແຈແລ້ວ', lg_again: 'ໃຊ້ອີເມວອື່ນ', lg_nokey: 'ຍັງບໍ່ມີຕຶກ? ກົດເຂົ້າດ້ວຍ Google ແລ້ວຂໍໄດ້ເລີຍ', lg_join: 'ເບິ່ງຂັ້ນຕອນ →',
     
     p_qr_help: 'ໃຊ້ຮູບ QR “ຮັບເງິນ” ຈາກແອັບທະນາຄານຂອງທ່ານ (ເຊັ່ນ BCEL One ຫຼືແອັບ LDB) ຖ່າຍໜ້າຈໍ ຫຼືບັນທຶກຮູບ QR ແລ້ວອັບໂຫຼດບ່ອນນີ້ ຜູ້ທີ່ຢາກສະໜັບສະໜູນຈະສະແກນ ແລ້ວໂອນເຂົ້າບັນຊີຂອງທ່ານໂດຍກົງ ຫຼັງສະແກນໃຫ້ກວດວ່າຊື່ບັນຊີທີ່ຂຶ້ນເປັນຂອງທ່ານ',   // DRAFT lo: needs native review
     sp_cta: 'ເຂົ້າໄປໃນຕຶກຂອງ{a} →',

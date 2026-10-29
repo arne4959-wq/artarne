@@ -14,6 +14,14 @@ export default function Login({linkBad = false}) {
   const [email, setEmail] = useState(''), [phase, setPhase] = useState('idle'), [err, setErr] = useState(linkBad ? 'lg_link_bad' : '');
   const [bump, setBump] = useState(0), timer = useRef(0);
   useEffect(() => () => clearTimeout(timer.current), []);
+  // join.html's "sign up with Google" opens manage.html?google: go straight on to Google. The flag is dropped from the address first,
+  // so the Back button on Google's page lands on this door instead of sending the visitor to Google again.
+  useEffect(() => {
+    const u = new URL(location.href);
+    if (!u.searchParams.has('google') || !supabaseReady || linkBad) return;
+    u.searchParams.delete('google'); history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+    google();
+  }, []);   // eslint-disable-line react-hooks/exhaustive-deps
 
   async function submit(e) {
     e.preventDefault();

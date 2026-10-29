@@ -75,6 +75,14 @@ html[lang="th"] .btn{font-family:"Chonburi",var(--thai);letter-spacing:.02em;tex
 @media(max-width:480px){nav .brand{font-size:1.45rem;gap:.45rem;letter-spacing:.07em;}nav .brand svg{width:30px;height:30px;}nav .links{gap:.5rem;}}
 
 /* interest form (3 fields) */
+.jn-steps{max-width:640px;margin:1.2rem 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:.55rem;}
+.jn-steps li{counter-increment:s;display:flex;gap:.8rem;align-items:baseline;font:400 .98rem/1.7 var(--thai);color:rgba(244,241,232,.9);}
+.jn-steps li::before{content:counter(s);flex:none;display:inline-grid;place-items:center;width:1.8rem;height:1.8rem;background:var(--gold);color:var(--black);font:400 1rem var(--anton);border:2px solid var(--black);}
+.jn-go{display:inline-block;margin-top:1.6rem;font-size:1.15rem;padding:1rem 1.6rem;}
+.jn-alt{max-width:660px;margin:0 auto 3rem;}
+.jn-alt>summary{cursor:pointer;font:500 .95rem var(--thai);padding:.8rem 0;text-decoration:underline;text-underline-offset:4px;}
+.jn-alt[open]>summary{margin-bottom:1rem;}
+.jn-alt .jn-form{margin-bottom:0;}
 .jn-form{position:relative;max-width:660px;margin:0 auto 3rem;background:var(--paper);border:var(--line) solid var(--black);box-shadow:10px 10px 0 var(--black);padding:2.4rem 2rem 1.8rem;}
 .jn-form::before{content:"";position:absolute;top:-13px;left:1.6rem;width:90px;height:26px;background:var(--gold);border:2px solid var(--black);transform:rotate(-4deg);}
 .jn-form h2{font:400 1.5rem/1.4 "Chonburi",var(--thai);margin-bottom:1.4rem;}
@@ -106,15 +114,21 @@ html[lang="th"] .btn{font-family:"Chonburi",var(--thai);letter-spacing:.02em;tex
 </nav>
 
 <header class="jn-hero">
-  <span class="jn-stk" aria-hidden="true">WAITING LIST</span>
+  <span class="jn-stk" aria-hidden="true">OPEN</span>
   <div class="jn-kick" data-t="jn_kick">สำหรับศิลปิน</div>
   <h1 class="rn" id="jn-title" aria-label="ขอมีตึก"></h1>
   <p class="jn-sub" data-t="join_h">อยากมีตึกของตัวเอง?</p>
-  <p class="jn-lead" data-t="ji_lead">ฝากชื่อไว้ได้เลย หน้านี้คือการแสดงความสนใจ ยังไม่ใช่การสมัคร และยังไม่ใช่การยืนยันว่าได้เข้าร่วม</p>
-  <p class="jn-verify" data-t="ji_wait">เมืองนี้มีคนดูแลคนเดียว เราจะอ่านรายชื่อเมื่อพร้อม ยังบอกไม่ได้ว่าจะติดต่อกลับเมื่อไหร่ และอาจไม่ได้ติดต่อทุกคน ไม่ต้องกดเร่งนะ</p>
+  <p class="jn-lead" data-t="ji_lead">สมัครด้วยบัญชี Google ไม่ต้องตั้งรหัสผ่าน ใช้เวลาไม่ถึง 2 นาที ฟรี ไม่หักค่าธรรมเนียม</p>
+  <ol class="jn-steps">
+    <li data-t="ji_s1">กดปุ่มข้างล่าง แล้วเลือกบัญชี Google ของคุณ</li>
+    <li data-t="ji_s2">กรอกชื่อ แนวงาน เมือง และลิงก์ผลงาน</li>
+    <li data-t="ji_s3">ระหว่างรอเจ้าของเมืองอนุมัติ ลงงานและใส่ QR รับเงินเตรียมไว้ได้เลย พออนุมัติ ตึกของคุณจะขึ้นเว็บเอง</li>
+  </ol>
+  <a class="btn pk jn-go" href="manage.html?google" data-t="ji_go">สมัครด้วย Google →</a>
 </header>
 
 <main id="main">
+  <details class="jn-alt"><summary data-t="ji_alt">ไม่มีบัญชี Google? ฝากชื่อไว้แทน</summary>
   <form class="jn-form" id="jn-form" novalidate>
     <h2 data-t="ji_h">ฝากชื่อไว้ก่อน</h2>
     <label for="f-name"><span data-t="ji_name">ชื่อหรือชื่อศิลปินที่อยากให้แสดง</span><small data-t="ji_name_s">นามปากกาก็ได้</small>
@@ -128,6 +142,7 @@ html[lang="th"] .btn{font-family:"Chonburi",var(--thai);letter-spacing:.02em;tex
     <p class="jn-err" id="jn-err" role="alert" hidden></p>
     <p class="jn-note" data-t-html="ji_note">เราใช้ช่องทางติดต่อและลิงก์นี้เพื่อพิจารณาการเข้าร่วมเท่านั้น ไม่นำไปใช้อย่างอื่น ขอให้ลบได้ทุกเมื่อ · <a href="privacy.html">ความเป็นส่วนตัว</a></p>
   </form>
+  </details>
   <section class="jn-done" id="jn-done" tabindex="-1" hidden>
     <span class="st" data-t="ji_st">ยังไม่ใช่การตอบรับ</span>
     <h2 data-t="ji_done_h">ได้รับข้อมูลแล้ว</h2>
@@ -144,8 +159,8 @@ function joinTitle() {
   const th = LANG !== 'en';
   ransom(document.getElementById('jn-title'), th ? 'ขอมีตึก' : 'GET A BUILDING', 2, true);
   document.getElementById('jn-title').setAttribute('aria-label', th ? 'ขอมีตึก' : 'Get a building');
-  setMeta(th ? 'ขอมีตึก — ฝากชื่อไว้ก่อน — circles' : 'Get a building — leave your name — circles',
-          th ? 'อยากมีตึกของตัวเอง? ฝากชื่อ ช่องทางติดต่อ และลิงก์ผลงานไว้ได้ หน้านี้เป็นการแสดงความสนใจ ยังไม่ใช่การสมัคร' : 'Want a building of your own? Leave your name, a way to reach you and a link to your work. This only shows interest; it is not an application.');
+  setMeta(th ? 'ขอมีตึก — circles' : 'Get a building — circles',
+          th ? 'อยากมีตึกของตัวเอง? สมัครด้วยบัญชี Google ไม่ถึง 2 นาที ลงงานและรับการสนับสนุนตรงถึงคุณ' : 'Want a building of your own? Sign up with Google in under 2 minutes, post your work and get supported directly.');
 }
 onLang(joinTitle); wireNav(); applyLang();
 (function () {
@@ -168,7 +183,7 @@ onLang(joinTitle); wireNav(); applyLang();
     btn.disabled = false;
     // only a confirmed delivery may say "received"; the mailto fallback and failures must not
     if (res.mode !== 'sent') return fail(t('ji_e_fail'));
-    form.hidden = true;
+    form.closest('details').hidden = true;
     const d = document.getElementById('jn-done'); d.hidden = false; d.focus();
   });
 })();
