@@ -12,7 +12,7 @@
    supabaseUrl, supabaseKey: the Supabase project URL and its publishable (anon) key. Nothing reads them yet; the artist dashboard will.
    manage   : false until the artists' settings page (manage.html) is published. While false the footer "Settings" link is hidden (no dead link). tools/dist.mjs flips it to true in dist/ when it ships manage.html.
    contact  : where "join" requests go. Artists' own addresses are in artists.js (they use the reserved .example domain until you replace them). */
-const CONFIG = { shop: false, manage: false, support: {bank: 'BCEL', name: 'SAMPLE', no: '000 000 000 000', qr: 'art/qr-sample.svg', sample: true}, endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'arne4959@gmail.com', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
+const CONFIG = { shop: false, manage: false, support: {bank: 'LAO QR (LAPNet)', name: 'KAISONE YORTCHAN MR', qr: 'art/qr/arne.png'}, endpoint: 'https://formspree.io/f/maeqeaqn', donate: '', contact: 'arne4959@gmail.com', turnstileSiteKey: '0x4AAAAAAFRit2gggdNBXNji',
   lakPerUsd: 22400,
   analytics: '',   // OFF. To count visits without cookies: make a free GoatCounter site and put 'https://YOURNAME.goatcounter.com/count' here. Then ALSO update privacy.html (it says there is no analytics). docs/GO-LIVE.md
   supabaseUrl: 'https://lgkqvfmnqdpajddishio.supabase.co', supabaseKey: 'sb_publishable_vDPIYxQA0JiZCumJ_qMuhg_BxFSfuXp' };   // supabase*: the artists' database (supabase/README.md). The publishable key is meant to be public: the access rules in the database protect the data, never put a secret / service_role key here.
