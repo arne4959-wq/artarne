@@ -1,0 +1,71 @@
+# Rebuilds and publishes the site to GitHub Pages, including what the artists saved in manage.html.
+#
+# In order: build the artists' settings page (manage.html) → pull the approved artists and their works from Supabase → merge them into artists.js
+# (tools/merge-live.mjs) → build the pages (studio, profile, share images, sitemap) → release check → publish dist/.
+#
+# When it runs
+#   - By hand (Actions tab → deploy → Run workflow): always. Do this first, to see that the whole chain works.
+#   - When main changes, and every 30 minutes (so a work an artist adds shows up by itself): ONLY while the repository variable AUTO_DEPLOY is "true"
+#     (Settings → Secrets and variables → Actions → Variables). Until then those runs are skipped, not failed, so this file can sit on main safely
+#     before GitHub Pages has been switched over.
+#
+# One-time order (docs/SETTINGS.md, "Putting it live"):
+#   1. this file on main   2. Settings → Pages → Source = "GitHub Actions"   3. run it by hand and open the site   4. add the variable AUTO_DEPLOY = true
+# Optional variables: SITE_URL (the custom domain, default https://<owner>.github.io/<repo>), HIDE_DEMO = true (hide the SAMPLE artists once a real one is on the site).
+# Nothing secret is needed: the Supabase key used is the public one in circles.js.
+name: deploy
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+env:
+  SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+  CHROME_NO_SANDBOX: '1'   # GitHub's Ubuntu runner does not let Chrome build its sandbox; every step that opens Chrome (tests, build) needs this
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm --prefix app ci
+      - name: Tests of the settings page (skipped on the 30-minute schedule, they only change with the code)
+        if: github.event_name != 'schedule'
+        run: npm run app:test
+      - run: npm run app:build
+      - name: Pull the artists' latest profiles and works from Supabase
+        run: npm run pull -- ${{ vars.HIDE_DEMO == 'true' && '--hide-demo' || '' }}
+      - name: Put them on the site (merged into artists.js for this build only, never committed; a work whose picture cannot be fetched is left out so one broken picture cannot stop everybody)
+        run: node tools/merge-live.mjs --check-images
+      - name: Build the pages (uses the Chrome that GitHub's runner already has)
+        env:
+          CHROME_PATH: google-chrome
+          CHROME_NO_SANDBOX: '1'
+        run: node tools/build.mjs --site "$SITE_URL"
+      - run: npm run check
+      - run: npm run dist
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4
