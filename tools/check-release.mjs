@@ -45,7 +45,7 @@ console.log(`legends: ${files.length} entries, ${moreFiles.length} gallery pictu
 
 /* 3. still-a-prototype markers */
 if (/analytics:\s*'https?:/.test(circles) && /ไม่ใช้เครื่องมือวิเคราะห์|runs no analytics/.test(read('privacy.html'))) fail.push('CONFIG.analytics is on but privacy.html still says there is no analytics: update privacy.html first');
-if (/sample:\s*true/.test(circles)) warn.push('CONFIG.support.sample is true: the bank details and QR are samples');
+if (/sample:\s*true/.test((circles.match(/^const CONFIG = .*$/m) || [""])[0])) warn.push('CONFIG.support.sample is true: the bank details and QR are samples');
 if (/\.example/.test(circles.split('\n').find(l => l.startsWith('const CONFIG')) || '')) warn.push('CONFIG.contact is a *.example address');
 if (/donate:\s*''/.test(circles)) warn.push("CONFIG.donate is empty (the 'support the site' link)");
 const pages = fs.readdirSync(root).filter(n => n.endsWith('.html'));
