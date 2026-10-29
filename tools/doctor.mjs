@@ -54,7 +54,7 @@ else say('OK', 'donation_notices is not readable by the public');
 
 const pub = await get('/rest/v1/artists?select=id,name&approved=eq.true&demo=eq.false');
 const real = Array.isArray(pub.json) ? pub.json.length : 0;
-say(real ? 'OK' : 'WARN', `${real} approved real artist(s) visible to visitors`, real ? '' : 'add your own building first: docs/SETTINGS.md, step 3');
+say(real ? 'OK' : 'WARN', `${real} approved real artist(s) visible to visitors`, real ? '' : 'add your own building first: docs/SETTINGS.md, ค. (steps 5ข-6)');
 if (real) {
   const w = await get('/rest/v1/works?select=artist_id');
   const have = new Set((Array.isArray(w.json) ? w.json : []).map(x => x.artist_id));
@@ -68,7 +68,7 @@ if (auth.status === 200 && auth.json) {
   if (auth.json.disable_signup === true) say('FAIL', 'public sign-up is OFF: a new artist cannot sign in with Google', 'Authentication → Sign In / Providers → turn ON "Allow new users to sign up" (safe since migration 009)');
   else say('OK', 'public sign-up is ON (a new login can only ask for a hidden building)');
   if (auth.json.external && auth.json.external.google === true) say('OK', 'Google sign-in is on');
-  else say('FAIL', 'Google sign-in is off: artists have no way in except the e-mail link (which needs a custom SMTP)', 'docs/SETTINGS.md, "Google sign-in"');
+  else say('FAIL', 'Google sign-in is off: artists have no way in except the e-mail link (which needs a custom SMTP)', 'docs/SETTINGS.md, ข. (steps 3-5)');
   if (auth.json.external && auth.json.external.email === false) say('FAIL', 'e-mail login is switched off', 'Authentication → Providers → Email: keep it on');
 } else say('WARN', `could not read the auth settings (HTTP ${auth.status})`);
 
